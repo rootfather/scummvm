@@ -21,6 +21,8 @@
  */
 
 #include "common/error.h"
+#include "common/events.h"
+#include "common/system.h"
 
 #include "engines/engine.h"
 #include "engines/util.h"
@@ -41,6 +43,19 @@ ClueEngine::~ClueEngine() {
 Common::Error ClueEngine::run() {
 	// Initialize backend
 	initGraphics(320, 200);
+
+    // Run a dummy loop
+	Common::Event event;
+
+	while (!shouldQuit()) {
+		while (g_system->getEventManager()->pollEvent(event)) {
+			if (event.type == Common::EVENT_KEYDOWN && event.kbd.keycode == Common::KEYCODE_ESCAPE)
+				g_engine->quitGame();
+		}
+
+		g_system->delayMillis(10);
+	}
+
 	return Common::kNoError;
 }
 
