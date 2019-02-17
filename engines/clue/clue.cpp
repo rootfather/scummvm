@@ -40,8 +40,7 @@ ClueEngine::~ClueEngine() {
 
 Common::Error ClueEngine::run() {
 	// Initialize backend
-	initGraphics(320, 200, 0);
-
+	initGraphics(320, 200);
 	return Common::kNoError;
 }
 

@@ -59,9 +59,9 @@ static const ClueGameDescription gameDescriptions[] = {
 	{
 		{
 			"clue",
-			0,
-			AD_ENTRY1s("XXX", "00000000000000000", 1),
-			Common::EN_ANY,
+			"",
+			AD_ENTRY1s("THECLOU.EXE", "0e65d33e68e8d902cb5068eab5c5aedc", 270496),
+			Common::DE_DEU,
 			Common::kPlatformDOS,
 			ADGF_NO_FLAGS,
 			GUIO1(GUIO_NONE)
