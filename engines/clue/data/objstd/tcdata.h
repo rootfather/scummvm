@@ -9,9 +9,9 @@
 #ifndef MODULE_TCDATA
 #define MODULE_TCDATA
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
-#include "data/objstd/tckeys.h"
+#include "clue/data/objstd/tckeys.h"
 
 /*
  * Data header file created with dc

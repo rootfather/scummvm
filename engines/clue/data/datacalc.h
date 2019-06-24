@@ -26,18 +26,18 @@
 #ifndef MODULE_DATACALC
 #define MODULE_DATACALC
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 #ifndef __STDARG_H
 #include <stdarg.h>
 #endif
 
 #ifndef MODULE_LIST
-#include "list/list.h"
+#include "clue/list/list.h"
 #endif
 
 #ifndef MODULE_RANDOM
-#include "random/random.h"
+#include "clue/random/random.h"
 #endif
 
 #define   tcDerivation(min,max)          (CalcRandomNr(min,max))

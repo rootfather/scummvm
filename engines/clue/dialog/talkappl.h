@@ -21,34 +21,34 @@
 #ifndef MODULE_TALKAPPL
 #define MODULE_TALKAPPL
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 #ifndef MODULE_LIST
-#include "list/list.h"
+#include "clue/list/list.h"
 #endif
 
 #ifndef MODULE_TEXT
-#include "text/text.h"
+#include "clue/text/text.h"
 #endif
 
 #ifndef MODULE_DIALOG
-#include "dialog/dialog.h"
+#include "clue/dialog/dialog.h"
 #endif
 
 #ifndef MODULE_RELATION
-#include "data/relation.h"
+#include "clue/data/relation.h"
 #endif
 
 #ifndef MODULE_DATABASE
-#include "data/database.h"
+#include "clue/data/database.h"
 #endif
 
 #ifndef MODULE_DATACALC
-#include "data/datacalc.h"
+#include "clue/data/datacalc.h"
 #endif
 
 #ifndef MODULE_DATAAPPL
-#include "data/dataappl.h"
+#include "clue/data/dataappl.h"
 #endif
 
 extern void tcJobOffer(Person p);

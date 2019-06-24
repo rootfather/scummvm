@@ -18,7 +18,7 @@
   distribution.
  ****************************************************************************/
 
-#include "story/story.h"
+#include "clue/story/story.h"
 
 ubyte tcDoLastBurglarySpot(U32 ul_Time, U32 ul_BuildingId);
 
@@ -58,7 +58,7 @@ ubyte tcKarateOpa(U32 ul_ActionTime, U32 ul_BuildingId)
 
 void tcDoneCredits(void)
 {
-    Person ben = dbGetObject(Person_Ben_Riggley);
+    Person ben = (Person)dbGetObject(Person_Ben_Riggley);
 
     tcSomebodyIsComing();
 
@@ -190,7 +190,7 @@ void tcDoneMamiCalls(void)
 void tcDoneGludoMoney(void)
 {
     Person Gludo = (Person) dbGetObject(Person_John_Gludo);
-    Environment env = dbGetObject(Environment_TheClou);
+    Environment env = (Environment)dbGetObject(Environment_TheClou);
     ubyte choice;
 
     knowsSet(Person_Matt_Stuvysunt, Person_John_Gludo);
@@ -309,7 +309,7 @@ void tcDoneMeetBriggs(void)
 	SceneArgs.ReturnValue = SCENE_FAT_MANS;
     } else {			/* nicht angenommen ! */
 
-	Person james = dbGetObject(Person_Pater_James);
+	Person james = (Person)dbGetObject(Person_Pater_James);
 
 	Say(STORY_0_TXT, 0, Briggs->PictID, "BRIGGS_BRIGGS_5");
 
@@ -447,7 +447,7 @@ void tcDonePrison(void)
 S32 tcIsDeadlock(void)
 {
     S32 deadlock = 0, total = 0;
-    CompleteLoot comp = dbGetObject(CompleteLoot_LastLoot);
+    CompleteLoot comp = (CompleteLoot)dbGetObject(CompleteLoot_LastLoot);
 
     hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Car);
 
@@ -470,7 +470,7 @@ S32 tcIsDeadlock(void)
 	/* get cheapest car! */
 	for (n = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(n);
 	     n = (NODE *) NODE_SUCC(n)) {
-	    Car car = OL_DATA(n);
+	    Car car = (Car)OL_DATA(n);
 
 	    if (tcGetCarPrice(car) < money)
 		enough = 1;
@@ -625,11 +625,11 @@ void tcDone2ndBurglary(void)
 /* wird von DoneHotel aufgerufen */
 void tcCheckForBones(void)
 {
-    Person luthm = dbGetObject(Person_Luthmilla_Nervesaw);
+    Person luthm = (Person)dbGetObject(Person_Luthmilla_Nervesaw);
 
     if (has(Person_Matt_Stuvysunt, Loot_Gebeine)) {
 	if (knows(Person_Matt_Stuvysunt, Person_Luthmilla_Nervesaw)) {
-	    Player player = dbGetObject(Player_Player_1);
+	    Player player = (Player)dbGetObject(Player_Player_1);
 
 	    tcSomebodyIsComing();
 
@@ -1000,7 +1000,7 @@ void tcDoneBeautifullMorning(void)
 
 void tcDoneVisitingSabien(void)
 {
-    Person Sabien = dbGetObject(Person_Sabien_Pardo);
+    Person Sabien = (Person)dbGetObject(Person_Sabien_Pardo);
 
     knowsSet(Person_Matt_Stuvysunt, Person_Sabien_Pardo);
 
@@ -1061,7 +1061,7 @@ void tcBriggsAngry(void)
 
 void tcSabienInWalrus(void)
 {
-    Person Sabien = dbGetObject(Person_Sabien_Pardo);
+    Person Sabien = (Person)dbGetObject(Person_Sabien_Pardo);
 
     sndPlaySound("sabien.bk", 0);
     StopAnim();
@@ -1081,7 +1081,7 @@ void tcSabienInWalrus(void)
 
 void tcWalrusTombola(void)
 {
-    Environment Env = dbGetObject(Environment_TheClou);
+    Environment Env = (Environment)dbGetObject(Environment_TheClou);
 
     Env->Present = 1;
     sndPlaySound("sabien.bk", 0);
@@ -1093,7 +1093,7 @@ void tcWalrusTombola(void)
 
 void tcRainyEvening(void)
 {
-    Person Briggs = dbGetObject(Person_Herbert_Briggs);
+    Person Briggs = (Person)dbGetObject(Person_Herbert_Briggs);
 
     tcAsTimeGoesBy(1220);
 
@@ -1154,8 +1154,8 @@ void tcDone6thBurglary(void)
 
 void tcPoliceInfoTower(void)
 {
-    Building tower = dbGetObject(Building_Tower_of_London);
-    Environment Env = dbGetObject(Environment_TheClou);
+    Building tower = (Building)dbGetObject(Building_Tower_of_London);
+    Environment Env = (Environment)dbGetObject(Environment_TheClou);
 
     if (Env->Present) {
 	Say(STORY_1_TXT, 0, 223, "ST_7_OLD_0");	/* Matt mit Bart */
@@ -1173,8 +1173,8 @@ void tcPoliceInfoTower(void)
 
 void tcPresentInHotel(void)
 {
-    Person Ben = dbGetObject(Person_Ben_Riggley);
-    Environment Env = dbGetObject(Environment_TheClou);
+    Person Ben = (Person)dbGetObject(Person_Ben_Riggley);
+    Environment Env = (Environment)dbGetObject(Environment_TheClou);
 
     Env->Present = 1;
 
@@ -1246,7 +1246,7 @@ void tcDoneBirthday(void)
 
     for (n = (struct ObjectNode *) LIST_HEAD(persons); NODE_SUCC(n);
 	 n = (struct ObjectNode *) NODE_SUCC(n)) {
-	Person p = dbGetObject(OL_NR(n));
+	Person p = (Person)dbGetObject(OL_NR(n));
 
 	switch (OL_NR(n)) {
 	case Person_Sabien_Pardo:
@@ -1279,7 +1279,7 @@ void tcDoneBirthday(void)
 
 void tcWalkWithSabien(void)
 {
-    Environment Env = dbGetObject(Environment_TheClou);
+    Environment Env = (Environment)dbGetObject(Environment_TheClou);
 
     sndPlaySound("sabien.bk", 0);
 
@@ -1349,7 +1349,7 @@ void tcDoneAgent(void)
 
 void tcDone9thBurglary(void)
 {
-    Environment Env = dbGetObject(Environment_TheClou);
+    Environment Env = (Environment)dbGetObject(Environment_TheClou);
 
     SetMinute(540);
 
@@ -1447,8 +1447,8 @@ void tcDoneTerror(void)
 
 void tcDoneConfessingSabien(void)
 {
-    Person Sabien = dbGetObject(Person_Sabien_Pardo);
-    Environment Env = dbGetObject(Environment_TheClou);
+    Person Sabien = (Person)dbGetObject(Person_Sabien_Pardo);
+    Environment Env = (Environment)dbGetObject(Environment_TheClou);
 
     Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_18_OLD_0");
     Say(STORY_1_TXT, 0, Sabien->PictID, "ST_18_SABIEN_0");
@@ -1511,8 +1511,8 @@ static void tcDoneFirstTimeLonelyInSouth(void)
     LIST *menu = txtGoKey(MENU_TXT, "SouthhamptonMenu");
     U32 startTime = 0, actionTime;
     ubyte ende = 0, activ = 1;
-    Environment Env = dbGetObject(Environment_TheClou);
-    Person Herb = dbGetObject(Person_Herbert_Briggs);
+    Environment Env = (Environment)dbGetObject(Environment_TheClou);
+    Person Herb = (Person)dbGetObject(Person_Herbert_Briggs);
 
     tcAsDaysGoBy(713518L, 30);
     startTime = GetDay * 1440 + GetMinute;
@@ -1611,7 +1611,7 @@ void tcDoneSouthhampton(void)
     LIST *menu = txtGoKey(MENU_TXT, "SouthhamptonMenu");
     ubyte activ = 1;		/* !! */
     U32 actionTime;
-    Environment Env = dbGetObject(Environment_TheClou);
+    Environment Env = (Environment)dbGetObject(Environment_TheClou);
 
     SceneArgs.Ueberschrieben = 1;
     SceneArgs.ReturnValue = 0;	/* MUá SEIN! */
@@ -1697,8 +1697,8 @@ void tcDoneSouthhampton(void)
 void tcInitTowerBurglary(void)
 {
     NODE *node;
-    Car car = dbGetObject(Car_Cadillac_Club_1952);
-    Player player = dbGetObject(Player_Player_1);
+    Car car = (Car)dbGetObject(Car_Cadillac_Club_1952);
+    Player player = (Player)dbGetObject(Player_Player_1);
 
     /* alle Personen entfernen! */
     player->MattsPart = 25;
@@ -1802,8 +1802,8 @@ S32 tcDoTowerBurglary(void)
 
 void tcDoneMafia(void)
 {
-    Person Ken = dbGetObject(Person_Ken_Addison);
-    Person Briggs = dbGetObject(Person_Herbert_Briggs);
+    Person Ken = (Person)dbGetObject(Person_Ken_Addison);
+    Person Briggs = (Person)dbGetObject(Person_Herbert_Briggs);
 
     CurrentBackground = BGD_LONDON;
     ShowMenuBackground();
@@ -1834,8 +1834,8 @@ void tcDoneMafia(void)
 
 void tcDoneKaserne(void)
 {
-    Environment Env = dbGetObject(Environment_TheClou);
-    Car car = dbGetObject(Car_Cadillac_Club_1952);
+    Environment Env = (Environment)dbGetObject(Environment_TheClou);
+    Car car = (Car)dbGetObject(Car_Cadillac_Club_1952);
     LIST *menu = txtGoKey(MENU_TXT, "KaserneMenu");
     ubyte activ = 0, burglary = 0;
     U32 successor = 0;
@@ -1942,14 +1942,14 @@ void tcDoneKaserne(void)
 
 S32 tcIsLastBurglaryOk(void)
 {
-    Building kaserne = dbGetObject(Building_Starford_Kaserne);
+    Building kaserne = (Building)dbGetObject(Building_Starford_Kaserne);
     word carXPos0 = kaserne->CarXPos - 40;
     word carYPos0 = kaserne->CarYPos - 40;
     word carXPos1 = kaserne->CarXPos + 40;
     word carYPos1 = kaserne->CarYPos + 40;
     S32 madeIt = 1, i;
-    LSObject left = dbGetObject(tcLAST_BURGLARY_LEFT_CTRL_OBJ);
-    LSObject right = dbGetObject(tcLAST_BURGLARY_RIGHT_CTRL_OBJ);
+    LSObject left = (LSObject)dbGetObject(tcLAST_BURGLARY_LEFT_CTRL_OBJ);
+    LSObject right = (LSObject)dbGetObject(tcLAST_BURGLARY_RIGHT_CTRL_OBJ);
 
     /* Links muá ein, Rechts muá ausgeschalten sein */
     /* 1.. OFF!    */

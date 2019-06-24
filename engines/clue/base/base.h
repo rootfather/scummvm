@@ -36,52 +36,52 @@
 #include <fcntl.h>
 #endif
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 #ifndef MODULE_ERROR
-#include "error/error.h"
+#include "clue/error/error.h"
 #endif
 
 #ifndef MODULE_LIST
-#include "list/list.h"
+#include "clue/list/list.h"
 #endif
 
 #ifndef MODULE_MEMORY
-#include "memory/memory.h"
+#include "clue/memory/memory.h"
 #endif
 
 #ifndef MODULE_DISK
-#include "disk/disk.h"
+#include "clue/disk/disk.h"
 #endif
 
 #ifndef MODULE_INPHDL
-#include "inphdl/inphdl.h"
+#include "clue/inphdl/inphdl.h"
 #endif
 
-#include "gfx/gfx.h"
-#include "text/text.h"
-#include "anim/sysanim.h"
-#include "present/interac.h"
-#include "data/relation.h"
+#include "clue/gfx/gfx.h"
+#include "clue/text/text.h"
+#include "clue/anim/sysanim.h"
+#include "clue/present/interac.h"
+#include "clue/data/relation.h"
 
 
 #ifndef MODULE_DATABASE
-#include "data/database.h"
+#include "clue/data/database.h"
 #endif
 
 #ifndef MODULE_GAMEPLAY
-#include "gameplay/gp.h"
+#include "clue/gameplay/gp.h"
 #endif
 
 #ifndef MODULE_SOUND
-#include "sound/newsound.h"
+#include "clue/sound/newsound.h"
 #endif
 
 #ifndef MODULE_FX
-#include "sound/fx.h"
+#include "clue/sound/fx.h"
 #endif
 
-#include "cdrom/cdrom.h"
+#include "clue/cdrom/cdrom.h"
 
 /*
  *

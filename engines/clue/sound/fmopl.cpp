@@ -54,7 +54,7 @@ Revision History:
 #include <string.h>
 #include <stdarg.h>
 #include <math.h>
-#include "fmopl.h"
+#include "clue/sound/fmopl.h"
 
 /* XXX */
 typedef U8      UINT8;   /* unsigned  8bit */
@@ -1802,7 +1802,7 @@ static FM_OPL *OPLCreate(int type, int clock, int rate)
 #endif
 
 	/* allocate memory block */
-	ptr = malloc(state_size);
+	ptr = (char *)malloc(state_size);
 
 	if (ptr==NULL)
 		return NULL;

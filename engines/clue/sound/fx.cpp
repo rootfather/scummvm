@@ -8,11 +8,11 @@
  ****************************************************************************/
 #include "SDL.h"
 
-#include "base/base.h"
+#include "clue/base/base.h"
 
-#include "sound/buffer.h"
-#include "sound/fx.h"
-#include "sound/hsc.h"
+#include "clue/sound/buffer.h"
+#include "clue/sound/fx.h"
+#include "clue/sound/hsc.h"
 
 struct FXBase FXBase;
 
@@ -146,7 +146,7 @@ static void LoadVOC(const char *fileName)
     U8 SR;
     unsigned sampleRate, compressionType;
 
-    if (!(pSoundFile = dskLoad(fileName))) {
+    if (!(pSoundFile = (U8 *)dskLoad(fileName))) {
 	return;
     }
 
@@ -210,7 +210,7 @@ static void LoadVOC(const char *fileName)
 	resampleRatio = (float) sampleRate / resampleRate;
 
 	sizeResamples = nResamples * sizeof(*pResampledSound);
-	pResampledSound = malloc(sizeResamples);
+	pResampledSound = (S16 *)malloc(sizeResamples);
 
 	for (i = 0; i < nResamples; i++) {
 	    float middleT, leftT;		/* time */

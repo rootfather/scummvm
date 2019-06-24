@@ -18,10 +18,10 @@
   distribution.
  ****************************************************************************/
 
-#include "base/base.h"
+#include "clue/base/base.h"
 
-#include "present/interac.h"
-#include "present/interac.ph"
+#include "clue/present/interac.h"
+#include "clue/present/interac_p.h"
 
 void SetBubbleType(uword type)
 {

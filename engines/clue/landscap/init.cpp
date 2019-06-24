@@ -18,8 +18,8 @@
   distribution.
  ****************************************************************************/
 
-#include "landscap/landscap.h"
-#include "landscap/landscap.ph"
+#include "clue/landscap/landscap.h"
+#include "clue/landscap/landscap_p.h"
 
 
 static void lsInitFloorSquares(void);
@@ -35,7 +35,7 @@ void lsInitLandScape(U32 bID, ubyte mode)
     S32 i;
 
     if (!ls)
-	ls = TCAllocMem(sizeof(*ls), 0);
+	ls = (LandScape *)TCAllocMem(sizeof(*ls), 0);
 
     ls->ul_BuildingID = bID;
 
@@ -67,7 +67,7 @@ void lsInitLandScape(U32 bID, ubyte mode)
     /* lootbags must be initialized prior to Livings because they
        have a lower priority (appear below maxis) */
     for (i = 9701; i <= 9708; i++) {
-	LSObject lso = dbGetObject(i);
+	LSObject lso = (LSObject)dbGetObject(i);
 
 	/* OffsetFact on the PC is not used as offset in the plane,
            but as handle for the bob */
@@ -127,7 +127,7 @@ void lsInitActivArea(U32 areaID, uword x, uword y, char *livingName)
 
 void lsInitRelations(U32 areaID)
 {
-    LSArea area = dbGetObject(areaID);
+    LSArea area = (LSArea)dbGetObject(areaID);
 
     AddRelation(area->ul_ObjectBaseNr + REL_CONSIST_OFFSET);
     AddRelation(area->ul_ObjectBaseNr + REL_HAS_LOCK_OFFSET);
@@ -139,7 +139,7 @@ void lsInitRelations(U32 areaID)
 
 void lsSetRelations(U32 areaID)
 {
-    LSArea area = dbGetObject(areaID);
+    LSArea area = (LSArea)dbGetObject(areaID);
 
     ConsistOfRelationID = area->ul_ObjectBaseNr + REL_CONSIST_OFFSET;
     hasLockRelationID = area->ul_ObjectBaseNr + REL_HAS_LOCK_OFFSET;
@@ -249,7 +249,7 @@ static void lsInitFloorSquares(void)
 	unsigned j;
 	FILE *fh;
 
-	ls->p_AllFloors[i] = TCAllocMem(size, 0);
+	ls->p_AllFloors[i] = (LSFloorSquare *)TCAllocMem(size, 0);
 	ls->ul_FloorAreaId[i] = OL_NR(n);
 
 	dbGetObjectName(ls->ul_FloorAreaId[i], areaName);
@@ -327,7 +327,7 @@ static void lsDoneFloorSquares(void)
 
 void lsDoneObjectDB(U32 areaID)
 {
-    LSArea area = dbGetObject(areaID);
+    LSArea area = (LSArea)dbGetObject(areaID);
 
     RemRelations(area->ul_ObjectBaseNr, DB_tcBuild_SIZE);
     dbDeleteAllObjects(area->ul_ObjectBaseNr, DB_tcBuild_SIZE);
@@ -370,7 +370,7 @@ void lsDoneLandScape(void)
 	livDone();
 
 	for (i = 9701; i <= 9708; i++) {
-	    LSObject lso = dbGetObject(i);
+	    LSObject lso = (LSObject)dbGetObject(i);
 
 	    BobDone(lso->us_OffsetFact);
 	}

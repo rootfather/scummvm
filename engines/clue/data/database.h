@@ -22,14 +22,14 @@
 #define MODULE_DATABASE
 
 /* includes */
-#include "theclou.h"
+#include "clue/theclou.h"
 
-#include "data/relation.h"
-#include "list/list.h"
-#include "disk/disk.h"
-#include "text/text.h"
+#include "clue/data/relation.h"
+#include "clue/list/list.h"
+#include "clue/disk/disk.h"
+#include "clue/text/text.h"
 
-#include "data/objstd/tcdata.h"
+#include "clue/data/objstd/tcdata.h"
 
 
 #define GET_OUT					((U8)-1)

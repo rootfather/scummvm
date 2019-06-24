@@ -18,7 +18,7 @@
   distribution.
  ****************************************************************************/
 
-#include "gameplay/gp_app.h"
+#include "clue/gameplay/gp_app.h"
 
 #include <assert.h>
 
@@ -53,7 +53,7 @@ void tcAsDaysGoBy(U32 day, U32 stepSize)
 
 void tcMattGoesTo(U32 locNr)
 {
-    NODE *node = GetNthNode(film->loc_names, locNr);
+    NODE *node = (NODE *)GetNthNode(film->loc_names, locNr);
 
     SetLocation(locNr);
     tcRefreshLocationInTitle(locNr);
@@ -123,7 +123,7 @@ U32 tcBurglary(U32 buildingID)
 	/* wird von 2 Stellen aufgerufen! (story_9)! */
 {
     S32 ret;
-    Building b = dbGetObject(buildingID);
+    Building b = (Building)dbGetObject(buildingID);
 
     if (buildingID == Building_Seniorenheim)
 	ret = plPlayer(buildingID, 200, tcKarateOpa);
@@ -181,7 +181,7 @@ void tcRefreshLocationInTitle(U32 locNr)
     gfxSetPens(m_gc, 3, GFX_SAME_PEN, GFX_SAME_PEN);
 
     BuildDate(GetDay, date);
-    node = GetNthNode(film->loc_names, locNr);
+    node = (NODE *)GetNthNode(film->loc_names, locNr);
 
     sprintf(line, "%s %s", NODE_NAME(node), date);
     ShowMenuBackground();
@@ -204,7 +204,7 @@ void StdInit(void)
 
     tcRefreshLocationInTitle(sc->LocationNr);
 
-    node = GetNthNode(film->loc_names, sc->LocationNr);
+    node = (NODE *)GetNthNode(film->loc_names, sc->LocationNr);
 
     if (((RefreshMode) || (!sameLocation)))
 	PlayAnim(NODE_NAME(node), (word) 30000,
@@ -381,7 +381,7 @@ U32 StdHandle(U32 choice)
 		objNr = GetObjNrOfLocation(locNr);
 
 		if (objNr) {
-		    loc = dbGetObject(objNr);
+		    loc = (Location)dbGetObject(objNr);
 
 		    if ((GetMinute < loc->OpenFromMinute)
 			|| (GetMinute > loc->OpenToMinute)) {
@@ -768,7 +768,7 @@ void tcPersonGreetsMatt(void)
 		U32 persNr = OL_NR(LIST_HEAD(ObjectList));
 
 		if (knows(Person_Matt_Stuvysunt, persNr)) {
-		    Person pers = dbGetObject(persNr);
+		    Person pers = (Person)dbGetObject(persNr);
 
 		    Say(BUSINESS_TXT, 0, pers->PictID, "HI_MATT");
 		}

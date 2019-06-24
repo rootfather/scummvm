@@ -18,11 +18,11 @@
   distribution.
  ****************************************************************************/
 
-#include "landscap/raster.h"
+#include "clue/landscap/raster.h"
 
 void lsShowRaster(U32 areaID, ubyte perc)
 {
-    LSArea area = dbGetObject(areaID);
+    LSArea area = (LSArea)dbGetObject(areaID);
     struct ObjectNode *node;
     S32 count, i;
     LIST *objects;
@@ -41,7 +41,7 @@ void lsShowRaster(U32 areaID, ubyte perc)
 	for (node = (struct ObjectNode *) LIST_HEAD(objects), i = 0;
 	     (NODE_SUCC((NODE *) node)) && (i < count);
 	     node = (struct ObjectNode *) NODE_SUCC((NODE *) node), i++) {
-	    LSObject lso = OL_DATA(node);
+	    LSObject lso = (LSObject)OL_DATA(node);
 
 	    switch (lso->Type) {
 	    case Item_Mauer:
@@ -57,7 +57,7 @@ void lsShowRaster(U32 areaID, ubyte perc)
 	for (node = (struct ObjectNode *) LIST_HEAD(objects), i = 0;
 	     (NODE_SUCC((NODE *) node)) && (i < count);
 	     node = (struct ObjectNode *) NODE_SUCC((NODE *) node), i++) {
-	    LSObject lso = OL_DATA(node);
+	    LSObject lso = (LSObject)OL_DATA(node);
 
 	    switch (lso->Type) {
 	    case Item_Mauer:
@@ -153,7 +153,7 @@ void lsShowAllConnections(U32 areaID, NODE * node, ubyte perc)
     U32 rasterXSize, rasterYSize, rasterSize;
     static ubyte Alarm_Power;
 
-    lso1 = OL_DATA(node);
+    lso1 = (LSObject)OL_DATA(node);
 
     rasterXSize = lsGetRasterXSize(areaID);
     rasterYSize = lsGetRasterYSize(areaID);
@@ -201,7 +201,7 @@ void lsShowAllConnections(U32 areaID, NODE * node, ubyte perc)
 
 	    gfxSetPens(l_gc, col, GFX_SAME_PEN, GFX_SAME_PEN);
 
-	    lso2 = OL_DATA(n);
+	    lso2 = (LSObject)OL_DATA(n);
 
 	    lsCalcExactSize(lso2, &x0, &y0, &x1, &y1);
 
@@ -223,7 +223,7 @@ void lsShowAllConnections(U32 areaID, NODE * node, ubyte perc)
 
 uword lsGetRasterXSize(U32 areaID)
 {
-    LSArea area = dbGetObject(areaID);
+    LSArea area = (LSArea)dbGetObject(areaID);
 
     return (uword) (LS_RASTER_DISP_WIDTH /
 		    ((area->us_Width) / LS_RASTER_X_SIZE));
@@ -231,7 +231,7 @@ uword lsGetRasterXSize(U32 areaID)
 
 uword lsGetRasterYSize(U32 areaID)
 {
-    LSArea area = dbGetObject(areaID);
+    LSArea area = (LSArea)dbGetObject(areaID);
 
     return (uword) (LS_RASTER_DISP_HEIGHT /
 		    ((area->us_Height) / LS_RASTER_Y_SIZE));

@@ -18,9 +18,9 @@
   distribution.
  ****************************************************************************/
 
-#include "base/base.h"
+#include "clue/base/base.h"
 
-#include "planing/prepare.h"
+#include "clue/planing/prepare.h"
 
 
 LIST *PersonsList = NULL;
@@ -203,7 +203,7 @@ void plPrepareRel(void)
     areas = ObjectListPrivate;
 
     for (n = (NODE *) LIST_HEAD(areas); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n)) {
-	area = OL_DATA(n);
+	area = (LSArea)OL_DATA(n);
 
 	if (!CloneRelation
 	    (area->ul_ObjectBaseNr + REL_HAS_LOOT_OFFSET, hasLoot_Clone_RelId))

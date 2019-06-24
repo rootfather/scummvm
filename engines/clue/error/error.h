@@ -27,8 +27,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "theclou.h"
-#include "disk/disk.h"
+#include "clue/theclou.h"
+#include "clue/disk/disk.h"
 
 typedef enum {
     ERROR_MODULE_BASE       =  3,

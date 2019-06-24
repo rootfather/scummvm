@@ -5,9 +5,9 @@
   publiclicensecontract.doc files which should be contained with this
   distribution.
  ****************************************************************************/
-#include "memory/memory.h"
+#include "clue/memory/memory.h"
 
-#include "sound/buffer.h"
+#include "clue/sound/buffer.h"
 
 struct SndBuffer {
     unsigned char *data;	/* data */
@@ -23,8 +23,8 @@ SND_BUFFER *sndCreateBuffer(unsigned size)
     SND_BUFFER *buffer;
     unsigned char *data;
     
-    buffer = TCAllocMem(sizeof(*buffer), false);
-    data = TCAllocMem(size, true);
+    buffer = (SND_BUFFER *)TCAllocMem(sizeof(*buffer), false);
+    data = (unsigned char *)TCAllocMem(size, true);
 
     buffer->data = data;
     buffer->size = size;
@@ -53,7 +53,7 @@ unsigned sndLenBuffer(SND_BUFFER *buffer)
 
 unsigned sndInsertBuffer(SND_BUFFER *buffer, const void *src, unsigned srcLen)
 {
-    const unsigned char *psrc = src;
+    const unsigned char *psrc = (const unsigned char *)src;
     unsigned len, pos;
 
     srcLen = min(srcLen, buffer->size - sndLenBuffer(buffer));
@@ -74,7 +74,7 @@ unsigned sndInsertBuffer(SND_BUFFER *buffer, const void *src, unsigned srcLen)
 
 unsigned sndRemoveBuffer(SND_BUFFER *buffer, void *dst, unsigned dstLen)
 {
-    unsigned char *pdst = dst;
+    unsigned char *pdst = (unsigned char *)dst;
     unsigned len, pos;
     
     dstLen = min(dstLen, sndLenBuffer(buffer));

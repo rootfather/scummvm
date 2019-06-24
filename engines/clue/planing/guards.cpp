@@ -18,7 +18,7 @@
   distribution.
  ****************************************************************************/
 
-#include "planing/guards.h"
+#include "clue/planing/guards.h"
 
 
 void grdDo(FILE * fh, struct System *sys, LIST * PersonsList, U32 BurglarsNr,

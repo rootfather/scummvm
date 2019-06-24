@@ -23,20 +23,20 @@
 
 #include <stdio.h>
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
-#include "memory/memory.h"
-#include "error/error.h"
-#include "disk/disk.h"
-#include "list/list.h"
-#include "data/database.h"
-#include "data/relation.h"
+#include "clue/memory/memory.h"
+#include "clue/error/error.h"
+#include "clue/disk/disk.h"
+#include "clue/list/list.h"
+#include "clue/data/database.h"
+#include "clue/data/relation.h"
 
-#include "data/objstd/tcdata.h"
+#include "clue/data/objstd/tcdata.h"
 
-#include "text/text.h"
-#include "landscap/landscap.h"
-#include "planing/main.h"
+#include "clue/text/text.h"
+#include "clue/landscap/landscap.h"
+#include "clue/planing/main.h"
 
 
 /* System main structure - like the kernel in an OS */

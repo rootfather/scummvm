@@ -18,15 +18,15 @@
   distribution.
  ****************************************************************************/
 
-#include "living/living.h"
-#include "living/living.ph"
+#include "clue/living/living.h"
+#include "clue/living/living_p.h"
 
 void livInit(uword us_VisLScapeX, uword us_VisLScapeY,
 	     uword us_VisLScapeWidth, uword us_VisLScapeHeight,
 	     uword us_TotalLScapeWidth, uword us_TotalLScapeHeight,
 	     ubyte uch_FrameCount, U32 ul_StartArea)
 {
-    sc = TCAllocMem(sizeof(*sc), 0);
+    sc = (SpriteControl *)TCAllocMem(sizeof(*sc), 0);
 
     sc->p_Livings = CreateList();
     sc->p_Template = CreateList();
@@ -445,15 +445,15 @@ static void livLoadLivings(void)
 	ErrorMsg(Disk_Defect, ERROR_MODULE_LIVING, 2);
 
     for (i = 0; i < cnt; i++) {
-	char name[TXT_KEY_LENGTH], template[TXT_KEY_LENGTH];
+	char name[TXT_KEY_LENGTH], templateName[TXT_KEY_LENGTH];
 
 	line = NODE_NAME(GetNthNode(l, i));
 
 	strcpy(name, txtGetKey(1, line));
-	strcpy(template, txtGetKey(2, line));
+	strcpy(templateName, txtGetKey(2, line));
 
 	livAdd(name,
-	       template,
+	       templateName,
 	       (ubyte) txtGetKeyAsULONG(3, line),
 	       (ubyte) txtGetKeyAsULONG(4, line),
 	       (word) txtGetKeyAsULONG(5, line),

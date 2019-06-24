@@ -12,11 +12,11 @@
  *
  */
 
-#include "present/present.h"
+#include "clue/present/present.h"
 
 void InitEvidencePresent(U32 nr, LIST * presentationData, LIST * texts)
 {
-    Evidence e = dbGetObject(nr);
+    Evidence e = (Evidence)dbGetObject(nr);
     char data[TXT_KEY_LENGTH];
 
     dbGetObjectName(e->pers, data);
@@ -42,7 +42,7 @@ void InitEvidencePresent(U32 nr, LIST * presentationData, LIST * texts)
 
 void InitLootPresent(U32 nr, LIST * presentationData, LIST * texts)
 {
-    CompleteLoot comp = dbGetObject(CompleteLoot_LastLoot);
+    CompleteLoot comp = (CompleteLoot)dbGetObject(CompleteLoot_LastLoot);
     U32 total;
 
     RemoveList(tcMakeLootList(Person_Matt_Stuvysunt, Relation_has));
@@ -76,7 +76,7 @@ void InitLootPresent(U32 nr, LIST * presentationData, LIST * texts)
 
 void InitOneLootPresent(U32 nr, LIST * presentationData, LIST * texts)
 {
-    Loot loot = dbGetObject(nr);
+    Loot loot = (Loot)dbGetObject(nr);
     char data[TXT_KEY_LENGTH];
     U32 value;
 
@@ -100,7 +100,7 @@ void InitOneLootPresent(U32 nr, LIST * presentationData, LIST * texts)
 
 void InitObjectPresent(U32 nr, LIST * presentationData, LIST * texts)
 {
-    LSObject lso = dbGetObject(nr);
+    LSObject lso = (LSObject)dbGetObject(nr);
     char data[TXT_KEY_LENGTH];
     LIST *l;
 
@@ -164,7 +164,7 @@ void InitToolPresent(U32 nr, LIST * presentationData, LIST * texts)
 
 	for (n = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(n);
 	     n = (NODE *) NODE_SUCC(n)) {
-	    Ability ability = OL_DATA(n);
+	    Ability ability = (Ability)OL_DATA(n);
 
 	    AddPresentLine(presentationData, PRESENT_AS_BAR,
 			   toolRequiresGet(nr, OL_NR(n)), 255, abilities,
@@ -183,7 +183,7 @@ void InitToolPresent(U32 nr, LIST * presentationData, LIST * texts)
 	 n = (NODE *) NODE_SUCC(n)) {
 	U32 itemNr = OL_NR(n);
 	U32 time = breakGet(nr, itemNr);
-	Item item = OL_DATA(n);
+	Item item = (Item)OL_DATA(n);
 
 	sprintf(data, "%.2d:%.2d", time / 60, time % 60);
 

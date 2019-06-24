@@ -20,10 +20,10 @@
 
 #include <assert.h>
 
-#include "base/base.h"
+#include "clue/base/base.h"
 
-#include "landscap/landscap.h"
-#include "landscap/landscap.ph"
+#include "clue/landscap/landscap.h"
+#include "clue/landscap/landscap_p.h"
 
 static MemRastPort *lsPrepareFromMemBySize(ubyte uch_Size);
 static MemRastPort *lsPrepareFromMem(LSObject lso);
@@ -33,7 +33,7 @@ uword us_ScrollX, us_ScrollY;
 
 void lsShowEscapeCar(void)
 {
-    Building b = dbGetObject(ls->ul_BuildingID);
+    Building b = (Building)dbGetObject(ls->ul_BuildingID);
 
     livPrepareAnims();
 
@@ -70,7 +70,7 @@ static void lsRefreshClosedDoors(uword us_X0, uword us_Y0,
 
     for (node = (NODE *) LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node);
 	 node = (NODE *) NODE_SUCC(node)) {
-	LSObject lso = OL_DATA(node);
+	LSObject lso = (LSObject)OL_DATA(node);
 
 	if (lsIsInside(lso, us_X0, us_Y0, us_X1, us_Y1))
 	    if (lsIsObjectADoor(lso))
@@ -147,7 +147,7 @@ void lsFastRefresh(LSObject lso)
 	if (lso->uch_Visible == LS_OBJECT_VISIBLE)
 	    lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_ALL);
 	else {
-	    LSArea area = dbGetObject(lsGetActivAreaID());
+	    LSArea area = (LSArea)dbGetObject(lsGetActivAreaID());
 	    ubyte color = LS_REFRESH_SHADOW_COLOR1;
 
 	    lsCalcExactSize(lso, &x0, &y0, &x1, &y1);
@@ -258,7 +258,7 @@ void lsBlitOneObject(MemRastPort *rp, U16 offsetFact, U16 dx, U16 dy, U16 size)
 
 S32 lsShowOneObject(LSObject lso, word destx, word desty, U32 ul_Mode)
 {
-    Item item = dbGetObject(lso->Type);
+    Item item = (Item)dbGetObject(lso->Type);
     S32 show = 0;
     uword offsetFact;
 

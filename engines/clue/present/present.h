@@ -23,38 +23,38 @@
 
 #include <math.h>
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 #ifndef MODULE_LIST
-#include "list/list.h"
+#include "clue/list/list.h"
 #endif
 
 #ifndef MODULE_TEXT
-#include "text/text.h"
+#include "clue/text/text.h"
 #endif
 
-#include "gfx/gfx.h"
+#include "clue/gfx/gfx.h"
 
 #ifndef MODULE_DATABASE
-#include "data/database.h"
+#include "clue/data/database.h"
 #endif
 
 #ifndef MODULE_RELATION
-#include "data/relation.h"
+#include "clue/data/relation.h"
 #endif
 
-#include "data/objstd/tcdata.h"
+#include "clue/data/objstd/tcdata.h"
 
 #ifndef MODULE_DATAAPPL
-#include "data/dataappl.h"
+#include "clue/data/dataappl.h"
 #endif
 
 #ifndef MODULE_SCENES
-#include "scenes/scenes.h"
+#include "clue/scenes/scenes.h"
 #endif
 
 #ifndef MODULE_LANDSCAP
-#include "landscap/landscap.h"
+#include "clue/landscap/landscap.h"
 #endif
 
 #define PRESENT_AS_TEXT       1

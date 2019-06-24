@@ -22,72 +22,72 @@
 #define MODULE_PLANING_MAIN
 
 #include <stdio.h>
-#include "theclou.h"
+#include "clue/theclou.h"
 
 #ifndef MODULE_MEMORY
-#include "memory/memory.h"
+#include "clue/memory/memory.h"
 #endif
 
 #ifndef MODULE_ERROR
-#include "error/error.h"
+#include "clue/error/error.h"
 #endif
 
 #ifndef MODULE_DISK
-#include "disk/disk.h"
+#include "clue/disk/disk.h"
 #endif
 
 #ifndef MODULE_LIST
-#include "list/list.h"
+#include "clue/list/list.h"
 #endif
 
 #ifndef MODULE_DATABASE
-#include "data/database.h"
+#include "clue/data/database.h"
 #endif
 
 #ifndef MODULE_RELATION
-#include "data/relation.h"
+#include "clue/data/relation.h"
 #endif
 
-#include "data/objstd/tcdata.h"
+#include "clue/data/objstd/tcdata.h"
 
 #ifndef MODULE_TEXT
-#include "text/text.h"
+#include "clue/text/text.h"
 #endif
 
 #ifndef MODULE_LANDSCAP
-#include "landscap/landscap.h"
+#include "clue/landscap/landscap.h"
 #endif
 
 #ifndef MODULE_PLANING_MAIN
-#include "planing/main.h"
+#include "clue/planing/main.h"
 #endif
 
 #ifndef MODULE_PLANING_GRAPHICS
-#include "planing/graphics.h"
+#include "clue/planing/graphics.h"
 #endif
 
 #ifndef MODULE_PLANING_IO
-#include "planing/io.h"
+#include "clue/planing/io.h"
 #endif
 
 #ifndef MODULE_PLANING_PREPARE
-#include "planing/prepare.h"
+#include "clue/planing/prepare.h"
 #endif
 
 #ifndef MODULE_PLANING_SUPPORT
-#include "planing/support.h"
+#include "clue/planing/support.h"
 #endif
 
 #ifndef MODULE_PLANING_SYSTEM
-#include "planing/system.h"
+#include "clue/planing/system.h"
 #endif
 
 #ifndef MODULE_PLANING_SYNC
-#include "planing/sync.h"
+#include "clue/planing/sync.h"
 #endif
 
 #ifndef MODULE_PLANING_GUARDS
-#include "planing/guards.h"
+#include "clue/planing/guards.h"
 #endif
 
 

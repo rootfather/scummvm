@@ -7,7 +7,7 @@
   distribution.
  ****************************************************************************/
 
-#include "inphdl/inphdl.h"
+#include "clue/inphdl/inphdl.h"
 
 #include "SDL.h"
 

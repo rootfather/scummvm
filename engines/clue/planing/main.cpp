@@ -18,7 +18,7 @@
   distribution.
  ****************************************************************************/
 
-#include "planing/main.h"
+#include "clue/planing/main.h"
 
 
 struct System *plSys = NULL;

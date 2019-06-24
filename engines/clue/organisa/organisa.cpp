@@ -18,9 +18,9 @@
   distribution.
  ****************************************************************************/
 
-#include "base/base.h"
+#include "clue/base/base.h"
 
-#include "organisa/organisa.h"
+#include "clue/organisa/organisa.h"
 
 U32 tcChooseDestBuilding(U32);
 U32 tcChooseEscapeCar(U32);
@@ -53,7 +53,7 @@ void tcDisplayTools(U32 personNr, U32 displayData);
 
 struct Organisation Organisation;
 
-#include "organisa/display.c"
+#include "clue/organisa/display.cpp"
 
 void tcResetOrganisation(void)
 {
@@ -78,7 +78,7 @@ static void tcOrganisationSetCar(void)
 
     Organisation.CarID = OL_NR(LIST_HEAD(ObjectList));
 
-    car = dbGetObject(Organisation.CarID);
+    car = (Car)dbGetObject(Organisation.CarID);
 
     Organisation.PlacesInCar = car->PlacesInCar;
 }
@@ -151,7 +151,7 @@ U32 tcOrganisation(void)
 
 	Organisation.CarID = OL_NR(LIST_HEAD(ObjectList));
 
-	car = dbGetObject(Organisation.CarID);
+	car = (Car)dbGetObject(Organisation.CarID);
 
 	Organisation.PlacesInCar = car->PlacesInCar;
     }
@@ -247,7 +247,7 @@ U32 tcOrganisation(void)
 
 ubyte tcCheckOrganisation(void)
 {
-    Player player = dbGetObject(Player_Player_1);
+    Player player = (Player)dbGetObject(Player_Player_1);
     ubyte check = 0;
 
     if (Organisation.BuildingID) {
@@ -308,7 +308,7 @@ U32 tcChooseDriver(U32 persID)
 	    newPersID = OL_NR(GetNthNode(list, (U32) choice));
 
 	    if (!has(newPersID, Ability_Autos)) {
-		Person pers = dbGetObject(newPersID);
+		Person pers = (Person)dbGetObject(newPersID);
 
 		Say(BUSINESS_TXT, 0, pers->PictID, "PLAN_CANT_DRIVE");
 	    } else {

@@ -18,10 +18,10 @@
   distribution.
  ****************************************************************************/
 
-#include "base/base.h"
+#include "clue/base/base.h"
 
-#include "landscap/landscap.h"
-#include "landscap/landscap.ph"
+#include "clue/landscap/landscap.h"
+#include "clue/landscap/landscap_p.h"
 
 U32 ConsistOfRelationID = 0;
 U32 hasLockRelationID = 0;
@@ -79,7 +79,7 @@ static void lsShowRooms(void)
 	NODE *room;
 
 	for (room = LIST_HEAD(rooms); NODE_SUCC(room); room = NODE_SUCC(room)) {
-	    LSRoom myroom = OL_DATA(room);
+	    LSRoom myroom = (LSRoom)OL_DATA(room);
 
             gfxLSRectFill(myroom->us_LeftEdge, myroom->us_TopEdge,
                           myroom->us_LeftEdge + myroom->us_Width - 1,
@@ -121,7 +121,7 @@ void lsBuildScrollWindow(void)
     /* Objekte setzen - zuerst W„nde */
     for (node = (NODE *) LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node);
 	 node = (NODE *) NODE_SUCC(node)) {
-	LSObject lso = OL_DATA(node);
+	LSObject lso = (LSObject)OL_DATA(node);
 
 	if (lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_WALL))
 	    lsTurnObject(lso, lso->uch_Visible, LS_COLLISION);
@@ -131,7 +131,7 @@ void lsBuildScrollWindow(void)
     /* dann andere */
     for (node = (NODE *) LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node);
 	 node = (NODE *) NODE_SUCC(node)) {
-	LSObject lso = OL_DATA(node);
+	LSObject lso = (LSObject)OL_DATA(node);
 
 	if (lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_OTHER_0))
 	    lsTurnObject(lso, lso->uch_Visible, LS_COLLISION);
@@ -140,7 +140,7 @@ void lsBuildScrollWindow(void)
     /* jetzt noch ein paar Sondef„lle (Kassa, Vase, ...) */
     for (node = (NODE *) LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node);
 	 node = (NODE *) NODE_SUCC(node)) {
-	LSObject lso = OL_DATA(node);
+	LSObject lso = (LSObject)OL_DATA(node);
 
 	if (lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_OTHER_1))
 	    lsTurnObject(lso, lso->uch_Visible, LS_COLLISION);
@@ -154,7 +154,7 @@ void lsBuildScrollWindow(void)
     /* now refresh all doors and special objects */
     for (node = (NODE *) LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node);
 	 node = (NODE *) NODE_SUCC(node)) {
-	LSObject lso = OL_DATA(node);
+	LSObject lso = (LSObject)OL_DATA(node);
 
 	if (lsIsObjectADoor(lso))
 	    lsInitDoorRefresh(OL_NR(node));
@@ -165,7 +165,7 @@ void lsBuildScrollWindow(void)
     /* finally build the doors and specials on the PC */
     for (node = (NODE *) LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node);
 	 node = (NODE *) NODE_SUCC(node)) {
-	LSObject lso = OL_DATA(node);
+	LSObject lso = (LSObject)OL_DATA(node);
 
 	if (lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_SPECIAL))
 	    lsTurnObject(lso, lso->uch_Visible, LS_COLLISION);
@@ -173,13 +173,13 @@ void lsBuildScrollWindow(void)
 
     for (node = (NODE *) LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node);
 	 node = (NODE *) NODE_SUCC(node)) {
-	LSObject lso = OL_DATA(node);
+	LSObject lso = (LSObject)OL_DATA(node);
 
 	if (lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_DOOR)) {
 	    if (!(lso->ul_Status & 1 << Const_tcOPEN_CLOSE_BIT))
-		lsTurnObject(OL_DATA(node), lso->uch_Visible, LS_COLLISION);
+		lsTurnObject((LSObject)OL_DATA(node), lso->uch_Visible, LS_COLLISION);
 	    else
-		lsTurnObject(OL_DATA(node), lso->uch_Visible, LS_NO_COLLISION);
+		lsTurnObject((LSObject)OL_DATA(node), lso->uch_Visible, LS_NO_COLLISION);
 	}
     }
 
@@ -290,8 +290,8 @@ static word lsSortByXCoord(struct ObjectNode *n1, struct ObjectNode *n2)
 {
     LSObject lso1, lso2;
 
-    lso1 = OL_DATA(n1);
-    lso2 = OL_DATA(n2);
+    lso1 = (LSObject)OL_DATA(n1);
+    lso2 = (LSObject)OL_DATA(n2);
 
     if (lso1->us_DestX > lso2->us_DestX)
 	return (1);
@@ -303,8 +303,8 @@ static word lsSortByYCoord(struct ObjectNode * n1, struct ObjectNode * n2)
 {
     LSObject lso1, lso2;
 
-    lso1 = OL_DATA(n1);
-    lso2 = OL_DATA(n2);
+    lso1 = (LSObject)OL_DATA(n1);
+    lso2 = (LSObject)OL_DATA(n2);
 
     if (lso1->us_DestY < lso2->us_DestY)
 	return (1);
@@ -327,8 +327,8 @@ static void lsSortObjectList(LIST ** l)
 
 	    do {
 		node1 = (NODE *) NODE_SUCC(node1);
-		lso1 = OL_DATA(node);
-		lso2 = OL_DATA(node1);
+		lso1 = (LSObject)OL_DATA(node);
+		lso2 = (LSObject)OL_DATA(node1);
 	    }
 	    while ((lso1->us_DestY == lso2->us_DestY)
 		   && NODE_SUCC(NODE_SUCC(node1)));
@@ -366,7 +366,7 @@ void lsRefreshObjectList(U32 areaID)
 
 U32 lsAddLootBag(uword x, uword y, ubyte bagNr)
 {				/* bagNr : 1 - 8! */
-    LSObject lso = dbGetObject(9700 + bagNr);
+    LSObject lso = (LSObject)dbGetObject(9700 + bagNr);
 
     lso->uch_Visible = LS_OBJECT_VISIBLE;
 
@@ -387,7 +387,7 @@ U32 lsAddLootBag(uword x, uword y, ubyte bagNr)
 
 void lsRemLootBag(U32 bagId)
 {
-    LSObject lso = dbGetObject(bagId);
+    LSObject lso = (LSObject)dbGetObject(bagId);
 
     lso->uch_Visible = LS_OBJECT_INVISIBLE;
 
@@ -403,7 +403,7 @@ void lsRefreshAllLootBags(void)
     livPrepareAnims();
 
     for (i = 1; i < 9; i++) {
-	LSObject lso = dbGetObject(9700 + i);
+	LSObject lso = (LSObject)dbGetObject(9700 + i);
 
 	if ((lso->uch_Visible == LS_OBJECT_VISIBLE)
 	    && (hasLootBag(ls->ul_AreaID, (U32) (9700 + i)))) {
@@ -480,9 +480,9 @@ void lsPatchObjects(void)
 
     for (n = (NODE *) LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(n);
 	 n = (NODE *) NODE_SUCC(n)) {
-	lso = OL_DATA(n);
+	lso = (LSObject)OL_DATA(n);
 
-	item = dbGetObject(lso->Type);
+	item = (Item)dbGetObject(lso->Type);
 
 	lso->uch_Size = item->Size;	/* sizes are the same everywhere! */
 
@@ -536,7 +536,7 @@ void lsPatchObjects(void)
 void lsCalcExactSize(LSObject lso, uword * x0, uword * y0, uword * x1,
 		     uword * y1)
 {
-    Item item = dbGetObject(lso->Type);
+    Item item = (Item)dbGetObject(lso->Type);
     ubyte vertical = 0;
 
     (*x0) = lso->us_DestX;
@@ -568,7 +568,7 @@ void lsCalcExactSize(LSObject lso, uword * x0, uword * y0, uword * x1,
 void lsInitDoorRefresh(U32 ObjId)
 	/* copies a background that is covered by a door into a mem buffer */
 {
-    LSObject lso = dbGetObject(ObjId);
+    LSObject lso = (LSObject)dbGetObject(ObjId);
     uword width, height, destX, destY;
     struct LSDoorRefreshNode *drn;
     ubyte found = 0;

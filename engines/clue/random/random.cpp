@@ -18,7 +18,7 @@
   distribution.
  ****************************************************************************/
 
-#include "random/random.h"
+#include "clue/random/random.h"
 
 void rndInit(void)
 {

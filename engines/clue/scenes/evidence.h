@@ -21,20 +21,20 @@
 #ifndef MODULE_EVIDENCE
 #define MODULE_EVIDENCE
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
-#include "list/list.h"
-#include "text/text.h"
-#include "dialog/dialog.h"
-#include "present/interac.h"
-#include "present/present.h"
+#include "clue/list/list.h"
+#include "clue/text/text.h"
+#include "clue/dialog/dialog.h"
+#include "clue/present/interac.h"
+#include "clue/present/present.h"
 
-#include "data/objstd/tcdata.h"
+#include "clue/data/objstd/tcdata.h"
 
-#include "data/relation.h"
-#include "data/database.h"
-#include "data/datacalc.h"
-#include "data/dataappl.h"
+#include "clue/data/relation.h"
+#include "clue/data/database.h"
+#include "clue/data/datacalc.h"
+#include "clue/data/dataappl.h"
 
 #define FAHN_NOT_ESCAPED      1
 #define FAHN_ESCAPED          2

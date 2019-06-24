@@ -18,9 +18,9 @@
   distribution.
  ****************************************************************************/
 
-#include "base/base.h"
+#include "clue/base/base.h"
 
-#include "planing/player.h"
+#include "clue/planing/player.h"
 
 
 /* Menu ids - player */
@@ -1808,7 +1808,7 @@ S32 plPlayer(U32 objId, U32 actionTime, ubyte(*actionFunc) (U32, U32))
 						    (BurglarsList,
 						     0))))->PictID);
 			    node =
-				UnLink(BurglarsList,
+				(NODE *)UnLink(BurglarsList,
 				       OL_NAME(GetNthNode(BurglarsList, 0)),
 				       &help);
 

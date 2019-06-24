@@ -22,34 +22,33 @@
 #include <assert.h>
 #include "SDL.h"
 
-#include "base/base.h"
-
-#include "gfx/gfx.h"
-#include "gfx/gfx.ph"
+#include "clue/base/base.h"
 
 struct _GC {
-    Rect clip;
+	Rect clip;
 
-    GfxDrawModeE mode;
+	GfxDrawModeE mode;
 
-    U8 foreground;              /* entspricht dem Farbregister */
-    U8 background;              /* ebenfalls absolut und nicht relativ zum */
-    U8 outline;                 /* Registerstart */
+	U8 foreground;              /* entspricht dem Farbregister */
+	U8 background;              /* ebenfalls absolut und nicht relativ zum */
+	U8 outline;                 /* Registerstart */
 
-    U8 colorStart;
-    U8 End;
+	U8 colorStart;
+	U8 End;
 
-    U16 cursorX;
-    U16 cursorY;
+	U16 cursorX;
+	U16 cursorY;
 
-    Font *font;
+	Font *font;
 };
+
+#include "clue/gfx/gfx.h"
+#include "clue/gfx/gfx_p.h"
 
 void gfxILBMToRAW(const U8 *src, U8 *dst, size_t size);
 
 void gfxRealRefreshArea(U16 x, U16 y, U16 w, U16 h);
 
-SDL_Surface *Screen;
 SDL_Surface *windowSurface;
 
 SDL_Window *sdlWindow;
@@ -254,7 +253,7 @@ static void gfxInitCollList(void)
 	struct Collection *coll;
 
 	coll =
-	    CreateNode(CollectionList, sizeof(struct Collection),
+	    (Collection *)CreateNode(CollectionList, sizeof(struct Collection),
 		       txtGetKey(2, NODE_NAME(n)));
 
 	coll->us_CollId = (uword) txtGetKeyAsULONG(1, NODE_NAME(n));
@@ -286,7 +285,7 @@ static void gfxInitPictList(void)
     for (n = LIST_HEAD(tempList); NODE_SUCC(n); n = NODE_SUCC(n)) {
 	struct Picture *pict;
 
-	pict = CreateNode(PictureList, sizeof(*pict), NULL);
+	pict = (Picture *)CreateNode(PictureList, sizeof(*pict), NULL);
 
 	pict->us_PictId = (uword) txtGetKeyAsULONG(1, NODE_NAME(n));
 	pict->us_CollId = (uword) txtGetKeyAsULONG(2, NODE_NAME(n));
@@ -419,7 +418,7 @@ static Font *gfxOpenFont(char *fileName, U16 w, U16 h,
 
 
     /* create font structure. */
-    font = TCAllocMem(sizeof(*font), true);
+    font = (Font *)TCAllocMem(sizeof(*font), true);
 
     font->w     = w;
     font->h     = h;
@@ -429,7 +428,7 @@ static Font *gfxOpenFont(char *fileName, U16 w, U16 h,
 
 
     dskBuildPathName(DISK_CHECK_FILE, PICTURE_DIRECTORY, fileName, path);
-    lbm = dskLoad(path);
+    lbm = (U8 *)dskLoad(path);
 
 
     bmp = SDL_CreateRGBSurface(0, sw, sh, 8, 0, 0, 0, 0);
@@ -438,7 +437,7 @@ static Font *gfxOpenFont(char *fileName, U16 w, U16 h,
     if (SDL_MUSTLOCK(bmp))
 	SDL_LockSurface(bmp);
 
-    gfxILBMToRAW(lbm, bmp->pixels, size);
+    gfxILBMToRAW(lbm, (U8 *)bmp->pixels, size);
 
     if (SDL_MUSTLOCK(bmp))
 	SDL_UnlockSurface(bmp);
@@ -511,7 +510,7 @@ void gfxDraw(GC *gc, U16 x, U16 y)
 
         dw = dst->w;
 
-	dp = dst->pixels;
+	dp = (U8 *)dst->pixels;
         dp += sy * dw + sx;
 
 	if (rx == rx1) {
@@ -626,12 +625,12 @@ U16 gfxTextWidth(GC *gc, const char *txt, size_t len)
 
 struct Collection *gfxGetCollection(uword us_CollId)
 {
-    return GetNthNode(CollectionList, (U32) (us_CollId - 1));
+    return (Collection *)GetNthNode(CollectionList, (U32) (us_CollId - 1));
 }
 
 struct Picture *gfxGetPicture(uword us_PictId)
 {
-    return GetNthNode(PictureList, (U32) (us_PictId - 1));
+    return (Picture *)GetNthNode(PictureList, (U32) (us_PictId - 1));
 }
 
 /* the collection must have been prepared (PrepareColl) beforehand */
@@ -686,7 +685,7 @@ void gfxLoadILBM(char *fileName)
     U8 *lbm;
 
     /* Collection laden */
-    lbm = dskLoad(fileName);
+    lbm = (U8 *)dskLoad(fileName);
 
     gfxSetCMAP(lbm);
     gfxILBMToRAW(lbm, ScratchRP.pixels, SCREEN_SIZE);
@@ -780,8 +779,8 @@ ScreenBlitChar(GC *gc, SDL_Surface *src, Rect *src_rect,
     areaR.w = min(dstR.w, srcR.w);
     areaR.h = min(dstR.h, srcR.h);
 
-    dp = dst->pixels;
-    sp = src->pixels;
+    dp = (U8 *)dst->pixels;
+    sp = (U8 *)src->pixels;
 
     dp += dstR.y * dst->w + dstR.x;
     sp += srcR.y * src->w + srcR.x;
@@ -1557,7 +1556,7 @@ void ShowIntro(void)
     GC ScreenGC;
     MemRastPort A, B;
 
-    XMSHandle = malloc(818*1024);
+    XMSHandle = (U8 *)malloc(818*1024);
 
     /******************************** Init Gfx ********************************/
     gfxInitMemRastPort(&A, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -1728,7 +1727,7 @@ void gfxInitMemRastPort(MemRastPort *rp, U16 width, U16 height)
 
     memset(rp->palette, 0, GFX_PALETTE_SIZE);
 
-    rp->pixels = TCAllocMem(width * height, true);
+    rp->pixels = (U8 *)TCAllocMem(width * height, true);
     rp->collId = GFX_NO_COLL_IN_MEM;
 }
 
@@ -1800,7 +1799,7 @@ void gfxBlit(GC *gc, MemRastPort *src, U16 sx, U16 sy, U16 dx, U16 dy,
 
     dst = Screen;
 
-    dp = dst->pixels;
+    dp = (U8 *)dst->pixels;
     sp = src->pixels;
 
     dp += dstR.y * SCREEN_WIDTH + dstR.x;

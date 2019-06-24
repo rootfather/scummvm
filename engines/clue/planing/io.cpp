@@ -18,9 +18,9 @@
   distribution.
  ****************************************************************************/
 
-#include "base/base.h"
+#include "clue/base/base.h"
 
-#include "planing/io.h"
+#include "clue/planing/io.h"
 
 
 struct IOData {
@@ -159,7 +159,7 @@ ubyte plOpen(U32 objId, ubyte mode, FILE ** fh)
 			sprintf(name2, "*%s Plan %d    %s", name1, i + 1, exp);
 
 			if ((data =
-			     CreateNode(PlanList, sizeof(struct IOData),
+			     (IOData *)CreateNode(PlanList, sizeof(struct IOData),
 					name2)))
 			    data->io_Data = i;
 		    }
@@ -174,7 +174,7 @@ ubyte plOpen(U32 objId, ubyte mode, FILE ** fh)
 		if (ChoiceOk(i, GET_OUT, PlanList)) {
 		    struct IOData *data;
 
-		    if ((data = GetNthNode(PlanList, i)))
+		    if ((data = (IOData *)GetNthNode(PlanList, i)))
 			i = data->io_Data;
 
 		    dbGetObjectName(lsGetActivAreaID(), name1);

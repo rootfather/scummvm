@@ -7,12 +7,12 @@
  ****************************************************************************/
 #include "SDL.h"
 
-#include "disk/disk.h"
+#include "clue/disk/disk.h"
 
-#include "sound/fx.h"
-#include "sound/newsound.h"
+#include "clue/sound/fx.h"
+#include "clue/sound/newsound.h"
 
-#include "sound/hsc.h"
+#include "clue/sound/hsc.h"
 
 char currSoundName[DSK_PATH_MAX];
 

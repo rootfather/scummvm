@@ -21,18 +21,18 @@
 #ifndef MODULE_GAMEPLAY
 #define MODULE_GAMEPLAY
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
-#include "base/base.h"
-#include "memory/memory.h"
-#include "list/list.h"
-#include "disk/disk.h"
-#include "gfx/gfx.h"
-#include "anim/sysanim.h"
-#include "story/story.h"
-#include "data/dataappl.h"
-#include "random/random.h"
-#include "present/interac.h"
+#include "clue/base/base.h"
+#include "clue/memory/memory.h"
+#include "clue/list/list.h"
+#include "clue/disk/disk.h"
+#include "clue/gfx/gfx.h"
+#include "clue/anim/sysanim.h"
+#include "clue/story/story.h"
+#include "clue/data/dataappl.h"
+#include "clue/random/random.h"
+#include "clue/present/interac.h"
 
 
 #define GO                      (1)

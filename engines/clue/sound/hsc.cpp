@@ -6,12 +6,12 @@
   publiclicensecontract.doc files which should be contained with this
   distribution.
  ****************************************************************************/
-#include "theclou.h"
+#include "clue/theclou.h"
 
-#include "base/base.h"
+#include "clue/base/base.h"
 
-#include "sound/fmopl.h"
-#include "sound/hsc.h"
+#include "clue/sound/fmopl.h"
+#include "clue/sound/hsc.h"
 
 
 #define OPL_INTERNAL_FREQ	3579545	/* 3.6 MHz... */
@@ -448,7 +448,7 @@ int hscLoad(const char *filename)
 
     hsc_in_process = true;
 
-    hsc_file = dskLoad(filename);
+    hsc_file = (U8 *)dskLoad(filename);
     hsc_data = hsc_file;
 
     for (i = 0; i < 128; i++) {

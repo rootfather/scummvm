@@ -21,7 +21,7 @@
 #ifndef MODULE_RANDOM
 #define MODULE_RANDOM
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 #ifndef __STDLIB_H
 #include <stdlib.h>

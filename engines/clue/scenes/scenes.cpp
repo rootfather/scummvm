@@ -17,7 +17,7 @@
   publiclicensecontract.doc files which should be contained with this
   distribution.
  ****************************************************************************/
-#include "scenes/scenes.h"
+#include "clue/scenes/scenes.h"
 
 uword CurrentBackground = BGD_LONDON;
 
@@ -102,7 +102,7 @@ U32 Go(LIST * succ)
 	     node = (struct TCEventNode *) NODE_SUCC(node)) {
 	    sc = GetScene(node->EventNr);
 
-	    location = GetNthNode(film->loc_names, (U32) sc->LocationNr);
+	    location = (NODE *)GetNthNode(film->loc_names, (U32) sc->LocationNr);
 
 	    NODE_NAME(node) = NODE_NAME(location);
 
@@ -347,7 +347,7 @@ U32 tcTelefon(void)
 {
     char connect[TXT_KEY_LENGTH];
     U32 eventNr = 0L;
-    Person ben = dbGetObject(Person_Ben_Riggley);
+    Person ben = (Person)dbGetObject(Person_Ben_Riggley);
 
     gfxShow(175, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1);
 

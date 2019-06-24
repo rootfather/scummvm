@@ -21,22 +21,22 @@
 #ifndef MODULE_INTERAC
 #define MODULE_INTERAC
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 #ifndef MODULE_LIST
-#include "list/list.h"
+#include "clue/list/list.h"
 #endif
 
 #ifndef MODULE_MEMORY
-#include "memory/memory.h"
+#include "clue/memory/memory.h"
 #endif
 
 #ifndef MODULE_GFX
-#include "gfx/gfx.h"
+#include "clue/gfx/gfx.h"
 #endif
 
 #ifndef MODULE_TEXT
-#include "text/text.h"
+#include "clue/text/text.h"
 #endif
 
 #define X_OFFSET    112

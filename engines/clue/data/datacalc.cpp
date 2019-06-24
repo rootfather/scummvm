@@ -16,7 +16,7 @@
   distribution.
  ****************************************************************************/
 
-#include "data/datacalc.h"
+#include "clue/data/datacalc.h"
 
 S32 Round(S32 v, S32 p)
 {				/* p...Stellen ! */

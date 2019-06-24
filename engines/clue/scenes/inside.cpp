@@ -18,7 +18,7 @@
   distribution.
  ****************************************************************************/
 
-#include "scenes/scenes.h"
+#include "clue/scenes/scenes.h"
 
 U32 CurrAreaId;
 LSObject CurrLSO;		/* for FadeObjectInside */
@@ -77,7 +77,7 @@ void tcInsideOfHouse(U32 buildingID, U32 areaID, ubyte perc)
     char name[TXT_KEY_LENGTH];
     char alarm[TXT_KEY_LENGTH], power[TXT_KEY_LENGTH];
     LSObject lso;
-    LSArea area = dbGetObject(areaID);
+    LSArea area = (LSArea)dbGetObject(areaID);
     LIST *menu = txtGoKey(MENU_TXT, "LookMenu");
 
     txtGetFirstLine(BUSINESS_TXT, "PROTECTED", alarm);

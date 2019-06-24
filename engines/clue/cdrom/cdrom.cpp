@@ -5,7 +5,7 @@
   publiclicensecontract.doc files which should be contained with this
   distribution.
  ****************************************************************************/
-#include "cdrom/cdrom.h"
+#include "clue/cdrom/cdrom.h"
 
 unsigned int CDRomInstalled = 0;
 

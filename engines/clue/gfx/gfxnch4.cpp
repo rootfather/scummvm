@@ -9,9 +9,9 @@
 
 #include "SDL.h"
 
-#include "landscap/landscap.h"
+#include "clue/landscap/landscap.h"
 
-#include "gfx/gfxnch4.h"
+#include "clue/gfx/gfxnch4.h"
 
 int ScrX, ScrY;
 

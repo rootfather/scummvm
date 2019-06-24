@@ -22,11 +22,11 @@
 #define MODULE_TXT
 
 /* public header(s) */
-#include "text/text.h"
+#include "clue/text/text.h"
 
 /* private header(s) */
-#include "text/text.eh"
-#include "text/text.ph"
+#include "clue/text/text_e.h"
+#include "clue/text/text_p.h"
 
 /* private globals declaration */
 char *txtLanguageMark[TXT_LANG_LAST] = {
@@ -85,7 +85,7 @@ void txtInit(char lang)
 {
     char txtListPath[DSK_PATH_MAX];
 
-    if ((txtBase = TCAllocMem(sizeof(*txtBase), 0))) {
+    if ((txtBase = (TextControl *)TCAllocMem(sizeof(*txtBase), 0))) {
 	txtBase->tc_Texts = CreateList();
 	txtBase->tc_Language = lang;
 
@@ -126,7 +126,7 @@ void txtDone(void)
 
 void txtLoad(U32 textId)
 {
-    struct Text *txt = GetNthNode(txtBase->tc_Texts, textId);
+    struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 
     if (txt) {
 	if (!txt->txt_Handle) {
@@ -146,7 +146,7 @@ void txtLoad(U32 textId)
             txt->length = length;
 
 	    /* loading text into buffer */
-	    text = dskLoad(txtPath);
+	    text = (U8 *)dskLoad(txtPath);
 
 	    /* correcting text */
 	    for (ptr=text; length--; ptr++) {
@@ -166,7 +166,7 @@ void txtLoad(U32 textId)
 
 	    /* save text into xms */
 	    if (text) {
-                txt->txt_Handle = malloc(txt->length+1);
+                txt->txt_Handle = (char *)malloc(txt->length+1);
                 memcpy(txt->txt_Handle, text, txt->length);
                 free(text);
 
@@ -181,7 +181,7 @@ void txtLoad(U32 textId)
 
 void txtUnLoad(U32 textId)
 {
-    struct Text *txt = GetNthNode(txtBase->tc_Texts, textId);
+    struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 
     if (txt) {
 	if (txt->txt_Handle) {
@@ -196,17 +196,17 @@ void txtUnLoad(U32 textId)
 
 void txtPrepare(U32 textId)
 {
-    struct Text *txt = GetNthNode(txtBase->tc_Texts, textId);
+    struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 
     if (txt) {
 	memcpy(TXT_BUFFER_WORK, txt->txt_Handle, txt->length);
-	txt->txt_LastMark = TXT_BUFFER_WORK;
+	txt->txt_LastMark = (char *)TXT_BUFFER_WORK;
     }
 }
 
 void txtUnPrepare(U32 textId)
 {
-    struct Text *txt = GetNthNode(txtBase->tc_Texts, textId);
+    struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 
     if (txt)
 	txt->txt_LastMark = NULL;
@@ -214,10 +214,10 @@ void txtUnPrepare(U32 textId)
 
 void txtReset(U32 textId)
 {
-    struct Text *txt = GetNthNode(txtBase->tc_Texts, textId);
+    struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 
     if (txt)
-	txt->txt_LastMark = TXT_BUFFER_WORK;
+	txt->txt_LastMark = (char *)TXT_BUFFER_WORK;
 }
 
 
@@ -266,7 +266,7 @@ U32 txtGetKeyAsULONG(U16 keyNr, char *key)
 LIST *txtGoKey(U32 textId, const char *key)
 {
     LIST *txtList = NULL;
-    struct Text *txt = GetNthNode(txtBase->tc_Texts, textId);
+    struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 
     if (txt) {
 	char *LastMark = NULL;
@@ -358,7 +358,7 @@ LIST *txtGoKeyAndInsert(U32 textId, char *key, ...)
 bool txtKeyExists(U32 textId, const char *key)
 {
     bool found = false;
-    struct Text *txt = GetNthNode(txtBase->tc_Texts, textId);
+    struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 
     if (txt && key) {
 	txtPrepare(textId);

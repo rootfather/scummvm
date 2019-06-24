@@ -8,7 +8,7 @@
 #ifndef TC_BUFFER_H
 #define TC_BUFFER_H
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 struct SndBuffer;
 typedef struct SndBuffer SND_BUFFER;

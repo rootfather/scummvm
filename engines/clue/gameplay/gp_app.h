@@ -21,58 +21,58 @@
 #ifndef MODULE_GAMEPLAY_APP
 #define MODULE_GAMEPLAY_APP
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 #ifndef MODULE_MEMORY
-#include "memory/memory.h"
+#include "clue/memory/memory.h"
 #endif
 
 #ifndef MODULE_ERROR
-#include "error/error.h"
+#include "clue/error/error.h"
 #endif
 
 #ifndef MODULE_LIST
-#include "list/list.h"
+#include "clue/list/list.h"
 #endif
 
 #ifndef MODULE_DISK
-#include "disk/disk.h"
+#include "clue/disk/disk.h"
 #endif
 
 #ifndef MODULE_GFX
-#include "gfx/gfx.h"
+#include "clue/gfx/gfx.h"
 #endif
 
 #ifndef MODULE_ANIM
-#include "anim/sysanim.h"
+#include "clue/anim/sysanim.h"
 #endif
 
 #ifndef MODULE_STORY
-#include "story/story.h"
+#include "clue/story/story.h"
 #endif
 
 #ifndef MODULE_DATAAPPL
-#include "data/dataappl.h"
+#include "clue/data/dataappl.h"
 #endif
 
 #ifndef MODULE_RANDOM
-#include "random/random.h"
+#include "clue/random/random.h"
 #endif
 
 #ifndef MODULE_GAMEPLAY
-#include "gameplay/gp.h"
+#include "clue/gameplay/gp.h"
 #endif
 
 #ifndef MODULE_SOUND
-#include "sound/newsound.h"
+#include "clue/sound/newsound.h"
 #endif
 
 #ifndef MODULE_EVIDENCE
-#include "scenes/evidence.h"
+#include "clue/scenes/evidence.h"
 #endif
 
 #ifndef MODULE_SCENES
-#include "scenes/scenes.h"
+#include "clue/scenes/scenes.h"
 #endif
 
 struct Scene;

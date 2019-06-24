@@ -9,7 +9,7 @@
 #ifndef TC_HSC_H
 #define TC_HSC_H
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 void hscInit(void);
 void hscReset(void);

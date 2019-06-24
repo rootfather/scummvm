@@ -18,7 +18,7 @@
 
 #include <stdlib.h>
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 /**************
  * Structures *

@@ -18,9 +18,9 @@
   distribution.
  ****************************************************************************/
 
-#include "base/base.h"
+#include "clue/base/base.h"
 
-#include "planing/planer.h"
+#include "clue/planing/planer.h"
 
 
 /* Menu ids - planning */
@@ -477,7 +477,7 @@ static void plActionOpenClose(uword what)
 	    choice1 = OL_NR(GetNthNode(actionList, choice1));
 
 	    if (GamePlayMode & GP_LEVEL_DESIGN)
-		plLevelDesigner(dbGetObject(choice1));
+		plLevelDesigner((LSObject)dbGetObject(choice1));
 	    else if ((CurrentPerson >= BurglarsNr)
 		     || !CHECK_STATE(lsGetObjectState(choice1),
 				     Const_tcIN_PROGRESS_BIT)) {

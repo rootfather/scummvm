@@ -22,14 +22,14 @@
 #ifndef INPHDL_MODULE
 #define INPHDL_MODULE
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 #ifndef MODULE_GFX
-#include "gfx/gfx.h"
+#include "clue/gfx/gfx.h"
 #endif
 
 #ifndef MODULE_ANIM
-#include "anim/sysanim.h"
+#include "clue/anim/sysanim.h"
 #endif
 
 #define INP_AS_FAST_AS_POSSIBLE		1

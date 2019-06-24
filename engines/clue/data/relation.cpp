@@ -11,7 +11,7 @@
   distribution.
  ****************************************************************************/
 
-#include "data/relation.h"
+#include "clue/data/relation.h"
 
 static RELATION nrOfRelations = 1;
 static struct relationDef *relationsDefBase = NULL;

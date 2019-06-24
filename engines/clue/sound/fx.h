@@ -8,9 +8,9 @@
 #ifndef TC_FX_H
 #define TC_FX_H
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
-#include "sound/buffer.h"
+#include "clue/sound/buffer.h"
 
 #define	SND_FREQUENCY				22050
 #define SND_MAX_VOLUME                          255

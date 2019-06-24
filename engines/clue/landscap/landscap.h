@@ -21,56 +21,56 @@
 #ifndef MODULE_LANDSCAP
 #define MODULE_LANDSCAP
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 #ifndef MODULE_ERROR
-#include "error/error.h"
+#include "clue/error/error.h"
 #endif
 
 #ifndef MODULE_LIST
-#include "list/list.h"
+#include "clue/list/list.h"
 #endif
 
 #ifndef MODULE_MEMORY
-#include "memory/memory.h"
+#include "clue/memory/memory.h"
 #endif
 
 #ifndef MODULE_DISK
-#include "disk/disk.h"
+#include "clue/disk/disk.h"
 #endif
 
 #ifndef MODULE_INPHDL
-#include "inphdl/inphdl.h"
+#include "clue/inphdl/inphdl.h"
 #endif
 
 #ifndef MODULE_GFX
-#include "gfx/gfx.h"
+#include "clue/gfx/gfx.h"
 #endif
 
 #ifndef MODULE_GFXNCH4
-#include "gfx/gfxnch4.h"
+#include "clue/gfx/gfxnch4.h"
 #endif
 
 #ifndef MODULE_TEXT
-#include "text/text.h"
+#include "clue/text/text.h"
 #endif
 
 #ifndef MODULE_RELATION
-#include "data/relation.h"
+#include "clue/data/relation.h"
 #endif
 
 #ifndef MODULE_DATABASE
-#include "data/database.h"
+#include "clue/data/database.h"
 #endif
 
-#include "data/objstd/tcdata.h"
+#include "clue/data/objstd/tcdata.h"
 
 #ifndef MODULE_LIVING
-#include "living/living.h"
+#include "clue/living/living.h"
 #endif
 
 #ifndef MODULE_SPOT
-#include "landscap/spot.h"
+#include "clue/landscap/spot.h"
 #endif
 
 #define   REL_CONSIST_OFFSET       3

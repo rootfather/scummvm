@@ -18,9 +18,9 @@
   distribution.
  ****************************************************************************/
 
-#include "inphdl/inphdl.h"
+#include "clue/inphdl/inphdl.h"
 
-#include "anim/sysanim.h"
+#include "clue/anim/sysanim.h"
 
 #define	PIC_MODE_POS            UINT16_C( 1)
 #define	PIC_P_SEC_POS		UINT16_C( 2)

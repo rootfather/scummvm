@@ -16,8 +16,8 @@
 #include <stdarg.h>
 #include <ctype.h>
 
-#include "list/list.h"
-#include "memory/memory.h"
+#include "clue/list/list.h"
+#include "clue/memory/memory.h"
 
 LIST *CreateList(void)
 {
@@ -53,10 +53,10 @@ void *AddNode(LIST *list, void *node, void *predNode)
 	predNode = INNER_HEAD(list);
 
     NODE_SUCC(node) = NODE_SUCC(predNode);
-    NODE_PRED(node) = predNode;
+    NODE_PRED(node) = (NODE *)predNode;
 
-    NODE_PRED(NODE_SUCC(predNode)) = node;
-    NODE_SUCC(predNode) = node;
+    NODE_PRED(NODE_SUCC(predNode)) = (NODE *)node;
+    NODE_SUCC(predNode) = (NODE *)node;
     return node;
 }
 
@@ -135,13 +135,13 @@ void RemoveNode(LIST *list, const char *name)
     register NODE *node;
 
     if (name) {
-	if ((node = GetNode(list, name))) {
+	if ((node = (NODE *)GetNode(list, name))) {
 	    RemNode(node);
 	    FreeNode(node);
 	}
     } else {
 	if (!LIST_EMPTY(list)) {
-	    while ((node = RemTailNode(list)))
+	    while ((node = (NODE *)RemTailNode(list)))
 		FreeNode(node);
 	}
     }

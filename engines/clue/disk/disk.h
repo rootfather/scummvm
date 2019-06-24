@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 #define DSK_PATH_MAX 512
 

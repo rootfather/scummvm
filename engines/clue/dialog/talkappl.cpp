@@ -18,14 +18,14 @@
   distribution.
  ****************************************************************************/
 
-#include "dialog/talkappl.h"
+#include "clue/dialog/talkappl.h"
 
 void tcJobOffer(Person p)
 {
     LIST *bubble;
     ubyte choice;
     S32 part;
-    Player player = dbGetObject(Player_Player_1);
+    Player player = (Player)dbGetObject(Player_Player_1);
 
     if (!(join(Person_Matt_Stuvysunt, dbGetObjectNr(p))))
 	player->JobOfferCount++;
@@ -94,7 +94,7 @@ void tcAbilityAnswer(U32 personID)
 {
     char name[TXT_KEY_LENGTH];
     LIST *bubble;
-    Person p = dbGetObject(personID);
+    Person p = (Person)dbGetObject(personID);
 
     dbGetObjectName(personID, name);
 

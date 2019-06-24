@@ -14,7 +14,7 @@
   distribution.
  ****************************************************************************/
 
-#include "data/dataappl.h"
+#include "clue/data/dataappl.h"
 #include <assert.h>
 
 static S32 tcGetWeightOfNerves(S32 teamMood);
@@ -62,7 +62,7 @@ void tcCalcCallValue(U32 callNr, U32 timer, U32 persId)
     Person guy;
 
     if (persId) {
-	guy = dbGetObject(persId);
+	guy = (Person)dbGetObject(persId);
 	nerves = 255 - guy->Panic;
 
 	situation = (perfect * callWeight) / 255;
@@ -109,7 +109,7 @@ void tcCalcCallValue(U32 callNr, U32 timer, U32 persId)
 S32 tcCalcEscapeTime()
 {
     S32 time = 0, i;
-    Building build = dbGetObject(Search.BuildingId);
+    Building build = (Building)dbGetObject(Search.BuildingId);
 
     for (i = 0; i < 4; i++) {
 	if ((Search.GuyXPos[i] != -1) && (Search.GuyYPos[i] != -1)) {
@@ -133,8 +133,8 @@ S32 tcCalcEscapeTime()
 /* Werkzeug wirkt sich nur in Geschwindigkeit und Verletzung aus */
 bool tcKillTheGuard(U32 guyId, U32 buildingId)
 {
-    Person p = dbGetObject(guyId);
-    Building b = dbGetObject(buildingId);
+    Person p = (Person)dbGetObject(guyId);
+    Building b = (Building)dbGetObject(buildingId);
     U32 power = hasGet(guyId, Ability_Kampf);
 
     if (power >= b->GuardStrength)
@@ -181,7 +181,7 @@ U32 tcGuyTellsAll(Person p)
 S32 tcGetCarTraderOffer(Car car)
 {
     S32 offer = tcGetCarPrice(car);
-    Person marc = dbGetObject(Person_Marc_Smith);
+    Person marc = (Person)dbGetObject(Person_Marc_Smith);
 
     offer = CalcValue(offer, 1, 0xffff, 0, 25);	/* 25% weniger */
     offer = CalcValue(offer, 1, 0xffff, 126 + (marc->Known / 2), 30);
@@ -309,7 +309,7 @@ U32 tcGetPersOffer(Person person, U8 persCount)
 void tcPersonLearns(U32 pId)
 {
     struct ObjectNode *n;
-    Person pers = dbGetObject(pId);
+    Person pers = (Person)dbGetObject(pId);
     S32 ability, count, growth;
 
     /* Abilites */
@@ -552,7 +552,7 @@ U32 tcGuyUsesTool(U32 persId, Building b, U32 toolId, U32 itemId)
 	 */
 {
     U32 origin, time;
-    Person p = dbGetObject(persId);
+    Person p = (Person)dbGetObject(persId);
 
     origin = time = breakGet(itemId, toolId);
 
@@ -659,7 +659,7 @@ U32 tcGuyUsesTool(U32 persId, Building b, U32 toolId, U32 itemId)
 
 S32 tcGetDanger(U32 persId, U32 toolId, U32 itemId)
 {
-    Person p = dbGetObject(persId);
+    Person p = (Person)dbGetObject(persId);
     U32 danger = hurtGet(itemId, toolId);
 
     danger = CalcValue(danger, 0, 255, 255 - p->Skill, 30);
@@ -685,7 +685,7 @@ S32 tcGetDanger(U32 persId, U32 toolId, U32 itemId)
 
 S32 tcGetToolLoudness(U32 persId, U32 toolId, U32 itemId)
 {
-    Person p = dbGetObject(persId);
+    Person p = (Person)dbGetObject(persId);
     S32 loudness = soundGet(itemId, toolId);
 
     loudness = CalcValue(loudness, 0, 255, 255 - p->Skill, 10);
@@ -884,7 +884,7 @@ bool tcIsCarRecognised(Car car, U32 time)
 
 S32 tcGetGuyState(U32 persId)
 {
-    Person p = dbGetObject(persId);
+    Person p = (Person)dbGetObject(persId);
     S32 state;
 
     state = tcGetPersHealth(p);
@@ -969,7 +969,7 @@ static bool tcInsideSameRoom(LIST * roomsList, S16 polX, S16 polY, S16 livX,
 
     for (node = LIST_HEAD(roomsList); NODE_SUCC(node) && detected == 0;
 	 node = NODE_SUCC(node)) {
-	room = OL_DATA(node);
+	room = (LSRoom)OL_DATA(node);
 
 	if ((polX >= room->us_LeftEdge)
 	    && (polX <= room->us_LeftEdge + room->us_Width)
@@ -1016,7 +1016,7 @@ bool tcGuardDetectsGuy(LIST * roomsList, U16 us_XPos, U16 us_YPos,
 
 bool tcAlarmByTouch(U32 lsoId)
 {
-    LSObject lso = dbGetObject(lsoId);
+    LSObject lso = (LSObject)dbGetObject(lsoId);
 
     if (lso->uch_Chained & Const_tcCHAINED_TO_ALARM)
 	if (tcIsConnectedWithEnabledAlarm(lsoId))
@@ -1046,7 +1046,7 @@ bool tcAlarmByPowerLoss(U32 powerId)
 
     for (n = LIST_HEAD(friendlyList); NODE_SUCC(n);
 	 n = NODE_SUCC(n)) {
-	LSObject lso = OL_DATA(n);
+	LSObject lso = (LSObject)OL_DATA(n);
 
 	if (lso->ul_Status & Const_tcCHAINED_TO_ALARM)
 	    if (tcIsConnectedWithEnabledAlarm(OL_NR(n))) {
@@ -1072,7 +1072,7 @@ static bool tcIsConnectedWithEnabledAlarm(U32 lsoId)
 
     for (n = LIST_HEAD(ObjectList); NODE_SUCC(n);
 	 n = NODE_SUCC(n)) {
-	LSObject alarm = OL_DATA(n);
+	LSObject alarm = (LSObject)OL_DATA(n);
 
 	if (!(alarm->ul_Status & (1L << Const_tcON_OFF)))
 	    return true;

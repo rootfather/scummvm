@@ -22,11 +22,11 @@
 #define MODULE_ORGANISATION
 
 
-#include "theclou.h"
-#include "list/list.h"
-#include "memory/memory.h"
-#include "text/text.h"
-#include "gfx/gfx.h"
+#include "clue/theclou.h"
+#include "clue/list/list.h"
+#include "clue/memory/memory.h"
+#include "clue/text/text.h"
+#include "clue/gfx/gfx.h"
 
 /* Display Areas */
 

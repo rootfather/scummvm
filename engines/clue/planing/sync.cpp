@@ -18,7 +18,7 @@
   distribution.
  ****************************************************************************/
 
-#include "planing/sync.h"
+#include "clue/planing/sync.h"
 
 
 /* Sync functions */

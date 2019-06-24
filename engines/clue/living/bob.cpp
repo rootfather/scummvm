@@ -6,9 +6,9 @@
   distribution.
  ****************************************************************************/
 
-#include "gfx/gfx.h"
+#include "clue/gfx/gfx.h"
 
-#include "living/living.h"
+#include "clue/living/living.h"
 
 #define	BOB_USED			1
 #define	BOB_VISIBLE		2

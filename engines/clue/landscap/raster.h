@@ -21,14 +21,14 @@
 #ifndef MODULE_RASTER
 #define MODULE_RASTER
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 #ifndef MODULE_DIALOG
-#include "dialog/dialog.h"
+#include "clue/dialog/dialog.h"
 #endif
 
 #ifndef MODULE_LANDSCAP
-#include "landscap/landscap.h"
+#include "clue/landscap/landscap.h"
 #endif
 
 #define LS_RASTER_DISP_WIDTH       320

@@ -10,7 +10,7 @@
 
 extern unsigned int CDRomInstalled;
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 int CDROM_Install(void);
 void CDROM_UnInstall(void);

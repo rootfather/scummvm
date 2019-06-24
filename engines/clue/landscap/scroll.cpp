@@ -18,10 +18,10 @@
   distribution.
  ****************************************************************************/
 
-#include "base/base.h"
+#include "clue/base/base.h"
 
-#include "landscap/landscap.h"
-#include "landscap/landscap.ph"
+#include "clue/landscap/landscap.h"
+#include "clue/landscap/landscap_p.h"
 
 uword DX, DY, PX, PY;
 

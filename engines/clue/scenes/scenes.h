@@ -22,49 +22,49 @@
 #define MODULE_SCENES
 
 #ifndef MODULE_LIST
-#include "list/list.h"
+#include "clue/list/list.h"
 #endif
 
 #ifndef MODULE_TEXT
-#include "text/text.h"
+#include "clue/text/text.h"
 #endif
 
 #ifndef MODULE_INTERAC
-#include "present/interac.h"
+#include "clue/present/interac.h"
 #endif
 
 #ifndef MODULE_PRESENT
-#include "present/present.h"
+#include "clue/present/present.h"
 #endif
 
 #ifndef MODULE_DIALOG
-#include "dialog/dialog.h"
+#include "clue/dialog/dialog.h"
 #endif
 
 #ifndef MODULE_RELATION
-#include "data/relation.h"
+#include "clue/data/relation.h"
 #endif
 
 #ifndef MODULE_DATABASE
-#include "data/database.h"
+#include "clue/data/database.h"
 #endif
 
 #ifndef MODULE_DATACALC
-#include "data/datacalc.h"
+#include "clue/data/datacalc.h"
 #endif
 
 #ifndef MODULE_DATAAPPL
-#include "data/dataappl.h"
+#include "clue/data/dataappl.h"
 #endif
 
-#include "data/objstd/tcdata.h"
+#include "clue/data/objstd/tcdata.h"
 
 #ifndef MODULE_GAMEPLAY_APP
-#include "gameplay/gp_app.h"
+#include "clue/gameplay/gp_app.h"
 #endif
 
 #ifndef MODULE_RASTER
-#include "landscap/raster.h"
+#include "clue/landscap/raster.h"
 #endif
 
 extern uword CurrentBackground;

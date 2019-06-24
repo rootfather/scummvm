@@ -21,39 +21,39 @@
 #ifndef MODULE_DIALOG
 #define MODULE_DIALOG
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 #ifndef MODULE_LIST
-#include "list/list.h"
+#include "clue/list/list.h"
 #endif
 
 #ifndef MODULE_TEXT
-#include "text/text.h"
+#include "clue/text/text.h"
 #endif
 
 #ifndef MODULE_INTERAC
-#include "present/interac.h"
+#include "clue/present/interac.h"
 #endif
 
-#include "data/objstd/tcdata.h"
+#include "clue/data/objstd/tcdata.h"
 
 #ifndef MODULE_RELATION
-#include "data/relation.h"
+#include "clue/data/relation.h"
 #endif
 
 #ifndef MODULE_DATABASE
-#include "data/database.h"
+#include "clue/data/database.h"
 #endif
 
 #ifndef MODULE_GAMEPLAY
-#include "gameplay/gp.h"
+#include "clue/gameplay/gp.h"
 #endif
 
 #ifndef MODULE_SOUND
-#include "sound/newsound.h"
+#include "clue/sound/newsound.h"
 #endif
 
-#include "cdrom/cdrom.h"
+#include "clue/cdrom/cdrom.h"
 
 void PlayFromCDROM(void);
 

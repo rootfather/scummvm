@@ -18,9 +18,9 @@
   distribution.
  ****************************************************************************/
 
-#include "base/base.h"
+#include "clue/base/base.h"
 
-#include "planing/graphics.h"
+#include "clue/planing/graphics.h"
 
 
 void plPrintInfo(char *person)

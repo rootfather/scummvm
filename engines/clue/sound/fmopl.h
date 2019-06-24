@@ -1,7 +1,7 @@
 #ifndef __FMOPL_H_
 #define __FMOPL_H_
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 /* --- select emulation chips --- */
 /* XXX
@@ -84,7 +84,7 @@ void YM3526SetUpdateHandler(int which, OPL_UPDATEHANDLER UpdateHandler,
 
 #if BUILD_Y8950
 
-#include "ymdeltat.h"
+#include "clue/ymdeltat.h"
 
 /* Y8950 port handlers */
 void Y8950SetPortHandler(int which, OPL_PORTHANDLER_W PortHandler_w,

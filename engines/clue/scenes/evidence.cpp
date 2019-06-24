@@ -18,7 +18,7 @@
   distribution.
  ****************************************************************************/
 
-#include "scenes/evidence.h"
+#include "clue/scenes/evidence.h"
 
 U32 tcPersonWanted(U32 persId);
 U32 tcPersonQuestioning(Person person);
@@ -28,8 +28,8 @@ struct Search Search;
 static ubyte tcCarFound(Car car, U32 time)
 {
     S32 i = 0, hours;
-    Person john = dbGetObject(Person_John_Gludo);
-    Person miles = dbGetObject(Person_Miles_Chickenwing);
+    Person john = (Person)dbGetObject(Person_John_Gludo);
+    Person miles = (Person)dbGetObject(Person_Miles_Chickenwing);
     ubyte found = 0;
 
     /* Der Jaguar darf nicht gefunden werden - sonst k”nnte er ja */
@@ -68,7 +68,7 @@ static U32 tcATraitor(U32 traitorId)
     char name[TXT_KEY_LENGTH], line[TXT_KEY_LENGTH];
     LIST *bubble = txtGoKey(BUSINESS_TXT, "A_TRAITOR");
     LIST *newList = CreateList();
-    Person john = dbGetObject(Person_John_Gludo);
+    Person john = (Person)dbGetObject(Person_John_Gludo);
 
     dbGetObjectName(traitorId, name);
     sprintf(line, NODE_NAME(LIST_HEAD(bubble)), name);
@@ -90,8 +90,8 @@ static U32 tcATraitor(U32 traitorId)
 
 static U32 tcIsThereATraitor(void)
 {
-    Player player = dbGetObject(Player_Player_1);
-    Person matt = dbGetObject(Person_Matt_Stuvysunt);
+    Player player = (Player)dbGetObject(Player_Player_1);
+    Person matt = (Person)dbGetObject(Person_Matt_Stuvysunt);
     ubyte symp = 255;
     U32 traitorId = 0, caught = 0;
     NODE *n;
@@ -103,7 +103,7 @@ static U32 tcIsThereATraitor(void)
 
 	    for (n = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(n);
 		 n = (NODE *) NODE_SUCC(n)) {
-		Person pers = OL_DATA(n);
+		Person pers = (Person)OL_DATA(n);
 
 		if (OL_NR(n) != Person_Matt_Stuvysunt) {	/* Matt verr„t sich nicht selbst */
 		    if ((traitorId == 0) || (pers->Known < symp)) {
@@ -127,7 +127,7 @@ U32 tcStartEvidence(void)
     ubyte guyReady, guyNr, evidenceNr, guyCount, shown = 0;
     char line[TXT_KEY_LENGTH];
     Person p[4];
-    Evidence evidence = dbGetObject(Evidence_Evidence_1);	/* just for presentation */
+    Evidence evidence = (Evidence)dbGetObject(Evidence_Evidence_1);	/* just for presentation */
     struct ObjectNode *n;
     LIST *guys, *spuren;
 
@@ -159,7 +159,7 @@ U32 tcStartEvidence(void)
 	 n = (struct ObjectNode *) NODE_SUCC(n), i++) {
 	S32 div = 380;
 
-	p[i] = OL_DATA(n);
+	p[i] = (Person)OL_DATA(n);
 
 	/* alle folgenden Werte sind zwischen 0 und 255 */
 
@@ -349,7 +349,7 @@ U32 tcStartEvidence(void)
 	 ((Car) dbGetObject(Organisation.CarID),
 	  Search.TimeOfBurglary - Search.TimeOfAlarm))) {
 	S32 newStrike;
-	Car car = dbGetObject(Organisation.CarID);
+	Car car = (Car)dbGetObject(Organisation.CarID);
 
 	newStrike = CalcValue((S32) car->Strike, 0, 255, 255, 15);
 
@@ -380,7 +380,7 @@ void tcForgetGuys(void)
     for (node = (NODE *) LIST_HEAD(guys); NODE_SUCC(node);
 	 node = (NODE *) NODE_SUCC(node)) {
 	if (OL_NR(node) != Person_Matt_Stuvysunt) {
-	    Person pers = OL_DATA(node);
+	    Person pers = (Person)OL_DATA(node);
 
 	    pers->TalkBits |= (1 << Const_tcTALK_JOB_OFFER);	/* ber Jobs kann man wieder reden! */
 
@@ -396,8 +396,8 @@ void tcForgetGuys(void)
 U32 tcPersonWanted(U32 persId)
 {
     U32 hours, i = 0, caught = 0;
-    Person john = dbGetObject(Person_John_Gludo);
-    Person miles = dbGetObject(Person_Miles_Chickenwing);
+    Person john = (Person)dbGetObject(Person_John_Gludo);
+    Person miles = (Person)dbGetObject(Person_Miles_Chickenwing);
     LIST *bubble;
     LIST *jobs = txtGoKey(OBJECTS_ENUM_TXT, "enum_JobE");
     char line[TXT_KEY_LENGTH], name[TXT_KEY_LENGTH];
@@ -427,7 +427,7 @@ U32 tcPersonWanted(U32 persId)
 	ShowTime(2);
     }
 
-    if (tcGuyCanEscape(dbGetObject(persId)) > CalcRandomNr(100, 255)) {	/* Flucht gelingt */
+    if (tcGuyCanEscape((Person)dbGetObject(persId)) > CalcRandomNr(100, 255)) {	/* Flucht gelingt */
 	Say(BUSINESS_TXT, 0, john->PictID, "ESCAPED");
 
 	livesInSet(London_Escape, persId);
@@ -437,7 +437,7 @@ U32 tcPersonWanted(U32 persId)
 
 	livesInSet(London_Jail, persId);
 
-	caught = tcPersonQuestioning(dbGetObject(persId));
+	caught = tcPersonQuestioning((Person)dbGetObject(persId));
     }
 
     RemoveList(jobs);
@@ -448,8 +448,8 @@ U32 tcPersonWanted(U32 persId)
 U32 tcPersonQuestioning(Person person)
 {
     U32 caught = 0;
-    Person john = dbGetObject(Person_John_Gludo);
-    Person miles = dbGetObject(Person_Miles_Chickenwing);
+    Person john = (Person)dbGetObject(Person_John_Gludo);
+    Person miles = (Person)dbGetObject(Person_Miles_Chickenwing);
 
     if (person != dbGetObject(Person_Matt_Stuvysunt)) {
 	if (tcGuyTellsAll(person) > CalcRandomNr(0, 180)) {	/* er spricht */
@@ -468,7 +468,7 @@ U32 tcPersonQuestioning(Person person)
 
 S32 tcEscapeFromBuilding(U32 escBits)
 {
-    Person gludo = dbGetObject(Person_John_Gludo);
+    Person gludo = (Person)dbGetObject(Person_John_Gludo);
     ubyte escapeSucc = FAHN_NOT_ESCAPED;
     S32 timeLeft = INT32_MAX;
 
@@ -491,7 +491,7 @@ S32 tcEscapeFromBuilding(U32 escBits)
 
     if (!(escBits & FAHN_SURROUNDED)) {
 	if ((escBits & FAHN_ALARM) || (escBits & FAHN_QUIET_ALARM)) {
-	    Building build = dbGetObject(Search.BuildingId);
+	    Building build = (Building)dbGetObject(Search.BuildingId);
 
 	    timeLeft =
 		build->PoliceTime - (Search.TimeOfBurglary -
@@ -517,8 +517,8 @@ S32 tcEscapeFromBuilding(U32 escBits)
 
 S32 tcEscapeByCar(U32 escBits, S32 timeLeft)
 {
-    Person gludo = dbGetObject(Person_John_Gludo);
-    Person miles = dbGetObject(Person_Miles_Chickenwing);
+    Person gludo = (Person)dbGetObject(Person_John_Gludo);
+    Person miles = (Person)dbGetObject(Person_Miles_Chickenwing);
     ubyte escapeSucc;
 
     if (timeLeft > 0)
@@ -594,8 +594,8 @@ S32 tcCalcCarEscape(S32 timeLeft)
     char line[TXT_KEY_LENGTH];
     S32 kmh, ps, i, j, YardsInFront, length, wayType, unrealSpeed, x, xOldMatt =
 	-1, xOldPoli = -1;
-    Car car = dbGetObject(Organisation.CarID);
-    Building build = dbGetObject(Organisation.BuildingID);
+    Car car = (Car)dbGetObject(Organisation.CarID);
+    Building build = (Building)dbGetObject(Organisation.BuildingID);
     S32 result = FAHN_ESCAPED;
     U8 palette[GFX_PALETTE_SIZE];
 

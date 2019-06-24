@@ -18,12 +18,12 @@
   distribution.
  ****************************************************************************/
 
-#include "present/present.h"
-#include "present/present.ph"
+#include "clue/present/present.h"
+#include "clue/present/present_p.h"
 
 struct PresentControl PresentControl = { NULL, 0, 0 };
 
-#include "present/presenta.c"
+#include "clue/present/presenta.cpp"
 
 void DrawPresent(LIST * present, U8 firstLine, GC *gc, U8 max)
 {
@@ -114,7 +114,7 @@ U8 Present(U32 nr, char *presentationText,
 	gfxShow(obj->PictID, GFX_NO_REFRESH | GFX_OVERLAY | GFX_BLEND_UP,
 		0, -1, -1);
     } else if (dbIsObject(nr, Object_Evidence)) {
-	Evidence e = dbGetObject(nr);
+	Evidence e = (Evidence)dbGetObject(nr);
 
 	gfxShow((uword) ((Person) dbGetObject(e->pers))->PictID,
 		GFX_NO_REFRESH | GFX_OVERLAY | GFX_BLEND_UP, 0, -1, -1);

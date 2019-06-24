@@ -20,9 +20,9 @@
 #define ERR_EXIT_ERROR      20L
 #define ERR_EXIT_SHUTDOWN   30L
 
-#include "base/base.h"
+#include "clue/base/base.h"
 
-#include "error/error.h"
+#include "clue/error/error.h"
 
 static const char *moduleNames[ERROR_MODULE_LAST] = {
   "",

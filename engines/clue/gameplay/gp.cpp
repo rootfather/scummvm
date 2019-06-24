@@ -18,8 +18,8 @@
   distribution.
  ****************************************************************************/
 
-#include "gameplay/gp.h"
-#include "gameplay/gamefunc.h"
+#include "clue/gameplay/gp.h"
+#include "clue/gameplay/gamefunc.h"
 
 void InitLocations(void);
 void FreeLocations(void);
@@ -91,7 +91,7 @@ void SetEnabledChoices(U32 ChoiceMask)
 
 void RefreshCurrScene(void)
 {
-    NODE *node = GetNthNode(film->loc_names, GetLocation);
+    NODE *node = (NODE *)GetNthNode(film->loc_names, GetLocation);
 
     tcRefreshLocationInTitle(GetLocation);
     PlayAnim(NODE_NAME(node), 30000,
@@ -421,7 +421,7 @@ void PrepareStory(char *filename)
     if (film->AmountOfScenes) {
 	if (!
 	    (film->gameplay =
-	     (TCAllocMem(sizeof(struct Scene) * (film->AmountOfScenes), 0))))
+	     ((struct Scene *)TCAllocMem(sizeof(struct Scene) * (film->AmountOfScenes), 0))))
 	    ErrorMsg(No_Mem, ERROR_MODULE_GAMEPLAY, 6);
     } else
 	ErrorMsg(Disk_Defect, ERROR_MODULE_GAMEPLAY, 7);

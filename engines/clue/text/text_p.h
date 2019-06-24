@@ -22,10 +22,10 @@
 #define MODULE_TXT_PH
 
 /* includes */
-#include "theclou.h"
-#include "disk/disk.h"
-#include "list/list.h"
-#include "base/base.h"
+#include "clue/theclou.h"
+#include "clue/disk/disk.h"
+#include "clue/list/list.h"
+#include "clue/base/base.h"
 
 
 /* private defines */

@@ -18,7 +18,7 @@
   distribution.
  ****************************************************************************/
 
-#include "scenes/scenes.h"
+#include "clue/scenes/scenes.h"
 
 void SetCarColors(ubyte index)
 {
@@ -211,7 +211,7 @@ void tcColorCar(Car car)
 		(choice =
 		 Bubble(colors, (ubyte) car->ColorIndex, 0L, 0L), GET_OUT,
 		 colors)) {
-		car->ColorIndex = (ubyte) choice;
+		car->ColorIndex = (ColorE) choice;
 
 		SetCarColors(car->ColorIndex);
 		gfxPrepareRefresh();
@@ -429,7 +429,7 @@ U32 tcChooseCar(U32 backgroundNr)
 
 void tcCarGeneralOverhoul(Car car)
 {
-    Person marc = dbGetObject(Person_Marc_Smith);
+    Person marc = (Person)dbGetObject(Person_Marc_Smith);
     LIST *bubble;
     ubyte choice;
 

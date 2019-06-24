@@ -27,18 +27,18 @@
 #include <ctype.h>
 #endif
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 #ifndef MODULE_ERROR
-#include "error/error.h"
+#include "clue/error/error.h"
 #endif
 
 #ifndef MODULE_LIST
-#include "list/list.h"
+#include "clue/list/list.h"
 #endif
 
 #ifndef MODULE_MEMORY
-#include "memory/memory.h"
+#include "clue/memory/memory.h"
 #endif
 
 

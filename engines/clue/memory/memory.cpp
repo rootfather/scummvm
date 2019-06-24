@@ -17,7 +17,7 @@
   distribution.
  ****************************************************************************/
 
-#include "memory/memory.h"
+#include "clue/memory/memory.h"
 
 #define ERR_MEMORY_NO_MEM       1
 

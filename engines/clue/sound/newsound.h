@@ -8,7 +8,7 @@
 #ifndef TC_NEWSOUND_H
 #define TC_NEWSOUND_H
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 void sndInit(void);
 void sndDone(void);

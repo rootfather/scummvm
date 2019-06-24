@@ -20,9 +20,9 @@
 #ifndef MODULE_MEMORY
 #define MODULE_MEMORY
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
-#include "error/error.h"
+#include "clue/error/error.h"
 
 void *TCAllocMem(size_t size, bool clear);
 void TCFreeMem(void *ptr, size_t size);

@@ -25,7 +25,7 @@
 
 #define SYS_MAX_MEMORY_SIZE   1024L*25L
 
-#include "planing/system.h"
+#include "clue/planing/system.h"
 
 size_t sysUsedMem = 0;
 

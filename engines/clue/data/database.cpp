@@ -19,10 +19,10 @@
  ****************************************************************************/
 
 /* includes */
-#include "base/base.h"
+#include "clue/base/base.h"
 
-#include "data/database.h"
-#include "data/database.ph"
+#include "clue/data/database.h"
+#include "clue/data/database_p.h"
 
 
 /* public declarations */
@@ -293,7 +293,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 	/* tcMain */
     case Object_Person:
 	{
-	    Person x = obj;
+	    Person x = (Person)obj;
 	    U16 tmp;
 
 	    DB_CHECK_SIZE(x);
@@ -302,7 +302,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
 	    if (RW == 0) {
 		(*U16LE_RW) (fp, &tmp);
-		x->Job = tmp;
+		x->Job = (JobE)tmp;
 	    } else {
 		tmp = x->Job;
 		(*U16LE_RW) (fp, &tmp);
@@ -310,7 +310,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
 	    if (RW == 0) {
 		(*U16LE_RW) (fp, &tmp);
-		x->Sex = tmp;
+		x->Sex = (SexE)tmp;
 	    } else {
 		tmp = x->Sex;
 		(*U16LE_RW) (fp, &tmp);
@@ -342,7 +342,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_Player:
 	{
-	    Player x = obj;
+	    Player x = (Player)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -365,7 +365,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_Car:
 	{
-	    Car x = obj;
+	    Car x = (Car)obj;
 	    U16 tmp;
 
 	    DB_CHECK_SIZE(x);
@@ -374,7 +374,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
 	    if (RW == 0) {
 		(*U16LE_RW) (fp, &tmp);
-		x->Land = tmp;
+		x->Land = (LandE)tmp;
 	    } else {
 		tmp = x->Land;
 		(*U16LE_RW) (fp, &tmp);
@@ -385,7 +385,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
 	    if (RW == 0) {
 		(*U16LE_RW) (fp, &tmp);
-		x->ColorIndex = tmp;
+		x->ColorIndex = (ColorE)tmp;
 	    } else {
 		tmp = x->ColorIndex;
 		(*U16LE_RW) (fp, &tmp);
@@ -406,7 +406,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_Location:
 	{
-	    Location x = obj;
+	    Location x = (Location)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -418,14 +418,14 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_Ability:
 	{
-	    Ability x = obj;
+	    Ability x = (Ability)obj;
 	    U16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
 	    if (RW == 0) {
 		(*U16LE_RW) (fp, &tmp);
-		x->Name = tmp;
+		x->Name = (AbilityE)tmp;
 	    } else {
 		tmp = x->Name;
 		(*U16LE_RW) (fp, &tmp);
@@ -437,14 +437,14 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_Item:
 	{
-	    Item x = obj;
+	    Item x = (Item)obj;
 	    U16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
 	    if (RW == 0) {
 		(*U16LE_RW) (fp, &tmp);
-		x->Type = tmp;
+		x->Type = (ItemE)tmp;
 	    } else {
 		tmp = x->Type;
 		(*U16LE_RW) (fp, &tmp);
@@ -466,7 +466,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_Tool:
 	{
-	    Tool x = obj;
+	    Tool x = (Tool)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -480,7 +480,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_Environment:
 	{
-	    Environment x = obj;
+	    Environment x = (Environment)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -498,7 +498,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_London:
 	{
-	    London x = obj;
+	    London x = (London)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -508,7 +508,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_Evidence:
 	{
-	    Evidence x = obj;
+	    Evidence x = (Evidence)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -526,14 +526,14 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_Loot:
 	{
-	    Loot x = obj;
+	    Loot x = (Loot)obj;
 	    U16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
 	    if (RW == 0) {
 		(*U16LE_RW) (fp, &tmp);
-		x->Type = tmp;
+		x->Type = (LootE)tmp;
 	    } else {
 		tmp = x->Type;
 		(*U16LE_RW) (fp, &tmp);
@@ -541,7 +541,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
 	    if (RW == 0) {
 		(*U16LE_RW) (fp, &tmp);
-		x->Name = tmp;
+		x->Name = (LootNameE)tmp;
 	    } else {
 		tmp = x->Name;
 		(*U16LE_RW) (fp, &tmp);
@@ -555,7 +555,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_CompleteLoot:
 	{
-	    CompleteLoot x = obj;
+	    CompleteLoot x = (CompleteLoot)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -576,14 +576,14 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_LSOLock:
 	{
-	    LSOLock x = obj;
+	    LSOLock x = (LSOLock)obj;
 	    U16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
 	    if (RW == 0) {
 		(*U16LE_RW) (fp, &tmp);
-		x->Type = tmp;
+		x->Type = (LockE)tmp;
 	    } else {
 		tmp = x->Type;
 		(*U16LE_RW) (fp, &tmp);
@@ -593,7 +593,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_LSObject:
 	{
-	    LSObject x = obj;
+	    LSObject x = (LSObject)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -615,7 +615,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 	/* tcBuild */
     case Object_Building:
 	{
-	    Building x = obj;
+	    Building x = (Building)obj;
 	    U16 tmp;
 
 	    DB_CHECK_SIZE(x);
@@ -633,7 +633,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
 	    if (RW == 0) {
 		(*U16LE_RW) (fp, &tmp);
-		x->EscapeRoute = tmp;
+		x->EscapeRoute = (RouteE)tmp;
 	    } else {
 		tmp = x->EscapeRoute;
 		(*U16LE_RW) (fp, &tmp);
@@ -653,7 +653,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_Police:
 	{
-	    Police x = obj;
+	    Police x = (Police)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -664,7 +664,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_LSArea:
 	{
-	    LSArea x = obj;
+	    LSArea x = (LSArea)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -703,7 +703,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_LSRoom:
 	{
-	    LSRoom x = obj;
+	    LSRoom x = (LSRoom)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -751,7 +751,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 	/* tcMain */
     case Object_Person:
 	{
-	    Person x = obj;
+	    Person x = (Person)obj;
 	    U16 tmp;
 
 	    DB_CHECK_SIZE(x);
@@ -760,7 +760,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
 	    if (RW == 0) {
 		(*U16LE_RW) (fp, &tmp);
-		x->Job = tmp;
+		x->Job = (JobE)tmp;
 	    } else {
 		tmp = x->Job;
 		(*U16LE_RW) (fp, &tmp);
@@ -768,7 +768,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
 	    if (RW == 0) {
 		(*U16LE_RW) (fp, &tmp);
-		x->Sex = tmp;
+		x->Sex = (SexE)tmp;
 	    } else {
 		tmp = x->Sex;
 		(*U16LE_RW) (fp, &tmp);
@@ -800,7 +800,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_Player:
 	{
-	    Player x = obj;
+	    Player x = (Player)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -823,7 +823,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_Car:
 	{
-	    Car x = obj;
+	    Car x = (Car)obj;
 	    U16 tmp;
 
 	    DB_CHECK_SIZE(x);
@@ -832,7 +832,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
 	    if (RW == 0) {
 		(*U16LE_RW) (fp, &tmp);
-		x->Land = tmp;
+		x->Land = (LandE)tmp;
 	    } else {
 		tmp = x->Land;
 		(*U16LE_RW) (fp, &tmp);
@@ -843,7 +843,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
 	    if (RW == 0) {
 		(*U16LE_RW) (fp, &tmp);
-		x->ColorIndex = tmp;
+		x->ColorIndex = (ColorE)tmp;
 	    } else {
 		tmp = x->ColorIndex;
 		(*U16LE_RW) (fp, &tmp);
@@ -864,7 +864,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_Location:
 	{
-	    Location x = obj;
+	    Location x = (Location)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -876,14 +876,14 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_Ability:
 	{
-	    Ability x = obj;
+	    Ability x = (Ability)obj;
 	    U16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
 	    if (RW == 0) {
 		(*U16LE_RW) (fp, &tmp);
-		x->Name = tmp;
+		x->Name = (AbilityE)tmp;
 	    } else {
 		tmp = x->Name;
 		(*U16LE_RW) (fp, &tmp);
@@ -895,14 +895,14 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_Item:
 	{
-	    Item x = obj;
+	    Item x = (Item)obj;
 	    U16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
 	    if (RW == 0) {
 		(*U16LE_RW) (fp, &tmp);
-		x->Type = tmp;
+		x->Type = (ItemE)tmp;
 	    } else {
 		tmp = x->Type;
 		(*U16LE_RW) (fp, &tmp);
@@ -924,7 +924,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_Tool:
 	{
-	    Tool x = obj;
+	    Tool x = (Tool)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -938,7 +938,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_Environment:
 	{
-	    Environment x = obj;
+	    Environment x = (Environment)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -955,7 +955,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_London:
 	{
-	    London x = obj;
+	    London x = (London)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -965,7 +965,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_Evidence:
 	{
-	    Evidence x = obj;
+	    Evidence x = (Evidence)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -983,14 +983,14 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_Loot:
 	{
-	    Loot x = obj;
+	    Loot x = (Loot)obj;
 	    U16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
 	    if (RW == 0) {
 		(*U16LE_RW) (fp, &tmp);
-		x->Type = tmp;
+		x->Type = (LootE)tmp;
 	    } else {
 		tmp = x->Type;
 		(*U16LE_RW) (fp, &tmp);
@@ -998,7 +998,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
 	    if (RW == 0) {
 		(*U16LE_RW) (fp, &tmp);
-		x->Name = tmp;
+		x->Name = (LootNameE)tmp;
 	    } else {
 		tmp = x->Name;
 		(*U16LE_RW) (fp, &tmp);
@@ -1012,7 +1012,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_CompleteLoot:
 	{
-	    CompleteLoot x = obj;
+	    CompleteLoot x = (CompleteLoot)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -1033,14 +1033,14 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_LSOLock:
 	{
-	    LSOLock x = obj;
+	    LSOLock x = (LSOLock)obj;
 	    U16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
 	    if (RW == 0) {
 		(*U16LE_RW) (fp, &tmp);
-		x->Type = tmp;
+		x->Type = (LockE)tmp;
 	    } else {
 		tmp = x->Type;
 		(*U16LE_RW) (fp, &tmp);
@@ -1050,7 +1050,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_LSObject:
 	{
-	    LSObject x = obj;
+	    LSObject x = (LSObject)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -1072,7 +1072,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 	/* tcBuild */
     case Object_Building:
 	{
-	    Building x = obj;
+	    Building x = (Building)obj;
 	    U16 tmp;
 
 	    DB_CHECK_SIZE(x);
@@ -1090,7 +1090,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
 	    if (RW == 0) {
 		(*U16LE_RW) (fp, &tmp);
-		x->EscapeRoute = tmp;
+		x->EscapeRoute = (RouteE)tmp;
 	    } else {
 		tmp = x->EscapeRoute;
 		(*U16LE_RW) (fp, &tmp);
@@ -1110,7 +1110,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_Police:
 	{
-	    Police x = obj;
+	    Police x = (Police)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -1121,7 +1121,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_LSArea:
 	{
-	    LSArea x = obj;
+	    LSArea x = (LSArea)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -1160,7 +1160,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 
     case Object_LSRoom:
 	{
-	    LSRoom x = obj;
+	    LSRoom x = (LSRoom)obj;
 
 	    DB_CHECK_SIZE(x);
 
@@ -1601,7 +1601,7 @@ S32 dbSortObjectList(LIST ** objectList,
 					 struct ObjectNode *))
 {
     register LIST *newList;
-    register struct ObjectNode *n1, *n2, *pred, *new;
+    register struct ObjectNode *n1, *n2, *pred, *newNode;
     S32 i = 0;
 
     if (!LIST_EMPTY(*objectList)) {
@@ -1620,20 +1620,20 @@ S32 dbSortObjectList(LIST ** objectList,
 		}
 	    }
 
-	    new =
-		(struct ObjectNode *) CreateNode(NULL, sizeof(*new),
+	    newNode =
+		(struct ObjectNode *) CreateNode(NULL, sizeof(*newNode),
 						 NODE_NAME(n1));
-	    new->nr = n1->nr;
-	    new->type = n1->type;
-	    new->data = n1->data;
+	    newNode->nr = n1->nr;
+	    newNode->type = n1->type;
+	    newNode->data = n1->data;
 
 	    if (pred) {
 		if (pred == (struct ObjectNode *) LIST_HEAD(newList))
-		    AddHeadNode(newList, new);
+		    AddHeadNode(newList, newNode);
 		else
-		    AddNode(newList, new, NODE_PRED(pred));
+		    AddNode(newList, newNode, NODE_PRED(pred));
 	    } else
-		AddTailNode(newList, new);
+		AddTailNode(newList, newNode);
 	}
 
 	if (!LIST_EMPTY(newList)) {

@@ -18,9 +18,9 @@
   distribution.
  ****************************************************************************/
 
-#include "gameplay/gp.h"
-#include "gameplay/gp_app.h"
-#include "organisa/organisa.h"
+#include "clue/gameplay/gp.h"
+#include "clue/gameplay/gp_app.h"
+#include "clue/organisa/organisa.h"
 
 void tcSaveTheClou(void)
 {
@@ -31,7 +31,7 @@ void tcSaveTheClou(void)
     LIST *games = CreateList();
     NODE *game;
     uword activ;
-    Player player = dbGetObject(Player_Player_1);
+    Player player = (Player)dbGetObject(Player_Player_1);
 
     /* in welche Datei ?? */
     ShowMenuBackground();
@@ -65,7 +65,7 @@ void tcSaveTheClou(void)
 
 	    /* Games.list abspeichern */
 
-	    game = CreateNode(0L, 0L, location);
+	    game = (NODE *)CreateNode(0L, 0L, location);
 
 	    ReplaceNode(games, NODE_NAME(GetNthNode(games, activ)), game);
 
@@ -199,7 +199,7 @@ ubyte tcLoadTheClou(void)
 	    RemoveList(games);
 	    RemoveList(origin);
 
-	    if ((player = dbGetObject(Player_Player_1))) {	/* MOD 04-02 */
+	    if ((player = (Player)dbGetObject(Player_Player_1))) {	/* MOD 04-02 */
 		player->CurrScene = film->act_scene->EventNr;
 
 		SceneArgs.ReturnValue = film->act_scene->EventNr;
@@ -220,7 +220,7 @@ ubyte tcLoadTheClou(void)
 
 void tcRefreshAfterLoad(ubyte loaded)
 {
-    Player player = dbGetObject(Player_Player_1);	/* muá hier geholt werden -> sonst alte Adresse */
+    Player player = (Player)dbGetObject(Player_Player_1);	/* muá hier geholt werden -> sonst alte Adresse */
 
     if (!loaded) {
 	if (player)

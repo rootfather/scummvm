@@ -8,10 +8,10 @@
 
 #include <ctype.h>
 
-#include "error/error.h"
+#include "clue/error/error.h"
 
-#include "disk/disk.h"
-#include "disk/disk.eh"
+#include "clue/disk/disk.h"
+#include "clue/disk/disk_e.h"
 
 char RootPathName[DSK_PATH_MAX];
 
@@ -47,20 +47,20 @@ void *dskLoad(const char *Pathname)
 
     pos  = 0;
     size = BUFSIZ;
-    ptr  = malloc(size);
+    ptr  = (U8 *)malloc(size);
 
     if ((fp = dskOpen(Pathname, "rb"))) {
         size_t nread;
 
         while ((nread = fread(ptr+pos, 1, BUFSIZ, fp)) == BUFSIZ) {
             pos  += nread;
-            ptr   = realloc(ptr, size+BUFSIZ);
+            ptr   = (U8 *)realloc(ptr, size+BUFSIZ);
             size += nread;
         }
 
         pos += nread;
 
-        ptr = realloc(ptr, pos);
+        ptr = (U8 *)realloc(ptr, pos);
         dskClose(fp);
         return (void *)ptr;
     }

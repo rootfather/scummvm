@@ -21,34 +21,34 @@
 #ifndef MODULE_LIVING
 #define MODULE_LIVING
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 #ifndef MODULE_LIST
-#include "list/list.h"
+#include "clue/list/list.h"
 #endif
 
 #ifndef MODULE_MEMORY
-#include "memory/memory.h"
+#include "clue/memory/memory.h"
 #endif
 
 #ifndef MODULE_LANDSCAP
-#include "landscap/landscap.h"
+#include "clue/landscap/landscap.h"
 #endif
 
 #ifndef MODULE_DISK
-#include "disk/disk.h"
+#include "clue/disk/disk.h"
 #endif
 
 #ifndef MODULE_TEXT
-#include "text/text.h"
+#include "clue/text/text.h"
 #endif
 
 #ifndef MODULE_GFX
-#include "gfx/gfx.h"
+#include "clue/gfx/gfx.h"
 #endif
 
 #ifndef MODULE_BOB
-#include "living/bob.h"
+#include "clue/living/bob.h"
 #endif
 
 /* defines fÅr AnimPlayMode */

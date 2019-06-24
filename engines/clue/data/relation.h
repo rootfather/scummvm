@@ -18,11 +18,11 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
-#include "error/error.h"
-#include "memory/memory.h"
-#include "disk/disk.h"
+#include "clue/error/error.h"
+#include "clue/memory/memory.h"
+#include "clue/disk/disk.h"
 
 #define RELATION           U32
 #define KEY                void *

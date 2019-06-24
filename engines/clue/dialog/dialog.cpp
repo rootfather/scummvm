@@ -18,8 +18,8 @@
   distribution.
  ****************************************************************************/
 
-#include "dialog/dialog.h"
-#include "dialog/talkappl.h"
+#include "clue/dialog/dialog.h"
+#include "clue/dialog/talkappl.h"
 
 #define DLG_NO_SPEECH	((U32) -1)
 U32 StartFrame = DLG_NO_SPEECH;
@@ -125,7 +125,7 @@ static LIST *ParseTalkText(LIST * origin, LIST * bubble, ubyte known)
 
 		if (known >= nr) {
 		    keyNode =
-			CreateNode(keyWords, sizeof(struct DynDlgNode),
+			(NODE *)CreateNode(keyWords, sizeof(struct DynDlgNode),
 				   keyWord);
 
 		    ((struct DynDlgNode *) keyNode)->KnownBefore = nr;

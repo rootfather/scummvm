@@ -18,9 +18,9 @@
   distribution.
  ****************************************************************************/
 
-#include "base/base.h"
+#include "clue/base/base.h"
 
-#include "landscap/spot.h"
+#include "clue/landscap/spot.h"
 
 #define LS_SPOT_BITMAP_WIDTH 		(96)
 #define LS_SPOT_BITMAP_HEIGHT		(LS_SPOT_LARGE_SIZE)
@@ -45,7 +45,7 @@ void lsInitSpots(void)
     if (sc)
 	lsDoneSpots();
 
-    sc = TCAllocMem(sizeof(*sc), 0);
+    sc = (SpotControl *)TCAllocMem(sizeof(*sc), 0);
 
     sc->p_spots = CreateList();
 
@@ -85,7 +85,7 @@ void lsMoveAllSpots(U32 time)
 	 spot = (struct Spot *) NODE_SUCC(spot))
 	if (spot->us_PosCount > 1)
 	    if (lsIsSpotVisible(spot))
-		if (lsIsLSObjectInActivArea(dbGetObject(spot->ul_CtrlObjId)))	/* wenn der Steuerkasten in dieser Area -> */
+		if (lsIsLSObjectInActivArea((LSObject)dbGetObject(spot->ul_CtrlObjId)))	/* wenn der Steuerkasten in dieser Area -> */
 		    if (spot->uch_Status & LS_SPOT_ON)
 			lsShowSpot(spot, time);	/* Spot darstellen (auch in der aktiven Area */
 }
@@ -96,7 +96,7 @@ void lsShowAllSpots(U32 time, U32 mode)
 
     for (spot = (struct Spot *) LIST_HEAD(sc->p_spots); NODE_SUCC(spot);
 	 spot = (struct Spot *) NODE_SUCC(spot)) {
-	if (lsIsLSObjectInActivArea(dbGetObject(spot->ul_CtrlObjId))) {	/* wenn der Steuerkasten in dieser Area -> */
+	if (lsIsLSObjectInActivArea((LSObject)dbGetObject(spot->ul_CtrlObjId))) {	/* wenn der Steuerkasten in dieser Area -> */
 	    if (mode & LS_ALL_VISIBLE_SPOTS)
 		if (spot->uch_Status & LS_SPOT_ON)
 		    lsShowSpot(spot, time);	/* Spot darstellen */

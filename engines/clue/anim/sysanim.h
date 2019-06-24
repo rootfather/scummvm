@@ -28,16 +28,16 @@
 #ifndef MODULE_ANIM
 #define MODULE_ANIM
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 #ifndef MODULE_TEXT
-#include "text/text.h"
+#include "clue/text/text.h"
 #endif
 
-#include "gfx/gfx.h"
+#include "clue/gfx/gfx.h"
 
 #ifndef MODULE_RANDOM
-#include "random/random.h"
+#include "clue/random/random.h"
 #endif
 
 /* global functions */

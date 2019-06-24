@@ -18,7 +18,7 @@
   distribution.
  ****************************************************************************/
 
-#include "base/base.h"
+#include "clue/base/base.h"
 #ifdef XXX
 extern unsigned _stklen = 16 * 1024;
 #endif

@@ -17,7 +17,7 @@
   distribution.
  ****************************************************************************/
 
-#include "scenes/scenes.h"
+#include "clue/scenes/scenes.h"
 
 void tcDealerDlg(void)
 {
@@ -26,15 +26,15 @@ void tcDealerDlg(void)
     ubyte dealerNr, choice = 0;
 
     if (locNr == Location_Parker) {
-        dealer = dbGetObject(Person_Helen_Parker);
+        dealer = (Person)dbGetObject(Person_Helen_Parker);
         knowsSet(Person_Matt_Stuvysunt, Person_Helen_Parker);
         dealerNr = 2;
     } else if (locNr == Location_Maloya) {
-        dealer = dbGetObject(Person_Frank_Maloya);
+        dealer = (Person)dbGetObject(Person_Frank_Maloya);
         knowsSet(Person_Matt_Stuvysunt, Person_Frank_Maloya);
         dealerNr = 0;
     } else if (locNr == Location_Pooly) {
-        dealer = dbGetObject(Person_Eric_Pooly);
+        dealer = (Person)dbGetObject(Person_Eric_Pooly);
         knowsSet(Person_Matt_Stuvysunt, Person_Eric_Pooly);
         dealerNr = 1;
     } else {
@@ -79,7 +79,7 @@ void tcDealerOffer(Person dealer, ubyte which)
     {120, 200, 180, 220, 79, 110, 0, 0, 110, 200},	/* pooly */
     {220, 66, 0, 110, 0, 220, 0, 212, 20, 130}
     };				/* parker */
-    CompleteLoot comp = dbGetObject(CompleteLoot_LastLoot);
+    CompleteLoot comp = (CompleteLoot)dbGetObject(CompleteLoot_LastLoot);
 
     RemoveList(tcMakeLootList(Person_Matt_Stuvysunt, Relation_has));
 
@@ -115,11 +115,11 @@ void tcDealerSays(Person dealer, ubyte textNr, S32 perc)
     ubyte symp, i;
     struct ObjectNode *n;
     Person others[3];
-    Player player = dbGetObject(Player_Player_1);
+    Player player = (Player)dbGetObject(Player_Player_1);
 
-    others[0] = dbGetObject(Person_Frank_Maloya);
-    others[1] = dbGetObject(Person_Eric_Pooly);
-    others[2] = dbGetObject(Person_Helen_Parker);
+    others[0] = (Person)dbGetObject(Person_Frank_Maloya);
+    others[1] = (Person)dbGetObject(Person_Eric_Pooly);
+    others[2] = (Person)dbGetObject(Person_Helen_Parker);
 
     if (perc == 0) {
 	sprintf(line, NODE_NAME(GetNthNode(dealerText, 4)),
@@ -136,7 +136,7 @@ void tcDealerSays(Person dealer, ubyte textNr, S32 perc)
 
 	for (n = (struct ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n);
 	     n = (struct ObjectNode *) NODE_SUCC(n)) {
-	    Loot loot = OL_DATA(n);
+	    Loot loot = (Loot)OL_DATA(n);
 	    U32 price = hasGet(Person_Matt_Stuvysunt, OL_NR(n)), offer;
 
 	    offer = tcGetDealerOffer(price, perc);
@@ -201,7 +201,7 @@ LIST *tcMakeLootList(U32 containerID, U32 relID)
 {
     NODE *n;
     Loot loot;
-    CompleteLoot comp = dbGetObject(CompleteLoot_LastLoot);
+    CompleteLoot comp = (CompleteLoot)dbGetObject(CompleteLoot_LastLoot);
     char data[TXT_KEY_LENGTH];
     U32 value;
     LIST *out = CreateList();
@@ -227,7 +227,7 @@ LIST *tcMakeLootList(U32 containerID, U32 relID)
 	for (n = (NODE *) LIST_HEAD(loots); NODE_SUCC(n);
 	     n = (NODE *) NODE_SUCC(n)) {
 	    if (OL_TYPE(n) == Object_Loot) {
-		loot = OL_DATA(n);
+		loot = (Loot)OL_DATA(n);
 
 		value = GetP(dbGetObject(containerID), relID, loot);
 

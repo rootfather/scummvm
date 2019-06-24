@@ -21,10 +21,10 @@
 #ifndef MODULE_GFX
 #define MODULE_GFX
 
-#include "theclou.h"
+#include "clue/theclou.h"
 #include "SDL.h"
 
-#include "list/list.h"
+#include "clue/list/list.h"
 
 #define GFX_NO_MEM_HANDLE	((uword) -1)
 
@@ -248,5 +248,5 @@ void gfxGetMouseXY(GC *gc, U16 *pMouseX, U16 *pMouseY);
 
 void ShowIntro(void);
 
-#include "gfx/gfxnch4.h"
+#include "clue/gfx/gfxnch4.h"
 #endif

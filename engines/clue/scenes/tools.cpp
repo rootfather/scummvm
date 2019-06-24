@@ -18,7 +18,7 @@
   distribution.
  ****************************************************************************/
 
-#include "scenes/scenes.h"
+#include "clue/scenes/scenes.h"
 
 char *tcShowPriceOfTool(U32 nr, U32 type, void *data)
 {
@@ -37,7 +37,7 @@ ubyte tcBuyTool(ubyte choice)
     LIST *tools;
     NODE *node;
     U32 toolID, price, count;
-    Person mary = dbGetObject(Person_Mary_Bolton);
+    Person mary = (Person)dbGetObject(Person_Mary_Bolton);
     Tool tool;
     U8 oldChoice = GET_OUT;
     char exp[TXT_KEY_LENGTH];
@@ -68,7 +68,7 @@ ubyte tcBuyTool(ubyte choice)
 	oldChoice = choice;
 
 	if (ChoiceOk(choice = Bubble(tools, choice, 0L, 0L), GET_OUT, tools)) {
-	    node = GetNthNode(tools, (U32) choice);
+	    node = (NODE *)GetNthNode(tools, (U32) choice);
 	    toolID = OL_NR(node);
 	    tool = (Tool) dbGetObject(toolID);
 	    price = tcGetToolPrice(tool);
@@ -166,7 +166,7 @@ ubyte tcShowTool(ubyte choice)
 	oldChoice = choice;
 
 	if (ChoiceOk(choice = Bubble(tools, choice, 0L, 0L), GET_OUT, tools)) {
-	    node = GetNthNode(tools, (U32) choice);
+	    node = (NODE *)GetNthNode(tools, (U32) choice);
 	    toolID = OL_NR(node);
 
 	    Present(toolID, "Tool", InitToolPresent);
@@ -210,7 +210,7 @@ void tcSellTool()
 	if (ChoiceOk(choice = Bubble(tools, 0, NULL, 0L), GET_OUT, tools)) {
 	    ubyte choice2 = 0;
 
-	    node = GetNthNode(tools, (U32) choice);
+	    node = (NODE *)GetNthNode(tools, (U32) choice);
 	    toolID = OL_NR(node);
 
 	    tool = (Tool) dbGetObject(toolID);

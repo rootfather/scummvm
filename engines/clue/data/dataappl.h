@@ -19,44 +19,44 @@
 #ifndef MODULE_DATAAPPL
 #define MODULE_DATAAPPL
 
-#include "theclou.h"
+#include "clue/theclou.h"
 
 #ifndef MODULE_LIST
-#include "list/list.h"
+#include "clue/list/list.h"
 #endif
 
 #ifndef MODULE_TEXT
-#include "text/text.h"
+#include "clue/text/text.h"
 #endif
 
 #ifndef MODULE_RELATION
-#include "data/relation.h"
+#include "clue/data/relation.h"
 #endif
 
 #ifndef MODULE_DATABASE
-#include "data/database.h"
+#include "clue/data/database.h"
 #endif
 
 #ifndef MODULE_DATACALC
-#include "data/datacalc.h"
+#include "clue/data/datacalc.h"
 #endif
 
 #ifndef MODULE_DATAAPPL
-#include "data/dataapplh"
+#include "clue/data/dataapplh"
 #endif
 
-#include "data/objstd/tcdata.h"
+#include "clue/data/objstd/tcdata.h"
 
 #ifndef MODULE_EVIDENCE
-#include "scenes/evidence.h"
+#include "clue/scenes/evidence.h"
 #endif
 
 #ifndef MODULE_LIVING
-#include "living/living.h"
+#include "clue/living/living.h"
 #endif
 
 #ifndef MODULE_LANDSCAP
-#include "landscap/landscap.h"
+#include "clue/landscap/landscap.h"
 #endif
 
 

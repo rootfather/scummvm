@@ -18,7 +18,7 @@
   distribution.
  ****************************************************************************/
 
-#include "scenes/scenes.h"
+#include "clue/scenes/scenes.h"
 
 static U32 tcShowPatrol(LIST * bubble_l, char *c_time, char *patr, ubyte first,
 		        Building bui, U32 raise)
@@ -143,7 +143,7 @@ void Investigate(char *location)
 		if ((GetMinute % 60) != 0)
 		    ShowTime(0);
 
-		n = CreateNode(bubble_l, 0L, NODE_NAME(nextMsg));
+		n = (NODE *)CreateNode(bubble_l, 0L, NODE_NAME(nextMsg));
 
 		SetBubbleType(THINK_BUBBLE);
 

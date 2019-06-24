@@ -18,10 +18,10 @@
   distribution.
  ****************************************************************************/
 
-#include "base/base.h"
+#include "clue/base/base.h"
 
-#include "landscap/landscap.h"
-#include "landscap/landscap.ph"
+#include "clue/landscap/landscap.h"
+#include "clue/landscap/landscap_p.h"
 
 bool lsIsLSObjectInActivArea(LSObject lso)
 {
@@ -187,7 +187,7 @@ ubyte lsGetLoudness(uword x, uword y)
 
 U32 lsGetObjectState(U32 objID)
 {
-    LSObject obj = dbGetObject(objID);
+    LSObject obj = (LSObject)dbGetObject(objID);
 
     return (lsGetNewState(obj));
 }
@@ -217,12 +217,12 @@ uword lsGetFloorIndex(uword x, uword y)
 
 static void lsExtendGetList(LIST * list, U32 nr, U32 type, void *data)
 {
-    struct ObjectNode *new =
+    struct ObjectNode *newNode =
 	dbAddObjectNode(list, type, OLF_INCLUDE_NAME | OLF_INSERT_STAR);
 
-    new->nr = nr;
-    new->type = type;
-    new->data = data;
+    newNode->nr = nr;
+    newNode->type = type;
+    newNode->data = data;
 }
 
 LIST *lsGetObjectsByList(uword x, uword y, uword width, uword height,
@@ -248,7 +248,7 @@ LIST *lsGetObjectsByList(uword x, uword y, uword width, uword height,
     /* Ausnahme: Beutesack eintragen! */
     if (addLootBags) {
 	for (i = 9701; i <= 9708; i++) {
-	    LSObject lso = dbGetObject(i);
+	    LSObject lso = (LSObject)dbGetObject(i);
 
 	    if (lso->uch_Visible == LS_OBJECT_VISIBLE)
 		if (lsIsInside(lso, x, y, x + width, y + height))
@@ -306,7 +306,7 @@ LIST *lsGetRoomsOfArea(U32 ul_AreaId)
 
     for (room = LIST_HEAD(ObjectListPrivate); NODE_SUCC(room);
 	 room = NODE_SUCC(room)) {
-	LSRoom myroom = OL_DATA(room);
+	LSRoom myroom = (LSRoom)OL_DATA(room);
 
 	if ((word) myroom->us_LeftEdge < 0)
 	    myroom->us_LeftEdge = 0;

@@ -18,9 +18,9 @@
   distribution.
  ****************************************************************************/
 
-#include "base/base.h"
+#include "clue/base/base.h"
 
-#include "planing/support.h"
+#include "clue/planing/support.h"
 
 
 /* loot support */

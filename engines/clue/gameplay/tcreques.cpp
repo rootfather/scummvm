@@ -18,8 +18,8 @@
   distribution.
  ****************************************************************************/
 
-#include "gameplay/gp.h"
-#include "gameplay/gp_app.h"
+#include "clue/gameplay/gp.h"
+#include "clue/gameplay/gp_app.h"
 
 void PrintStatus(char *text)
 {
@@ -36,7 +36,7 @@ U32 ShowTheClouRequester(S32 error_class)
     LIST *menu;
     U32 answer = 0;
     ubyte choices;
-    Player player = dbGetObject(Player_Player_1);
+    Player player = (Player)dbGetObject(Player_Player_1);
 
     inpTurnESC(0);
 
