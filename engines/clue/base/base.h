@@ -119,6 +119,7 @@ extern void tcClearStdBuffer(void *p_Buffer);
 
 extern void tcSetPermanentColors(void);
 void tcDone(void);
+int clue_main(const char *path);
 
 U32 tcGetProcessorType(void);
 

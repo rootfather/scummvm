@@ -20,9 +20,15 @@
  *
  */
 
+#define FORBIDDEN_SYMBOL_ALLOW_ALL
+#define byte _byte
+#include "clue/base/base.h"
+#undef byte
+
 #include "common/error.h"
 #include "common/events.h"
 #include "common/system.h"
+#include "common/config-manager.h"
 
 #include "engines/engine.h"
 #include "engines/util.h"
@@ -44,6 +50,10 @@ Common::Error ClueEngine::run() {
 	// Initialize backend
 	initGraphics(320, 200);
 
+	// Game entry point
+	clue_main(ConfMan.get("path").c_str());
+
+	/*
     // Run a dummy loop
 	Common::Event event;
 
@@ -55,11 +65,9 @@ Common::Error ClueEngine::run() {
 
 		g_system->delayMillis(10);
 	}
+	*/
 
 	return Common::kNoError;
-}
-
-void initialize() {
 }
 
 } // End of namespace Clue

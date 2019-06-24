@@ -677,12 +677,11 @@ static void parseOptions(int argc, char *argv[])
 }
 
 /**********************************************************/
-int main(int argc, char **argv)
+int clue_main(const char *path)
 {
     bool res;
-    const char *result;
 
-    parseOptions(argc, argv);
+    parseOptions(0, NULL);
 
     rndInit();
 
@@ -690,11 +689,7 @@ int main(int argc, char **argv)
     inpClearKbBuffer();
 
     /* set path for BuildPathName! */
-    if ((result = getenv("DERCLOU_ROOTDIR"))) {
-        dskSetRootPath(result);
-    } else {
-        dskSetRootPath(".");
-    }
+    dskSetRootPath(path);
 
     if ((res = tcInit()))
         tcDo();
