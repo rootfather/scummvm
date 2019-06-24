@@ -137,7 +137,7 @@
 
 #define Relation_break      11
 #define breakP(l,r,p,c)     AskP   (dbGetObject (l), 11, dbGetObject (r), p, c)
-#define break(l,r)          AskP   (dbGetObject (l), 11, dbGetObject (r), NO_PARAMETER, CMP_NO)
+#define break_(l,r)         AskP   (dbGetObject (l), 11, dbGetObject (r), NO_PARAMETER, CMP_NO)
 #define breakAll(l,f,t)     { SetObjectListAttr (f,t); AskAll (dbGetObject (l), 11, BuildObjectList); }
 #define breakSetP(l,r,p)    SetP   (dbGetObject (l), 11, dbGetObject (r), p)
 #define breakSet(l,r)       SetP   (dbGetObject (l), 11, dbGetObject (r), NO_PARAMETER)

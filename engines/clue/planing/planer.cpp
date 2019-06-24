@@ -733,7 +733,7 @@ static char *plSetUseString(U32 nr, U32 type, void *data)
 
     useString[0] = '\0';
 
-    if (break (((LSObject) dbGetObject(UseObject))->Type, nr)) {
+    if (break_ (((LSObject) dbGetObject(UseObject))->Type, nr)) {
 	sprintf(useString, "%" PRIu32 " %s",
 		tcGuyUsesTool(OL_NR(GetNthNode(PersonsList, CurrentPerson)),
 			      (Building) dbGetObject(Planing_BldId), nr,
@@ -1039,7 +1039,7 @@ static void plActionUse(void)
 					      (PersonsList, CurrentPerson)),
 					     choice2)) {
 					    if (plCheckRequiredTools(choice2)) {
-						if (break
+						if (break_
 						    (((LSObject)
 						      dbGetObject(choice1))->
 						     Type, choice2)) {
