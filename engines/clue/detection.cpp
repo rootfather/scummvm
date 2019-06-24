@@ -64,8 +64,19 @@ static const ClueGameDescription gameDescriptions[] = {
 			Common::DE_DEU,
 			Common::kPlatformDOS,
 			ADGF_NO_FLAGS,
-			GUIO1(GUIO_NONE)
+			GUIO0()
 		},
+	},
+	{
+		{
+			"clue",
+			"",
+			AD_ENTRY1s("THECLUE!.EXE", "5dff3defc96466f2719b4189cf5cddf2", 271040),
+			Common::EN_ANY,
+			Common::kPlatformDOS,
+			ADGF_NO_FLAGS,
+			GUIO0()
+		}
 	},
 
 	{ AD_TABLE_END_MARKER }
