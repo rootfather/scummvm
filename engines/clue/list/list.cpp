@@ -258,7 +258,7 @@ void ReplaceNode(LIST *list, const char *name, NODE *newNode)
 uint32 ReadList(LIST *list, size_t size, char *fileName)
 {
     FILE *fh;
-    uint32 i = UINT32_C(0);
+    uint32 i = 0;
     char buffer[256];
 
     if ((fh = dskOpen(fileName, "rb"))) {

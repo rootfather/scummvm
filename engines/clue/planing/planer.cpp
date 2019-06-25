@@ -734,7 +734,7 @@ static char *plSetUseString(uint32 nr, uint32 type, void *data)
     useString[0] = '\0';
 
     if (break_ (((LSObject) dbGetObject(UseObject))->Type, nr)) {
-	sprintf(useString, "%" PRIu32 " %s",
+	sprintf(useString, "%u %s",
 		tcGuyUsesTool(OL_NR(GetNthNode(PersonsList, CurrentPerson)),
 			      (Building) dbGetObject(Planing_BldId), nr,
 			      ((LSObject) dbGetObject(UseObject))->Type),

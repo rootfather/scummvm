@@ -112,7 +112,7 @@ void SaveSystem(FILE * fh, struct System *sys)
 
 	for (h = (struct Handler *) LIST_HEAD(sys->Handlers); NODE_SUCC(h);
 	     h = (struct Handler *) NODE_SUCC(h))
-	    fprintf(fh, FILE_HANDLER_ID "\r\n%" PRIu32 "\r\n", h->Id);
+	    fprintf(fh, FILE_HANDLER_ID "\r\n%u\r\n", h->Id);
     }
 }
 
@@ -129,7 +129,7 @@ LIST *LoadSystem(FILE * fh, struct System *sys)
 		   && strcmp(buffer, FILE_HANDLER_ID) == 0) {
 		uint32 id;
 
-		if (fscanf(fh, "%" SCNu32 "\r\n", &id) == 1
+		if (fscanf(fh, "%u\r\n", &id) == 1
 		    && !dbIsObject(id, Object_Police)) {
 		    handlerNr++;
 
@@ -256,23 +256,23 @@ void SaveHandler(FILE * fh, struct System *sys, uint32 id)
     register struct Action *a;
 
     if (fh && sys && (h = FindHandler(sys, id))) {
-	fprintf(fh, FILE_ACTION_LIST_ID "\r\n%" PRIu32 "\r\n", id);
+	fprintf(fh, FILE_ACTION_LIST_ID "\r\n%u\r\n", id);
 
 	for (a = (struct Action *) LIST_HEAD(h->Actions); NODE_SUCC(a);
 	     a = (struct Action *) NODE_SUCC(a)) {
-	    fprintf(fh, FILE_ACTION_ID "\r\n%" PRIu16 "\r\n%" PRIu16 "\r\n",
+	    fprintf(fh, FILE_ACTION_ID "\r\n%u\r\n%u\r\n",
 		    a->Type, a->TimeNeeded);
 
 	    switch (a->Type) {
 	    case ACTION_GO:
-		fprintf(fh, "%" PRIu16 "\r\n",
+		fprintf(fh, "%u\r\n",
 			ActionData(a, struct ActionGo *)->Direction);
 		break;
 
 	    case ACTION_USE:
 	    case ACTION_TAKE:
 	    case ACTION_DROP:
-		fprintf(fh, "%" PRIu32 "\r\n%" PRIu32 "\r\n",
+		fprintf(fh, "%u\r\n%u\r\n",
 			ActionData(a, struct ActionUse *)->ToolId, ActionData(a,
 									      struct
 									      ActionUse
@@ -285,7 +285,7 @@ void SaveHandler(FILE * fh, struct System *sys, uint32 id)
 	    case ACTION_CONTROL:
 	    case ACTION_SIGNAL:
 	    case ACTION_WAIT_SIGNAL:
-		fprintf(fh, "%" PRIu32 "\r\n",
+		fprintf(fh, "%u\r\n",
 			ActionData(a, struct ActionOpen *)->ItemId);
 		break;
 	    }
@@ -309,20 +309,20 @@ byte LoadHandler(FILE * fh, struct System *sys, uint32 id)
 	    if (strcmp(buffer, FILE_ACTION_LIST_ID) == 0) {
 		uint32 rid;
 
-		if (fscanf(fh, "%" SCNu32 "\r\n", &rid) == 1 && id == rid) {
+		if (fscanf(fh, "%u\r\n", &rid) == 1 && id == rid) {
 		    SetActivHandler(sys, id);
 
 		    while (dskGetLine(buffer, sizeof(buffer), fh)
 			   && (strcmp(buffer, FILE_ACTION_ID) == 0)) {
-			fscanf(fh, "%" SCNu16 "\r\n", &type);
-			fscanf(fh, "%" SCNu16 "\r\n", &time);
+			fscanf(fh, "%u\r\n", &type);
+			fscanf(fh, "%u\r\n", &time);
 
 			if (type) {
 			    a = InitAction(sys, type, 0L, 0L, time);
 
 			    switch (type) {
 			    case ACTION_GO:
-				fscanf(fh, "%" SCNu16 "\r\n", &value16);
+				fscanf(fh, "%u\r\n", &value16);
 				ActionData(a, struct ActionGo *)->Direction =
 				    value16;
 				break;
@@ -330,11 +330,11 @@ byte LoadHandler(FILE * fh, struct System *sys, uint32 id)
 			    case ACTION_USE:
 			    case ACTION_TAKE:
 			    case ACTION_DROP:
-				fscanf(fh, "%" SCNu32 "\r\n", &value32);
+				fscanf(fh, "%u\r\n", &value32);
 				ActionData(a, struct ActionUse *)->ToolId =
 				    value32;
 
-				fscanf(fh, "%" SCNu32 "\r\n", &value32);
+				fscanf(fh, "%u\r\n", &value32);
 				ActionData(a, struct ActionUse *)->ItemId =
 				    value32;
 				break;
@@ -344,7 +344,7 @@ byte LoadHandler(FILE * fh, struct System *sys, uint32 id)
 			    case ACTION_CONTROL:
 			    case ACTION_WAIT_SIGNAL:
 			    case ACTION_SIGNAL:
-				fscanf(fh, "%" SCNu32 "\r\n", &value32);
+				fscanf(fh, "%u\r\n", &value32);
 				ActionData(a, struct ActionOpen *)->ItemId =
 				    value32;
 				break;

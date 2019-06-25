@@ -249,7 +249,7 @@ struct Spot *lsAddSpot(uint16 us_Size, uint16 us_Speed, uint32 ul_CtrlObjId)
 
     SpotNr = GetNrOfNodes(sc->p_spots);
 
-    sprintf(line, "*%s%" PRIu32, LS_SPOT_NAME, SpotNr);
+    sprintf(line, "*%s%u", LS_SPOT_NAME, SpotNr);
 
     spot =
 	(struct Spot *) CreateNode(sc->p_spots, sizeof(*spot), line);

@@ -204,7 +204,7 @@ uint32 PlayStory(void)
 	/* die neue Szene initialisieren ! ( Bhnenbild aufbauen ) */
 #ifdef DEEP_DEBUG
 	printf("----------------------------------------\n");
-	printf("SCENE_INIT %" PRIu32 "\n", curr->EventNr);
+	printf("SCENE_INIT %u\n", curr->EventNr);
 #endif
 	if (curr->Init)
 	    curr->Init();
@@ -666,9 +666,9 @@ struct Scene *GetLocScene(uint32 locNr)
 void FormatDigit(uint32 digit, char *s)
 {
     if (digit < 10)
-	sprintf(s, "0%" PRIu32, digit);
+	sprintf(s, "0%u", digit);
     else
-	sprintf(s, "%" PRIu32, digit);
+	sprintf(s, "%u", digit);
 }
 
 char *BuildTime(uint32 min, char *time)

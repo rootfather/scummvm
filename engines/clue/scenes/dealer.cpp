@@ -276,13 +276,13 @@ LIST *tcMakeLootList(uint32 containerID, uint32 relID)
 
 		CreateNode(out, 0L, data);
 
-		sprintf(data, "%" PRIu32, value);
+		sprintf(data, "%u", value);
 		CreateNode(out, 0L, data);
 
-		sprintf(data, "%" PRIu32, loot->Volume);
+		sprintf(data, "%u", loot->Volume);
 		CreateNode(out, 0L, data);
 
-		sprintf(data, "%" PRIu16, loot->Weight);
+		sprintf(data, "%u", loot->Weight);
 		CreateNode(out, 0L, data);
 	    }
 	}

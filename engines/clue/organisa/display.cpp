@@ -180,7 +180,7 @@ void tcDisplayCommon(void)
     gfxSetRect(212, 106);
     strcpy(line, NODE_NAME(GetNthNode(texts, 5L)));
 
-    sprintf(name, " %" PRId32 "%%", tcCalcMattsPart());
+    sprintf(name, " %d%%", tcCalcMattsPart());
     strcat(line, name);
 
     gfxPrint(l_gc, line, 35, GFX_PRINT_RIGHT);

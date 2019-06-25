@@ -470,7 +470,7 @@ int32 tcEscapeFromBuilding(uint32 escBits)
 {
     Person gludo = (Person)dbGetObject(Person_John_Gludo);
     byte escapeSucc = FAHN_NOT_ESCAPED;
-    int32 timeLeft = INT32_MAX;
+    int32 timeLeft = INT_MAX;
 
     /* Fluchtbilder zeigen! */
     livSetAllInvisible();

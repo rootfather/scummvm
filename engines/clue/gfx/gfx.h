@@ -53,7 +53,7 @@ typedef enum {
 /* defines for gfxSetPens */
 #define GFX_SAME_PEN						((byte)255)
 
-#define GFX_NO_COLL_IN_MEM               UINT16_MAX
+#define GFX_NO_COLL_IN_MEM               USHRT_MAX
 
 #define GFX_PALETTE_SIZE			768	/* 256 Farben * 3 Bytes */
 #define GFX_SIZE_OF_COLLECTION(c) 	(gfxGetILBMSize(c) + GFX_COLORTABLE_SIZE)

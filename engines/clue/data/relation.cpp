@@ -275,12 +275,12 @@ int SaveRelations(char *file, uint32 offset, uint32 size, uint16 disk_id)
 
 		    fprintf(fh, "%s\r\n", REL_TABLE_MARK);
 
-		    fprintf(fh, "%" PRIu32 "\r\n", rd->rd_id);
+		    fprintf(fh, "%u\r\n", rd->rd_id);
 
 		    for (r = rd->rd_relationsTable; r; r = r->r_next) {
 			strcpy(left, DecodeKey(r->r_leftKey));
 			strcpy(right, DecodeKey(r->r_rightKey));
-			fprintf(fh, "%s\r\n%s\r\n%" PRIu32 "\r\n",
+			fprintf(fh, "%s\r\n%s\r\n%u\r\n",
 				left, right, r->r_parameter);
 		    }
 		}
@@ -318,7 +318,7 @@ int LoadRelations(char *file, uint16 disk_id)
 		dskGetLine(buffer, sizeof(buffer), fh);
 
 		while (!feof(fh) && strcmp(buffer, REL_TABLE_MARK) == 0) {
-		    fscanf(fh, "%" SCNu32 "\r\n", &rd);
+		    fscanf(fh, "%u\r\n", &rd);
 
 		    goOn = 0;
 		    if (FindRelation(rd))
@@ -335,15 +335,15 @@ int LoadRelations(char *file, uint16 disk_id)
 				break;
 			    }
 
-			    if (sscanf(left, "%" SCNu32, &dummy) != 1)
+			    if (sscanf(left, "%u", &dummy) != 1)
 				break;
 
 			    dskGetLine(right, sizeof(right), fh);
 
-			    if (sscanf(right, "%" SCNu32, &dummy) != 1)
+			    if (sscanf(right, "%u", &dummy) != 1)
 				break;
 
-			    if (fscanf(fh, "%" SCNu32 "\r\n", &parameter) != 1)
+			    if (fscanf(fh, "%u\r\n", &parameter) != 1)
 				break;
 
 			    if (!SetP

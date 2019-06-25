@@ -22,8 +22,8 @@
   distribution.
  ****************************************************************************/
 
-#define SCENE_NODE              UINT8_C(100)
-#define EVENT_NODE              UINT8_C(101)
+#define SCENE_NODE              100
+#define EVENT_NODE              101
 #define MAX_SCENES_AMOUNT	(1<<14) /* 14 + 18 = 32 Bits !!! */
 #define MAX_EVENTS_AMOUNT	(1<<18) /* wichtig da story das ben”tigt ! */
 

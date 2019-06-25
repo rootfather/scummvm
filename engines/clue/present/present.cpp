@@ -75,7 +75,7 @@ void DrawPresent(LIST * present, uint8 firstLine, GC *gc, uint8 max)
 	    gfxSetPens(gc, 249, 252, 253);
 
 	    gfxSetRect(206, 316 - 206);
-	    sprintf(s, "%" PRIu32 " %%", (p->extendedNr * 100) / (p->maxNr));
+	    sprintf(s, "%u %%", (p->extendedNr * 100) / (p->maxNr));
 
 	    gfxPrint(gc, s, j, GFX_PRINT_CENTER);
 	    break;
@@ -244,7 +244,7 @@ void AddPresentLine(LIST * l, uint8 presentHow, uint32 data, uint32 max,
 	ErrorMsg(Internal_Error, ERROR_MODULE_PRESENT, 0);
 
     if (presentHow == PRESENT_AS_NUMBER) {
-	sprintf(p->extendedText, "%" PRIu32, data);
+	sprintf(p->extendedText, "%u", data);
 
 	p->presentHow = PRESENT_AS_TEXT;
     }

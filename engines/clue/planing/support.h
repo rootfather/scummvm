@@ -96,7 +96,7 @@
 #define PLANING_AREA_CAR     16
 
 /* functions for bits */
-#define BIT(x)               (UINT32_C(1)<<(x))
+#define BIT(x)               (1<<(x))
 #define CHECK_STATE(v,b)     ((v) & BIT(b))
 
 /* Alarms & power control */

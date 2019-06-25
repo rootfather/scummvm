@@ -126,7 +126,7 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc)
 	    {
 		char debugtxt[TXT_KEY_LENGTH];
 
-		sprintf(debugtxt, " ObjNr=%" PRId32, OL_NR(node));
+		sprintf(debugtxt, " ObjNr=%d", OL_NR(node));
 		strcat(name, debugtxt);
 	    }
 #endif

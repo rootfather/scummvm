@@ -21,8 +21,7 @@
 #include "common/scummsys.h"
 #include "common/util.h"
 #include <string.h>
-#include <stddef.h>
-#include <inttypes.h>
+#include <limits.h>
 
 #define EOS                     ((char)'\0')
 
@@ -108,24 +107,24 @@
  *
  */
 
-#define MENU_TXT		UINT32_C( 0)
-#define OBJECTS_TXT		UINT32_C( 1)
-#define BUSINESS_TXT 		UINT32_C( 2)
-#define HOUSEDESC_TXT		UINT32_C( 3)
-#define THECLOU_TXT		UINT32_C( 4)
-#define INVESTIGATIONS_TXT 	UINT32_C( 5)
-#define CDROM_TXT 		UINT32_C( 6)
-#define OBJECTS_ENUM_TXT	UINT32_C( 7)
-#define ANIM_TXT		UINT32_C( 8)
-#define PRESENT_TXT		UINT32_C( 9)
-#define STORY_0_TXT		UINT32_C(10)
-#define PLAN_TXT		UINT32_C(11)
-#define TOOLS_TXT 		UINT32_C(12)
-#define LOOK_TXT		UINT32_C(13)
-#define ABILITY_TXT		UINT32_C(14)
-#define STORY_1_TXT		UINT32_C(15)
-#define TALK_0_TXT		UINT32_C(16)
-#define TALK_1_TXT              UINT32_C(17)
+#define MENU_TXT		 0
+#define OBJECTS_TXT		 1
+#define BUSINESS_TXT 		 2
+#define HOUSEDESC_TXT		 3
+#define THECLOU_TXT		 4
+#define INVESTIGATIONS_TXT 	 5
+#define CDROM_TXT 		 6
+#define OBJECTS_ENUM_TXT	 7
+#define ANIM_TXT		 8
+#define PRESENT_TXT		 9
+#define STORY_0_TXT		10
+#define PLAN_TXT		11
+#define TOOLS_TXT 		12
+#define LOOK_TXT		13
+#define ABILITY_TXT		14
+#define STORY_1_TXT		15
+#define TALK_0_TXT		16
+#define TALK_1_TXT              17
 
 /*
  * Disk Nr.
@@ -180,19 +179,19 @@ void ShowInsertDiskReq(uint16 disk_id);
  * some defines ...
  */
 
-#define MATT_PICTID             UINT16_C(  7)
-#define OLD_MATT_PICTID         UINT16_C(125)
-#define BIG_SHEET               UINT16_C(  5)
+#define MATT_PICTID               7
+#define OLD_MATT_PICTID         125
+#define BIG_SHEET                 5
 
-#define BGD_LONDON              UINT16_C( 21)
-#define BGD_PLANUNG             UINT16_C( 23)
-#define BGD_EINBRUCH            UINT16_C( 23)
-#define BGD_CLEAR               UINT16_C(  0)
+#define BGD_LONDON               21
+#define BGD_PLANUNG              23
+#define BGD_EINBRUCH             23
+#define BGD_CLEAR                 0
 
-#define RADIO_BUBBLE            UINT16_C( 12)
-#define SPEAK_BUBBLE            UINT16_C( 12)
-#define THINK_BUBBLE            UINT16_C( 13)
+#define RADIO_BUBBLE             12
+#define SPEAK_BUBBLE             12
+#define THINK_BUBBLE             13
 
-#define GFX_COLL_PARKING        UINT16_C( 27)
+#define GFX_COLL_PARKING         27
 
 #endif

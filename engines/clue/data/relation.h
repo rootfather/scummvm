@@ -38,7 +38,7 @@
 #define REL_FILE_MARK      "RELF"
 #define REL_TABLE_MARK     "RTAB"
 
-#define NO_PARAMETER       UINT32_MAX	/* stdint.h */
+#define NO_PARAMETER       UINT_MAX	/* limits.h */
 
 
 #define Set(leftKey,id,rightKey)  SetP (leftKey, id, rightKey, NO_PARAMETER)

@@ -286,7 +286,7 @@ void InitPersonPresent(uint32 nr, LIST * presentationData, LIST * texts)
     AddPresentLine(presentationData, PRESENT_AS_BAR, obj->Avarice, 255,
 		   texts, 13);
     AddPresentLine(presentationData, PRESENT_AS_BAR,
-		   (UINT32_C(255) - obj->Panic), 255, texts, 14);
+		   (255 - obj->Panic), 255, texts, 14);
     AddPresentLine(presentationData, PRESENT_AS_BAR, obj->KnownToPolice,
 		   255, texts, 15);
 

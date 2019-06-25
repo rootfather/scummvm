@@ -46,10 +46,10 @@
 #define INFO                    (1<<8)
 #define SLEEP                   (1<<9)
 
-#define GP_ALL_CHOICES_ENABLED  UINT32_MAX
+#define GP_ALL_CHOICES_ENABLED  UINT_MAX
 
 /* Szene kann UNENDLICH oft geschehen */
-#define CAN_ALWAYS_HAPPEN       UINT16_MAX
+#define CAN_ALWAYS_HAPPEN       USHRT_MAX
 
 #define MINUTES_PER_DAY          1440L
 

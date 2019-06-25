@@ -22,17 +22,17 @@
 
 #include "clue/anim/sysanim.h"
 
-#define	PIC_MODE_POS            UINT16_C( 1)
-#define	PIC_P_SEC_POS		UINT16_C( 2)
-#define	PIC_1_ID_POS		UINT16_C( 3)
-#define	ANIM_COLL_ID_POS	UINT16_C( 4)
-#define	PIC_COUNT_POS		UINT16_C( 5)
-#define	PHASE_WIDTH_POS         UINT16_C( 6)
-#define	PHASE_HEIGHT_POS	UINT16_C( 7)
-#define	PHASE_OFFSET_POS	UINT16_C( 8)
-#define	X_DEST_OFFSET_POS	UINT16_C( 9)
-#define	Y_DEST_OFFSET_POS	UINT16_C(10)
-#define	PLAY_MODE_POS		UINT16_C(11)
+#define	PIC_MODE_POS             1
+#define	PIC_P_SEC_POS		 2
+#define	PIC_1_ID_POS		 3
+#define	ANIM_COLL_ID_POS	 4
+#define	PIC_COUNT_POS		 5
+#define	PHASE_WIDTH_POS          6
+#define	PHASE_HEIGHT_POS	 7
+#define	PHASE_OFFSET_POS	 8
+#define	X_DEST_OFFSET_POS	 9
+#define	Y_DEST_OFFSET_POS	10
+#define	PLAY_MODE_POS		11
 
 /* Defines fÅr Playmode */
 #define	PM_NORMAL			     1

@@ -53,7 +53,7 @@ char *dbDecode(KEY key)
 {
     register struct dbObject *obj = dbGetObjectReal(key);
 
-    sprintf(decodeStr, "%" PRIu32, obj->nr);
+    sprintf(decodeStr, "%u", obj->nr);
 
     return decodeStr;
 }
@@ -65,7 +65,7 @@ KEY dbEncode(char *key)
 
     if (!obj) {
 	DebugMsg(ERR_ERROR, ERROR_MODULE_DATABASE,
-            "Could not find object <%" PRIu32 ">!", dbGetObjectReal(key)->nr);
+            "Could not find object <%u>!", dbGetObjectReal(key)->nr);
     }
 
     return obj;
@@ -103,7 +103,7 @@ void dbSetLoadObjectsMode(uint8 mode)
     if (sizeof(*(x)) != localSize) \
     { \
             DebugMsg(ERR_ERROR, ERROR_MODULE_DATABASE, \
-            "Size mismatch (%d != %" PRIu32 ")", sizeof(*(x)), localSize); \
+            "Size mismatch (%d != %u)", sizeof(*(x)), localSize); \
     }
 
 static uint32 dbGetStdDskSize(uint32 type)
@@ -150,7 +150,7 @@ static uint32 dbGetStdDskSize(uint32 type)
 	return 8;
     default:
 	DebugMsg(ERR_ERROR, ERROR_MODULE_DATABASE,
-            "Unknown type #%" PRIu32, type);
+            "Unknown type #%u", type);
 	return 0;
     }
 }
@@ -199,7 +199,7 @@ static uint32 dbGetProfiDskSize(uint32 type)
 	return 8;
     default:
 	DebugMsg(ERR_ERROR, ERROR_MODULE_DATABASE,
-            "Unknown type #%" PRIu32, type);
+            "Unknown type #%u", type);
 	return 0;
     }
 }
@@ -258,7 +258,7 @@ static uint32 dbGetMemSize(uint32 type)
 	return Object_LSRoom_Size;
     default:
 	DebugMsg(ERR_ERROR, ERROR_MODULE_DATABASE,
-            "Unknown type #%" PRIu32, type);
+            "Unknown type #%u", type);
 	return 0;
     }
 }
@@ -716,7 +716,7 @@ dbRWStdObject(void *obj, int RW, uint32 type, uint32 size, uint32 localSize, FIL
 
     default:
 	DebugMsg(ERR_ERROR, ERROR_MODULE_DATABASE,
-            "Unknown type #%" PRIu32, type);
+            "Unknown type #%u", type);
 	break;
     }
 }
@@ -1173,7 +1173,7 @@ dbRWProfiObject(void *obj, int RW, uint32 type, uint32 size, uint32 localSize, F
 
     default:
 	DebugMsg(ERR_ERROR, ERROR_MODULE_DATABASE,
-            "Unknown type #%" PRIu32, type);
+            "Unknown type #%u", type);
 	break;
     }
 }
@@ -1242,7 +1242,7 @@ uint8 dbLoadAllObjects(char *fileName, uint16 diskId)
 
 		if (objHd.size != dbGetDskSize(objHd.type)) {
                     DebugMsg(ERR_ERROR, ERROR_MODULE_DATABASE,
-                      "Expected #%" PRIu32 " of size %" PRIu32 " got %" PRIu32,
+                      "Expected #%u of size %u got %u",
                       objHd.type, dbGetDskSize(objHd.type), objHd.size);
                 }
 
@@ -1682,65 +1682,65 @@ static uint32 getKeyStd(KeyConflictE key)
 {
     switch (key) {
     case _Environment_TheClou:
-        return UINT32_C(  20);
+        return   20;
     case _Player_Player_1:
-        return UINT32_C(  21);
+        return   21;
     case _London_London_1:
-        return UINT32_C(  22);
+        return   22;
     case _London_Jail:
-        return UINT32_C(  23);
+        return   23;
     case _London_Escape:
-        return UINT32_C(  24);
+        return   24;
     case _Evidence_Evidence_1:
-        return UINT32_C(  25);
+        return   25;
     case _CompleteLoot_LastLoot:
-        return UINT32_C(  27);
+        return   27;
     case _Person_Old_Matt:
-        return UINT32_C(  28);
+        return   28;
 
     case _Location_Holland_Street:
-        return UINT32_C(  77);
+        return   77;
     case _Location_Fat_Mans_Pub:
-        return UINT32_C(  81);
+        return   81;
     case _Location_Cars_Vans_Office:
-        return UINT32_C(  82);
+        return   82;
     case _Location_Tools_Shop:
-        return UINT32_C(  83);
+        return   83;
     case _Location_Policestation:
-        return UINT32_C(  84);
+        return   84;
     case _Location_Highgate_Out:
-        return UINT32_C(  98);
+        return   98;
     case _Location_Hotel:
-        return UINT32_C( 124);
+        return  124;
     case _Location_Walrus:
-        return UINT32_C( 125);
+        return  125;
     case _Location_Parker:
-        return UINT32_C( 128);
+        return  128;
     case _Location_Maloya:
-        return UINT32_C( 129);
+        return  129;
     case _Location_Pooly:
-        return UINT32_C( 130);
+        return  130;
     case _Location_Nirvana:
-        return UINT32_C( 133);
+        return  133;
 
     case _Ability_Autos:
-        return UINT32_C( 140);
+        return  140;
     case _Ability_Schloesser:
-        return UINT32_C( 141);
+        return  141;
     case _Ability_Sprengstoff:
-        return UINT32_C( 142);
+        return  142;
     case _Ability_Safes:
-        return UINT32_C( 143);
+        return  143;
     case _Ability_Elektronik:
-        return UINT32_C( 144);
+        return  144;
     case _Ability_Aufpassen:
-        return UINT32_C( 145);
+        return  145;
     case _Ability_Kampf:
-        return UINT32_C( 146);
+        return  146;
 
     default:
 	DebugMsg(ERR_ERROR, ERROR_MODULE_DATABASE,
-            "Unknown trouble key #%" PRIu32, key);
+            "Unknown trouble key #%u", key);
         return 0;
     }
 }
@@ -1749,65 +1749,65 @@ static uint32 getKeyProfi(KeyConflictE key)
 {
     switch (key) {
     case _Environment_TheClou:
-        return UINT32_C(  28);
+        return   28;
     case _Player_Player_1:
-        return UINT32_C(  29);
+        return   29;
     case _London_London_1:
-        return UINT32_C(  30);
+        return   30;
     case _London_Jail:
-        return UINT32_C(  31);
+        return   31;
     case _London_Escape:
-        return UINT32_C(  32);
+        return   32;
     case _Evidence_Evidence_1:
-        return UINT32_C(  33);
+        return   33;
     case _CompleteLoot_LastLoot:
-        return UINT32_C(  35);
+        return   35;
     case _Person_Old_Matt:
-        return UINT32_C(  36);
+        return   36;
 
     case _Location_Holland_Street:
-        return UINT32_C(  95);
+        return   95;
     case _Location_Fat_Mans_Pub:
-        return UINT32_C(  99);
+        return   99;
     case _Location_Cars_Vans_Office:
-        return UINT32_C( 100);
+        return  100;
     case _Location_Tools_Shop:
-        return UINT32_C( 101);
+        return  101;
     case _Location_Policestation:
-        return UINT32_C( 102);
+        return  102;
     case _Location_Highgate_Out:
-        return UINT32_C( 116);
+        return  116;
     case _Location_Hotel:
-        return UINT32_C( 142);
+        return  142;
     case _Location_Walrus:
-        return UINT32_C( 143);
+        return  143;
     case _Location_Parker:
-        return UINT32_C( 146);
+        return  146;
     case _Location_Maloya:
-        return UINT32_C( 147);
+        return  147;
     case _Location_Pooly:
-        return UINT32_C( 148);
+        return  148;
     case _Location_Nirvana:
-        return UINT32_C( 151);
+        return  151;
 
     case _Ability_Autos:
-        return UINT32_C( 173);
+        return  173;
     case _Ability_Schloesser:
-        return UINT32_C( 174);
+        return  174;
     case _Ability_Sprengstoff:
-        return UINT32_C( 175);
+        return  175;
     case _Ability_Safes:
-        return UINT32_C( 176);
+        return  176;
     case _Ability_Elektronik:
-        return UINT32_C( 177);
+        return  177;
     case _Ability_Aufpassen:
-        return UINT32_C( 178);
+        return  178;
     case _Ability_Kampf:
-        return UINT32_C( 179);
+        return  179;
 
     default:
 	DebugMsg(ERR_ERROR, ERROR_MODULE_DATABASE,
-            "Unknown trouble key #%" PRIu32, key);
+            "Unknown trouble key #%u", key);
         return 0;
     }
 }

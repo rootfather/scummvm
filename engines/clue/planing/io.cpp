@@ -45,7 +45,7 @@ void plSaveTools(FILE * fh)
 
 	for (n = (struct ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n);
 	     n = (struct ObjectNode *) NODE_SUCC(n))
-	    fprintf(fh, "%" PRIu32 "\r\n", OL_NR(n));
+	    fprintf(fh, "%u\r\n", OL_NR(n));
 
 	fprintf(fh, PLANING_PLAN_TOOL_END_ID);
 	fprintf(fh, "\r\n");
@@ -64,7 +64,7 @@ LIST *plLoadTools(FILE * fh)
     if (fh) {
 	while (dskGetLine(buffer, sizeof(buffer), fh)
 	       && strcmp(buffer, PLANING_PLAN_TOOL_END_ID) != 0) {
-	    if (sscanf(buffer, "%" SCNu32 "\r\n", &id) == 1) {
+	    if (sscanf(buffer, "%u\r\n", &id) == 1) {
 		toolsNr++;
 
 		if (!has(Person_Matt_Stuvysunt, id)) {
@@ -131,7 +131,7 @@ byte plOpen(uint32 objId, byte mode, FILE ** fh)
 	dskBuildPathName(DISK_CHECK_FILE, DATADISK, name2, pllPath);
 
 	if ((pllFh = dskOpen(pllPath, "rb"))) {
-	    fscanf(pllFh, "%" SCNu32, &pllData);
+	    fscanf(pllFh, "%u", &pllData);
 	    dskClose(pllFh);
 
 	    if ((mode == PLANING_OPEN_WRITE_PLAN) || pllData) {
@@ -191,7 +191,7 @@ byte plOpen(uint32 objId, byte mode, FILE ** fh)
 			pllData |= 1L << i;
 
 			if ((pllFh = dskOpen(pllPath, "wb"))) {
-			    fprintf(pllFh, "%" PRIu32, pllData);
+			    fprintf(pllFh, "%u", pllData);
 			    dskClose(pllFh);
 			}
 		    }

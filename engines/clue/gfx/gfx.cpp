@@ -612,7 +612,7 @@ uint16 gfxTextWidth(GC *gc, const char *txt, size_t len)
 
     w = len * gc->font->w;
 
-    if (w > UINT16_MAX) {
+    if (w > USHRT_MAX) {
         return 0;
     } else {
         return w;
