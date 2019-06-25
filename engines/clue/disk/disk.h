@@ -53,7 +53,4 @@ FILE *dskOpen(const char *Pathname, const char *Mode);
 
 extern bool dskGetLine(char *s, int size, FILE *fp);
 
-int stricmp(const char *s1, const char *s2);
-int strnicmp(const char *s1, const char *s2, size_t n);
-
 #endif
