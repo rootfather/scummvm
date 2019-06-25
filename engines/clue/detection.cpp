@@ -32,16 +32,12 @@
 
 namespace Clue {
 
-struct ClueGameDescription {
-	ADGameDescription desc;
-};
-
 uint32 ClueEngine::getFeatures() const {
-	return _gameDescription->desc.flags;
+	return _gameDescription->flags;
 }
 
 Common::Language ClueEngine::getLanguage() const {
-	return _gameDescription->desc.language;
+	return _gameDescription->language;
 }
 
 }
@@ -54,39 +50,44 @@ static const PlainGameDescriptor clueGames[] = {
 
 namespace Clue {
 
-static const ClueGameDescription gameDescriptions[] = {
+static const ADGameDescription gameDescriptions[] = {
 
 	{
-		{
-			"clue",
-			"",
-			AD_ENTRY1s("THECLOU.EXE", "0e65d33e68e8d902cb5068eab5c5aedc", 270496),
-			Common::DE_DEU,
-			Common::kPlatformDOS,
-			ADGF_NO_FLAGS,
-			GUIO0()
-		},
+		"clue",
+		"",
+		AD_ENTRY1s("THECLOU.EXE", "0e65d33e68e8d902cb5068eab5c5aedc", 270496),
+		Common::DE_DEU,
+		Common::kPlatformDOS,
+		ADGF_NO_FLAGS,
+		GUIO0()
 	},
 	{
-		{
-			"clue",
-			"",
-			AD_ENTRY1s("THECLUE!.EXE", "5dff3defc96466f2719b4189cf5cddf2", 271040),
-			Common::EN_ANY,
-			Common::kPlatformDOS,
-			ADGF_NO_FLAGS,
-			GUIO0()
-		}
+		"clue",
+		"",
+		AD_ENTRY1s("THECLOU.EXE", "e8f62d94f94402a2b1735636350fcb4c", 250192),
+		Common::DE_DEU,
+		Common::kPlatformDOS,
+		ADGF_CD,
+		GUIO0()
+	},
+	{
+		"clue",
+		"",
+		AD_ENTRY1s("THECLUE!.EXE", "5dff3defc96466f2719b4189cf5cddf2", 271040),
+		Common::EN_ANY,
+		Common::kPlatformDOS,
+		ADGF_NO_FLAGS,
+		GUIO0()
 	},
 
-	{ AD_TABLE_END_MARKER }
+	AD_TABLE_END_MARKER
 };
 
 } // End of namespace Clue
 
 class ClueMetaEngine : public AdvancedMetaEngine {
 public:
-	ClueMetaEngine() : AdvancedMetaEngine(Clue::gameDescriptions, sizeof(Clue::ClueGameDescription), clueGames) {
+	ClueMetaEngine() : AdvancedMetaEngine(Clue::gameDescriptions, sizeof(ADGameDescription), clueGames) {
 		_singleId = "clue";
 	}
 
@@ -95,7 +96,7 @@ public:
 	}
 
 	virtual const char *getOriginalCopyright() const {
-		return "The Clue! (C) 199x";
+		return "The Clue! (C) 1994 neo Software";
 	}
 
 	virtual bool hasFeature(MetaEngineFeature f) const;
@@ -125,11 +126,10 @@ bool Clue::ClueEngine::hasFeature(EngineFeature f) const {
 }
 
 bool ClueMetaEngine::createInstance(OSystem *syst, Engine **engine, const ADGameDescription *desc) const {
-	const Clue::ClueGameDescription *gd = (const Clue::ClueGameDescription *)desc;
-	if (gd) {
-		*engine = new Clue::ClueEngine(syst, gd);
+	if (desc) {
+		*engine = new Clue::ClueEngine(syst, desc);
 	}
-	return gd != 0;
+	return desc != 0;
 }
 
 SaveStateList ClueMetaEngine::listSaves(const char *target) const {

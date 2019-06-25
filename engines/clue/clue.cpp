@@ -20,7 +20,7 @@
  *
  */
 
-#include "clue/base/base.h"
+#include "clue/theclou.h"
 
 #include "common/error.h"
 #include "common/events.h"
@@ -31,10 +31,11 @@
 #include "engines/util.h"
 
 #include "clue/clue.h"
+#include "clue/base/base.h"
 
 namespace Clue {
 
-ClueEngine::ClueEngine(OSystem *syst, const ClueGameDescription *gameDesc)
+ClueEngine::ClueEngine(OSystem *syst, const ADGameDescription *gameDesc)
 	: Engine(syst),
 	_gameDescription(gameDesc),
 	_rnd("clue") {

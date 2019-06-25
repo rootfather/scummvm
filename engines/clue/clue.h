@@ -33,10 +33,9 @@
 #include "common/random.h"
 
 #include "engines/engine.h"
+#include "engines/advancedDetector.h"
 
 namespace Clue {
-
-struct ClueGameDescription;
 
 class ClueEngine : public Engine {
 
@@ -45,19 +44,15 @@ protected:
 	virtual Common::Error run();
 	virtual bool hasFeature(EngineFeature f) const;
 
-	void shutdown();
-
 public:
-	ClueEngine(OSystem *syst, const ClueGameDescription *gameDesc);
+	ClueEngine(OSystem *syst, const ADGameDescription *gameDesc);
 	~ClueEngine();
-   	void initialize();
 
-	int getGameType() const;
 	uint32 getFeatures() const;
 	Common::Language getLanguage() const;
 	Common::Platform getPlatform() const;
 
-	const ClueGameDescription *_gameDescription;
+	const ADGameDescription *_gameDescription;
 	Common::RandomSource _rnd;
 };
 
