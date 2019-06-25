@@ -6,11 +6,11 @@
   distribution.
  ****************************************************************************/
 
-U32 ShowTheClouRequester(S32 error_class)
+uint32 ShowTheClouRequester(int32 error_class)
 {
     LIST *menu, *games;
-    U32 answer;
-    ubyte activ, line[255];
+    uint32 answer;
+    byte activ, line[255];
 
     StopAnim();
 

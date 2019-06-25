@@ -21,10 +21,10 @@
 #include "clue/planing/guards.h"
 
 
-void grdDo(FILE * fh, struct System *sys, LIST * PersonsList, U32 BurglarsNr,
-	   U32 PersonsNr, ubyte grdAction)
+void grdDo(FILE * fh, struct System *sys, LIST * PersonsList, uint32 BurglarsNr,
+	   uint32 PersonsNr, byte grdAction)
 {
-    register ubyte i;
+    register byte i;
 
     for (i = BurglarsNr; i < PersonsNr; i++) {
 	switch (grdAction) {
@@ -39,7 +39,7 @@ void grdDo(FILE * fh, struct System *sys, LIST * PersonsList, U32 BurglarsNr,
     }
 }
 
-ubyte grdInit(FILE ** fh, char *mode, U32 bldId, U32 areaId)
+byte grdInit(FILE ** fh, char *mode, uint32 bldId, uint32 areaId)
 {
     char bldName[TXT_KEY_LENGTH], fileName[DSK_PATH_MAX];
 
@@ -60,7 +60,7 @@ void grdDone(FILE * fh)
     dskClose(fh);
 }
 
-ubyte grdAddToList(U32 bldId, LIST * l)
+byte grdAddToList(uint32 bldId, LIST * l)
 {
     struct ObjectNode *n;
 
@@ -77,17 +77,17 @@ ubyte grdAddToList(U32 bldId, LIST * l)
     return 0;
 }
 
-ubyte grdDraw(GC *gc, U32 bldId, U32 areaId)
+byte grdDraw(GC *gc, uint32 bldId, uint32 areaId)
 {
     FILE *fh;
-    ubyte ret = 0;
+    byte ret = 0;
     LIST *GuardsList = CreateList();
 
     if (grdAddToList(bldId, GuardsList)) {
 	if (grdInit(&fh, "r", bldId, areaId)) {
 	    register struct System *grdSys;
-	    register U32 GuardsNr, i;
-	    register uword xpos = 0, ypos = 0;
+	    register uint32 GuardsNr, i;
+	    register uint16 xpos = 0, ypos = 0;
 
 	    GuardsNr = GetNrOfNodes(GuardsList);
 

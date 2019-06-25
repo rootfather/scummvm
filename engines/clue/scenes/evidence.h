@@ -55,35 +55,35 @@
 #define FAHN_ALARM_GUARD      (1<<13)
 
 struct Search {			/* wegen Arrays nicht in objects */
-    word GuyXPos[4], GuyYPos[4];	/* letzte Position im Falle einer Flucht! */
+    int16 GuyXPos[4], GuyYPos[4];	/* letzte Position im Falle einer Flucht! */
 
-    ubyte Exhaust[4];
+    byte Exhaust[4];
 
-    uword WalkTime[4];
-    uword WaitTime[4];
-    uword WorkTime[4];
-    uword KillTime[4];
+    uint16 WalkTime[4];
+    uint16 WaitTime[4];
+    uint16 WorkTime[4];
+    uint16 KillTime[4];
 
-    U32 DeriTime;		/* Abweichung vom Soll */
+    uint32 DeriTime;		/* Abweichung vom Soll */
 
-    U32 TimeOfBurglary;		/* Zeitpunkt! */
-    U32 TimeOfAlarm;		/* Zeitpunkt! */
+    uint32 TimeOfBurglary;		/* Zeitpunkt! */
+    uint32 TimeOfAlarm;		/* Zeitpunkt! */
 
-    U32 BuildingId;		/* Einbruch */
-    U32 LastAreaId;		/* zum Zeitpunkt der Flucht */
+    uint32 BuildingId;		/* Einbruch */
+    uint32 LastAreaId;		/* zum Zeitpunkt der Flucht */
 
-    U32 EscapeBits;
+    uint32 EscapeBits;
 
-    word CallValue;		/* "Wert" der Funkspr., word!!! */
-    uword CallCount;		/* Anzahl d. FUnkspr. */
+    int16 CallValue;		/* "Wert" der Funkspr., int16!!! */
+    uint16 CallCount;		/* Anzahl d. FUnkspr. */
 
-    uword WarningCount;		/* Anzahl der Warnungen */
-    ubyte SpotTouchCount[4];
+    uint16 WarningCount;		/* Anzahl der Warnungen */
+    byte SpotTouchCount[4];
 
-    ubyte KaserneOk;		/* ob die Kaserne geschafft wurde! */
+    byte KaserneOk;		/* ob die Kaserne geschafft wurde! */
 };
 
-extern S32 tcCalcCarEscape(S32 timeLeft);
+extern int32 tcCalcCarEscape(int32 timeLeft);
 extern void tcForgetGuys(void);
 
 extern struct Search Search;

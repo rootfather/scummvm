@@ -96,5 +96,5 @@
 #define PLANING_ANIMATE_FOCUS  (1<<2)
 
 
-void plSync(ubyte animate, U32 targetTime, U32 times, ubyte direction);
+void plSync(byte animate, uint32 targetTime, uint32 times, byte direction);
 #endif

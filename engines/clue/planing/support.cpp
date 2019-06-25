@@ -24,9 +24,9 @@
 
 
 /* loot support */
-U32 plGetNextLoot(void)
+uint32 plGetNextLoot(void)
 {
-    register ubyte i;
+    register byte i;
 
     for (i = 0; i < PLANING_NR_LOOTS; i++) {
 	if (!Planing_Loot[i]) {
@@ -41,11 +41,11 @@ U32 plGetNextLoot(void)
 }
 
 /* check support */
-ubyte plLivingsPosAtCar(U32 bldId)
+byte plLivingsPosAtCar(uint32 bldId)
 {
     Building bldObj = (Building) dbGetObject(bldId);
-    uword xpos, ypos, carxpos, carypos;
-    ubyte i, atCar = 1;
+    uint16 xpos, ypos, carxpos, carypos;
+    byte i, atCar = 1;
 
     carxpos = bldObj->CarXPos + 8;
     carypos = bldObj->CarYPos + 8;
@@ -73,10 +73,10 @@ ubyte plLivingsPosAtCar(U32 bldId)
     return atCar;
 }
 
-ubyte plAllInCar(U32 bldId)
+byte plAllInCar(uint32 bldId)
 {
-    ubyte maxPerson = 0, i, ret = 1;
-    U32 maxTimer = 0L, oldTimer = CurrentTimer(plSys), realCurrentPerson =
+    byte maxPerson = 0, i, ret = 1;
+    uint32 maxTimer = 0L, oldTimer = CurrentTimer(plSys), realCurrentPerson =
 	CurrentPerson;
 
     for (i = 0; i < BurglarsNr; i++) {
@@ -111,13 +111,13 @@ ubyte plAllInCar(U32 bldId)
     return ret;
 }
 
-ubyte plIsStair(U32 objId)
+byte plIsStair(uint32 objId)
 {
-    return (ubyte) ((((LSObject) dbGetObject(objId))->Type == Item_Treppe));
+    return (byte) ((((LSObject) dbGetObject(objId))->Type == Item_Treppe));
 }
 
 /* special items support */
-void plCorrectOpened(LSObject obj, ubyte open)
+void plCorrectOpened(LSObject obj, byte open)
 {
     switch (obj->Type) {
     case Item_Holztuer:
@@ -134,9 +134,9 @@ void plCorrectOpened(LSObject obj, ubyte open)
     }
 }
 
-ubyte plIgnoreLock(U32 objId)
+byte plIgnoreLock(uint32 objId)
 {
-    ubyte back = 0;
+    byte back = 0;
 
     switch (((LSObject) dbGetObject(objId))->Type) {
     case Item_Alarmanlage_Z3:
@@ -160,7 +160,7 @@ ubyte plIgnoreLock(U32 objId)
 }
 
 /* livings support */
-void plMove(U32 current, ubyte direction)
+void plMove(uint32 current, byte direction)
 {
     switch (direction) {
     case DIRECTION_LEFT:
@@ -185,7 +185,7 @@ void plMove(U32 current, ubyte direction)
     }
 }
 
-void plWork(U32 current)
+void plWork(uint32 current)
 {
     switch (livGetViewDirection(Planing_Name[current])) {
     case ANM_MOVE_LEFT:
@@ -206,10 +206,10 @@ void plWork(U32 current)
     }
 }
 
-LIST *plGetObjectsList(U32 current, ubyte addLootBags)
+LIST *plGetObjectsList(uint32 current, byte addLootBags)
 {
     LIST *list = NULL;
-    U32 areaId = livWhereIs(Planing_Name[current]), oldAreaId;
+    uint32 areaId = livWhereIs(Planing_Name[current]), oldAreaId;
 
     oldAreaId = lsGetCurrObjectRetrieval();
     lsSetObjectRetrievalList(areaId);
@@ -244,7 +244,7 @@ LIST *plGetObjectsList(U32 current, ubyte addLootBags)
     return list;
 }
 
-void plInsertGuard(LIST * list, U32 current, U32 guard)
+void plInsertGuard(LIST * list, uint32 current, uint32 guard)
 {
     switch (livGetViewDirection(Planing_Name[current])) {
     case ANM_MOVE_LEFT:
@@ -289,10 +289,10 @@ void plInsertGuard(LIST * list, U32 current, U32 guard)
     }
 }
 
-ubyte plObjectInReach(U32 current, U32 objId)
+byte plObjectInReach(uint32 current, uint32 objId)
 {
     LIST *actionList = plGetObjectsList(current, 1);
-    ubyte i, ret = 0;
+    byte i, ret = 0;
 
     for (i = BurglarsNr; i < PersonsNr; i++)
 	plInsertGuard(actionList, current, i);

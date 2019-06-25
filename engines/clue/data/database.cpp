@@ -28,16 +28,16 @@
 /* public declarations */
 LIST *ObjectList = NULL;
 LIST *ObjectListPrivate = NULL;
-U32 ObjectListWidth = 0L;
-char *(*ObjectListPrevString) (U32, U32, void *) = NULL;
-char *(*ObjectListSuccString) (U32, U32, void *) = NULL;
+uint32 ObjectListWidth = 0L;
+char *(*ObjectListPrevString) (uint32, uint32, void *) = NULL;
+char *(*ObjectListSuccString) (uint32, uint32, void *) = NULL;
 
 
 /* private declarations */
-U32 ObjectListType = 0L;
-U32 ObjectListFlags = OLF_NORMAL;
+uint32 ObjectListType = 0L;
+uint32 ObjectListFlags = OLF_NORMAL;
 
-U8 ObjectLoadMode = DB_LOAD_MODE_STD;
+uint8 ObjectLoadMode = DB_LOAD_MODE_STD;
 
 LIST *objHash[OBJ_HASH_SIZE];
 char decodeStr[11];
@@ -71,10 +71,10 @@ KEY dbEncode(char *key)
     return obj;
 }
 
-struct dbObject *dbFindRealObject(U32 realNr, U32 offset, U32 size)
+struct dbObject *dbFindRealObject(uint32 realNr, uint32 offset, uint32 size)
 {
     register struct dbObject *obj;
-    register U8 objHashValue;
+    register uint8 objHashValue;
 
     for (objHashValue = 0; objHashValue < OBJ_HASH_SIZE; objHashValue++) {
 	for (obj = (struct dbObject *) LIST_HEAD(objHash[objHashValue]);
@@ -94,7 +94,7 @@ struct dbObject *dbFindRealObject(U32 realNr, U32 offset, U32 size)
 
 
 /* public functions - OBJECTS */
-void dbSetLoadObjectsMode(U8 mode)
+void dbSetLoadObjectsMode(uint8 mode)
 {
     ObjectLoadMode = mode;
 }
@@ -106,7 +106,7 @@ void dbSetLoadObjectsMode(U8 mode)
             "Size mismatch (%d != %" PRIu32 ")", sizeof(*(x)), localSize); \
     }
 
-static U32 dbGetStdDskSize(U32 type)
+static uint32 dbGetStdDskSize(uint32 type)
 {
     switch (type) {
 	/* tcMain */
@@ -155,7 +155,7 @@ static U32 dbGetStdDskSize(U32 type)
     }
 }
 
-static U32 dbGetProfiDskSize(U32 type)
+static uint32 dbGetProfiDskSize(uint32 type)
 {
     switch (type) {
 	/* tcMain */
@@ -204,7 +204,7 @@ static U32 dbGetProfiDskSize(U32 type)
     }
 }
 
-static U32 dbGetDskSize(U32 type)
+static uint32 dbGetDskSize(uint32 type)
 {
     if (setup.Profidisk) {
         return dbGetProfiDskSize(type);
@@ -214,7 +214,7 @@ static U32 dbGetDskSize(U32 type)
 }
 
 
-static U32 dbGetMemSize(U32 type)
+static uint32 dbGetMemSize(uint32 type)
 {
     switch (type) {
 	/* tcMain */
@@ -264,14 +264,14 @@ static U32 dbGetMemSize(U32 type)
 }
 
 static void
-dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
+dbRWStdObject(void *obj, int RW, uint32 type, uint32 size, uint32 localSize, FILE *fp)
 {
-    void (*U8_RW) (FILE * fp, U8 * x);
-    void (*S8_RW) (FILE * fp, S8 * x);
-    void (*U16LE_RW) (FILE * fp, U16 * x);
-    void (*S16LE_RW) (FILE * fp, S16 * x);
-    void (*U32LE_RW) (FILE * fp, U32 * x);
-    void (*S32LE_RW) (FILE * fp, S32 * x);
+    void (*U8_RW) (FILE * fp, uint8 * x);
+    void (*S8_RW) (FILE * fp, int8 * x);
+    void (*U16LE_RW) (FILE * fp, uint16 * x);
+    void (*S16LE_RW) (FILE * fp, int16 * x);
+    void (*U32LE_RW) (FILE * fp, uint32 * x);
+    void (*S32LE_RW) (FILE * fp, int32 * x);
 
     if (RW == 0) {
 	U8_RW = dskRead_U8;
@@ -294,7 +294,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
     case Object_Person:
 	{
 	    Person x = (Person)obj;
-	    U16 tmp;
+	    uint16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
@@ -366,7 +366,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
     case Object_Car:
 	{
 	    Car x = (Car)obj;
-	    U16 tmp;
+	    uint16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
@@ -419,7 +419,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
     case Object_Ability:
 	{
 	    Ability x = (Ability)obj;
-	    U16 tmp;
+	    uint16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
@@ -438,7 +438,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
     case Object_Item:
 	{
 	    Item x = (Item)obj;
-	    U16 tmp;
+	    uint16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
@@ -527,7 +527,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
     case Object_Loot:
 	{
 	    Loot x = (Loot)obj;
-	    U16 tmp;
+	    uint16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
@@ -577,7 +577,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
     case Object_LSOLock:
 	{
 	    LSOLock x = (LSOLock)obj;
-	    U16 tmp;
+	    uint16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
@@ -616,7 +616,7 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
     case Object_Building:
 	{
 	    Building x = (Building)obj;
-	    U16 tmp;
+	    uint16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
@@ -722,14 +722,14 @@ dbRWStdObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 }
 
 static void
-dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
+dbRWProfiObject(void *obj, int RW, uint32 type, uint32 size, uint32 localSize, FILE *fp)
 {
-    void (*U8_RW) (FILE * fp, U8 * x);
-    void (*S8_RW) (FILE * fp, S8 * x);
-    void (*U16LE_RW) (FILE * fp, U16 * x);
-    void (*S16LE_RW) (FILE * fp, S16 * x);
-    void (*U32LE_RW) (FILE * fp, U32 * x);
-    void (*S32LE_RW) (FILE * fp, S32 * x);
+    void (*U8_RW) (FILE * fp, uint8 * x);
+    void (*S8_RW) (FILE * fp, int8 * x);
+    void (*U16LE_RW) (FILE * fp, uint16 * x);
+    void (*S16LE_RW) (FILE * fp, int16 * x);
+    void (*U32LE_RW) (FILE * fp, uint32 * x);
+    void (*S32LE_RW) (FILE * fp, int32 * x);
 
     if (RW == 0) {
 	U8_RW = dskRead_U8;
@@ -752,7 +752,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
     case Object_Person:
 	{
 	    Person x = (Person)obj;
-	    U16 tmp;
+	    uint16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
@@ -824,7 +824,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
     case Object_Car:
 	{
 	    Car x = (Car)obj;
-	    U16 tmp;
+	    uint16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
@@ -877,7 +877,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
     case Object_Ability:
 	{
 	    Ability x = (Ability)obj;
-	    U16 tmp;
+	    uint16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
@@ -896,7 +896,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
     case Object_Item:
 	{
 	    Item x = (Item)obj;
-	    U16 tmp;
+	    uint16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
@@ -984,7 +984,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
     case Object_Loot:
 	{
 	    Loot x = (Loot)obj;
-	    U16 tmp;
+	    uint16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
@@ -1034,7 +1034,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
     case Object_LSOLock:
 	{
 	    LSOLock x = (LSOLock)obj;
-	    U16 tmp;
+	    uint16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
@@ -1073,7 +1073,7 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
     case Object_Building:
 	{
 	    Building x = (Building)obj;
-	    U16 tmp;
+	    uint16 tmp;
 
 	    DB_CHECK_SIZE(x);
 
@@ -1179,9 +1179,9 @@ dbRWProfiObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
 }
 
 static void
-dbRWObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
+dbRWObject(void *obj, int RW, uint32 type, uint32 size, uint32 localSize, FILE *fp)
 {
-    S32 start;
+    int32 start;
 
 
     start = ftell(fp);
@@ -1192,18 +1192,18 @@ dbRWObject(void *obj, int RW, U32 type, U32 size, U32 localSize, FILE *fp)
         dbRWStdObject(obj, RW, type, size, localSize, fp);
     }
 
-    if ((U32) (ftell(fp) - start) != size) {
+    if ((uint32) (ftell(fp) - start) != size) {
 	ErrorMsg(Disk_Defect, ERROR_MODULE_DATABASE, 1);
     }
 }
 
 
-U8 dbLoadAllObjects(char *fileName, U16 diskId)
+uint8 dbLoadAllObjects(char *fileName, uint16 diskId)
 {
     FILE *fh;
 
     if ((fh = dskOpen(fileName, "rb"))) {
-	U32 realNr = 1;
+	uint32 realNr = 1;
 	struct dbObjectHeader objHd;
 
 	while (!feof(fh)) {
@@ -1217,12 +1217,12 @@ U8 dbLoadAllObjects(char *fileName, U16 diskId)
 	    dskRead_U32LE(fh, &objHd.type);
 	    dskRead_U32LE(fh, &objHd.size);
 
-	    if ((objHd.nr != (U32) - 1) && (objHd.type != (U32) - 1)
-		&& (objHd.size != (U32) - 1)) {
+	    if ((objHd.nr != (uint32) - 1) && (objHd.type != (uint32) - 1)
+		&& (objHd.size != (uint32) - 1)) {
 		LIST *list = NULL;
 		void *obj;
 		char *name = NULL;
-		U32 localSize;
+		uint32 localSize;
 
 		if (ObjectLoadMode) {
 		    if ((list = txtGoKey(OBJECTS_TXT, NULL)))	/* MOD: old version GoNextKey */
@@ -1263,18 +1263,18 @@ U8 dbLoadAllObjects(char *fileName, U16 diskId)
     return 0;
 }
 
-U8 dbSaveAllObjects(char *fileName, U32 offset, U32 size, U16 diskId)
+uint8 dbSaveAllObjects(char *fileName, uint32 offset, uint32 size, uint16 diskId)
 {
     FILE *fh;
     register struct dbObject *obj;
-    register U32 realNr = 1;
-    register U32 dbSize = dbGetObjectCountOfDB(offset, size);
+    register uint32 realNr = 1;
+    register uint32 dbSize = dbGetObjectCountOfDB(offset, size);
 
     if ((fh = dskOpen(fileName, "wb"))) {
 	while (realNr <= dbSize) {
 	    if ((obj = dbFindRealObject(realNr++, offset, size))) {
 		struct dbObjectHeader objHd;
-		U32 localSize;
+		uint32 localSize;
 
 		objHd.nr = obj->nr;
 		objHd.type = obj->type;
@@ -1297,10 +1297,10 @@ U8 dbSaveAllObjects(char *fileName, U32 offset, U32 size, U16 diskId)
     return 0;
 }
 
-void dbDeleteAllObjects(U32 offset, U32 size)
+void dbDeleteAllObjects(uint32 offset, uint32 size)
 {
     register struct dbObject *obj, *pred;
-    register U8 objHashValue;
+    register uint8 objHashValue;
 
     for (objHashValue = 0; objHashValue < OBJ_HASH_SIZE; objHashValue++) {
 	for (obj = (struct dbObject *) LIST_HEAD(objHash[objHashValue]);
@@ -1318,11 +1318,11 @@ void dbDeleteAllObjects(U32 offset, U32 size)
     }
 }
 
-U32 dbGetObjectCountOfDB(U32 offset, U32 size)
+uint32 dbGetObjectCountOfDB(uint32 offset, uint32 size)
 {
-    U32 count = 0;
+    uint32 count = 0;
     struct dbObject *obj;
-    U8 i;
+    uint8 i;
 
     for (i = 0; i < OBJ_HASH_SIZE; i++) {
 	for (obj = (struct dbObject *) LIST_HEAD(objHash[i]); NODE_SUCC(obj);
@@ -1337,10 +1337,10 @@ U32 dbGetObjectCountOfDB(U32 offset, U32 size)
 
 
 /* public functions - OBJECT */
-void *dbNewObject(U32 nr, U32 type, U32 size, char *name, U32 realNr)
+void *dbNewObject(uint32 nr, uint32 type, uint32 size, char *name, uint32 realNr)
 {
     register struct dbObject *obj;
-    register U8 objHashValue = dbGetObjectHashNr(nr);
+    register uint8 objHashValue = dbGetObjectHashNr(nr);
 
     if (!
 	(obj =
@@ -1355,10 +1355,10 @@ void *dbNewObject(U32 nr, U32 type, U32 size, char *name, U32 realNr)
     return dbGetObjectKey(obj);
 }
 
-void dbDeleteObject(U32 nr)
+void dbDeleteObject(uint32 nr)
 {
     register struct dbObject *obj = NULL;
-    register U8 objHashValue = dbGetObjectHashNr(nr);
+    register uint8 objHashValue = dbGetObjectHashNr(nr);
 
     for (obj = (struct dbObject *) LIST_HEAD(objHash[objHashValue]);
 	 NODE_SUCC(obj); obj = (struct dbObject *) NODE_SUCC(obj)) {
@@ -1371,10 +1371,10 @@ void dbDeleteObject(U32 nr)
     }
 }
 
-void *dbGetObject(U32 nr)
+void *dbGetObject(uint32 nr)
 {
     register struct dbObject *obj;
-    register U8 objHashValue = dbGetObjectHashNr(nr);
+    register uint8 objHashValue = dbGetObjectHashNr(nr);
 
     for (obj = (struct dbObject *) LIST_HEAD(objHash[objHashValue]);
 	 NODE_SUCC(obj); obj = (struct dbObject *) NODE_SUCC(obj)) {
@@ -1385,15 +1385,15 @@ void *dbGetObject(U32 nr)
     return NULL;
 }
 
-U32 dbGetObjectNr(void *key)
+uint32 dbGetObjectNr(void *key)
 {
     return dbGetObjectReal(key)->nr;
 }
 
-char *dbGetObjectName(U32 nr, char *objName)
+char *dbGetObjectName(uint32 nr, char *objName)
 {
     register struct dbObject *obj;
-    register U8 objHashValue = dbGetObjectHashNr(nr);
+    register uint8 objHashValue = dbGetObjectHashNr(nr);
 
     for (obj = (struct dbObject *) LIST_HEAD(objHash[objHashValue]);
 	 NODE_SUCC(obj); obj = (struct dbObject *) NODE_SUCC(obj)) {
@@ -1406,10 +1406,10 @@ char *dbGetObjectName(U32 nr, char *objName)
     return NULL;
 }
 
-void *dbIsObject(U32 nr, U32 type)
+void *dbIsObject(uint32 nr, uint32 type)
 {
     register struct dbObject *obj;
-    register U8 objHashValue = dbGetObjectHashNr(nr);
+    register uint8 objHashValue = dbGetObjectHashNr(nr);
 
     for (obj = (struct dbObject *) LIST_HEAD(objHash[objHashValue]);
 	 NODE_SUCC(obj); obj = (struct dbObject *) NODE_SUCC(obj)) {
@@ -1425,7 +1425,7 @@ void *dbIsObject(U32 nr, U32 type)
 }
 
 /* public prototypes - OBJECTNODE */
-struct ObjectNode *dbAddObjectNode(LIST * objectList, U32 nr, U32 flags)
+struct ObjectNode *dbAddObjectNode(LIST * objectList, uint32 nr, uint32 flags)
 {
     struct ObjectNode *n = NULL;
     struct dbObject *obj = dbGetObjectReal(dbGetObject(nr));
@@ -1452,7 +1452,7 @@ struct ObjectNode *dbAddObjectNode(LIST * objectList, U32 nr, U32 flags)
 		ObjectListSuccString(obj->nr, obj->type, dbGetObjectKey(obj));
 
 	if ((flags & (OLF_ADD_SUCC_STRING | OLF_ALIGNED)) && ObjectListWidth) {
-	    register U8 i, len = strlen(name) + strlen(succString);
+	    register uint8 i, len = strlen(name) + strlen(succString);
 
 	    if (flags & OLF_INSERT_STAR)
 		len--;
@@ -1476,7 +1476,7 @@ struct ObjectNode *dbAddObjectNode(LIST * objectList, U32 nr, U32 flags)
     return n;
 }
 
-void dbRemObjectNode(LIST * objectList, U32 nr)
+void dbRemObjectNode(LIST * objectList, uint32 nr)
 {
     struct ObjectNode *n = dbHasObjectNode(objectList, nr);
 
@@ -1486,7 +1486,7 @@ void dbRemObjectNode(LIST * objectList, U32 nr)
     }
 }
 
-struct ObjectNode *dbHasObjectNode(LIST * objectList, U32 nr)
+struct ObjectNode *dbHasObjectNode(LIST * objectList, uint32 nr)
 {
     struct ObjectNode *n;
 
@@ -1499,7 +1499,7 @@ struct ObjectNode *dbHasObjectNode(LIST * objectList, U32 nr)
     return NULL;
 }
 
-void SetObjectListAttr(U32 flags, U32 type)
+void SetObjectListAttr(uint32 flags, uint32 type)
 {
     ObjectListType = type;
     ObjectListFlags = flags;
@@ -1543,7 +1543,7 @@ void ExpandObjectList(LIST * objectList, char *expandItem)
 }
 
 
-S16 dbStdCompareObjects(struct ObjectNode *obj1, struct ObjectNode *obj2)
+int16 dbStdCompareObjects(struct ObjectNode *obj1, struct ObjectNode *obj2)
 {
     if (obj1->nr > obj2->nr)
 	return -1;
@@ -1556,12 +1556,12 @@ S16 dbStdCompareObjects(struct ObjectNode *obj1, struct ObjectNode *obj2)
 
 void dbSortPartOfList(LIST * l, struct ObjectNode *start,
 		      struct ObjectNode *end,
-		      S16(*processNode) (struct ObjectNode *,
+		      int16(*processNode) (struct ObjectNode *,
 					  struct ObjectNode *))
 {
     LIST *newList = CreateList();
     register struct ObjectNode *n, *n1, *startPred;
-    S32 i, j;
+    int32 i, j;
 
     if (start == (struct ObjectNode *) LIST_HEAD(l))
 	startPred = 0L;
@@ -1596,13 +1596,13 @@ void dbSortPartOfList(LIST * l, struct ObjectNode *start,
     RemoveList(newList);
 }
 
-S32 dbSortObjectList(LIST ** objectList,
-		     S16(*processNode) (struct ObjectNode *,
+int32 dbSortObjectList(LIST ** objectList,
+		     int16(*processNode) (struct ObjectNode *,
 					 struct ObjectNode *))
 {
     register LIST *newList;
     register struct ObjectNode *n1, *n2, *pred, *newNode;
-    S32 i = 0;
+    int32 i = 0;
 
     if (!LIST_EMPTY(*objectList)) {
 	newList = CreateList();
@@ -1650,7 +1650,7 @@ S32 dbSortObjectList(LIST ** objectList,
 /* public prototypes */
 void dbInit(void)
 {
-    register U8 objHashValue;
+    register uint8 objHashValue;
 
     if (!(ObjectList = CreateList()))
 	ErrorMsg(No_Mem, ERROR_MODULE_DATABASE, 3);
@@ -1667,7 +1667,7 @@ void dbInit(void)
 
 void dbDone(void)
 {
-    register U8 objHashValue;
+    register uint8 objHashValue;
 
     for (objHashValue = 0; objHashValue < OBJ_HASH_SIZE; objHashValue++) {
 	if (objHash[objHashValue])
@@ -1678,7 +1678,7 @@ void dbDone(void)
 	RemoveList(ObjectList);
 }
 
-static U32 getKeyStd(KeyConflictE key)
+static uint32 getKeyStd(KeyConflictE key)
 {
     switch (key) {
     case _Environment_TheClou:
@@ -1745,7 +1745,7 @@ static U32 getKeyStd(KeyConflictE key)
     }
 }
 
-static U32 getKeyProfi(KeyConflictE key)
+static uint32 getKeyProfi(KeyConflictE key)
 {
     switch (key) {
     case _Environment_TheClou:
@@ -1812,7 +1812,7 @@ static U32 getKeyProfi(KeyConflictE key)
     }
 }
 
-U32 getKey(KeyConflictE key)
+uint32 getKey(KeyConflictE key)
 {
     if (setup.Profidisk) {
         return getKeyProfi(key);

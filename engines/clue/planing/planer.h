@@ -91,9 +91,9 @@
 #include "clue/planing/guards.h"
 #endif
 
-extern ubyte AnimCounter;
-extern ubyte PlanChanged;
+extern byte AnimCounter;
+extern byte PlanChanged;
 
 
-void plPlaner(U32 objId);
+void plPlaner(uint32 objId);
 #endif

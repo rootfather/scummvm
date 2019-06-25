@@ -38,9 +38,9 @@ char keyBuffer[TXT_KEY_LENGTH];
 
 
 /* private functions */
-static char *txtGetLine(struct Text *txt, U8 lineNr)
+static char *txtGetLine(struct Text *txt, uint8 lineNr)
 {
-    U8 i;
+    uint8 i;
     char *line = NULL;
 
     if (txt && txt->txt_LastMark && lineNr) {
@@ -92,7 +92,7 @@ void txtInit(char lang)
 	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, TXT_LIST, txtListPath);
 
 	if (ReadList(txtBase->tc_Texts, sizeof(struct Text), txtListPath)) {
-	    U32 i, nr;
+	    uint32 i, nr;
 
             nr = GetNrOfNodes(txtBase->tc_Texts);
 
@@ -110,7 +110,7 @@ void txtInit(char lang)
 void txtDone(void)
 {
     if (txtBase) {
-	U32 i, nr;
+	uint32 i, nr;
 
         nr = GetNrOfNodes(txtBase->tc_Texts);
 
@@ -124,7 +124,7 @@ void txtDone(void)
     }
 }
 
-void txtLoad(U32 textId)
+void txtLoad(uint32 textId)
 {
     struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 
@@ -132,7 +132,7 @@ void txtLoad(U32 textId)
 	if (!txt->txt_Handle) {
 	    char txtFile[DSK_PATH_MAX];
 	    char txtPath[DSK_PATH_MAX];
-	    U8 *ptr, *text;
+	    uint8 *ptr, *text;
 	    size_t length;
 
             sprintf(txtFile, "%s%c%s",
@@ -146,7 +146,7 @@ void txtLoad(U32 textId)
             txt->length = length;
 
 	    /* loading text into buffer */
-	    text = (U8 *)dskLoad(txtPath);
+	    text = (uint8 *)dskLoad(txtPath);
 
 	    /* correcting text */
 	    for (ptr=text; length--; ptr++) {
@@ -179,7 +179,7 @@ void txtLoad(U32 textId)
     }
 }
 
-void txtUnLoad(U32 textId)
+void txtUnLoad(uint32 textId)
 {
     struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 
@@ -194,7 +194,7 @@ void txtUnLoad(U32 textId)
     }
 }
 
-void txtPrepare(U32 textId)
+void txtPrepare(uint32 textId)
 {
     struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 
@@ -204,7 +204,7 @@ void txtPrepare(U32 textId)
     }
 }
 
-void txtUnPrepare(U32 textId)
+void txtUnPrepare(uint32 textId)
 {
     struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 
@@ -212,7 +212,7 @@ void txtUnPrepare(U32 textId)
 	txt->txt_LastMark = NULL;
 }
 
-void txtReset(U32 textId)
+void txtReset(uint32 textId)
 {
     struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 
@@ -222,9 +222,9 @@ void txtReset(U32 textId)
 
 
 /* public functions - KEY */
-char *txtGetKey(U16 keyNr, char *key)
+char *txtGetKey(uint16 keyNr, char *key)
 {
-    uword i;
+    uint16 i;
 
     if (!key)
 	return NULL;
@@ -253,17 +253,17 @@ char *txtGetKey(U16 keyNr, char *key)
     return keyBuffer;
 }
 
-U32 txtGetKeyAsULONG(U16 keyNr, char *key)
+uint32 txtGetKeyAsULONG(uint16 keyNr, char *key)
 {
     char *res = txtGetKey(keyNr, key);
 
     if (res)
-	return ((U32) atoi(res));
+	return ((uint32) atoi(res));
     else
-	return ((U32) - 1);
+	return ((uint32) - 1);
 }
 
-LIST *txtGoKey(U32 textId, const char *key)
+LIST *txtGoKey(uint32 textId, const char *key)
 {
     LIST *txtList = NULL;
     struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
@@ -290,7 +290,7 @@ LIST *txtGoKey(U32 textId, const char *key)
 
 	for (; *txt->txt_LastMark != TXT_CHAR_EOF; txt->txt_LastMark++) {
 	    if (*txt->txt_LastMark == TXT_CHAR_MARK) {
-		U8 found = 1;
+		uint8 found = 1;
 
 		if (key) {
 		    char mark[TXT_KEY_LENGTH];
@@ -302,7 +302,7 @@ LIST *txtGoKey(U32 textId, const char *key)
 		}
 
 		if (found) {
-		    U8 i = 1;
+		    uint8 i = 1;
 		    char *line;
 
 		    txtList = CreateList();
@@ -323,7 +323,7 @@ LIST *txtGoKey(U32 textId, const char *key)
     return txtList;
 }
 
-LIST *txtGoKeyAndInsert(U32 textId, char *key, ...)
+LIST *txtGoKeyAndInsert(uint32 textId, char *key, ...)
 {
     va_list argument;
     LIST *txtList = CreateList(), *originList = NULL;
@@ -334,7 +334,7 @@ LIST *txtGoKeyAndInsert(U32 textId, char *key, ...)
     originList = txtGoKey(textId, key);
 
     for (node = LIST_HEAD(originList); NODE_SUCC(node); node = NODE_SUCC(node)) {
-	U8 i;
+	uint8 i;
 	char originLine[256], txtLine[256];
 
 	strcpy(originLine, NODE_NAME(node));
@@ -342,7 +342,7 @@ LIST *txtGoKeyAndInsert(U32 textId, char *key, ...)
 
 	for (i = 2; i < strlen(originLine); i++) {
 	    if (originLine[i - 2] == '%') {
-		sprintf(txtLine, originLine, va_arg(argument, U32));
+		sprintf(txtLine, originLine, va_arg(argument, uint32));
 		i = strlen(originLine) + 1;
 	    }
 	}
@@ -355,7 +355,7 @@ LIST *txtGoKeyAndInsert(U32 textId, char *key, ...)
     return txtList;
 }
 
-bool txtKeyExists(U32 textId, const char *key)
+bool txtKeyExists(uint32 textId, const char *key)
 {
     bool found = false;
     struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
@@ -381,9 +381,9 @@ bool txtKeyExists(U32 textId, const char *key)
     return found;
 }
 
-U32 txtCountKey(char *key)
+uint32 txtCountKey(char *key)
 {
-    U32 i = strlen(key), j, k;
+    uint32 i = strlen(key), j, k;
 
     for (j = 0, k = 0; j < i; j++) {
 	if (key[j] == TXT_CHAR_KEY_SEPERATOR)
@@ -395,7 +395,7 @@ U32 txtCountKey(char *key)
 
 
 /* functions - STRING */
-char *txtGetNthString(U32 textId, const char *key, U32 nth, char *dest)
+char *txtGetNthString(uint32 textId, const char *key, uint32 nth, char *dest)
 {
     LIST *txtList = txtGoKey(textId, key);
     void *src;
@@ -411,7 +411,7 @@ char *txtGetNthString(U32 textId, const char *key, U32 nth, char *dest)
     return dest;
 }
 
-void txtPutCharacter(LIST * list, uword pos, U8 c)
+void txtPutCharacter(LIST * list, uint16 pos, uint8 c)
 {
     NODE *node;
 

@@ -14,7 +14,7 @@
 
 #include "clue/present/present.h"
 
-void InitEvidencePresent(U32 nr, LIST * presentationData, LIST * texts)
+void InitEvidencePresent(uint32 nr, LIST * presentationData, LIST * texts)
 {
     Evidence e = (Evidence)dbGetObject(nr);
     char data[TXT_KEY_LENGTH];
@@ -40,10 +40,10 @@ void InitEvidencePresent(U32 nr, LIST * presentationData, LIST * texts)
 		   texts, 7);
 }
 
-void InitLootPresent(U32 nr, LIST * presentationData, LIST * texts)
+void InitLootPresent(uint32 nr, LIST * presentationData, LIST * texts)
 {
     CompleteLoot comp = (CompleteLoot)dbGetObject(CompleteLoot_LastLoot);
-    U32 total;
+    uint32 total;
 
     RemoveList(tcMakeLootList(Person_Matt_Stuvysunt, Relation_has));
 
@@ -74,11 +74,11 @@ void InitLootPresent(U32 nr, LIST * presentationData, LIST * texts)
     AddPresentLine(presentationData, PRESENT_AS_NUMBER, total, 0, texts, 10);
 }
 
-void InitOneLootPresent(U32 nr, LIST * presentationData, LIST * texts)
+void InitOneLootPresent(uint32 nr, LIST * presentationData, LIST * texts)
 {
     Loot loot = (Loot)dbGetObject(nr);
     char data[TXT_KEY_LENGTH];
-    U32 value;
+    uint32 value;
 
     if (loot->Name == Kein_Name)
 	dbGetObjectName(nr, data);
@@ -98,7 +98,7 @@ void InitOneLootPresent(U32 nr, LIST * presentationData, LIST * texts)
 		   texts, 7);
 }
 
-void InitObjectPresent(U32 nr, LIST * presentationData, LIST * texts)
+void InitObjectPresent(uint32 nr, LIST * presentationData, LIST * texts)
 {
     LSObject lso = (LSObject)dbGetObject(nr);
     char data[TXT_KEY_LENGTH];
@@ -126,10 +126,10 @@ void InitObjectPresent(U32 nr, LIST * presentationData, LIST * texts)
     RemoveList(l);
 }
 
-void InitToolPresent(U32 nr, LIST * presentationData, LIST * texts)
+void InitToolPresent(uint32 nr, LIST * presentationData, LIST * texts)
 {
     char data[TXT_KEY_LENGTH];
-    ubyte i;
+    byte i;
     Tool obj;
     NODE *n;
     LIST *tools = txtGoKey(OBJECTS_ENUM_TXT, "enum_ItemE");
@@ -181,8 +181,8 @@ void InitToolPresent(U32 nr, LIST * presentationData, LIST * texts)
 
     for (n = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(n);
 	 n = (NODE *) NODE_SUCC(n)) {
-	U32 itemNr = OL_NR(n);
-	U32 time = breakGet(nr, itemNr);
+	uint32 itemNr = OL_NR(n);
+	uint32 time = breakGet(nr, itemNr);
 	Item item = (Item)OL_DATA(n);
 
 	sprintf(data, "%.2d:%.2d", time / 60, time % 60);
@@ -194,7 +194,7 @@ void InitToolPresent(U32 nr, LIST * presentationData, LIST * texts)
     RemoveList(abilities);
 }
 
-void InitBuildingPresent(U32 nr, LIST * presentationData, LIST * texts)
+void InitBuildingPresent(uint32 nr, LIST * presentationData, LIST * texts)
 {
     char data[TXT_KEY_LENGTH];
     Building obj;
@@ -227,7 +227,7 @@ void InitBuildingPresent(U32 nr, LIST * presentationData, LIST * texts)
 }
 
 
-void InitPlayerPresent(U32 nr, LIST * presentationData, LIST * texts)
+void InitPlayerPresent(uint32 nr, LIST * presentationData, LIST * texts)
 {
     Player player = (Player) dbGetObject(nr);
 
@@ -243,13 +243,13 @@ void InitPlayerPresent(U32 nr, LIST * presentationData, LIST * texts)
 		   player->NrOfBurglaries, 0, texts, 4);
 }
 
-void InitPersonPresent(U32 nr, LIST * presentationData, LIST * texts)
+void InitPersonPresent(uint32 nr, LIST * presentationData, LIST * texts)
 {
     char data[TXT_KEY_LENGTH];
-    ubyte i;
+    byte i;
     LIST *abilities = NULL;
     NODE *node;
-    U32 abiNr;
+    uint32 abiNr;
     Person obj;
     Ability abi;
 
@@ -299,7 +299,7 @@ void InitPersonPresent(U32 nr, LIST * presentationData, LIST * texts)
 
 	for (node = (NODE *) LIST_HEAD(abilities), i = 0; NODE_SUCC(node);
 	     node = (NODE *) NODE_SUCC(node), i++) {
-	    abiNr = ((struct ObjectNode *) GetNthNode(abilities, (U32) i))->nr;
+	    abiNr = ((struct ObjectNode *) GetNthNode(abilities, (uint32) i))->nr;
 	    abi = (Ability) dbGetObject(abiNr);
 
 	    txtGetNthString(OBJECTS_ENUM_TXT, "enum_AbilityE", abi->Name, data);
@@ -313,7 +313,7 @@ void InitPersonPresent(U32 nr, LIST * presentationData, LIST * texts)
     RemoveList(abilities);
 }
 
-void InitCarPresent(U32 nr, LIST * presentationData, LIST * texts)
+void InitCarPresent(uint32 nr, LIST * presentationData, LIST * texts)
 {
     char data[TXT_KEY_LENGTH];
     Car obj;

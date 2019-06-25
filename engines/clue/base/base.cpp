@@ -114,7 +114,7 @@ static char AutoDetectLanguage(void)
 
     DebugMsg(ERR_DEBUG, ERROR_MODULE_BASE, "Detecting Language...");
 
-    for (i = 0; i < array_len(langs); i++) {
+    for (i = 0; i < ARRAYSIZE(langs); i++) {
         char File[DSK_PATH_MAX], Path[DSK_PATH_MAX];
     
         sprintf(File, "tcmaine%c.txt", langs[i]);
@@ -225,7 +225,7 @@ static void CloseData(void)
 
 void tcSetPermanentColors(void)
 {
-    U8 palette[GFX_PALETTE_SIZE];
+    uint8 palette[GFX_PALETTE_SIZE];
     
     palette[248 * 3 + 0] = 116;
     palette[248 * 3 + 1] = 224;
@@ -453,12 +453,12 @@ static void SetFullEnviroment(void)
     }
 }
 
-static ubyte StartupMenu(void)
+static byte StartupMenu(void)
 {
     LIST *menu = txtGoKey(MENU_TXT, "STARTUP_MENU");
-    U32 activ;
+    uint32 activ;
     char line[TXT_KEY_LENGTH];
-    ubyte ret = 0;
+    byte ret = 0;
 
     ShowMenuBackground();
 
@@ -515,7 +515,7 @@ static ubyte StartupMenu(void)
 
 static void tcDo(void)
 {
-    U32 sceneId = SCENE_NEW_GAME;
+    uint32 sceneId = SCENE_NEW_GAME;
 
     gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
     gfxChangeColors(m_gc, 0, GFX_FADE_OUT, 0);
@@ -535,7 +535,7 @@ static void tcDo(void)
     ShowMenuBackground();
 
     while (sceneId == SCENE_NEW_GAME) {
-	ubyte ret = 0;
+	byte ret = 0;
 
 	if (!(GamePlayMode & GP_DEMO))
 	    InitStory(STORY_DAT);
@@ -615,11 +615,11 @@ static void parseOptions(int argc, char *argv[])
         if (s[0] == '-') {
             switch (s[1]) {
             case 'g':
-                setup.Scale = max(atoi(s+2), 1);
+                setup.Scale = MAX(atoi(s+2), 1);
 		break;
 
             case 'd':
-                setup.Debug = max(atoi(s+2), 0);
+                setup.Debug = MAX(atoi(s+2), 0);
                 break;
 
             case 'f':
@@ -627,11 +627,11 @@ static void parseOptions(int argc, char *argv[])
                 break;
 
             case 's':
-                setup.SfxVolume = clamp(atoi(s+2), 0, SND_MAX_VOLUME);
+                setup.SfxVolume = CLIP(atoi(s+2), 0, SND_MAX_VOLUME);
                 break;
 
             case 'm':
-                setup.MusicVolume = clamp(atoi(s+2), 0, SND_MAX_VOLUME);
+                setup.MusicVolume = CLIP(atoi(s+2), 0, SND_MAX_VOLUME);
                 break;
 
             case 't':

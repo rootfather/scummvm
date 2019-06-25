@@ -20,11 +20,11 @@
 
 #include "clue/story/story.h"
 
-ubyte tcDoLastBurglarySpot(U32 ul_Time, U32 ul_BuildingId);
+byte tcDoLastBurglarySpot(uint32 ul_Time, uint32 ul_BuildingId);
 
 static void tcSomebodyIsComing(void)
 {
-    ubyte i;
+    byte i;
 
     sndPrepareFX("klopfen.voc");
 
@@ -36,7 +36,7 @@ static void tcSomebodyIsComing(void)
 
 static void tcSomebodyIsCalling(void)
 {
-    ubyte i;
+    byte i;
 
     sndPrepareFX("ring.voc");
 
@@ -46,7 +46,7 @@ static void tcSomebodyIsCalling(void)
     }
 }
 
-ubyte tcKarateOpa(U32 ul_ActionTime, U32 ul_BuildingId)
+byte tcKarateOpa(uint32 ul_ActionTime, uint32 ul_BuildingId)
 {
     livSetAllInvisible();
     lsSetViewPort(0, 0);	/* links, oben */
@@ -111,7 +111,7 @@ void tcDoneHotelReception(void)
 	    SceneArgs.ReturnValue = SCENE_HOTEL_ROOM;
 	} else {
 	    if (env->MattHasHotelRoom == 0) {	/* 1. mal da */
-		ubyte choice = 2, evaluation = 0;
+		byte choice = 2, evaluation = 0;
 
 		while ((choice == 2) || (choice == 3)) {
 		    choice = Say(STORY_0_TXT, 0, MATT_PICTID, "HOTEL_MATT_1");
@@ -191,7 +191,7 @@ void tcDoneGludoMoney(void)
 {
     Person Gludo = (Person) dbGetObject(Person_John_Gludo);
     Environment env = (Environment)dbGetObject(Environment_TheClou);
-    ubyte choice;
+    byte choice;
 
     knowsSet(Person_Matt_Stuvysunt, Person_John_Gludo);
 
@@ -234,7 +234,7 @@ void tcDoneGludoMoney(void)
 void tcDoneDanner(void)
 {
     Person Jim = (Person) dbGetObject(Person_Jim_Danner);
-    ubyte choice;
+    byte choice;
 
     if (tcGetPlayerMoney < tcCOSTS_FOR_HOTEL) {
 	knowsSet(Person_Matt_Stuvysunt, Person_Jim_Danner);
@@ -272,7 +272,7 @@ void tcDoneDanner(void)
 void tcDoneMeetBriggs(void)
 {
     Person Briggs = (Person) dbGetObject(Person_Herbert_Briggs);
-    ubyte choice;
+    byte choice;
 
 #ifdef DEEP_DEBUG
     printf("tcDoneMeetBriggs!\n");
@@ -388,7 +388,7 @@ static void tcDoneAfterMeetingBriggs(void)
 #endif
 void tcDoneCallFromPooly(void)
 {
-    ubyte choice;
+    byte choice;
 
     knowsSet(Person_Matt_Stuvysunt, Person_Eric_Pooly);
 
@@ -444,16 +444,16 @@ void tcDonePrison(void)
     SceneArgs.ReturnValue = SCENE_NEW_GAME;
 }
 
-S32 tcIsDeadlock(void)
+int32 tcIsDeadlock(void)
 {
-    S32 deadlock = 0, total = 0;
+    int32 deadlock = 0, total = 0;
     CompleteLoot comp = (CompleteLoot)dbGetObject(CompleteLoot_LastLoot);
 
     hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Car);
 
     if (LIST_EMPTY(ObjectList)) {
 	NODE *n;
-	S32 money = tcGetPlayerMoney, enough = 0;
+	int32 money = tcGetPlayerMoney, enough = 0;
 
 	/* jetzt zum Geld noch die vorhandene Beute addieren */
 	RemoveList(tcMakeLootList(Person_Matt_Stuvysunt, Relation_has));
@@ -552,9 +552,9 @@ void tcDoneGludoAsSailor(void)
 
     sndPlaySound("gludo.bk", 0);
 
-    Say(STORY_0_TXT, 0, (uword) FACE_GLUDO_SAILOR, "SAILOR_GLUDO_0");
+    Say(STORY_0_TXT, 0, (uint16) FACE_GLUDO_SAILOR, "SAILOR_GLUDO_0");
     Say(STORY_0_TXT, 0, MATT_PICTID, "SAILOR_MATT_0");
-    Say(STORY_0_TXT, 0, (uword) FACE_GLUDO_SAILOR, "SAILOR_GLUDO_1");
+    Say(STORY_0_TXT, 0, (uint16) FACE_GLUDO_SAILOR, "SAILOR_GLUDO_1");
 
     if (Say(STORY_0_TXT, 0, MATT_PICTID, "SAILOR_MATT_1")) {
 	Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "SAILOR_OLD_MATT_0");
@@ -562,7 +562,7 @@ void tcDoneGludoAsSailor(void)
 	sndPlaySound("street1.bk", 0);
 	SceneArgs.ReturnValue = SCENE_HOLLAND_STR;
     } else {
-	Say(STORY_0_TXT, 0, (uword) FACE_GLUDO_SAILOR, "SAILOR_GLUDO_2");
+	Say(STORY_0_TXT, 0, (uint16) FACE_GLUDO_SAILOR, "SAILOR_GLUDO_2");
 	StopAnim();
 
 	tcDonePrison();
@@ -827,7 +827,7 @@ void tcDone5thBurglary(void)
 
 void tcDoneDealerIsAfraid(void)
 {
-    U32 persID;
+    uint32 persID;
     Person pers;
 
     switch (GetLocation) {
@@ -887,7 +887,7 @@ void tcDoneRaidInWalrus(void)
 
 void tcDoneDartJager(void)
 {
-    ubyte choice;
+    byte choice;
     Person Grull = (Person) dbGetObject(Person_Lucas_Grull);
     Environment Env = (Environment) dbGetObject(Environment_TheClou);
 
@@ -1509,8 +1509,8 @@ void tcDoneSouthhamptonSabienUnknown(void)
 static void tcDoneFirstTimeLonelyInSouth(void)
 {
     LIST *menu = txtGoKey(MENU_TXT, "SouthhamptonMenu");
-    U32 startTime = 0, actionTime;
-    ubyte ende = 0, activ = 1;
+    uint32 startTime = 0, actionTime;
+    byte ende = 0, activ = 1;
     Environment Env = (Environment)dbGetObject(Environment_TheClou);
     Person Herb = (Person)dbGetObject(Person_Herbert_Briggs);
 
@@ -1609,8 +1609,8 @@ static void tcDoneFirstTimeLonelyInSouth(void)
 void tcDoneSouthhampton(void)
 {
     LIST *menu = txtGoKey(MENU_TXT, "SouthhamptonMenu");
-    ubyte activ = 1;		/* !! */
-    U32 actionTime;
+    byte activ = 1;		/* !! */
+    uint32 actionTime;
     Environment Env = (Environment)dbGetObject(Environment_TheClou);
 
     SceneArgs.Ueberschrieben = 1;
@@ -1635,7 +1635,7 @@ void tcDoneSouthhampton(void)
 	inpTurnFunctionKey(0);
 	inpTurnESC(1);
 
-	if (activ == (ubyte) - 1) {
+	if (activ == (byte) - 1) {
 	    ShowTheClouRequester(No_Error);
 	    SceneArgs.ReturnValue =
 		((Player) dbGetObject(Player_Player_1))->CurrScene;
@@ -1776,9 +1776,9 @@ void tcInitTowerBurglary(void)
     Organisation.GuyCount = 4;
 }
 
-S32 tcDoTowerBurglary(void)
+int32 tcDoTowerBurglary(void)
 {
-    S32 burglary;
+    int32 burglary;
 
     /* das Organisatorische muá hier wiederholt werden, da */
     /* es sonst zu Fehler kommen kann, da die Organisation */
@@ -1837,8 +1837,8 @@ void tcDoneKaserne(void)
     Environment Env = (Environment)dbGetObject(Environment_TheClou);
     Car car = (Car)dbGetObject(Car_Cadillac_Club_1952);
     LIST *menu = txtGoKey(MENU_TXT, "KaserneMenu");
-    ubyte activ = 0, burglary = 0;
-    U32 successor = 0;
+    byte activ = 0, burglary = 0;
+    uint32 successor = 0;
 
     joined_bySet(Person_Matt_Stuvysunt, Person_Matt_Stuvysunt);
     joined_bySet(Person_Matt_Stuvysunt, Person_Herbert_Briggs);
@@ -1874,7 +1874,7 @@ void tcDoneKaserne(void)
 	inpTurnESC(1);
 
 	/* change possibilites in PatchStory too! */
-	if (activ == (ubyte) - 1) {
+	if (activ == (byte) - 1) {
 	    ShowTheClouRequester(No_Error);
 	    successor = ((Player) dbGetObject(Player_Player_1))->CurrScene;
 
@@ -1940,14 +1940,14 @@ void tcDoneKaserne(void)
     SceneArgs.ReturnValue = successor;
 }
 
-S32 tcIsLastBurglaryOk(void)
+int32 tcIsLastBurglaryOk(void)
 {
     Building kaserne = (Building)dbGetObject(Building_Starford_Kaserne);
-    word carXPos0 = kaserne->CarXPos - 40;
-    word carYPos0 = kaserne->CarYPos - 40;
-    word carXPos1 = kaserne->CarXPos + 40;
-    word carYPos1 = kaserne->CarYPos + 40;
-    S32 madeIt = 1, i;
+    int16 carXPos0 = kaserne->CarXPos - 40;
+    int16 carYPos0 = kaserne->CarYPos - 40;
+    int16 carXPos1 = kaserne->CarXPos + 40;
+    int16 carYPos1 = kaserne->CarYPos + 40;
+    int32 madeIt = 1, i;
     LSObject left = (LSObject)dbGetObject(tcLAST_BURGLARY_LEFT_CTRL_OBJ);
     LSObject right = (LSObject)dbGetObject(tcLAST_BURGLARY_RIGHT_CTRL_OBJ);
 

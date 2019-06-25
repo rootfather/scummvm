@@ -35,15 +35,15 @@
 #define INT_BUBBLE_WIDTH		 200
 
 /* misc */
-ubyte CurrentBubbleType = 3;
-ubyte ExtBubbleActionInfo = 0;
+byte CurrentBubbleType = 3;
+byte ExtBubbleActionInfo = 0;
 
-uword ActivPersonPictID = MATT_PICTID;
-uword MenuCoords[TXT_MAX_MENU_COLUMNS];
+uint16 ActivPersonPictID = MATT_PICTID;
+uint16 MenuCoords[TXT_MAX_MENU_COLUMNS];
 
 void (*MenuTimeOutFunc) (void);
 
 /* refresh */
 LIST *refreshMenu = NULL;
-ubyte refreshActiv = 0;
-U32 refreshPoss = 0;
+byte refreshActiv = 0;
+uint32 refreshPoss = 0;

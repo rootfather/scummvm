@@ -20,11 +20,11 @@
 
 #include "clue/landscap/raster.h"
 
-void lsShowRaster(U32 areaID, ubyte perc)
+void lsShowRaster(uint32 areaID, byte perc)
 {
     LSArea area = (LSArea)dbGetObject(areaID);
     struct ObjectNode *node;
-    S32 count, i;
+    int32 count, i;
     LIST *objects;
 
     gfxShow(154, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1);
@@ -114,15 +114,15 @@ NODE *lsGetPredObject(NODE * start)
 }
 
 
-void lsFadeRasterObject(U32 areaID, LSObject lso, ubyte status)
+void lsFadeRasterObject(uint32 areaID, LSObject lso, byte status)
 {
-    U32 rasterXSize, rasterYSize, rasterSize, col;
-    uword xStart, yStart, xEnd, yEnd;
+    uint32 rasterXSize, rasterYSize, rasterSize, col;
+    uint16 xStart, yStart, xEnd, yEnd;
 
     rasterXSize = lsGetRasterXSize(areaID);
     rasterYSize = lsGetRasterYSize(areaID);
 
-    rasterSize = min(rasterXSize, rasterYSize);
+    rasterSize = MIN(rasterXSize, rasterYSize);
 
     lsCalcExactSize(lso, &xStart, &yStart, &xEnd, &yEnd);
 
@@ -132,8 +132,8 @@ void lsFadeRasterObject(U32 areaID, LSObject lso, ubyte status)
     xEnd = ((xEnd) * rasterSize) / LS_RASTER_X_SIZE;
     yEnd = ((yEnd) * rasterSize) / LS_RASTER_Y_SIZE;
 
-    xEnd = max(xStart + 3, xEnd);
-    yEnd = max(yStart + 3, yEnd);
+    xEnd = MAX(uint16(xStart + 3), xEnd);
+    yEnd = MAX(uint16(yStart + 3), yEnd);
 
     if (status)
 	col = (((Item) dbGetObject(lso->Type))->ColorNr);
@@ -145,20 +145,20 @@ void lsFadeRasterObject(U32 areaID, LSObject lso, ubyte status)
     gfxRectFill(l_gc, xStart, yStart, xEnd, yEnd);
 }
 
-void lsShowAllConnections(U32 areaID, NODE * node, ubyte perc)
+void lsShowAllConnections(uint32 areaID, NODE * node, byte perc)
 {
     NODE *n;
     LSObject lso1, lso2;
-    U32 relID = 0, col, destX, destY, srcX, srcY;
-    U32 rasterXSize, rasterYSize, rasterSize;
-    static ubyte Alarm_Power;
+    uint32 relID = 0, col, destX, destY, srcX, srcY;
+    uint32 rasterXSize, rasterYSize, rasterSize;
+    static byte Alarm_Power;
 
     lso1 = (LSObject)OL_DATA(node);
 
     rasterXSize = lsGetRasterXSize(areaID);
     rasterYSize = lsGetRasterYSize(areaID);
 
-    rasterSize = min(rasterXSize, rasterYSize);
+    rasterSize = MIN(rasterXSize, rasterYSize);
 
     switch (lso1->Type) {
     case Item_Alarmanlage_Z3:
@@ -197,7 +197,7 @@ void lsShowAllConnections(U32 areaID, NODE * node, ubyte perc)
 
 	for (n = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(n);
 	     n = (NODE *) NODE_SUCC(n)) {
-	    uword x0, y0, x1, y1;
+	    uint16 x0, y0, x1, y1;
 
 	    gfxSetPens(l_gc, col, GFX_SAME_PEN, GFX_SAME_PEN);
 
@@ -221,18 +221,18 @@ void lsShowAllConnections(U32 areaID, NODE * node, ubyte perc)
     }
 }
 
-uword lsGetRasterXSize(U32 areaID)
+uint16 lsGetRasterXSize(uint32 areaID)
 {
     LSArea area = (LSArea)dbGetObject(areaID);
 
-    return (uword) (LS_RASTER_DISP_WIDTH /
+    return (uint16) (LS_RASTER_DISP_WIDTH /
 		    ((area->us_Width) / LS_RASTER_X_SIZE));
 }
 
-uword lsGetRasterYSize(U32 areaID)
+uint16 lsGetRasterYSize(uint32 areaID)
 {
     LSArea area = (LSArea)dbGetObject(areaID);
 
-    return (uword) (LS_RASTER_DISP_HEIGHT /
+    return (uint16) (LS_RASTER_DISP_HEIGHT /
 		    ((area->us_Height) / LS_RASTER_Y_SIZE));
 }

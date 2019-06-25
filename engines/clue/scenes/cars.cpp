@@ -20,9 +20,9 @@
 
 #include "clue/scenes/scenes.h"
 
-void SetCarColors(ubyte index)
+void SetCarColors(byte index)
 {
-    U8 Col[10][4][3] = {
+    uint8 Col[10][4][3] = {
 	{{8, 8, 8}, {7, 7, 7}, {6, 6, 6}, {5, 5, 5}},
 	{{1, 12, 8}, {3, 9, 6}, {3, 6, 4}, {2, 5, 3}},
 	{{7, 15, 15}, {7, 13, 12}, {5, 10, 10}, {4, 8, 8}},
@@ -35,25 +35,25 @@ void SetCarColors(ubyte index)
 	{{15, 15, 6}, {13, 13, 3}, {11, 11, 1}, {9, 9, 0}}
     };
 
-    gfxSetRGB(l_gc, 8, (U32) Col[index][0][0] << 4,
-	      (U32) Col[index][0][1] << 4, (U32) Col[index][0][2] << 4);
-    gfxSetRGB(l_gc, 9, (U32) Col[index][1][0] << 4,
-	      (U32) Col[index][1][1] << 4, (U32) Col[index][1][2] << 4);
-    gfxSetRGB(l_gc, 10, (U32) Col[index][2][0] << 4,
-	      (U32) Col[index][2][1] << 4, (U32) Col[index][2][2] << 4);
-    gfxSetRGB(l_gc, 11, (U32) Col[index][3][0] << 4,
-	      (U32) Col[index][3][1] << 4, (U32) Col[index][3][2] << 4);
-    gfxSetRGB(l_gc, 40, (U32) Col[index][0][0] << 3,
-	      (U32) Col[index][0][1] << 3, (U32) Col[index][0][2] << 3);
-    gfxSetRGB(l_gc, 41, (U32) Col[index][1][0] << 3,
-	      (U32) Col[index][1][1] << 3, (U32) Col[index][1][2] << 3);
-    gfxSetRGB(l_gc, 42, (U32) Col[index][2][0] << 3,
-	      (U32) Col[index][2][1] << 3, (U32) Col[index][2][2] << 3);
-    gfxSetRGB(l_gc, 43, (U32) Col[index][3][0] << 3,
-	      (U32) Col[index][3][1] << 3, (U32) Col[index][3][2] << 3);
+    gfxSetRGB(l_gc, 8, (uint32) Col[index][0][0] << 4,
+	      (uint32) Col[index][0][1] << 4, (uint32) Col[index][0][2] << 4);
+    gfxSetRGB(l_gc, 9, (uint32) Col[index][1][0] << 4,
+	      (uint32) Col[index][1][1] << 4, (uint32) Col[index][1][2] << 4);
+    gfxSetRGB(l_gc, 10, (uint32) Col[index][2][0] << 4,
+	      (uint32) Col[index][2][1] << 4, (uint32) Col[index][2][2] << 4);
+    gfxSetRGB(l_gc, 11, (uint32) Col[index][3][0] << 4,
+	      (uint32) Col[index][3][1] << 4, (uint32) Col[index][3][2] << 4);
+    gfxSetRGB(l_gc, 40, (uint32) Col[index][0][0] << 3,
+	      (uint32) Col[index][0][1] << 3, (uint32) Col[index][0][2] << 3);
+    gfxSetRGB(l_gc, 41, (uint32) Col[index][1][0] << 3,
+	      (uint32) Col[index][1][1] << 3, (uint32) Col[index][1][2] << 3);
+    gfxSetRGB(l_gc, 42, (uint32) Col[index][2][0] << 3,
+	      (uint32) Col[index][2][1] << 3, (uint32) Col[index][2][2] << 3);
+    gfxSetRGB(l_gc, 43, (uint32) Col[index][3][0] << 3,
+	      (uint32) Col[index][3][1] << 3, (uint32) Col[index][3][2] << 3);
 }
 
-char *tcShowPriceOfCar(U32 nr, U32 type, void *data)
+char *tcShowPriceOfCar(uint32 nr, uint32 type, void *data)
 {
     static char line[TXT_KEY_LENGTH];
     char line1[TXT_KEY_LENGTH];
@@ -68,7 +68,7 @@ char *tcShowPriceOfCar(U32 nr, U32 type, void *data)
 void tcBuyCar(void)
 {
     LIST *bubble = NULL;
-    ubyte choice = 0, choice1 = 0;
+    byte choice = 0, choice1 = 0;
     Car matts_car;
     Person marc = (Person) dbGetObject(Person_Marc_Smith);
 
@@ -96,26 +96,26 @@ void tcBuyCar(void)
 		matts_car =
 		    (Car)
 		    dbGetObject(((struct ObjectNode *)
-				 GetNthNode(bubble, (U32) choice))->nr);
+				 GetNthNode(bubble, (uint32) choice))->nr);
 
-		SetCarColors((ubyte) matts_car->ColorIndex);
-		gfxShow((uword) matts_car->PictID, GFX_NO_REFRESH | GFX_OVERLAY,
+		SetCarColors((byte) matts_car->ColorIndex);
+		gfxShow((uint16) matts_car->PictID, GFX_NO_REFRESH | GFX_OVERLAY,
 			0L, -1L, -1L);
 
 		if (Present
-		    (((struct ObjectNode *) GetNthNode(bubble, (U32) choice))->
+		    (((struct ObjectNode *) GetNthNode(bubble, (uint32) choice))->
 		     nr, "Car", InitCarPresent)) {
 		    choice1 = Say(BUSINESS_TXT, 0, MATT_PICTID, "AUTOKAUF");
 
 		    AddVTime(7);
 
 		    if (choice1 == 1) {
-			U32 price = tcGetCarPrice(matts_car);
+			uint32 price = tcGetCarPrice(matts_car);
 
 			if (tcSpendMoney(price, 0)) {
-			    U32 carID =
+			    uint32 carID =
 				((struct ObjectNode *)
-				 GetNthNode(bubble, (U32) choice))->nr;
+				 GetNthNode(bubble, (uint32) choice))->nr;
 
 			    hasSet(Person_Matt_Stuvysunt, carID);
 			    hasUnSet(Person_Marc_Smith, carID);
@@ -141,9 +141,9 @@ void tcBuyCar(void)
     }
 }
 
-void tcCarInGarage(U32 carID)
+void tcCarInGarage(uint32 carID)
 {
-    ubyte choice1 = 0;
+    byte choice1 = 0;
     Car matts_car;
     Person marc = (Person) dbGetObject(Person_Marc_Smith);
 
@@ -184,13 +184,13 @@ void tcCarInGarage(U32 carID)
 void tcColorCar(Car car)
 {
     LIST *colors, *bubble;
-    ubyte choice;
-    U32 costs;
+    byte choice;
+    uint32 costs;
     Person marc = (Person) dbGetObject(Person_Marc_Smith);
 
-    costs = (U32)tcColorCosts(car);
+    costs = (uint32)tcColorCosts(car);
 
-    bubble = txtGoKeyAndInsert(BUSINESS_TXT, "LACKIEREN", (U32) costs, NULL);
+    bubble = txtGoKeyAndInsert(BUSINESS_TXT, "LACKIEREN", (uint32) costs, NULL);
 
     SetPictID(marc->PictID);
     Bubble(bubble, 0, 0L, 0L);
@@ -209,7 +209,7 @@ void tcColorCar(Car car)
 
 	    if (ChoiceOk
 		(choice =
-		 Bubble(colors, (ubyte) car->ColorIndex, 0L, 0L), GET_OUT,
+		 Bubble(colors, (byte) car->ColorIndex, 0L, 0L), GET_OUT,
 		 colors)) {
 		car->ColorIndex = (ColorE) choice;
 
@@ -226,7 +226,7 @@ void tcColorCar(Car car)
 
 		gfxRefresh();
 		/*gfxShow(26,GFX_NO_REFRESH|GFX_ONE_STEP,0L,-1L,-1L);*/
-		/*gfxShow((uword)car->PictID,GFX_NO_REFRESH|GFX_OVERLAY,1L,-1L,-1L);*/
+		/*gfxShow((uint16)car->PictID,GFX_NO_REFRESH|GFX_OVERLAY,1L,-1L,-1L);*/
 	    }
 	}
 
@@ -236,10 +236,10 @@ void tcColorCar(Car car)
     AddVTime(137);
 }
 
-void tcSellCar(U32 ObjectID)
+void tcSellCar(uint32 ObjectID)
 {
     LIST *bubble;
-    U32 offer;
+    uint32 offer;
     Car car;
     Person marc = (Person) dbGetObject(Person_Marc_Smith);
 
@@ -274,10 +274,10 @@ void tcRepairCar(Car car, char *repairWhat)
 {
     LIST *presentationData = CreateList();
     LIST *list = NULL;
-    ubyte *item = NULL, type = 7, ready = 0;
+    byte *item = NULL, type = 7, ready = 0;
     bool enough = true;
-    U32 costs = 0, choice = 0L, totalCosts = 0L;
-    uword line = 0;
+    uint32 costs = 0, choice = 0L, totalCosts = 0L;
+    uint16 line = 0;
     Person marc = (Person) dbGetObject(Person_Marc_Smith);
 
     if (strcmp(repairWhat, "MotorRepair") == 0) {
@@ -305,7 +305,7 @@ void tcRepairCar(Car car, char *repairWhat)
     list = txtGoKey(PRESENT_TXT, repairWhat);
 
     gfxPrepareRefresh();
-    gfxShow((uword) BIG_SHEET, GFX_NO_REFRESH | GFX_OVERLAY, 0L, -1L, -1L);
+    gfxShow((uint16) BIG_SHEET, GFX_NO_REFRESH | GFX_OVERLAY, 0L, -1L, -1L);
     inpSetWaitTicks(3L);
 
     PlayAnim("Reperatur", 30000, GFX_DONT_SHOW_FIRST_PIC);
@@ -318,19 +318,19 @@ void tcRepairCar(Car car, char *repairWhat)
 	AddPresentTextLine(presentationData, NULL, 0L, list, line++);
 
 	if (item)
-	    AddPresentLine(presentationData, PRESENT_AS_BAR, (U32) (*item),
+	    AddPresentLine(presentationData, PRESENT_AS_BAR, (uint32) (*item),
 			   255L, list, line++);
 
-	AddPresentLine(presentationData, PRESENT_AS_BAR, (U32) (car->State),
+	AddPresentLine(presentationData, PRESENT_AS_BAR, (uint32) (car->State),
 		       255L, list, line++);
 
 	AddPresentLine(presentationData, PRESENT_AS_NUMBER, totalCosts, 0L,
 		       list, line++);
 	AddPresentLine(presentationData, PRESENT_AS_NUMBER,
-		       (U32) tcGetPlayerMoney, 0L, list, line++);
+		       (uint32) tcGetPlayerMoney, 0L, list, line++);
 
 	DrawPresent(presentationData, 0, u_gc,
-		    (ubyte) GetNrOfNodes(presentationData));
+		    (byte) GetNrOfNodes(presentationData));
 
 	RemoveNode(presentationData, NULL);
 
@@ -376,17 +376,17 @@ void tcRepairCar(Car car, char *repairWhat)
     inpSetWaitTicks(0L);
 
     /*gfxShow(26,GFX_NO_REFRESH|GFX_ONE_STEP,0L,-1L,-1L);*/
-    /*gfxShow((uword)car->PictID,GFX_NO_REFRESH|GFX_OVERLAY,1L,-1L,-1L);*/
+    /*gfxShow((uint16)car->PictID,GFX_NO_REFRESH|GFX_OVERLAY,1L,-1L,-1L);*/
 
     RemoveList(presentationData);
     RemoveList(list);
 }
 
-U32 tcChooseCar(U32 backgroundNr)
+uint32 tcChooseCar(uint32 backgroundNr)
 {
     LIST *bubble;
-    U32 carCount, carID = 0L;
-    ubyte choice;
+    uint32 carCount, carID = 0L;
+    byte choice;
     Car matts_car;
 
     hasAll(Person_Matt_Stuvysunt,
@@ -408,16 +408,16 @@ U32 tcChooseCar(U32 backgroundNr)
 	    Say(BUSINESS_TXT, 0, 7, "ES GEHT UM..");
 
 	    if (ChoiceOk((choice = Bubble(bubble, 0, 0L, 0L)), GET_OUT, bubble))
-		carID = OL_NR(GetNthNode(bubble, (U32) choice));
+		carID = OL_NR(GetNthNode(bubble, (uint32) choice));
 	    else
 		choice = GET_OUT;
 	}
 
 	if (choice != GET_OUT) {
 	    matts_car = (Car) dbGetObject(carID);
-	    SetCarColors((ubyte) matts_car->ColorIndex);
+	    SetCarColors((byte) matts_car->ColorIndex);
 	    gfxShow(backgroundNr, GFX_NO_REFRESH | GFX_ONE_STEP, 0L, -1L, -1L);
-	    gfxShow((uword) matts_car->PictID, GFX_NO_REFRESH | GFX_OVERLAY, 1L,
+	    gfxShow((uint16) matts_car->PictID, GFX_NO_REFRESH | GFX_OVERLAY, 1L,
 		    -1L, -1L);
 	}
     }
@@ -431,13 +431,13 @@ void tcCarGeneralOverhoul(Car car)
 {
     Person marc = (Person)dbGetObject(Person_Marc_Smith);
     LIST *bubble;
-    ubyte choice;
+    byte choice;
 
     SetPictID(marc->PictID);
 
     bubble =
 	txtGoKeyAndInsert(BUSINESS_TXT, "GENERAL_OVERHOUL",
-			  (U32) ((tcCostsPerTotalRepair(car) * 255) / 8), NULL);
+			  (uint32) ((tcCostsPerTotalRepair(car) * 255) / 8), NULL);
     Bubble(bubble, 0, 0L, 0L);
     RemoveList(bubble);
 

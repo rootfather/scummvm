@@ -70,6 +70,6 @@ extern char keyBuffer[];
 
 
 /* private prototypes - LINE */
-static char *txtGetLine(struct Text *txt, ubyte lineNr);
+static char *txtGetLine(struct Text *txt, byte lineNr);
 
 #endif

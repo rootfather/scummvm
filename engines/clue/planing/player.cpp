@@ -63,43 +63,43 @@
 static struct {
     struct Action *action;
 
-    ubyte handlerEnded[PLANING_NR_PERSONS];
-    ubyte guardKO[PLANING_NR_GUARDS];
-    ubyte currLoudness[PLANING_NR_PERSONS];
-    ubyte unableToWork[PLANING_NR_PERSONS];
+    byte handlerEnded[PLANING_NR_PERSONS];
+    byte guardKO[PLANING_NR_GUARDS];
+    byte currLoudness[PLANING_NR_PERSONS];
+    byte unableToWork[PLANING_NR_PERSONS];
 
-    ubyte ende;
+    byte ende;
 
-    U32 maxTimer;
-    U32 timer;
-    U32 realTime;
+    uint32 maxTimer;
+    uint32 timer;
+    uint32 realTime;
 
-    ubyte badPlaning;
-    ubyte mood;
+    byte badPlaning;
+    byte mood;
 
-    U32 bldId;
+    uint32 bldId;
     Building bldObj;
 
-    uword changeCount;
-    uword totalCount;
-    ubyte patrolCount;
+    uint16 changeCount;
+    uint16 totalCount;
+    byte patrolCount;
 
-    U32 alarmTimer;
+    uint32 alarmTimer;
 
-    ubyte isItDark;
+    byte isItDark;
 
-    ubyte sndState;	/* Careful! Behaviour of sndState is different from the Amiga version */
+    byte sndState;	/* Careful! Behaviour of sndState is different from the Amiga version */
 
-    U32 actionTime;
-     ubyte(*actionFunc) (U32, U32);
+    uint32 actionTime;
+     byte(*actionFunc) (uint32, uint32);
 } PD;
 
 
-static void CheckSurrounding(U32 current)
+static void CheckSurrounding(uint32 current)
 {
 #ifndef PLAN_IS_PERFECT
     if (has(OL_NR(GetNthNode(PersonsList, current)), Ability_Aufpassen)) {
-	register S32 watch = 0;
+	register int32 watch = 0;
 
 	if (Search.EscapeBits & FAHN_QUIET_ALARM)
 	    watch = tcWatchDogWarning(OL_NR(GetNthNode(PersonsList, current)));
@@ -117,7 +117,7 @@ static void CheckSurrounding(U32 current)
 #endif
 }
 
-static void UnableToWork(U32 current, U32 action)
+static void UnableToWork(uint32 current, uint32 action)
 {
     PD.currLoudness[current] = PLANING_LOUDNESS_STD;
     Search.Exhaust[current] =
@@ -170,10 +170,10 @@ static void UnableToWork(U32 current, U32 action)
 	IncCurrentTimer(plSys, 1, 0);
 }
 
-static ubyte plGetMood(U32 time)
+static byte plGetMood(uint32 time)
 {
-    U32 guyId[PLANING_NR_PERSONS];
-    ubyte i;
+    uint32 guyId[PLANING_NR_PERSONS];
+    byte i;
 
     for (i = 0; i < PLANING_NR_PERSONS; i++)
 	guyId[i] = 0L;
@@ -181,12 +181,12 @@ static ubyte plGetMood(U32 time)
     for (i = 0; i < BurglarsNr; i++)
 	guyId[i] = OL_NR(GetNthNode(PersonsList, i));
 
-    return (ubyte) tcGetTeamMood(guyId, time);
+    return (byte) tcGetTeamMood(guyId, time);
 }
 
-static void plPersonLearns(U32 persId, U32 toolId)
+static void plPersonLearns(uint32 persId, uint32 toolId)
 {
-    U32 para;
+    uint32 para;
 
     hasAll(persId, OLF_NORMAL, Object_Ability);
 
@@ -250,13 +250,13 @@ static void plPersonLearns(U32 persId, U32 toolId)
     }
 }
 
-static ubyte plCarTooFull(void)
+static byte plCarTooFull(void)
 {
     LIST *l = tcMakeLootList(Person_Matt_Stuvysunt, Relation_has);
 
     CompleteLoot complete = (CompleteLoot) dbGetObject(CompleteLoot_LastLoot);
     Car car = (Car) dbGetObject(Organisation.CarID);
-    ubyte ret = 0;
+    byte ret = 0;
 
     if (complete->TotalVolume > car->Capacity)
 	ret = 1;
@@ -268,8 +268,8 @@ static ubyte plCarTooFull(void)
 
 static void plPlayerAction(void)
 {
-    register ubyte i, patroCounter = 3;
-    register ubyte DoScrolling = 0;
+    register byte i, patroCounter = 3;
+    register byte DoScrolling = 0;
 
     PD.timer++;
     PD.realTime = PD.timer / PLANING_CORRECT_TIME;
@@ -373,7 +373,7 @@ static void plPlayerAction(void)
 #endif
 
     if ((PD.realTime == PD.actionTime) && PD.actionFunc) {
-	ubyte actionRet;
+	byte actionRet;
 
 	if ((actionRet = PD.actionFunc(PD.actionTime, PD.bldId))) {
 	    char actionText[TXT_KEY_LENGTH];
@@ -391,16 +391,16 @@ static void plPlayerAction(void)
 #ifndef PLAN_IS_PERFECT
     if (!(PD.timer % 3)) {
 	if (PD.isItDark) {
-	    register ubyte j, i;
-	    uword xpos[PLANING_NR_PERSONS];
-	    uword ypos[PLANING_NR_PERSONS];
-	    U32 area[PLANING_NR_PERSONS];
+	    register byte j, i;
+	    uint16 xpos[PLANING_NR_PERSONS];
+	    uint16 ypos[PLANING_NR_PERSONS];
+	    uint32 area[PLANING_NR_PERSONS];
 
 	    /* there are more efficient solutions, but no safer ones */
 	    for (i = 0; i < PLANING_NR_PERSONS; i++) {
-		xpos[i] = (uword) - 1;
-		ypos[i] = (uword) - 1;
-		area[i] = (U32) - 1;
+		xpos[i] = (uint16) - 1;
+		ypos[i] = (uint16) - 1;
+		area[i] = (uint32) - 1;
 	    }
 
 	    for (j = 0; j < BurglarsNr; j++) {
@@ -437,10 +437,10 @@ static void plPlayerAction(void)
 	    } else if ((PD.action = NextAction(plSys))) {
 		if (!(PD.timer % 12) && (i >= BurglarsNr)
 		    && !(Search.EscapeBits & FAHN_ALARM_GUARD)) {
-		    register ubyte j, dir =
+		    register byte j, dir =
 			livGetViewDirection(Planing_Name[i]);
-		    register uword xpos = livGetXPos(Planing_Name[i]);
-		    register uword ypos = livGetYPos(Planing_Name[i]);
+		    register uint16 xpos = livGetXPos(Planing_Name[i]);
+		    register uint16 ypos = livGetYPos(Planing_Name[i]);
 
 #ifndef PLAN_IS_PERFECT
 		    for (j = 0; j < BurglarsNr; j++) {
@@ -612,8 +612,8 @@ static void plPlayerAction(void)
 									    *)->
 								 ItemId));
 			    else {
-				register U32 needTime = PD.action->TimeNeeded;
-				register U32 realTime = 0L;
+				register uint32 needTime = PD.action->TimeNeeded;
+				register uint32 realTime = 0L;
 
 				if (dbIsObject
 				    (ActionData(PD.action, struct ActionUse *)->
@@ -792,7 +792,7 @@ static void plPlayerAction(void)
 				    (ActionData(PD.action, struct ActionUse *)->
 				     ItemId)) {
 				    if (i == CurrentPerson) {
-					U32 newAreaId =
+					uint32 newAreaId =
 					    StairConnectsGet(ActionData
 							     (PD.action,
 							      struct ActionUse
@@ -916,7 +916,7 @@ static void plPlayerAction(void)
 							   struct ActionUse *)->
 							  ItemId))->Type ==
 					     Item_Fenster)) {
-					    uword xpos, ypos;
+					    uint16 xpos, ypos;
 
 					    lsWalkThroughWindow((LSObject)
 								dbGetObject
@@ -940,7 +940,7 @@ static void plPlayerAction(void)
 				    }
 				}
 			    } else {
-				register U32 state =
+				register uint32 state =
 				    lsGetObjectState(ActionData
 						     (PD.action,
 						      struct ActionUse *)->
@@ -975,8 +975,8 @@ static void plPlayerAction(void)
 				    case PLANING_ALARM_TOP3:
 					if (PD.alarmTimer)
 					    PD.alarmTimer =
-						min(PD.alarmTimer,
-						    PLANING_ALARM_TOP3);
+						MIN(PD.alarmTimer,
+						    (uint32)PLANING_ALARM_TOP3);
 					else
 					    PD.alarmTimer = PLANING_ALARM_TOP3;
 					break;
@@ -1060,7 +1060,7 @@ static void plPlayerAction(void)
 #endif
 
 			    if (ActionEnded(plSys)) {
-				U32 newValue =
+				uint32 newValue =
 				    GetP(dbGetObject
 					 (ActionData
 					  (PD.action,
@@ -1144,7 +1144,7 @@ static void plPlayerAction(void)
 						 (PD.action,
 						  struct ActionTake *)->
 						 LootId))) {
-				    register U32 oldValue =
+				    register uint32 oldValue =
 					GetP(dbGetObject
 					     (OL_NR
 					      (GetNthNode(PersonsList, i))),
@@ -1208,7 +1208,7 @@ static void plPlayerAction(void)
 					     Const_tcIN_PROGRESS_BIT, 1);
 
 			    if (ActionEnded(plSys)) {
-				U32 newValue =
+				uint32 newValue =
 				    GetP(dbGetObject
 					 (OL_NR(GetNthNode(PersonsList, i))),
 					 take_RelId,
@@ -1588,7 +1588,7 @@ static void plPlayerAction(void)
     }
 
     if (DoScrolling)
-	lsScrollLandScape((ubyte) - 1);
+	lsScrollLandScape((byte) - 1);
 
     livDoAnims((AnimCounter++) % 2, 1);
 
@@ -1603,13 +1603,13 @@ static void plPlayerAction(void)
 	SetMenuTimeOutFunc(NULL);
 }
 
-S32 plPlayer(U32 objId, U32 actionTime, ubyte(*actionFunc) (U32, U32))
+int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc) (uint32, uint32))
 {
     FILE *fh = NULL;
     LIST *menu = txtGoKey(PLAN_TXT, "PLAYER_MENU"), *l;
-    ubyte activ = 0, i;
-    U32 timeLeft = 0, bitset, choice1, choice2;
-    S32 ret = 0;
+    byte activ = 0, i;
+    uint32 timeLeft = 0, bitset, choice1, choice2;
+    int32 ret = 0;
 
     plPrepareSys(0L, objId,
 		 PLANING_INIT_PERSONSLIST | PLANING_HANDLER_ADD |
@@ -1673,7 +1673,7 @@ S32 plPlayer(U32 objId, U32 actionTime, ubyte(*actionFunc) (U32, U32))
 		    PD.handlerEnded[i] = 0;
 		    LoadHandler(fh, plSys, OL_NR(GetNthNode(PersonsList, i)));
 
-		    PD.maxTimer = max(GetMaxTimer(plSys), PD.maxTimer);
+		    PD.maxTimer = MAX(GetMaxTimer(plSys), PD.maxTimer);
 		}
 
 		for (i = 0; i < PLANING_NR_GUARDS; i++)
@@ -1741,14 +1741,14 @@ S32 plPlayer(U32 objId, U32 actionTime, ubyte(*actionFunc) (U32, U32))
 			if (GamePlayMode & GP_GUARD_DESIGN) {
 			    if (PersonsNr > 2)
 				choice1 =
-				    (U32) Bubble(PersonsList, CurrentPerson,
+				    (uint32) Bubble(PersonsList, CurrentPerson,
 						 NULL, 0L);
 			    else
 				choice1 = ((CurrentPerson) ? 0L : 1L);
 			} else {
 			    if (BurglarsNr > 2)
 				choice1 =
-				    (U32) Bubble(BurglarsList, CurrentPerson,
+				    (uint32) Bubble(BurglarsList, CurrentPerson,
 						 NULL, 0L);
 			    else
 				choice1 = ((CurrentPerson) ? 0L : 1L);
@@ -1770,7 +1770,7 @@ S32 plPlayer(U32 objId, U32 actionTime, ubyte(*actionFunc) (U32, U32))
 
 			    plPrepareSys(choice1, 0, PLANING_HANDLER_SET);
 			    lsSetActivLiving(Planing_Name[CurrentPerson],
-					     (uword) - 1, (uword) - 1);
+					     (uint16) - 1, (uint16) - 1);
 			}
 			break;
 
@@ -1841,7 +1841,7 @@ S32 plPlayer(U32 objId, U32 actionTime, ubyte(*actionFunc) (U32, U32))
 			    SetBubbleType(RADIO_BUBBLE);
 
 			    if ((choice2 =
-				 (U32) Bubble(l, 0, NULL, 0L)) != GET_OUT) {
+				 (uint32) Bubble(l, 0, NULL, 0L)) != GET_OUT) {
 				if (choice2 < 3) {
 				    tcCalcCallValue(choice2 + 2, PD.realTime,
 						    choice1);
@@ -1897,9 +1897,9 @@ S32 plPlayer(U32 objId, U32 actionTime, ubyte(*actionFunc) (U32, U32))
 		    for (n = (struct ObjectNode *) LIST_HEAD(ObjectList);
 			 NODE_SUCC(n); n = (struct ObjectNode *) NODE_SUCC(n)) {
 			if (has(Person_Matt_Stuvysunt, OL_NR(n))) {
-			    U32 oldValue =
+			    uint32 oldValue =
 				hasGet(Person_Matt_Stuvysunt, OL_NR(n));
-			    U32 newValue =
+			    uint32 newValue =
 				GetP(dbGetObject
 				     (OL_NR(GetNthNode(PersonsList, i))),
 				     take_RelId, dbGetObject(OL_NR(n)));
@@ -1907,7 +1907,7 @@ S32 plPlayer(U32 objId, U32 actionTime, ubyte(*actionFunc) (U32, U32))
 			    hasSetP(Person_Matt_Stuvysunt, OL_NR(n),
 				    oldValue + newValue);
 			} else {
-			    U32 newValue =
+			    uint32 newValue =
 				GetP(dbGetObject
 				     (OL_NR(GetNthNode(PersonsList, i))),
 				     take_RelId, dbGetObject(OL_NR(n)));
@@ -1921,7 +1921,7 @@ S32 plPlayer(U32 objId, U32 actionTime, ubyte(*actionFunc) (U32, U32))
 		    plSay("PLAYER_LEAVE_LOOTS_1", 0);
 
 		    while (plCarTooFull()) {
-			U32 choice;
+			uint32 choice;
 
 			hasAll(Person_Matt_Stuvysunt,
 			       OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_NORMAL,
@@ -1930,7 +1930,7 @@ S32 plPlayer(U32 objId, U32 actionTime, ubyte(*actionFunc) (U32, U32))
 			if ((choice = Bubble(ObjectList, 0, 0L, 0L)) != GET_OUT)
 			    hasUnSet(Person_Matt_Stuvysunt,
 				     OL_NR(GetNthNode
-					   (ObjectList, (U32) choice)));
+					   (ObjectList, (uint32) choice)));
 			else
 			    plSay("PLAYER_LEAVE_LOOTS_2", 0);
 		    }

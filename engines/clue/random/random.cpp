@@ -30,9 +30,9 @@ void rndDone(void)
     return;
 }
 
-U32 CalcRandomNr(U32 l_limit, U32 u_limit)
+uint32 CalcRandomNr(uint32 l_limit, uint32 u_limit)
 {
-    U32 x = l_limit + (rand() % (u_limit - l_limit));
+    uint32 x = l_limit + (rand() % (u_limit - l_limit));
 
     return x;
 }

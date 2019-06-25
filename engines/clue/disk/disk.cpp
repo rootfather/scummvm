@@ -42,25 +42,25 @@ FILE *dskOpen(const char *Pathname, const char *Mode)
 void *dskLoad(const char *Pathname)
 {
     FILE *fp;
-    U8 *ptr;
+    uint8 *ptr;
     size_t size, pos;
 
     pos  = 0;
     size = BUFSIZ;
-    ptr  = (U8 *)malloc(size);
+    ptr  = (uint8 *)malloc(size);
 
     if ((fp = dskOpen(Pathname, "rb"))) {
         size_t nread;
 
         while ((nread = fread(ptr+pos, 1, BUFSIZ, fp)) == BUFSIZ) {
             pos  += nread;
-            ptr   = (U8 *)realloc(ptr, size+BUFSIZ);
+            ptr   = (uint8 *)realloc(ptr, size+BUFSIZ);
             size += nread;
         }
 
         pos += nread;
 
-        ptr = (U8 *)realloc(ptr, pos);
+        ptr = (uint8 *)realloc(ptr, pos);
         dskClose(fp);
         return (void *)ptr;
     }
@@ -170,59 +170,59 @@ void dskWrite(FILE * fp, void *src, size_t size)
     }
 }
 
-void dskWrite_U8(FILE * fp, U8 * x)
+void dskWrite_U8(FILE * fp, uint8 * x)
 {
-    U8 tmp;
+    uint8 tmp;
 
     tmp = *x;
     dskWrite(fp, &tmp, sizeof(tmp));
 }
 
-void dskWrite_S8(FILE * fp, S8 * x)
+void dskWrite_S8(FILE * fp, int8 * x)
 {
-    S8 tmp;
+    int8 tmp;
 
     tmp = *x;
     dskWrite(fp, &tmp, sizeof(tmp));
 }
 
-void dskWrite_U16LE(FILE * fp, U16 * x)
+void dskWrite_U16LE(FILE * fp, uint16 * x)
 {
-    U8 tmp[2];
+    uint8 tmp[2];
 
-    tmp[0] = (U8) ((*x) & 0xff);
-    tmp[1] = (U8) ((*x >> 8) & 0xff);
+    tmp[0] = (uint8) ((*x) & 0xff);
+    tmp[1] = (uint8) ((*x >> 8) & 0xff);
     dskWrite(fp, &tmp, sizeof(tmp));
 }
 
-void dskWrite_S16LE(FILE * fp, S16 * x)
+void dskWrite_S16LE(FILE * fp, int16 * x)
 {
-    U8 tmp[2];
+    uint8 tmp[2];
 
-    tmp[0] = (U8) ((*x) & 0xff);
-    tmp[1] = (U8) ((*x >> 8) & 0xff);
+    tmp[0] = (uint8) ((*x) & 0xff);
+    tmp[1] = (uint8) ((*x >> 8) & 0xff);
     dskWrite(fp, &tmp, sizeof(tmp));
 }
 
-void dskWrite_U32LE(FILE * fp, U32 * x)
+void dskWrite_U32LE(FILE * fp, uint32 * x)
 {
-    U8 tmp[4];
+    uint8 tmp[4];
 
-    tmp[0] = (U8) ((*x) & 0xff);
-    tmp[1] = (U8) ((*x >> 8) & 0xff);
-    tmp[2] = (U8) ((*x >> 16) & 0xff);
-    tmp[3] = (U8) ((*x >> 24) & 0xff);
+    tmp[0] = (uint8) ((*x) & 0xff);
+    tmp[1] = (uint8) ((*x >> 8) & 0xff);
+    tmp[2] = (uint8) ((*x >> 16) & 0xff);
+    tmp[3] = (uint8) ((*x >> 24) & 0xff);
     dskWrite(fp, &tmp, sizeof(tmp));
 }
 
-void dskWrite_S32LE(FILE * fp, S32 * x)
+void dskWrite_S32LE(FILE * fp, int32 * x)
 {
-    U8 tmp[4];
+    uint8 tmp[4];
 
-    tmp[0] = (U8) ((*x) & 0xff);
-    tmp[1] = (U8) ((*x >> 8) & 0xff);
-    tmp[2] = (U8) ((*x >> 16) & 0xff);
-    tmp[3] = (U8) ((*x >> 24) & 0xff);
+    tmp[0] = (uint8) ((*x) & 0xff);
+    tmp[1] = (uint8) ((*x >> 8) & 0xff);
+    tmp[2] = (uint8) ((*x >> 16) & 0xff);
+    tmp[3] = (uint8) ((*x >> 24) & 0xff);
     dskWrite(fp, &tmp, sizeof(tmp));
 }
 
@@ -233,54 +233,54 @@ void dskRead(FILE *fp, void *dest, size_t size)
     }
 }
 
-void dskRead_U8(FILE * fp, U8 * x)
+void dskRead_U8(FILE * fp, uint8 * x)
 {
-    U8 tmp;
+    uint8 tmp;
 
     dskRead(fp, &tmp, sizeof(tmp));
     *x = tmp;
 }
 
-void dskRead_S8(FILE * fp, S8 * x)
+void dskRead_S8(FILE * fp, int8 * x)
 {
-    S8 tmp;
+    int8 tmp;
 
     dskRead(fp, &tmp, sizeof(tmp));
     *x = tmp;
 }
 
-void dskRead_U16LE(FILE * fp, U16 * x)
+void dskRead_U16LE(FILE * fp, uint16 * x)
 {
-    U8 tmp[2];
+    uint8 tmp[2];
 
     dskRead(fp, &tmp, sizeof(tmp));
-    *x = (U16) ((U16) tmp[0] | ((U16) tmp[1] << 8));
+    *x = (uint16) ((uint16) tmp[0] | ((uint16) tmp[1] << 8));
 }
 
-void dskRead_S16LE(FILE * fp, S16 * x)
+void dskRead_S16LE(FILE * fp, int16 * x)
 {
-    U8 tmp[2];
+    uint8 tmp[2];
 
     dskRead(fp, &tmp, sizeof(tmp));
-    *x = (S16) ((U16) tmp[0] | ((U16) tmp[1] << 8));
+    *x = (int16) ((uint16) tmp[0] | ((uint16) tmp[1] << 8));
 }
 
-void dskRead_U32LE(FILE * fp, U32 * x)
+void dskRead_U32LE(FILE * fp, uint32 * x)
 {
-    U8 tmp[4];
+    uint8 tmp[4];
 
     dskRead(fp, &tmp, sizeof(tmp));
-    *x = (U32) ((U32) tmp[0] | ((U32) tmp[1] << 8)
-		| ((U32) tmp[2] << 16) | ((U32) tmp[3] << 24));
+    *x = (uint32) ((uint32) tmp[0] | ((uint32) tmp[1] << 8)
+		| ((uint32) tmp[2] << 16) | ((uint32) tmp[3] << 24));
 }
 
-void dskRead_S32LE(FILE * fp, S32 * x)
+void dskRead_S32LE(FILE * fp, int32 * x)
 {
-    U8 tmp[4];
+    uint8 tmp[4];
 
     dskRead(fp, &tmp, sizeof(tmp));
-    *x = (S32) ((U32) tmp[0] | ((U32) tmp[1] << 8)
-		| ((U32) tmp[2] << 16) | ((U32) tmp[3] << 24));
+    *x = (int32) ((uint32) tmp[0] | ((uint32) tmp[1] << 8)
+		| ((uint32) tmp[2] << 16) | ((uint32) tmp[3] << 24));
 }
 
 bool dskGetLine(char *s, int size, FILE *fp)

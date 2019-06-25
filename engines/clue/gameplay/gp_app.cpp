@@ -22,7 +22,7 @@
 
 #include <assert.h>
 
-void tcAsTimeGoesBy(U32 untilMinute)
+void tcAsTimeGoesBy(uint32 untilMinute)
 {
     untilMinute = untilMinute % 1440;
 
@@ -36,9 +36,9 @@ void tcAsTimeGoesBy(U32 untilMinute)
     }
 }
 
-void tcAsDaysGoBy(U32 day, U32 stepSize)
+void tcAsDaysGoBy(uint32 day, uint32 stepSize)
 {
-    U32 add;
+    uint32 add;
 
     while (GetDay < day) {
 	inpDelay(3);
@@ -51,7 +51,7 @@ void tcAsDaysGoBy(U32 day, U32 stepSize)
     }
 }
 
-void tcMattGoesTo(U32 locNr)
+void tcMattGoesTo(uint32 locNr)
 {
     NODE *node = (NODE *)GetNthNode(film->loc_names, locNr);
 
@@ -60,19 +60,19 @@ void tcMattGoesTo(U32 locNr)
     ShowTime(0);
 
     gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
-    PlayAnim(NODE_NAME(node), (word) 30000,
+    PlayAnim(NODE_NAME(node), (int16) 30000,
 	     GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
 }
 
-void tcTheAlmighty(U32 time)
+void tcTheAlmighty(uint32 time)
 {
     tcMovePersons(2, time);
 }
 
-void tcMovePersons(U32 personCount, U32 time)
+void tcMovePersons(uint32 personCount, uint32 time)
 {
-    U32 i, count;
-    U32 persID, locID;
+    uint32 i, count;
+    uint32 persID, locID;
 
     for (i = 0; i < personCount; i++) {
 
@@ -97,9 +97,9 @@ void tcMovePersons(U32 personCount, U32 time)
     }
 }
 
-void tcMoveAPerson(U32 persID, U32 newLocID)
+void tcMoveAPerson(uint32 persID, uint32 newLocID)
 {
-    U32 oldLocID;
+    uint32 oldLocID;
 
     hasAll(persID, 0, Object_Location);	/* wo is er denn ? */
 
@@ -119,10 +119,10 @@ void tcMoveAPerson(U32 persID, U32 newLocID)
     hasSet(newLocID, persID);
 }
 
-U32 tcBurglary(U32 buildingID)
+uint32 tcBurglary(uint32 buildingID)
 	/* wird von 2 Stellen aufgerufen! (story_9)! */
 {
-    S32 ret;
+    int32 ret;
     Building b = (Building)dbGetObject(buildingID);
 
     if (buildingID == Building_Seniorenheim)
@@ -173,7 +173,7 @@ U32 tcBurglary(U32 buildingID)
     }
 }
 
-void tcRefreshLocationInTitle(U32 locNr)
+void tcRefreshLocationInTitle(uint32 locNr)
 {
     char date[TXT_KEY_LENGTH], line[TXT_KEY_LENGTH];
     NODE *node;
@@ -191,7 +191,7 @@ void tcRefreshLocationInTitle(U32 locNr)
 void StdInit(void)
 {
     struct Scene *sc;
-    ubyte sameLocation = 0;
+    byte sameLocation = 0;
     NODE *node;
 
     sc = GetCurrentScene();
@@ -207,7 +207,7 @@ void StdInit(void)
     node = (NODE *)GetNthNode(film->loc_names, sc->LocationNr);
 
     if (((RefreshMode) || (!sameLocation)))
-	PlayAnim(NODE_NAME(node), (word) 30000,
+	PlayAnim(NODE_NAME(node), (int16) 30000,
 		 GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
 
     ShowTime(0);		/* Zeit sollte nach der Anim gezeigt werden, sonst Probleme mit Diskversion */
@@ -319,7 +319,7 @@ void tcPlayStreetSound()
         }
 
 	{
-	    static ubyte counter = 0;
+	    static byte counter = 0;
 	    bool noStreetMusic = false;
 
 	    if (strcmp(sndGetCurrSoundName(), "street1.bk") &&
@@ -347,7 +347,7 @@ void tcPlayStreetSound()
     }
 }
 
-void ShowTime(U32 delay)
+void ShowTime(uint32 delay)
 {
     char time[TXT_KEY_LENGTH];
 
@@ -363,21 +363,21 @@ void ShowTime(U32 delay)
     gfxPrint(u_gc, time, 5, GFX_PRINT_CENTER | GFX_PRINT_SHADOW);
 }
 
-U32 StdHandle(U32 choice)
+uint32 StdHandle(uint32 choice)
 {
-    U32 succ_eventnr = 0, locNr, objNr;
+    uint32 succ_eventnr = 0, locNr, objNr;
     struct Scene *scene = GetCurrentScene();
     char line[TXT_KEY_LENGTH];
     Location loc;
 
-    switch ((U32) (choice)) {
+    switch ((uint32) (choice)) {
     case GO:
 	succ_eventnr = Go(scene->std_succ);
 
 	if (succ_eventnr) {
 	    locNr = GetScene(succ_eventnr)->LocationNr;
 
-	    if (locNr != (U32) - 1) {
+	    if (locNr != (uint32) - 1) {
 		objNr = GetObjNrOfLocation(locNr);
 
 		if (objNr) {
@@ -408,7 +408,7 @@ U32 StdHandle(U32 choice)
 	ShowTime(0);
 	break;
     case LOOK:
-	Look((U32) GetCurrentScene()->LocationNr);
+	Look((uint32) GetCurrentScene()->LocationNr);
 	AddVTime(1);
 	ShowTime(0);
 	break;
@@ -451,7 +451,7 @@ U32 StdHandle(U32 choice)
 		    Say(THECLOU_TXT, 0, MATT_PICTID, "NO_CAR_FOR_PLAN");
 		    ShowTime(0);
 		} else {
-		    U32 building;
+		    uint32 building;
 
 		    gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
 
@@ -499,8 +499,8 @@ U32 StdHandle(U32 choice)
 
 void StdDone(void)
 {
-    U32 choice;
-    ubyte activ = 0;
+    uint32 choice;
+    byte activ = 0;
     LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
 
     SceneArgs.ReturnValue = 0L;
@@ -525,19 +525,19 @@ void StdDone(void)
 	    inpTurnFunctionKey(1);
 
 	    activ =
-		Menu(menu, SceneArgs.Moeglichkeiten, (ubyte) (activ), NULL, 0L);
+		Menu(menu, SceneArgs.Moeglichkeiten, (byte) (activ), NULL, 0L);
 
-	    if (activ == (ubyte) - 1) {
+	    if (activ == (byte) - 1) {
 		ShowTheClouRequester(No_Error);
 		SceneArgs.ReturnValue =
 		    ((Player) dbGetObject(Player_Player_1))->CurrScene;
 
 		activ = 0;
 	    } else {
-		if (activ == ((ubyte) (TXT_MENU_TIMEOUT)))
+		if (activ == ((byte) (TXT_MENU_TIMEOUT)))
 		    activ = 0;
 		else {
-		    choice = (U32) 1L << (activ);
+		    choice = (uint32) 1L << (activ);
 
 		    SceneArgs.ReturnValue = StdHandle(choice);
 		}
@@ -720,9 +720,9 @@ void SetFunc(struct Scene *sc, void (*init) (void), void (*done) (void))
     sc->Done = done;
 }
 
-ubyte tcPersonIsHere(void)
+byte tcPersonIsHere(void)
 {
-    U32 locNr = GetObjNrOfLocation(GetLocation);
+    uint32 locNr = GetObjNrOfLocation(GetLocation);
 
     if (locNr) {
 	if (locNr == Location_Fat_Mans_Pub) {
@@ -752,8 +752,8 @@ ubyte tcPersonIsHere(void)
 
 void tcPersonGreetsMatt(void)
 {
-    static U32 upper = 4L;
-    U32 locNr;
+    static uint32 upper = 4L;
+    uint32 locNr;
 
     if (CalcRandomNr(0L, upper) == 1) {	/* alle upper mal wird Matt gegrÅ·t ! */
 	if (CalcRandomNr(0L, 4L) == 1)	/* alle 4 mal */
@@ -765,7 +765,7 @@ void tcPersonGreetsMatt(void)
 	    hasAll(locNr, 0, Object_Person);
 
 	    if (!(LIST_EMPTY(ObjectList))) {
-		U32 persNr = OL_NR(LIST_HEAD(ObjectList));
+		uint32 persNr = OL_NR(LIST_HEAD(ObjectList));
 
 		if (knows(Person_Matt_Stuvysunt, persNr)) {
 		    Person pers = (Person)dbGetObject(persNr);
@@ -778,7 +778,7 @@ void tcPersonGreetsMatt(void)
     ShowTime(0);
 }
 
-void tcGetLastName(char *Name, char *dest, U32 maxLength)
+void tcGetLastName(char *Name, char *dest, uint32 maxLength)
 {
     char *s;
     char lastName[TXT_KEY_LENGTH];
@@ -795,10 +795,10 @@ void tcGetLastName(char *Name, char *dest, U32 maxLength)
     strcpy(dest, lastName);
 }
 
-void tcCutName(char *Name, ubyte Sign, U32 maxLength)
+void tcCutName(char *Name, byte Sign, uint32 maxLength)
 {
-    S32 i;
-    U32 j;
+    int32 i;
+    uint32 j;
     char Source[TXT_KEY_LENGTH];
 
     strcpy(Source, Name);

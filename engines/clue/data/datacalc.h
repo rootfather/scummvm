@@ -42,8 +42,8 @@
 
 #define   tcDerivation(min,max)          (CalcRandomNr(min,max))
 
-S32 Round(S32 v, S32 p);
-S32 CalcValue(S32 value, S32 min, S32 max, S32 fact, S32 perc);
-S32 ChangeAbs(S32 item, S32 value, S32 min, S32 max);
+int32 Round(int32 v, int32 p);
+int32 CalcValue(int32 value, int32 min, int32 max, int32 fact, int32 perc);
+int32 ChangeAbs(int32 item, int32 value, int32 min, int32 max);
 
 #endif

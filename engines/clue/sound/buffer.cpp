@@ -56,10 +56,10 @@ unsigned sndInsertBuffer(SND_BUFFER *buffer, const void *src, unsigned srcLen)
     const unsigned char *psrc = (const unsigned char *)src;
     unsigned len, pos;
 
-    srcLen = min(srcLen, buffer->size - sndLenBuffer(buffer));
+    srcLen = MIN(srcLen, buffer->size - sndLenBuffer(buffer));
 
     pos = buffer->insertPos % buffer->size;
-    len = min(srcLen, buffer->size - pos);
+    len = MIN(srcLen, buffer->size - pos);
 
     /* insert to the end */
     memcpy(buffer->data + pos, psrc, len);
@@ -77,10 +77,10 @@ unsigned sndRemoveBuffer(SND_BUFFER *buffer, void *dst, unsigned dstLen)
     unsigned char *pdst = (unsigned char *)dst;
     unsigned len, pos;
     
-    dstLen = min(dstLen, sndLenBuffer(buffer));
+    dstLen = MIN(dstLen, sndLenBuffer(buffer));
     
     pos = buffer->removePos % buffer->size;
-    len = min(dstLen, buffer->size - pos);
+    len = MIN(dstLen, buffer->size - pos);
 
     /* remove from the end */
     memcpy(pdst, buffer->data + pos, len);

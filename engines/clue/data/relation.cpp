@@ -255,7 +255,7 @@ void UnSetAll(KEY key, void (*UseKey) (KEY))
     }
 }
 
-int SaveRelations(char *file, U32 offset, U32 size, U16 disk_id)
+int SaveRelations(char *file, uint32 offset, uint32 size, uint16 disk_id)
 {
     if (relationsDefBase && DecodeKey) {
 	register struct relationDef *rd;
@@ -295,16 +295,16 @@ int SaveRelations(char *file, U32 offset, U32 size, U16 disk_id)
     return 0;
 }
 
-int LoadRelations(char *file, U16 disk_id)
+int LoadRelations(char *file, uint16 disk_id)
 {
     RELATION rd;
     PARAMETER parameter;
     char buffer[256];
     char left[256];
     char right[256];
-    U8 goOn;
+    uint8 goOn;
     FILE *fh = NULL;
-    U32 dummy;
+    uint32 dummy;
 
     buffer[0] = '\0';
     left[0] = '\0';
@@ -370,7 +370,7 @@ int LoadRelations(char *file, U16 disk_id)
     return 0;
 }
 
-void RemRelations(U32 offset, U32 size)
+void RemRelations(uint32 offset, uint32 size)
 {
     register struct relationDef *rd, *rd_next;
 

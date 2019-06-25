@@ -25,7 +25,7 @@
 
 struct IOData {
     NODE io_Link;
-    ubyte io_Data;
+    byte io_Data;
 };
 
 
@@ -55,9 +55,9 @@ void plSaveTools(FILE * fh)
 LIST *plLoadTools(FILE * fh)
 {
     register LIST *l = txtGoKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_1");
-    register ubyte foundAll = 1, canGet = 2, toolsNr = 0;
+    register byte foundAll = 1, canGet = 2, toolsNr = 0;
     char buffer[64];
-    U32 id;
+    uint32 id;
 
     buffer[0] = '\0';
 
@@ -92,7 +92,7 @@ LIST *plLoadTools(FILE * fh)
 	    if ((toolsNr - canGet) > 1)
 		extList =
 		    txtGoKeyAndInsert(PLAN_TXT, "SYSTEM_TOOLS_MISSING_2",
-				      (U32) (toolsNr - canGet));
+				      (uint32) (toolsNr - canGet));
 	    else if (toolsNr - canGet)
 		extList = txtGoKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_4");
 	}
@@ -109,16 +109,16 @@ LIST *plLoadTools(FILE * fh)
     return l;
 }
 
-ubyte plOpen(U32 objId, ubyte mode, FILE ** fh)
+byte plOpen(uint32 objId, byte mode, FILE ** fh)
 {
     if (GamePlayMode & GP_GUARD_DESIGN) {
 	if (grdInit(fh, Planing_Open[mode], objId, lsGetActivAreaID()))
 	    return PLANING_OPEN_OK;
     } else {
 	register LIST *PlanList;
-	register ubyte i;
+	register byte i;
 	FILE *pllFh;
-	U32 pllData = 0;
+	uint32 pllData = 0;
 	char pllPath[DSK_PATH_MAX], pllPath2[DSK_PATH_MAX],
 	    name1[TXT_KEY_LENGTH], name2[TXT_KEY_LENGTH], exp[TXT_KEY_LENGTH];
 
@@ -216,7 +216,7 @@ ubyte plOpen(U32 objId, ubyte mode, FILE ** fh)
     return 0;
 }
 
-void plSave(U32 objId)
+void plSave(uint32 objId)
 {
     FILE *fh = NULL;
 
@@ -225,7 +225,7 @@ void plSave(U32 objId)
 	    grdDo(fh, plSys, PersonsList, BurglarsNr, PersonsNr,
 		  GUARDS_DO_SAVE);
 	} else {
-	    ubyte i;
+	    byte i;
 
 	    SaveSystem(fh, plSys);
 	    plSaveTools(fh);
@@ -238,7 +238,7 @@ void plSave(U32 objId)
     }
 }
 
-void plSaveChanged(U32 objId)
+void plSaveChanged(uint32 objId)
 {
     if (PlanChanged) {
 	LIST *l = txtGoKey(PLAN_TXT, "PLAN_CHANGED");
@@ -259,10 +259,10 @@ void plSaveChanged(U32 objId)
     }
 }
 
-void plLoad(U32 objId)
+void plLoad(uint32 objId)
 {
     FILE *fh = NULL;
-    ubyte ret;
+    byte ret;
 
     if (objId == Building_Starford_Kaserne)
 	while ((ret =
@@ -276,8 +276,8 @@ void plLoad(U32 objId)
 		  GUARDS_DO_LOAD);
 	else {
 	    LIST *l = NULL;
-	    ubyte i;
-	    ubyte goon = 1;
+	    byte i;
+	    byte goon = 1;
 
 	    if ((l = LoadSystem(fh, plSys))) {
 		inpTurnESC(0);

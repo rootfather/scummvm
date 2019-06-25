@@ -40,11 +40,11 @@
 
 NODE *lsGetSuccObject(NODE * start);
 NODE *lsGetPredObject(NODE * start);
-void lsFadeRasterObject(U32 areaID, LSObject lso, ubyte status);
-void lsShowAllConnections(U32 areaID, NODE * node, ubyte perc);
-void lsShowRaster(U32 areaID, ubyte perc);
+void lsFadeRasterObject(uint32 areaID, LSObject lso, byte status);
+void lsShowAllConnections(uint32 areaID, NODE * node, byte perc);
+void lsShowRaster(uint32 areaID, byte perc);
 
-uword lsGetRasterXSize(U32 areaID);
-uword lsGetRasterYSize(U32 areaID);
+uint16 lsGetRasterXSize(uint32 areaID);
+uint16 lsGetRasterYSize(uint32 areaID);
 
 #endif

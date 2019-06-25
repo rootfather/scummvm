@@ -23,31 +23,31 @@
 #include "clue/landscap/landscap.h"
 #include "clue/landscap/landscap_p.h"
 
-U32 ConsistOfRelationID = 0;
-U32 hasLockRelationID = 0;
-U32 hasAlarmRelationID = 0;
-U32 hasPowerRelationID = 0;
-U32 hasLootRelationID = 0;
-U32 hasRoomRelationID = 0;
-U32 FloorLinkRelationID = 0;
+uint32 ConsistOfRelationID = 0;
+uint32 hasLockRelationID = 0;
+uint32 hasAlarmRelationID = 0;
+uint32 hasPowerRelationID = 0;
+uint32 hasLootRelationID = 0;
+uint32 hasRoomRelationID = 0;
+uint32 FloorLinkRelationID = 0;
 
 struct LandScape *ls = NULL;
 
-void lsSafeRectFill(U16 x0, U16 y0, U16 x1, U16 y1, U8 color)
+void lsSafeRectFill(uint16 x0, uint16 y0, uint16 x1, uint16 y1, uint8 color)
 {
-    x0 = min(x0, 638);
-    x1 = min(x1, 639);
+    x0 = MIN(x0, (uint16)638);
+    x1 = MIN(x1, (uint16)639);
 
-    y0 = min(y0, 254);
-    y1 = min(y1, 255);
+    y0 = MIN(y0, (uint16)254);
+    y1 = MIN(y1, (uint16)255);
 
     if (x1 > x0 && y1 > y0)
         gfxLSRectFill(x0, y0, x1, y1, color);
 }
 
-void lsSetVisibleWindow(uword x, uword y)
+void lsSetVisibleWindow(uint16 x, uint16 y)
 {
-    word halfX, halfY, wX, wY;
+    int16 halfX, halfY, wX, wY;
 
     halfX = LS_VISIBLE_X_SIZE / 2;
     halfY = LS_VISIBLE_Y_SIZE / 2;
@@ -60,11 +60,11 @@ void lsSetVisibleWindow(uword x, uword y)
 
     /* -1 is important, so that no position 320, 128 is possible     */
     /* (window from (320, 128) - (640, 256) instead of (639, 255) !!! */
-    wX = min(wX, LS_MAX_AREA_WIDTH - LS_VISIBLE_X_SIZE - 1);
-    wY = min(wY, LS_MAX_AREA_HEIGHT - LS_VISIBLE_Y_SIZE - 1);
+    wX = MIN(wX, int16(LS_MAX_AREA_WIDTH - LS_VISIBLE_X_SIZE - 1));
+    wY = MIN(wY, int16(LS_MAX_AREA_HEIGHT - LS_VISIBLE_Y_SIZE - 1));
 
-    ls->us_WindowXPos = (uword) wX;
-    ls->us_WindowYPos = (uword) wY;
+    ls->us_WindowXPos = (uint16) wX;
+    ls->us_WindowYPos = (uint16) wY;
 
     gfxNCH4SetViewPort(ls->us_WindowXPos, ls->us_WindowYPos);
 
@@ -96,10 +96,10 @@ static void lsShowRooms(void)
 
 void lsBuildScrollWindow(void)
 {
-    S32 i, j;
+    int32 i, j;
     NODE *node;
     LSArea area = (LSArea) dbGetObject(ls->ul_AreaID);
-    U8 palette[GFX_PALETTE_SIZE];
+    uint8 palette[GFX_PALETTE_SIZE];
 
     gfxSetColorRange(0, 255);
     gfxChangeColors(u_gc, 0, GFX_FADE_OUT, 0);
@@ -221,15 +221,15 @@ void lsBuildScrollWindow(void)
 #endif
 }
 
-void lsSetDarkness(ubyte value)
+void lsSetDarkness(byte value)
 {
     gfxSetDarkness(value);
 }
 
 
-void lsTurnObject(LSObject lso, ubyte status, ubyte Collis)
+void lsTurnObject(LSObject lso, byte status, byte Collis)
 {
-    uword floorIndex;
+    uint16 floorIndex;
 
     floorIndex = lsGetFloorIndex(lso->us_DestX, lso->us_DestY);
 
@@ -242,9 +242,9 @@ void lsTurnObject(LSObject lso, ubyte status, ubyte Collis)
 	LS_SET_MICRO_ON_FLOOR(ls->p_CurrFloor[floorIndex].uch_FloorType);
 }
 
-ubyte lsIsInside(LSObject lso, uword x, uword y, uword x1, uword y1)
+byte lsIsInside(LSObject lso, uint16 x, uint16 y, uint16 x1, uint16 y1)
 {
-    uword lsoX, lsoY, lsoX1, lsoY1;
+    uint16 lsoX, lsoY, lsoX1, lsoY1;
 
     lsCalcExactSize(lso, &lsoX, &lsoY, &lsoX1, &lsoY1);
 
@@ -254,25 +254,25 @@ ubyte lsIsInside(LSObject lso, uword x, uword y, uword x1, uword y1)
 	return (0);
 }
 
-void lsSetActivLiving(char *Name, uword x, uword y)
+void lsSetActivLiving(char *Name, uint16 x, uint16 y)
 {
     if (Name) {
 	strcpy(ls->uch_ActivLiving, Name);
 
-	if (x == (uword) - 1)
+	if (x == (uint16) - 1)
 	    x = livGetXPos(Name);
-	if (y == (uword) - 1)
+	if (y == (uint16) - 1)
 	    y = livGetYPos(Name);
 
 	lsSetVisibleWindow(x, y);
 	livRefreshAll();
 
-	ls->us_PersonXPos = (uword) (x - ls->us_WindowXPos);
-	ls->us_PersonYPos = (uword) (y - ls->us_WindowYPos);
+	ls->us_PersonXPos = (uint16) (x - ls->us_WindowXPos);
+	ls->us_PersonYPos = (uint16) (y - ls->us_WindowYPos);
     }
 }
 
-void lsSetObjectState(U32 objID, ubyte bitNr, ubyte value)
+void lsSetObjectState(uint32 objID, byte bitNr, byte value)
 {
     LSObject object = (LSObject) dbGetObject(objID);
 
@@ -286,7 +286,7 @@ void lsSetObjectState(U32 objID, ubyte bitNr, ubyte value)
     }
 }
 
-static word lsSortByXCoord(struct ObjectNode *n1, struct ObjectNode *n2)
+static int16 lsSortByXCoord(struct ObjectNode *n1, struct ObjectNode *n2)
 {
     LSObject lso1, lso2;
 
@@ -296,10 +296,10 @@ static word lsSortByXCoord(struct ObjectNode *n1, struct ObjectNode *n2)
     if (lso1->us_DestX > lso2->us_DestX)
 	return (1);
     else
-	return ((word) - 1);
+	return ((int16) - 1);
 }
 
-static word lsSortByYCoord(struct ObjectNode * n1, struct ObjectNode * n2)
+static int16 lsSortByYCoord(struct ObjectNode * n1, struct ObjectNode * n2)
 {
     LSObject lso1, lso2;
 
@@ -309,14 +309,14 @@ static word lsSortByYCoord(struct ObjectNode * n1, struct ObjectNode * n2)
     if (lso1->us_DestY < lso2->us_DestY)
 	return (1);
     else
-	return ((word) - 1);
+	return ((int16) - 1);
 }
 
 static void lsSortObjectList(LIST ** l)
 {
     LSObject lso1, lso2;
     NODE *node, *node1, *next;
-    ubyte lastNode = 0;
+    byte lastNode = 0;
 
     if (!(LIST_EMPTY((*l)))) {
 	dbSortObjectList(l, lsSortByYCoord);
@@ -355,7 +355,7 @@ static void lsSortObjectList(LIST ** l)
     }
 }
 
-void lsRefreshObjectList(U32 areaID)
+void lsRefreshObjectList(uint32 areaID)
 {
     SetObjectListAttr(OLF_PRIVATE_LIST, Object_LSObject);
     AskAll(dbGetObject(areaID), ConsistOfRelationID, BuildObjectList);
@@ -364,14 +364,14 @@ void lsRefreshObjectList(U32 areaID)
     lsSortObjectList(&ls->p_ObjectRetrieval);
 }
 
-U32 lsAddLootBag(uword x, uword y, ubyte bagNr)
+uint32 lsAddLootBag(uint16 x, uint16 y, byte bagNr)
 {				/* bagNr : 1 - 8! */
     LSObject lso = (LSObject)dbGetObject(9700 + bagNr);
 
     lso->uch_Visible = LS_OBJECT_VISIBLE;
 
     /* add loot bag */
-    if (!hasLootBag(ls->ul_AreaID, (U32) (9700 + bagNr))) {
+    if (!hasLootBag(ls->ul_AreaID, (uint32) (9700 + bagNr))) {
 	lso->us_DestX = x;
 	lso->us_DestY = y;
 
@@ -379,13 +379,13 @@ U32 lsAddLootBag(uword x, uword y, ubyte bagNr)
 	       LS_LOOTBAG_Y_OFFSET);
 	BobVis(lso->us_OffsetFact);
 
-	hasLootBagSet(ls->ul_AreaID, (U32) (9700 + bagNr));
+	hasLootBagSet(ls->ul_AreaID, (uint32) (9700 + bagNr));
     }
 
-    return ((U32) (9700 + bagNr));
+    return ((uint32) (9700 + bagNr));
 }
 
-void lsRemLootBag(U32 bagId)
+void lsRemLootBag(uint32 bagId)
 {
     LSObject lso = (LSObject)dbGetObject(bagId);
 
@@ -398,7 +398,7 @@ void lsRemLootBag(U32 bagId)
 
 void lsRefreshAllLootBags(void)
 {
-    U32 i;
+    uint32 i;
 
     livPrepareAnims();
 
@@ -406,7 +406,7 @@ void lsRefreshAllLootBags(void)
 	LSObject lso = (LSObject)dbGetObject(9700 + i);
 
 	if ((lso->uch_Visible == LS_OBJECT_VISIBLE)
-	    && (hasLootBag(ls->ul_AreaID, (U32) (9700 + i)))) {
+	    && (hasLootBag(ls->ul_AreaID, (uint32) (9700 + i)))) {
 	    BobSet(lso->us_OffsetFact, lso->us_DestX, lso->us_DestY,
 		   LS_LOOTBAG_X_OFFSET, LS_LOOTBAG_Y_OFFSET);
 	    BobVis(lso->us_OffsetFact);
@@ -414,22 +414,22 @@ void lsRefreshAllLootBags(void)
     }
 }
 
-void lsGuyInsideSpot(uword * us_XPos, uword * us_YPos, U32 * areaId)
+void lsGuyInsideSpot(uint16 * us_XPos, uint16 * us_YPos, uint32 * areaId)
 {
     LIST *spots = lsGetSpotList();
     struct Spot *s;
-    S32 i;
+    int32 i;
 
     for (s = (struct Spot *) LIST_HEAD(spots); NODE_SUCC(s);
 	 s = (struct Spot *) NODE_SUCC(s)) {
 	if (s->uch_Status & LS_SPOT_ON) {
 	    for (i = 0; i < 4; i++) {
-		if ((us_XPos[i] != (uword) - 1) && (us_YPos[i] != (uword) - 1)) {
+		if ((us_XPos[i] != (uint16) - 1) && (us_YPos[i] != (uint16) - 1)) {
 		    if (areaId[i] == s->ul_AreaId) {
 			if (((struct Spot *) s)->p_CurrPos) {
-			    S32 x = s->p_CurrPos->us_XPos;	/* linke, obere */
-			    S32 y = s->p_CurrPos->us_YPos;	/* Ecke des Spot! */
-			    S32 size = s->us_Size - 4;
+			    int32 x = s->p_CurrPos->us_XPos;	/* linke, obere */
+			    int32 y = s->p_CurrPos->us_YPos;	/* Ecke des Spot! */
+			    int32 size = s->us_Size - 4;
 
 			    if ((us_XPos[i] < x + size - 2)
 				&& (us_XPos[i] > x + 2))
@@ -444,10 +444,10 @@ void lsGuyInsideSpot(uword * us_XPos, uword * us_YPos, U32 * areaId)
     }
 }
 
-void lsWalkThroughWindow(LSObject lso, uword us_LivXPos, uword us_LivYPos,
-			 uword * us_XPos, uword * us_YPos)
+void lsWalkThroughWindow(LSObject lso, uint16 us_LivXPos, uint16 us_LivYPos,
+			 uint16 * us_XPos, uint16 * us_YPos)
 {
-    word deltaX, deltaY;
+    int16 deltaX, deltaY;
 
     (*us_XPos) = us_LivXPos;
     (*us_YPos) = us_LivYPos;
@@ -533,11 +533,11 @@ void lsPatchObjects(void)
     }
 }
 
-void lsCalcExactSize(LSObject lso, uword * x0, uword * y0, uword * x1,
-		     uword * y1)
+void lsCalcExactSize(LSObject lso, uint16 * x0, uint16 * y0, uint16 * x1,
+		     uint16 * y1)
 {
     Item item = (Item)dbGetObject(lso->Type);
-    ubyte vertical = 0;
+    byte vertical = 0;
 
     (*x0) = lso->us_DestX;
     (*y0) = lso->us_DestY;
@@ -565,13 +565,13 @@ void lsCalcExactSize(LSObject lso, uword * x0, uword * y0, uword * x1,
     }
 }
 
-void lsInitDoorRefresh(U32 ObjId)
+void lsInitDoorRefresh(uint32 ObjId)
 	/* copies a background that is covered by a door into a mem buffer */
 {
     LSObject lso = (LSObject)dbGetObject(ObjId);
-    uword width, height, destX, destY;
+    uint16 width, height, destX, destY;
     struct LSDoorRefreshNode *drn;
-    ubyte found = 0;
+    byte found = 0;
 
     for (drn = (struct LSDoorRefreshNode *) LIST_HEAD(ls->p_DoorRefreshList);
 	 NODE_SUCC(drn); drn = (struct LSDoorRefreshNode *) NODE_SUCC(drn))
@@ -625,7 +625,7 @@ void lsDoDoorRefresh(LSObject lso)
 	/* restore the background of a door from a mem buffer */
 {
     struct LSDoorRefreshNode *drn;
-    uword width, height;
+    uint16 width, height;
 
     for (drn = (struct LSDoorRefreshNode *) LIST_HEAD(ls->p_DoorRefreshList);
 	 NODE_SUCC(drn); drn = (struct LSDoorRefreshNode *) NODE_SUCC(drn))

@@ -56,67 +56,67 @@
 #define LIV_PM_REVERSE   	2
 
 /* defines fÅr Action */
-#define ANM_MOVE_UP 	   	((ubyte)0)
-#define ANM_MOVE_DOWN	   ((ubyte)1)
-#define ANM_MOVE_RIGHT	   ((ubyte)2)
-#define ANM_MOVE_LEFT	   ((ubyte)3)
-#define ANM_STAND          ((ubyte)9)
-#define ANM_WORK_UP        ((ubyte)4)
-#define ANM_WORK_DOWN      ((ubyte)5)
-#define ANM_WORK_LEFT      ((ubyte)6)
-#define ANM_WORK_RIGHT     ((ubyte)7)
-#define ANM_DUSEL          ((ubyte)8)	/* for burglars */
-#define ANM_ELEKTRO        ((ubyte)8)	/* for burglars */
-#define ANM_WORK_CONTROL   ((ubyte)4)	/* for policemen */
-#define ANM_DUSEL_POLICE   ((ubyte)5)	/* for policemen */
+#define ANM_MOVE_UP 	   	((byte)0)
+#define ANM_MOVE_DOWN	   ((byte)1)
+#define ANM_MOVE_RIGHT	   ((byte)2)
+#define ANM_MOVE_LEFT	   ((byte)3)
+#define ANM_STAND          ((byte)9)
+#define ANM_WORK_UP        ((byte)4)
+#define ANM_WORK_DOWN      ((byte)5)
+#define ANM_WORK_LEFT      ((byte)6)
+#define ANM_WORK_RIGHT     ((byte)7)
+#define ANM_DUSEL          ((byte)8)	/* for burglars */
+#define ANM_ELEKTRO        ((byte)8)	/* for burglars */
+#define ANM_WORK_CONTROL   ((byte)4)	/* for policemen */
+#define ANM_DUSEL_POLICE   ((byte)5)	/* for policemen */
 
-#define ANM_MAKE_CALL		((ubyte)9)	/* for burglars :MAKECALL */
+#define ANM_MAKE_CALL		((byte)9)	/* for burglars :MAKECALL */
 
 #define LIV_ENABLED      	1
 #define LIV_DISABLED     	0
 
-extern void livInit(uword us_VisLScapeX, uword us_VisLScapeY,
-		    uword us_VisLScapeWidth, uword us_VisLScapeHeight,
-		    uword us_TotalLScapeWidth, uword us_TotalLScapeHeight,
-		    ubyte uch_FrameCount, U32 ul_StartArea);
+extern void livInit(uint16 us_VisLScapeX, uint16 us_VisLScapeY,
+		    uint16 us_VisLScapeWidth, uint16 us_VisLScapeHeight,
+		    uint16 us_TotalLScapeWidth, uint16 us_TotalLScapeHeight,
+		    byte uch_FrameCount, uint32 ul_StartArea);
 
 extern void livDone(void);
 
 extern void livSetAllInvisible(void);
 
-extern void livSetPos(char *uch_Name, uword XPos, uword YPos);
-extern void livSetPlayMode(U32 playMode);
-extern void livSetActivAreaId(U32 areaId);
+extern void livSetPos(char *uch_Name, uint16 XPos, uint16 YPos);
+extern void livSetPlayMode(uint32 playMode);
+extern void livSetActivAreaId(uint32 areaId);
 extern void livRefreshAll(void);
 
-extern void livLivesInArea(char *uch_Name, U32 areaId);
-extern U32 livWhereIs(char *uch_Name);
+extern void livLivesInArea(char *uch_Name, uint32 areaId);
+extern uint32 livWhereIs(char *uch_Name);
 
-extern uword livGetXPos(char *uch_Name);
-extern uword livGetYPos(char *uch_Name);
+extern uint16 livGetXPos(char *uch_Name);
+extern uint16 livGetYPos(char *uch_Name);
 
-extern ubyte livCanWalk(char *puch_Name);
-extern ubyte livGetViewDirection(char *uch_Name);
-extern ubyte livIsPositionInViewDirection(uword us_GXPos, uword us_GYPos,
-					  uword us_XPos, uword us_YPos,
-					  ubyte uch_ViewDirection);
+extern byte livCanWalk(char *puch_Name);
+extern byte livGetViewDirection(char *uch_Name);
+extern byte livIsPositionInViewDirection(uint16 us_GXPos, uint16 us_GYPos,
+					  uint16 us_XPos, uint16 us_YPos,
+					  byte uch_ViewDirection);
 
-extern void livTurn(char *puch_Name, ubyte uch_Status);	/* enabled or disabled */
+extern void livTurn(char *puch_Name, byte uch_Status);	/* enabled or disabled */
 
-extern void livSetVisLScape(uword us_VisLScapeX, uword us_VisLScapeY);
+extern void livSetVisLScape(uint16 us_VisLScapeX, uint16 us_VisLScapeY);
 
-extern void livSetSpeed(char *uch_Name, word s_Speed);
+extern void livSetSpeed(char *uch_Name, int16 s_Speed);
 
-extern void livAnimate(char *uch_Name, ubyte uch_Action, word s_XSpeed,
-		       word s_YSpeed);
+extern void livAnimate(char *uch_Name, byte uch_Action, int16 s_XSpeed,
+		       int16 s_YSpeed);
 extern void livPrepareAnims(void);
-extern void livDoAnims(ubyte uch_Play, ubyte uch_Move);
+extern void livDoAnims(byte uch_Play, byte uch_Move);
 extern void livStopAll(void);
 
-extern ubyte livGetOldAction(char *uch_Name);
+extern byte livGetOldAction(char *uch_Name);
 
-/* uword spotInit(bitmap, uword 1 = 48, 2 = 32, 3 = 16 ); */
-/* uword spotDone */
-/* uword spotSetPos(uword, uword, uword); */
+/* uint16 spotInit(bitmap, uint16 1 = 48, 2 = 32, 3 = 16 ); */
+/* uint16 spotDone */
+/* uint16 spotSetPos(uint16, uint16, uint16); */
 
 #endif

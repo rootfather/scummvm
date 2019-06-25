@@ -47,7 +47,7 @@ typedef enum {
 } KeyConflictE;
 
 /* implemented in data/database.c */
-U32 getKey(KeyConflictE key);
+uint32 getKey(KeyConflictE key);
 
 #define _K(x)                               getKey(_ ## x)
 

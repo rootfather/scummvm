@@ -17,32 +17,12 @@
 /*
  * verwendete Typen
  */
+#define FORBIDDEN_SYMBOL_ALLOW_ALL
+#include "common/scummsys.h"
+#include "common/util.h"
 #include <string.h>
-
-#include <stdbool.h>
 #include <stddef.h>
 #include <inttypes.h>
-
-typedef uint8_t U8;
-typedef int8_t S8;
-typedef uint16_t U16;
-typedef int16_t S16;
-typedef uint32_t U32;
-typedef int32_t S32;
-
-typedef U8 ubyte;
-typedef S8 byte;
-typedef U16 uword;
-typedef S16 word;
-
-#define max(a, b)               ((a) > (b) ? (a) : (b))
-#define min(a, b)               ((a) < (b) ? (a) : (b))
-#define clamp(x, lower, upper)  \
-                                ((x) < (lower) ? \
-                                    (lower) : \
-                                    (x) > (upper) ? (upper) : (x))
-
-#define array_len(array)	(sizeof(array) / sizeof((array)[0]))
 
 #define EOS                     ((char)'\0')
 
@@ -183,7 +163,7 @@ typedef S16 word;
 #define ERR_CLOSE_FUNC		fclose
 #define ERR_HANDLING_FUNC	ShowTheClouRequester
 
-U32 ShowTheClouRequester(S32 error_class);	/* siehe Base.c */
+uint32 ShowTheClouRequester(int32 error_class);	/* siehe Base.c */
 
 /*
  * defines for Disk Module
@@ -194,7 +174,7 @@ U32 ShowTheClouRequester(S32 error_class);	/* siehe Base.c */
 #define DISK_FREE_FUNC          TCFreeMem
 #define DISK_ERR_FUNC           ErrorMsg
 
-void ShowInsertDiskReq(U16 disk_id);
+void ShowInsertDiskReq(uint16 disk_id);
 
 /*
  * some defines ...

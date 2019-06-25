@@ -48,7 +48,7 @@ size_t plGetUsedMem(void)
     return sysUsedMem;
 }
 
-struct Handler *FindHandler(struct System *sys, U32 id)
+struct Handler *FindHandler(struct System *sys, uint32 id)
 {
     register struct Handler *h;
 
@@ -93,7 +93,7 @@ void CloseSystem(struct System *sys)
     }
 }
 
-void SetActivHandler(struct System *sys, U32 id)
+void SetActivHandler(struct System *sys, uint32 id)
 {
     register struct Handler *h;
 
@@ -119,7 +119,7 @@ void SaveSystem(FILE * fh, struct System *sys)
 LIST *LoadSystem(FILE * fh, struct System *sys)
 {
     register LIST *l = txtGoKey(PLAN_TXT, "SYSTEM_GUYS_MISSING_1");
-    register U8 foundAll = 1, knowsSomebody = 1, handlerNr = 0;
+    register uint8 foundAll = 1, knowsSomebody = 1, handlerNr = 0;
     char buffer[64];
 
     if (fh) {
@@ -127,7 +127,7 @@ LIST *LoadSystem(FILE * fh, struct System *sys)
 	    && strcmp(buffer, FILE_SYSTEM_ID) == 0) {
 	    while (dskGetLine(buffer, sizeof(buffer), fh)
 		   && strcmp(buffer, FILE_HANDLER_ID) == 0) {
-		U32 id;
+		uint32 id;
 
 		if (fscanf(fh, "%" SCNu32 "\r\n", &id) == 1
 		    && !dbIsObject(id, Object_Police)) {
@@ -159,7 +159,7 @@ LIST *LoadSystem(FILE * fh, struct System *sys)
 	    if ((handlerNr - knowsSomebody) > 1)
 		extList =
 		    txtGoKeyAndInsert(PLAN_TXT, "SYSTEM_GUYS_MISSING_2",
-				      (U32) (handlerNr - knowsSomebody));
+				      (uint32) (handlerNr - knowsSomebody));
 	    else if (handlerNr - knowsSomebody)
 		extList = txtGoKey(PLAN_TXT, "SYSTEM_GUYS_MISSING_4");
 	}
@@ -175,7 +175,7 @@ LIST *LoadSystem(FILE * fh, struct System *sys)
     return l;
 }
 
-struct Handler *InitHandler(struct System *sys, U32 id, U32 flags)
+struct Handler *InitHandler(struct System *sys, uint32 id, uint32 flags)
 {
     register struct Handler *h = NULL;
 
@@ -200,7 +200,7 @@ struct Handler *InitHandler(struct System *sys, U32 id, U32 flags)
     return h;
 }
 
-void CloseHandler(struct System *sys, U32 id)
+void CloseHandler(struct System *sys, uint32 id)
 {
     register struct Handler *h;
 
@@ -215,7 +215,7 @@ void CloseHandler(struct System *sys, U32 id)
     }
 }
 
-struct Handler *ClearHandler(struct System *sys, U32 id)
+struct Handler *ClearHandler(struct System *sys, uint32 id)
 {
     register struct Handler *h;
 
@@ -238,7 +238,7 @@ struct Handler *ClearHandler(struct System *sys, U32 id)
     return h;
 }
 
-ubyte IsHandlerCleared(struct System * sys)
+byte IsHandlerCleared(struct System * sys)
 {
     register struct Handler *h;
 
@@ -250,7 +250,7 @@ ubyte IsHandlerCleared(struct System * sys)
     return 0;
 }
 
-void SaveHandler(FILE * fh, struct System *sys, U32 id)
+void SaveHandler(FILE * fh, struct System *sys, uint32 id)
 {
     register struct Handler *h;
     register struct Action *a;
@@ -293,13 +293,13 @@ void SaveHandler(FILE * fh, struct System *sys, U32 id)
     }
 }
 
-ubyte LoadHandler(FILE * fh, struct System *sys, U32 id)
+byte LoadHandler(FILE * fh, struct System *sys, uint32 id)
 {
     register struct Action *a;
-    U16 type;
-    U16 time;
-    U16 value16;
-    U32 value32;
+    uint16 type;
+    uint16 time;
+    uint16 value16;
+    uint32 value32;
     char buffer[64];
 
     if (fh && sys && (FindHandler(sys, id))) {
@@ -307,7 +307,7 @@ ubyte LoadHandler(FILE * fh, struct System *sys, U32 id)
 
 	while (dskGetLine(buffer, sizeof(buffer), fh)) {
 	    if (strcmp(buffer, FILE_ACTION_LIST_ID) == 0) {
-		U32 rid;
+		uint32 rid;
 
 		if (fscanf(fh, "%" SCNu32 "\r\n", &rid) == 1 && id == rid) {
 		    SetActivHandler(sys, id);
@@ -363,8 +363,8 @@ ubyte LoadHandler(FILE * fh, struct System *sys, U32 id)
     return 0;
 }
 
-struct Action *InitAction(struct System *sys, uword type, U32 data1, U32 data2,
-			  U32 time)
+struct Action *InitAction(struct System *sys, uint16 type, uint32 data1, uint32 data2,
+			  uint32 time)
 {
     register struct Handler *h;
     register struct Action *a = NULL;
@@ -387,7 +387,7 @@ struct Action *InitAction(struct System *sys, uword type, U32 data1, U32 data2,
 
 		switch (type) {
 		case ACTION_GO:
-		    ActionData(a, struct ActionGo *)->Direction = (uword) data1;
+		    ActionData(a, struct ActionGo *)->Direction = (uint16) data1;
 		    break;
 
 		case ACTION_USE:
@@ -537,7 +537,7 @@ struct Action *PrevAction(struct System *sys)
     return NULL;
 }
 
-ubyte ActionStarted(struct System * sys)
+byte ActionStarted(struct System * sys)
 {
     register struct Handler *h;
     register struct Action *a;
@@ -552,7 +552,7 @@ ubyte ActionStarted(struct System * sys)
     return 0;
 }
 
-ubyte ActionEnded(struct System * sys)
+byte ActionEnded(struct System * sys)
 {
     register struct Handler *h;
     register struct Action *a;
@@ -609,7 +609,7 @@ void IgnoreAction(struct System *sys)
     }
 }
 
-struct plSignal *InitSignal(struct System *sys, U32 sender, U32 receiver)
+struct plSignal *InitSignal(struct System *sys, uint32 sender, uint32 receiver)
 {
     register struct plSignal *s = NULL;
 
@@ -632,7 +632,7 @@ void CloseSignal(struct plSignal *s)
     }
 }
 
-struct plSignal *IsSignal(struct System *sys, U32 sender, U32 receiver)
+struct plSignal *IsSignal(struct System *sys, uint32 sender, uint32 receiver)
 {
     register struct plSignal *s;
 
@@ -647,7 +647,7 @@ struct plSignal *IsSignal(struct System *sys, U32 sender, U32 receiver)
     return NULL;
 }
 
-U32 CurrentTimer(struct System * sys)
+uint32 CurrentTimer(struct System * sys)
 {
     register struct Handler *h;
 
@@ -657,7 +657,7 @@ U32 CurrentTimer(struct System * sys)
     return 0L;
 }
 
-void IncCurrentTimer(struct System *sys, U32 time, ubyte alsoTime)
+void IncCurrentTimer(struct System *sys, uint32 time, byte alsoTime)
 {
     register struct Handler *h;
 
@@ -673,11 +673,11 @@ void IncCurrentTimer(struct System *sys, U32 time, ubyte alsoTime)
     }
 }
 
-U32 GetMaxTimer(struct System *sys)
+uint32 GetMaxTimer(struct System *sys)
 {
     register struct Handler *h;
     register struct Action *a;
-    register U32 time = 0;
+    register uint32 time = 0;
 
     if (sys && (h = (struct Handler *) sys->ActivHandler)) {
 	for (a = (struct Action *) LIST_HEAD(h->Actions); NODE_SUCC(a);

@@ -43,7 +43,7 @@
 #include "clue/disk/disk.h"
 #endif
 
-#define LS_SPOT_NAME					((ubyte*)"s")
+#define LS_SPOT_NAME					((byte*)"s")
 
 #define LS_SPOT_SMALL_SIZE         16
 #define LS_SPOT_MEDIUM_SIZE        32
@@ -58,26 +58,26 @@
 struct SpotPosition {
     NODE Link;
 
-    uword us_XPos;
-    uword us_YPos;
+    uint16 us_XPos;
+    uint16 us_YPos;
 };
 
 struct Spot {
     NODE Link;
 
-    uword us_Size;
-    uword us_Speed;		/* secconds per move */
+    uint16 us_Size;
+    uint16 us_Speed;		/* secconds per move */
 
-    U32 ul_CtrlObjId;		/* data : objId */
+    uint32 ul_CtrlObjId;		/* data : objId */
 
-    U32 ul_AreaId;
+    uint32 ul_AreaId;
 
-    ubyte uch_Status;
+    byte uch_Status;
 
-    uword us_OldXPos;
-    uword us_OldYPos;
+    uint16 us_OldXPos;
+    uint16 us_OldYPos;
 
-    uword us_PosCount;
+    uint16 us_PosCount;
 
     LIST *p_positions;
 
@@ -87,25 +87,25 @@ struct Spot {
 extern void lsInitSpots(void);
 extern void lsDoneSpots(void);
 
-extern void lsMoveAllSpots(U32 time);
-extern void lsShowAllSpots(U32 time, U32 mode);
-extern void lsShowSpot(struct Spot *s, U32 time);
+extern void lsMoveAllSpots(uint32 time);
+extern void lsShowAllSpots(uint32 time, uint32 mode);
+extern void lsShowSpot(struct Spot *s, uint32 time);
 extern void lsHideSpot(struct Spot *s);
 
-extern void lsBlitSpot(uword us_Size, uword us_XPos, uword us_YPos,
-		       ubyte visible);
+extern void lsBlitSpot(uint16 us_Size, uint16 us_XPos, uint16 us_YPos,
+		       byte visible);
 
-extern void lsSetSpotStatus(U32 CtrlObjId, ubyte uch_Status);
+extern void lsSetSpotStatus(uint32 CtrlObjId, byte uch_Status);
 
-extern void lsAddSpotPosition(struct Spot *spot, uword us_XPos, uword us_YPos);
-extern void lsLoadSpots(U32 bldId, char *uch_FileName);
+extern void lsAddSpotPosition(struct Spot *spot, uint16 us_XPos, uint16 us_YPos);
+extern void lsLoadSpots(uint32 bldId, char *uch_FileName);
 extern void lsWriteSpots(char *uch_FileName);
 extern void lsFreeAllSpots(void);
 extern void lsRemSpot(struct Spot *spot);
 
 extern LIST *lsGetSpotList(void);
 
-extern struct Spot *lsAddSpot(uword us_Size, uword us_Speed, U32 ul_CtrlObjId);
+extern struct Spot *lsAddSpot(uint16 us_Size, uint16 us_Speed, uint32 ul_CtrlObjId);
 extern struct Spot *lsGetSpot(char *uch_Name);
 
 #endif

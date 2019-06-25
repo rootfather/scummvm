@@ -17,8 +17,8 @@
 #include "clue/data/dataappl.h"
 #include <assert.h>
 
-static S32 tcGetWeightOfNerves(S32 teamMood);
-static bool tcIsConnectedWithEnabledAlarm(U32 lsoId);
+static int32 tcGetWeightOfNerves(int32 teamMood);
+static bool tcIsConnectedWithEnabledAlarm(uint32 lsoId);
 
 #define tcESCAPE_MOOD         30	/* ab hier flÅchtet einer ! */
 #define tcWALK_LOUDNESS       20
@@ -28,9 +28,9 @@ static bool tcIsConnectedWithEnabledAlarm(U32 lsoId);
 
 #define tcX_HOTSPOT           8
 
-U8 TeamMood = 127;
+uint8 TeamMood = 127;
 
-bool tcSpendMoney(U32 money, U8 breakAnim)
+bool tcSpendMoney(uint32 money, uint8 breakAnim)
 {
     bool enough = true;
 
@@ -53,12 +53,12 @@ bool tcSpendMoney(U32 money, U8 breakAnim)
  * pro Funkspruch sinkt Wirkung um 30 Punkte (von 255) -> ab dem 6 Spruch
  * automatisch demotivierend.
  */
-void tcCalcCallValue(U32 callNr, U32 timer, U32 persId)
+void tcCalcCallValue(uint32 callNr, uint32 timer, uint32 persId)
 {
-    S32 callCount = Search.CallCount;
-    S32 callWeight = ChangeAbs(255, callCount * (-30), 0, 255);
-    S32 perfect = tcIsPlanPerfect(timer), situation;
-    S32 good = -15, nerves;
+    int32 callCount = Search.CallCount;
+    int32 callWeight = ChangeAbs(255, callCount * (-30), 0, 255);
+    int32 perfect = tcIsPlanPerfect(timer), situation;
+    int32 good = -15, nerves;
     Person guy;
 
     if (persId) {
@@ -106,21 +106,21 @@ void tcCalcCallValue(U32 callNr, U32 timer, U32 persId)
 /* Berechnet ÅberschlagsmÑÑ·ig den Ausgang der Flucht */
 /* basiert alleine auf den Koordinaten */
 /* vernachlÑssigt Stockwerke und Personen */
-S32 tcCalcEscapeTime()
+int32 tcCalcEscapeTime()
 {
-    S32 time = 0, i;
+    int32 time = 0, i;
     Building build = (Building)dbGetObject(Search.BuildingId);
 
     for (i = 0; i < 4; i++) {
 	if ((Search.GuyXPos[i] != -1) && (Search.GuyYPos[i] != -1)) {
-	    S32 distance = abs((S32) Search.GuyXPos[i] - (S32) build->CarXPos);
+	    int32 distance = abs((int32) Search.GuyXPos[i] - (int32) build->CarXPos);
 
-	    distance += abs((S32) Search.GuyYPos[i] - (S32) build->CarYPos);
+	    distance += abs((int32) Search.GuyYPos[i] - (int32) build->CarYPos);
 	    distance = CalcValue(distance, 0, 0xffff, 255, 20);	/* um 20% mehr! */
 
 	    distance /= tcPIXEL_PER_SECCOND;
 
-	    time = max(distance, time);
+	    time = MAX(distance, time);
 	}
     }
 
@@ -131,11 +131,11 @@ S32 tcCalcEscapeTime()
 
 /* bestimmt den Ausgang eines Kampfes */
 /* Werkzeug wirkt sich nur in Geschwindigkeit und Verletzung aus */
-bool tcKillTheGuard(U32 guyId, U32 buildingId)
+bool tcKillTheGuard(uint32 guyId, uint32 buildingId)
 {
     Person p = (Person)dbGetObject(guyId);
     Building b = (Building)dbGetObject(buildingId);
-    U32 power = hasGet(guyId, Ability_Kampf);
+    uint32 power = hasGet(guyId, Ability_Kampf);
 
     if (power >= b->GuardStrength)
 	return true;
@@ -147,21 +147,21 @@ bool tcKillTheGuard(U32 guyId, U32 buildingId)
     return false;
 }
 
-S32 tcGetCarStrike(Car car)
+int32 tcGetCarStrike(Car car)
 {
-    U32 strike = car->Strike;
+    uint32 strike = car->Strike;
 
 /* XXX: had to reoder & cast some stuff to stop underflow bugs... */
-    strike += ((((S32) car->ColorIndex - 5) * 9 * strike) / 255);
+    strike += ((((int32) car->ColorIndex - 5) * 9 * strike) / 255);
     strike = CalcValue(strike, 0, 255, 127 + abs(127 - car->BodyWorkState), 30);
 
     return strike;
 }
 
-U32 tcGuyCanEscape(Person p)
+uint32 tcGuyCanEscape(Person p)
 {
 /* XXX: reordered some stuff just in case... */
-    U32 v = (255 + p->Intelligence - p->Panic) / 2;
+    uint32 v = (255 + p->Intelligence - p->Panic) / 2;
 
     v = CalcValue(v, 0, 255, abs(255 - p->KnownToPolice), 15);
     v = CalcValue(v, 0, 255, abs(255 - p->Popularity), 25);
@@ -169,18 +169,18 @@ U32 tcGuyCanEscape(Person p)
     return v;			/* the higher the better */
 }
 
-U32 tcGuyTellsAll(Person p)
+uint32 tcGuyTellsAll(Person p)
 {
-    U32 v;
+    uint32 v;
 
     v = abs(512 - p->Loyality - p->Known) / 2;
 
     return v;			/* the higher the worser */
 }
 
-S32 tcGetCarTraderOffer(Car car)
+int32 tcGetCarTraderOffer(Car car)
 {
-    S32 offer = tcGetCarPrice(car);
+    int32 offer = tcGetCarPrice(car);
     Person marc = (Person)dbGetObject(Person_Marc_Smith);
 
     offer = CalcValue(offer, 1, 0xffff, 0, 25);	/* 25% weniger */
@@ -189,7 +189,7 @@ S32 tcGetCarTraderOffer(Car car)
     return offer;
 }
 
-U32 tcGetItemID(U32 itemType)
+uint32 tcGetItemID(uint32 itemType)
 {
     struct dbObject *obj;
     Item item;
@@ -210,7 +210,7 @@ U32 tcGetItemID(U32 itemType)
     return (0L);
 }
 
-U32 GetObjNrOfLocation(U32 LocNr)
+uint32 GetObjNrOfLocation(uint32 LocNr)
 {
     struct dbObject *obj;
     Location loc;
@@ -231,7 +231,7 @@ U32 GetObjNrOfLocation(U32 LocNr)
     return (0L);
 }
 
-U32 GetObjNrOfBuilding(U32 LocNr)
+uint32 GetObjNrOfBuilding(uint32 LocNr)
 {
     struct dbObject *obj;
     Building bui;
@@ -252,11 +252,11 @@ U32 GetObjNrOfBuilding(U32 LocNr)
     return (0L);
 }
 
-U32 tcGetPersOffer(Person person, U8 persCount)
+uint32 tcGetPersOffer(Person person, uint8 persCount)
 {
-    U32 persCapability = 1, mattCapability = 1;
-    U32 persID = dbGetObjectNr(person);
-    U32 assesment, offer, i;
+    uint32 persCapability = 1, mattCapability = 1;
+    uint32 persID = dbGetObjectNr(person);
+    uint32 assesment, offer, i;
     Person Pers;
 
     Pers = (Person) dbGetObject(persID);
@@ -306,11 +306,11 @@ U32 tcGetPersOffer(Person person, U8 persCount)
     return (offer);
 }
 
-void tcPersonLearns(U32 pId)
+void tcPersonLearns(uint32 pId)
 {
     struct ObjectNode *n;
     Person pers = (Person)dbGetObject(pId);
-    S32 ability, count, growth;
+    int32 ability, count, growth;
 
     /* Abilites */
     hasAll(pId, OLF_NORMAL, Object_Ability);
@@ -327,7 +327,7 @@ void tcPersonLearns(U32 pId)
 	} else
 	    growth = 10;
 
-	growth = max((ability / 10), growth);	/* Wachstum um das Minimum von
+	growth = MAX((ability / 10), growth);	/* Wachstum um das Minimum von
 						 * x Punkten oder x Prozent    */
 
 	if (ability + growth < 255)
@@ -344,13 +344,13 @@ void tcPersonLearns(U32 pId)
     tcImprovePanic(pers, (1 + CalcRandomNr(4, 6)));	/* 25 bis 16 % besser ! */
 
 /* XXX: casted some stuff just in case... */
-    growth = max(((S32) pers->Known / (1 + CalcRandomNr(8, 10))), 20);
-    tcImproveKnown(pers, (S32) pers->Known + ((growth * pers->Known) / 100));	/* 10 bis 12 % */
+    growth = MAX(int32((int32) pers->Known / (1 + CalcRandomNr(8, 10))), 20);
+    tcImproveKnown(pers, (int32) pers->Known + ((growth * pers->Known) / 100));	/* 10 bis 12 % */
 }
 
-U32 tcGetBuildValues(Building bui)
+uint32 tcGetBuildValues(Building bui)
 {
-    U32 v, x;
+    uint32 v, x;
 
     x = (255 - bui->Exactlyness) / 3;
 
@@ -358,7 +358,7 @@ U32 tcGetBuildValues(Building bui)
     v = CalcValue(bui->Values, 0, 500000L + bui->Values, CalcRandomNr(0, 255),
 		  x);
 
-    return ((U32) (Round(v, 3)));
+    return ((uint32) (Round(v, 3)));
 }
 
 /*
@@ -367,9 +367,9 @@ U32 tcGetBuildValues(Building bui)
  * 0 - 255
  */
 
-S32 tcGetTeamMood(U32 * guyId, U32 timer)
+int32 tcGetTeamMood(uint32 * guyId, uint32 timer)
 {				/* ptr auf 4 U32s */
-    S32 team = 0, mood = 0, i;
+    int32 team = 0, mood = 0, i;
 
     /* Summe aus Einzelstimmungen */
     for (i = 0; (i < 4) && (guyId[i]); i++) {
@@ -381,7 +381,7 @@ S32 tcGetTeamMood(U32 * guyId, U32 timer)
     team /= i;
     TeamMood = CalcValue(team, 0, 255, (tcIsPlanPerfect(timer) * 20) / 35, 100);
 
-    return ((S32) TeamMood);
+    return ((int32) TeamMood);
 }
 
 /*
@@ -390,9 +390,9 @@ S32 tcGetTeamMood(U32 * guyId, U32 timer)
  * nur alle x Aktionsschritte aufrufen !
  */
 
-S32 tcGuyInAction(U32 persId, S32 exhaustion)
+int32 tcGuyInAction(uint32 persId, int32 exhaustion)
 {
-    S32 state = tcGetGuyState(persId);
+    int32 state = tcGetGuyState(persId);
 
     if (CalcRandomNr(0, 15) == 1)
 	state = (255 - state) / 90;	/* Erschîpfungszuwachs = Invers von Zustand */
@@ -408,16 +408,16 @@ S32 tcGuyInAction(U32 persId, S32 exhaustion)
  * nur alle x Warteschritte aufrufen !
  */
 
-S32 tcGuyIsWaiting(U32 persId, S32 exhaustion)
+int32 tcGuyIsWaiting(uint32 persId, int32 exhaustion)
 {
-    S32 state = tcGetGuyState(persId);
+    int32 state = tcGetGuyState(persId);
 
     if (CalcRandomNr(0, 4) == 1)
 	state = state / 10;	/* Erschîpfungsabnahme */
     else
 	state = 0;
 
-    state = max(10, state);
+    state = MAX(10, state);
 
     return ChangeAbs(exhaustion, state * (-1), 0, 255);
 }
@@ -433,13 +433,13 @@ S32 tcGuyIsWaiting(U32 persId, S32 exhaustion)
 	durch FunksprÅche diesen RÅckgabewert beeinflussssen!
 */
 
-S32 tcIsPlanPerfect(U32 timer)
+int32 tcIsPlanPerfect(uint32 timer)
 {
-    S32 perfect =
-	(255 * ((S32) (timer + 1) - (S32) Search.DeriTime)) /
-	((S32) (timer + 1));
+    int32 perfect =
+	(255 * ((int32) (timer + 1) - (int32) Search.DeriTime)) /
+	((int32) (timer + 1));
 
-    perfect = max(perfect, 0);
+    perfect = MAX(perfect, 0);
     perfect = ChangeAbs(perfect, Search.CallValue, 0, 255);
     perfect = ChangeAbs(perfect, Search.WarningCount * (-35), 0, 255);
 
@@ -451,10 +451,10 @@ S32 tcIsPlanPerfect(U32 timer)
  *
  */
 
-S32 tcGetTrail(Person p, U8 which)
+int32 tcGetTrail(Person p, uint8 which)
 {
-    S32 nerves = tcGetWeightOfNerves(TeamMood) / 7;
-    S32 trail;
+    int32 nerves = tcGetWeightOfNerves(TeamMood) / 7;
+    int32 trail;
 
     switch (which) {
     case 0:			/* Walk */
@@ -492,9 +492,9 @@ S32 tcGetTrail(Person p, U8 which)
     return trail;
 }
 
-static U32 tcGetNecessaryAbility(U32 persId, U32 toolId)
+static uint32 tcGetNecessaryAbility(uint32 persId, uint32 toolId)
 {
-    U32 ability = 255;		/* andere Arbeiten optimal! */
+    uint32 ability = 255;		/* andere Arbeiten optimal! */
 
     switch (toolId) {
     case Tool_Fusz:
@@ -530,11 +530,11 @@ static U32 tcGetNecessaryAbility(U32 persId, U32 toolId)
  * Berechnet Zeit, die Einbrecher fÅr eine Aktion benîtigt
  */
 
-U32 tcGuyUsesToolInPlayer(U32 persId, Building b, U32 toolId, U32 itemId,
-			  U32 needTime)
+uint32 tcGuyUsesToolInPlayer(uint32 persId, Building b, uint32 toolId, uint32 itemId,
+			  uint32 needTime)
 {
-    U32 time = tcGuyUsesTool(persId, b, toolId, itemId);
-    U32 ability = tcGetNecessaryAbility(persId, toolId);
+    uint32 time = tcGuyUsesTool(persId, b, toolId, itemId);
+    uint32 ability = tcGetNecessaryAbility(persId, toolId);
 
     if (ability < (CalcRandomNr(0, 230)))
 	if (CalcRandomNr(0, ability / 20) == 1)
@@ -546,17 +546,17 @@ U32 tcGuyUsesToolInPlayer(U32 persId, Building b, U32 toolId, U32 itemId,
     return time;
 }
 
-U32 tcGuyUsesTool(U32 persId, Building b, U32 toolId, U32 itemId)
+uint32 tcGuyUsesTool(uint32 persId, Building b, uint32 toolId, uint32 itemId)
 	/*
 	 * diese Funktion darf keine ZufÑlligkeit enthalten -> Sync!!
 	 */
 {
-    U32 origin, time;
+    uint32 origin, time;
     Person p = (Person)dbGetObject(persId);
 
     origin = time = breakGet(itemId, toolId);
 
-    if (time != (U32) - 1) {
+    if (time != (uint32) - 1) {
 	switch (toolId) {	/* Zeit varieren */
 	case Tool_Elektrohammer:
 	case Tool_Hammer:
@@ -645,7 +645,7 @@ U32 tcGuyUsesTool(U32 persId, Building b, U32 toolId, U32 itemId)
 		      20);
 	time = CalcValue(time, 0, origin * 4, 127 + (p->Panic / 2), 10);
 
-	time = max(origin, time);	/* Schneller kann man nicht sein! */
+	time = MAX(origin, time);	/* Schneller kann man nicht sein! */
     } else
 	time = 0;		/* kein Tool oder kein Item angegeben! */
 
@@ -657,10 +657,10 @@ U32 tcGuyUsesTool(U32 persId, Building b, U32 toolId, U32 itemId)
  * bei > 0 -> Funkspruch "Au! Ich habe mich verletzt!"
  */
 
-S32 tcGetDanger(U32 persId, U32 toolId, U32 itemId)
+int32 tcGetDanger(uint32 persId, uint32 toolId, uint32 itemId)
 {
     Person p = (Person)dbGetObject(persId);
-    U32 danger = hurtGet(itemId, toolId);
+    uint32 danger = hurtGet(itemId, toolId);
 
     danger = CalcValue(danger, 0, 255, 255 - p->Skill, 30);
     danger = CalcValue(danger, 0, 255, 255 - p->Stamina, 10);
@@ -683,10 +683,10 @@ S32 tcGetDanger(U32 persId, U32 toolId, U32 itemId)
  *
  */
 
-S32 tcGetToolLoudness(U32 persId, U32 toolId, U32 itemId)
+int32 tcGetToolLoudness(uint32 persId, uint32 toolId, uint32 itemId)
 {
     Person p = (Person)dbGetObject(persId);
-    S32 loudness = soundGet(itemId, toolId);
+    int32 loudness = soundGet(itemId, toolId);
 
     loudness = CalcValue(loudness, 0, 255, 255 - p->Skill, 10);
     loudness = CalcValue(loudness, 0, 255, p->Panic, 5);
@@ -698,9 +698,9 @@ S32 tcGetToolLoudness(U32 persId, U32 toolId, U32 itemId)
  * berechnet die LautstÑrke vom Gehen
  */
 
-S32 tcGetWalkLoudness(void)
+int32 tcGetWalkLoudness(void)
 {
-    S32 loudness = tcWALK_LOUDNESS;
+    int32 loudness = tcWALK_LOUDNESS;
 
     if (has(Person_Matt_Stuvysunt, Tool_Schuhe))
 	loudness /= 2;
@@ -712,13 +712,13 @@ S32 tcGetWalkLoudness(void)
  * berechnet LautstÑrkenpegel aller 4 Einbrecher
  */
 
-S32 tcGetTotalLoudness(S32 loudp0, S32 loudp1, S32 loudp2, S32 loudp3)
+int32 tcGetTotalLoudness(int32 loudp0, int32 loudp1, int32 loudp2, int32 loudp3)
 {
-    S32 total;
+    int32 total;
 
-    total = max(loudp0, loudp1);
-    total = max(total, loudp2);
-    total = max(total, loudp3);
+    total = MAX(loudp0, loudp1);
+    total = MAX(total, loudp2);
+    total = MAX(total, loudp3);
 
     total = CalcValue(total, 0, 255, 255, 20);	/* um ca 20 % erhîhen */
 
@@ -734,7 +734,7 @@ S32 tcGetTotalLoudness(S32 loudp0, S32 loudp1, S32 loudp2, S32 loudp3)
 
 /* am besten jede Sekunde aufrufen (loudness) */
 
-bool tcAlarmByLoudness(Building b, S32 totalLoudness)
+bool tcAlarmByLoudness(Building b, int32 totalLoudness)
 {
     return (totalLoudness > b->MaxVolume);
 }
@@ -742,12 +742,12 @@ bool tcAlarmByLoudness(Building b, S32 totalLoudness)
 /* nach jedem Funkspruch aufrufen */
 bool tcAlarmByRadio(Building b)
 {
-    S32 random = CalcRandomNr(0, 2500) + CalcRandomNr(0, 2500);	/* 10 mal funken bei Guarding = 250 -> Alarm */
+    int32 random = CalcRandomNr(0, 2500) + CalcRandomNr(0, 2500);	/* 10 mal funken bei Guarding = 250 -> Alarm */
 
     return (random < b->RadioGuarding);
 }
 
-bool tcAlarmByPatrol(U16 objChangedCount, U16 totalCount, U8 patrolCount)
+bool tcAlarmByPatrol(uint16 objChangedCount, uint16 totalCount, uint8 patrolCount)
 {
     /* Patrolien entdecken nun schneller etwas: 100 -> 125 */
 
@@ -820,7 +820,7 @@ bool tcGuardChecksObject(LSObject lso)
  * loudness = tcGetToolLoudness oder tcWalkLoudness
  */
 
-bool tcAlarmByMicro(U16 us_XPos, U16 us_YPos, S32 loudness)
+bool tcAlarmByMicro(uint16 us_XPos, uint16 us_YPos, int32 loudness)
 {
     return (loudness > lsGetLoudness(us_XPos, us_YPos));
 }
@@ -832,10 +832,10 @@ bool tcAlarmByMicro(U16 us_XPos, U16 us_YPos, S32 loudness)
  * Warnung an Matt !
  */
 
-bool tcWatchDogWarning(U32 persId)
+bool tcWatchDogWarning(uint32 persId)
 {
-    S32 watch = hasGet(persId, Ability_Aufpassen);
-    S32 random;
+    int32 watch = hasGet(persId, Ability_Aufpassen);
+    int32 random;
 
     random = CalcRandomNr(0, 200) +	/* Joe soll nicht gleich in der ersten */
 	CalcRandomNr(0, 200) +	/* Sekunde etwas bemerken!             */
@@ -852,9 +852,9 @@ bool tcWatchDogWarning(U32 persId)
  * gerade wartet, diese Funktion aufrufen (Fehlalarm)
  */
 
-bool tcWrongWatchDogWarning(U32 persId)
+bool tcWrongWatchDogWarning(uint32 persId)
 {
-    U32 watch = hasGet(persId, Ability_Aufpassen);
+    uint32 watch = hasGet(persId, Ability_Aufpassen);
 
     if (CalcRandomNr(0, 255) > watch) {	/* Irrtum */
 	if (CalcRandomNr(0, watch * 50) == 1)	/* umso besser, umso kleiner Wahrscheinlichkeit */
@@ -864,10 +864,10 @@ bool tcWrongWatchDogWarning(U32 persId)
     return false;
 }
 
-bool tcIsCarRecognised(Car car, U32 time)
+bool tcIsCarRecognised(Car car, uint32 time)
 {
-    U32 strike = tcGetCarStrike(car);
-    U32 weight;
+    uint32 strike = tcGetCarStrike(car);
+    uint32 weight;
 
     /* Zeit spielt eine Rolle ! */
     /* nach einer Viertelstunde mit Alarm, ist Strike == 255 */
@@ -882,10 +882,10 @@ bool tcIsCarRecognised(Car car, U32 time)
 	return false;
 }
 
-S32 tcGetGuyState(U32 persId)
+int32 tcGetGuyState(uint32 persId)
 {
     Person p = (Person)dbGetObject(persId);
-    S32 state;
+    int32 state;
 
     state = tcGetPersHealth(p);
     state = CalcValue(state, 0, 255, p->Stamina, 50);
@@ -894,11 +894,11 @@ S32 tcGetGuyState(U32 persId)
     return state;
 }
 
-S32 tcCalcMattsPart(void)
+int32 tcCalcMattsPart(void)
 {
     LIST *guys;
     NODE *node;
-    S32 count = 0, part = 0;
+    int32 count = 0, part = 0;
 
     joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST,
 		 Object_Person);
@@ -922,9 +922,9 @@ S32 tcCalcMattsPart(void)
 
 /* immer wenn eine Stechuhr betÑtigt wird */
 
-void tcRefreshTimeClock(U32 buildId, U32 timerId)
+void tcRefreshTimeClock(uint32 buildId, uint32 timerId)
 {
-    U32 time = hasClockGet(buildId, timerId);
+    uint32 time = hasClockGet(buildId, timerId);
 
     ClockTimerSetP(timerId, timerId, time);
 }
@@ -933,7 +933,7 @@ void tcRefreshTimeClock(U32 buildId, U32 timerId)
  * wenn 1 -> Alarm durch Stechuhr!
  */
 
-bool tcCheckTimeClocks(U32 buildId)
+bool tcCheckTimeClocks(uint32 buildId)
 {
     NODE *n;
     bool alarm = false;
@@ -946,8 +946,8 @@ bool tcCheckTimeClocks(U32 buildId)
 
     for (n = LIST_HEAD(ObjectList); NODE_SUCC(n);
 	 n = NODE_SUCC(n)) {
-	U32 timerId = OL_NR(n);
-	S32 time = (S32) ClockTimerGet(timerId, timerId);
+	uint32 timerId = OL_NR(n);
+	int32 time = (int32) ClockTimerGet(timerId, timerId);
 
 	if (time - 1)
 	    ClockTimerSetP(timerId, timerId, time - 1);
@@ -960,8 +960,8 @@ bool tcCheckTimeClocks(U32 buildId)
 
 /* stellt fest, ob 2 Positionen innerhalb des selben Raumes sind */
 
-static bool tcInsideSameRoom(LIST * roomsList, S16 polX, S16 polY, S16 livX,
-			     S16 livY)
+static bool tcInsideSameRoom(LIST * roomsList, int16 polX, int16 polY, int16 livX,
+			     int16 livY)
 {
     NODE *node;
     bool detected = false;
@@ -991,13 +991,13 @@ static bool tcInsideSameRoom(LIST * roomsList, S16 polX, S16 polY, S16 livX,
 /* XPos, YPos = Position des WÑchters */
 /* wenn 1 -> Alarm! */
 
-bool tcGuardDetectsGuy(LIST * roomsList, U16 us_XPos, U16 us_YPos,
-		       U8 uch_ViewDirection, char *puch_GuardName,
+bool tcGuardDetectsGuy(LIST * roomsList, uint16 us_XPos, uint16 us_YPos,
+		       uint8 uch_ViewDirection, char *puch_GuardName,
 		       char *puch_LivingName)
 {
     bool detected = false;
-    U16 livXPos = livGetXPos(puch_LivingName);
-    U16 livYPos = livGetYPos(puch_LivingName);
+    uint16 livXPos = livGetXPos(puch_LivingName);
+    uint16 livYPos = livGetYPos(puch_LivingName);
 
     if (livWhereIs(puch_GuardName) == livWhereIs(puch_LivingName))
 	if (livIsPositionInViewDirection
@@ -1014,7 +1014,7 @@ bool tcGuardDetectsGuy(LIST * roomsList, U16 us_XPos, U16 us_YPos,
 /* ÅberprÅft, ob dieses Objekt mit einer Alarmanlafe verbunden ist */
 /* 1 -> Alarm */
 
-bool tcAlarmByTouch(U32 lsoId)
+bool tcAlarmByTouch(uint32 lsoId)
 {
     LSObject lso = (LSObject)dbGetObject(lsoId);
 
@@ -1031,7 +1031,7 @@ bool tcAlarmByTouch(U32 lsoId)
  * wenn 1 -> Alarm
  */
 
-bool tcAlarmByPowerLoss(U32 powerId)
+bool tcAlarmByPowerLoss(uint32 powerId)
 {
     LIST *friendlyList;
     NODE *n;
@@ -1059,7 +1059,7 @@ bool tcAlarmByPowerLoss(U32 powerId)
     return false;
 }
 
-static bool tcIsConnectedWithEnabledAlarm(U32 lsoId)
+static bool tcIsConnectedWithEnabledAlarm(uint32 lsoId)
 {
     NODE *n;
 
@@ -1081,17 +1081,17 @@ static bool tcIsConnectedWithEnabledAlarm(U32 lsoId)
     return false;
 }
 
-static S32 tcGetWeightOfNerves(S32 teamMood)
+static int32 tcGetWeightOfNerves(int32 teamMood)
 {
     return (255 - teamMood);
 }
 
-void tcInsertGuard(LIST * list, LIST * roomsList, U16 x, U16 y, U16 width,
-		   U16 height, U32 guardId, U8 livId, U32 areaId)
+void tcInsertGuard(LIST * list, LIST * roomsList, uint16 x, uint16 y, uint16 width,
+		   uint16 height, uint32 guardId, uint8 livId, uint32 areaId)
 {
     char name[TXT_KEY_LENGTH];
-    U16 gx, gy;
-    U32 guardedArea = isGuardedbyGet(lsGetCurrBuildingID(), guardId);
+    uint16 gx, gy;
+    uint32 guardedArea = isGuardedbyGet(lsGetCurrBuildingID(), guardId);
 
     sprintf(name, "Police_%d", livId);
 

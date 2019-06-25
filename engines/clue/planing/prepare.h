@@ -118,21 +118,21 @@
 extern LIST *PersonsList;
 extern LIST *BurglarsList;
 
-extern ubyte PersonsNr;
-extern ubyte BurglarsNr;
-extern U32 CurrentPerson;
+extern byte PersonsNr;
+extern byte BurglarsNr;
+extern uint32 CurrentPerson;
 
-extern U32 Planing_Weight[PLANING_NR_PERSONS];
-extern U32 Planing_Volume[PLANING_NR_PERSONS];
+extern uint32 Planing_Weight[PLANING_NR_PERSONS];
+extern uint32 Planing_Volume[PLANING_NR_PERSONS];
 
-extern ubyte Planing_Loot[PLANING_NR_LOOTS];
-extern ubyte Planing_Guard[PLANING_NR_GUARDS];
+extern byte Planing_Loot[PLANING_NR_LOOTS];
+extern byte Planing_Guard[PLANING_NR_GUARDS];
 
 extern char Planing_Name[PLANING_NR_PERSONS + PLANING_NR_GUARDS][20];
 
 extern LIST *Planing_GuardRoomList[PLANING_NR_GUARDS];
 
-extern U32 Planing_BldId;
+extern uint32 Planing_BldId;
 
 
 
@@ -141,12 +141,12 @@ void plClearHandler(NODE * n);
 void plCloseHandler(NODE * n);
 
 void plPrepareData(void);
-void plPrepareSprite(U32 livNr, U32 areaId);
+void plPrepareSprite(uint32 livNr, uint32 areaId);
 void plPrepareNames(void);
 
-void plPrepareGfx(U32 objId, ubyte landscapMode, ubyte prepareMode);
+void plPrepareGfx(uint32 objId, byte landscapMode, byte prepareMode);
 void plPrepareRel(void);
-void plPrepareSys(U32 currPer, U32 objId, ubyte sysMode);
+void plPrepareSys(uint32 currPer, uint32 objId, byte sysMode);
 
 void plUnprepareGfx(void);
 void plUnprepareRel(void);

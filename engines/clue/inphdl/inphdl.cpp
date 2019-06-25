@@ -12,9 +12,9 @@
 #include "SDL.h"
 
 struct IHandler {
-    S32 ul_XSensitivity;
-    S32 ul_YSensitivity;
-    U32 ul_WaitTicks;
+    int32 ul_XSensitivity;
+    int32 ul_YSensitivity;
+    uint32 ul_WaitTicks;
 
     /* us_KeyCode; */
 
@@ -92,11 +92,11 @@ void inpMousePtrOff(void)
 /*      SDL_ShowCursor(SDL_DISABLE); */
 }
 
-S32 inpWaitFor(S32 l_Mask)
+int32 inpWaitFor(int32 l_Mask)
 {
     SDL_Event ev;
-    S32 action;
-    U32 WaitTime = 0;
+    int32 action;
+    uint32 WaitTime = 0;
 
     if ((IHandler.EscStatus) && (!(l_Mask & INP_NO_ESC))) {
 	l_Mask |= INP_ESC;
@@ -236,7 +236,7 @@ S32 inpWaitFor(S32 l_Mask)
     return action;
 }
 
-void inpSetWaitTicks(U32 l_Ticks)
+void inpSetWaitTicks(uint32 l_Ticks)
 {
     IHandler.ul_WaitTicks = l_Ticks;
 }
@@ -256,9 +256,9 @@ void inpTurnMouse(bool us_NewStatus)
     IHandler.MouseStatus = us_NewStatus;
 }
 
-void inpDelay(S32 l_Ticks)
+void inpDelay(int32 l_Ticks)
 {
-    S32 i;
+    int32 i;
 
     for (i = 0; i < l_Ticks; i++) {
 	gfxWaitTOF();

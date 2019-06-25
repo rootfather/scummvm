@@ -27,7 +27,7 @@
 /* private defines */
 #define dbGetObjectReal(key)  (((struct dbObject *)key)-1)
 #define dbGetObjectKey(obj)   ((void *)(obj+1))
-#define dbGetObjectHashNr(nr) ((U8)(nr % OBJ_HASH_SIZE))
+#define dbGetObjectHashNr(nr) ((uint8)(nr % OBJ_HASH_SIZE))
 
 #define EOS                   ((char)'\0')
 
@@ -36,8 +36,8 @@
 extern LIST *objHash[OBJ_HASH_SIZE];
 extern char decodeStr[11];
 
-extern U32 ObjectListType;
-extern U32 ObjectListFlags;
+extern uint32 ObjectListType;
+extern uint32 ObjectListFlags;
 
 
 /* private prototypes - RELATION */
@@ -46,5 +46,5 @@ char *dbDecode(KEY key);
 KEY dbEncode(char *key);
 
 /* private prototypes - OBJECT */
-struct dbObject *dbFindRealObject(U32 realNr, U32 offset, U32 size);
+struct dbObject *dbFindRealObject(uint32 realNr, uint32 offset, uint32 size);
 #endif

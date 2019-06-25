@@ -30,7 +30,7 @@ void tcSaveTheClou(void)
     char pathname[DSK_PATH_MAX];
     LIST *games = CreateList();
     NODE *game;
-    uword activ;
+    uint16 activ;
     Player player = (Player)dbGetObject(Player_Player_1);
 
     /* in welche Datei ?? */
@@ -46,7 +46,7 @@ void tcSaveTheClou(void)
     if (ReadList(games, 0L, pathname)) {
 	inpTurnESC(1);
 	inpTurnFunctionKey(0);
-	activ = (uword) Menu(games, 15L, 0, NULL, 0L);
+	activ = (uint16) Menu(games, 15L, 0, NULL, 0L);
 	inpTurnFunctionKey(1);
 
 	/* Name erstellen */
@@ -55,7 +55,7 @@ void tcSaveTheClou(void)
 	    strcpy(location, GetCurrLocName());
 	    BuildDate(GetDay, date);
 
-	    tcCutName(location, (ubyte) ' ', 15);
+	    tcCutName(location, (byte) ' ', 15);
 
 	    strcat(location, ", ");
 	    strcat(location, date);
@@ -87,12 +87,12 @@ void tcSaveTheClou(void)
 	    /* Speichern von tcBuild */
             sprintf(line, "%s%d%s", BUILD_DATA_NAME, activ, GAME_DATA_EXT);
 	    dskBuildPathName(DISK_CHECK_DIR , DATADISK, line, pathname);
-	    dbSaveAllObjects(pathname, (U32) (DB_tcBuild_OFFSET),
-			     (U32) (DB_tcBuild_SIZE), 0);
+	    dbSaveAllObjects(pathname, (uint32) (DB_tcBuild_OFFSET),
+			     (uint32) (DB_tcBuild_SIZE), 0);
 
             sprintf(line, "%s%d%s", BUILD_DATA_NAME, activ, GAME_REL_EXT);
 	    dskBuildPathName(DISK_CHECK_DIR, DATADISK, line, pathname);
-	    SaveRelations(pathname, (U32) DB_tcBuild_OFFSET, (U32) DB_tcBuild_SIZE,
+	    SaveRelations(pathname, (uint32) DB_tcBuild_OFFSET, (uint32) DB_tcBuild_SIZE,
 			  0);
 
 	    /* Speichern der Story */
@@ -105,11 +105,11 @@ void tcSaveTheClou(void)
     RemoveList(games);
 }
 
-ubyte tcLoadIt(char activ)
+byte tcLoadIt(char activ)
 {
     char pathname[DSK_PATH_MAX];
     char line[TXT_KEY_LENGTH];
-    ubyte loaded = 0;
+    byte loaded = 0;
 
     ShowMenuBackground();
     txtGetFirstLine(THECLOU_TXT, "LOADING", line);
@@ -119,11 +119,11 @@ ubyte tcLoadIt(char activ)
 
     tcResetOrganisation();
 
-    RemRelations((U32) DB_tcMain_OFFSET, (U32) DB_tcMain_SIZE);
-    RemRelations((U32) DB_tcBuild_OFFSET, (U32) DB_tcBuild_SIZE);
+    RemRelations((uint32) DB_tcMain_OFFSET, (uint32) DB_tcMain_SIZE);
+    RemRelations((uint32) DB_tcBuild_OFFSET, (uint32) DB_tcBuild_SIZE);
 
-    dbDeleteAllObjects((U32) DB_tcMain_OFFSET, (U32) DB_tcMain_SIZE);
-    dbDeleteAllObjects((U32) DB_tcBuild_OFFSET, (U32) DB_tcBuild_SIZE);
+    dbDeleteAllObjects((uint32) DB_tcMain_OFFSET, (uint32) DB_tcMain_SIZE);
+    dbDeleteAllObjects((uint32) DB_tcBuild_OFFSET, (uint32) DB_tcBuild_SIZE);
 
     /* neue Daten laden ! */
 
@@ -157,13 +157,13 @@ ubyte tcLoadIt(char activ)
     return loaded;
 }
 
-ubyte tcLoadTheClou(void)
+byte tcLoadTheClou(void)
 {
     char line[TXT_KEY_LENGTH];
-    ubyte loaded = 0;
+    byte loaded = 0;
     LIST *games = CreateList();
     LIST *origin = CreateList();
-    U32 activ;
+    uint32 activ;
     Player player;
     char pathname1[DSK_PATH_MAX];
     char pathname2[DSK_PATH_MAX];
@@ -177,15 +177,15 @@ ubyte tcLoadTheClou(void)
 
 	inpTurnFunctionKey(0);
 	inpTurnESC(1);
-	activ = (U32) Menu(games, 15L, 0, NULL, 0L);
+	activ = (uint32) Menu(games, 15L, 0, NULL, 0L);
 	inpTurnFunctionKey(1);
 
 	if ((activ != GET_OUT)
 	    &&
 	    (strcmp
-	     (NODE_NAME(GetNthNode(games, (S32) activ)),
-	      NODE_NAME(GetNthNode(origin, (S32) activ))))) {
-	    loaded = tcLoadIt((ubyte) activ);
+	     (NODE_NAME(GetNthNode(games, (int32) activ)),
+	      NODE_NAME(GetNthNode(origin, (int32) activ))))) {
+	    loaded = tcLoadIt((byte) activ);
 	} else {
 	    ShowMenuBackground();
 
@@ -218,7 +218,7 @@ ubyte tcLoadTheClou(void)
     return loaded;
 }
 
-void tcRefreshAfterLoad(ubyte loaded)
+void tcRefreshAfterLoad(byte loaded)
 {
     Player player = (Player)dbGetObject(Player_Player_1);	/* muá hier geholt werden -> sonst alte Adresse */
 
@@ -237,10 +237,10 @@ void tcRefreshAfterLoad(ubyte loaded)
     }
 }
 
-ubyte tcSaveChangesInScenes(char *fileName)
+byte tcSaveChangesInScenes(char *fileName)
 {
-    U32 i;
-    ubyte back = 0;
+    uint32 i;
+    byte back = 0;
     FILE *file;
 
     if ((file = dskOpen(fileName, "wb"))) {
@@ -258,12 +258,12 @@ ubyte tcSaveChangesInScenes(char *fileName)
     return (back);
 }
 
-ubyte tcLoadChangesInScenes(char *fileName)
+byte tcLoadChangesInScenes(char *fileName)
 {
-    U32 i;
-    ubyte back = 1;
-    U32 eventNr, choice;
-    U16 count;
+    uint32 i;
+    byte back = 1;
+    uint32 eventNr, choice;
+    uint16 count;
     FILE *file;
     struct Scene *sc;
 

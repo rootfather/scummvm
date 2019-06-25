@@ -29,15 +29,15 @@ struct _GC {
 
 	GfxDrawModeE mode;
 
-	U8 foreground;              /* entspricht dem Farbregister */
-	U8 background;              /* ebenfalls absolut und nicht relativ zum */
-	U8 outline;                 /* Registerstart */
+	uint8 foreground;              /* entspricht dem Farbregister */
+	uint8 background;              /* ebenfalls absolut und nicht relativ zum */
+	uint8 outline;                 /* Registerstart */
 
-	U8 colorStart;
-	U8 End;
+	uint8 colorStart;
+	uint8 End;
 
-	U16 cursorX;
-	U16 cursorY;
+	uint16 cursorX;
+	uint16 cursorY;
 
 	Font *font;
 };
@@ -45,9 +45,9 @@ struct _GC {
 #include "clue/gfx/gfx.h"
 #include "clue/gfx/gfx_p.h"
 
-void gfxILBMToRAW(const U8 *src, U8 *dst, size_t size);
+void gfxILBMToRAW(const uint8 *src, uint8 *dst, size_t size);
 
-void gfxRealRefreshArea(U16 x, U16 y, U16 w, U16 h);
+void gfxRealRefreshArea(uint16 x, uint16 y, uint16 w, uint16 h);
 
 SDL_Surface *windowSurface;
 
@@ -193,7 +193,7 @@ void gfxSetGC(GC *gc)
     GfxBase.gc = gc;
 }
 
-void gfxSetVideoMode(ubyte uch_NewMode)
+void gfxSetVideoMode(byte uch_NewMode)
 {
     GfxBase.uch_VideoMode = uch_NewMode;
 
@@ -229,7 +229,7 @@ void gfxCorrectUpperRPBitmap(void)
 	/* should be called after each scrolling (and before displaying a bubble) */
 {
 /*
-	NCH4UpperRP.p_BitMap = (void *) ((U32) GfxBoardBase + gfxNCH4GetCurrScrollOffset());
+	NCH4UpperRP.p_BitMap = (void *) ((uint32) GfxBoardBase + gfxNCH4GetCurrScrollOffset());
 */
 }
 
@@ -256,16 +256,16 @@ static void gfxInitCollList(void)
 	    (Collection *)CreateNode(CollectionList, sizeof(struct Collection),
 		       txtGetKey(2, NODE_NAME(n)));
 
-	coll->us_CollId = (uword) txtGetKeyAsULONG(1, NODE_NAME(n));
+	coll->us_CollId = (uint16) txtGetKeyAsULONG(1, NODE_NAME(n));
 
 	coll->puch_Filename = NODE_NAME(coll);
 	coll->prepared = NULL;
 
-	coll->us_TotalWidth = (uword) txtGetKeyAsULONG(3, NODE_NAME(n));
-	coll->us_TotalHeight = (uword) txtGetKeyAsULONG(4, NODE_NAME(n));
+	coll->us_TotalWidth = (uint16) txtGetKeyAsULONG(3, NODE_NAME(n));
+	coll->us_TotalHeight = (uint16) txtGetKeyAsULONG(4, NODE_NAME(n));
 
-	coll->uch_ColorRangeStart = (uword) txtGetKeyAsULONG(5, NODE_NAME(n));
-	coll->uch_ColorRangeEnd = (uword) txtGetKeyAsULONG(6, NODE_NAME(n));
+	coll->uch_ColorRangeStart = (uint16) txtGetKeyAsULONG(5, NODE_NAME(n));
+	coll->uch_ColorRangeEnd = (uint16) txtGetKeyAsULONG(6, NODE_NAME(n));
     }
 
     RemoveList(tempList);
@@ -287,17 +287,17 @@ static void gfxInitPictList(void)
 
 	pict = (Picture *)CreateNode(PictureList, sizeof(*pict), NULL);
 
-	pict->us_PictId = (uword) txtGetKeyAsULONG(1, NODE_NAME(n));
-	pict->us_CollId = (uword) txtGetKeyAsULONG(2, NODE_NAME(n));
+	pict->us_PictId = (uint16) txtGetKeyAsULONG(1, NODE_NAME(n));
+	pict->us_CollId = (uint16) txtGetKeyAsULONG(2, NODE_NAME(n));
 
-	pict->us_XOffset = (uword) txtGetKeyAsULONG(3, NODE_NAME(n));
-	pict->us_YOffset = (uword) txtGetKeyAsULONG(4, NODE_NAME(n));
+	pict->us_XOffset = (uint16) txtGetKeyAsULONG(3, NODE_NAME(n));
+	pict->us_YOffset = (uint16) txtGetKeyAsULONG(4, NODE_NAME(n));
 
-	pict->us_Width = (uword) txtGetKeyAsULONG(5, NODE_NAME(n));
-	pict->us_Height = (uword) txtGetKeyAsULONG(6, NODE_NAME(n));
+	pict->us_Width = (uint16) txtGetKeyAsULONG(5, NODE_NAME(n));
+	pict->us_Height = (uint16) txtGetKeyAsULONG(6, NODE_NAME(n));
 
-	pict->us_DestX = (uword) txtGetKeyAsULONG(7, NODE_NAME(n));
-	pict->us_DestY = (uword) txtGetKeyAsULONG(8, NODE_NAME(n));
+	pict->us_DestX = (uint16) txtGetKeyAsULONG(7, NODE_NAME(n));
+	pict->us_DestY = (uint16) txtGetKeyAsULONG(8, NODE_NAME(n));
     }
 
     RemoveList(tempList);
@@ -357,8 +357,8 @@ static Rectangle Clip(Rectangle A, Rectangle B)
  * Rastports...
  */
 
-static void gfxInitGC(GC *gc, U16 x, U16 y, U16 w, U16 h,
-                      U8 colorStart, U8 End, Font *font)
+static void gfxInitGC(GC *gc, uint16 x, uint16 y, uint16 w, uint16 h,
+                      uint8 colorStart, uint8 End, Font *font)
 {
     Rectangle dstR, dstR2;
 
@@ -404,17 +404,17 @@ static void gfxInitGC(GC *gc, U16 x, U16 y, U16 w, U16 h,
  * gfxCloseFont
  */
 
-static Font *gfxOpenFont(char *fileName, U16 w, U16 h,
+static Font *gfxOpenFont(char *fileName, uint16 w, uint16 h,
                          unsigned char first, unsigned char last,
-                         U16 sw, U16 sh)
+                         uint16 sw, uint16 sh)
 {
     Font *font;
 
     char path[DSK_PATH_MAX];
-    U8 *lbm;
+    uint8 *lbm;
 
     SDL_Surface *bmp;
-    U32 size;
+    uint32 size;
 
 
     /* create font structure. */
@@ -428,7 +428,7 @@ static Font *gfxOpenFont(char *fileName, U16 w, U16 h,
 
 
     dskBuildPathName(DISK_CHECK_FILE, PICTURE_DIRECTORY, fileName, path);
-    lbm = (U8 *)dskLoad(path);
+    lbm = (uint8 *)dskLoad(path);
 
 
     bmp = SDL_CreateRGBSurface(0, sw, sh, 8, 0, 0, 0, 0);
@@ -437,7 +437,7 @@ static Font *gfxOpenFont(char *fileName, U16 w, U16 h,
     if (SDL_MUSTLOCK(bmp))
 	SDL_LockSurface(bmp);
 
-    gfxILBMToRAW(lbm, (U8 *)bmp->pixels, size);
+    gfxILBMToRAW(lbm, (uint8 *)bmp->pixels, size);
 
     if (SDL_MUSTLOCK(bmp))
 	SDL_UnlockSurface(bmp);
@@ -469,16 +469,16 @@ void gfxCloseFont(Font *font)
  * gfxReadPixel  (amiga function: ReadPixel)
  */
 
-void gfxDraw(GC *gc, U16 x, U16 y)
+void gfxDraw(GC *gc, uint16 x, uint16 y)
 {
     /* this function doesn't perform clipping properly... but that's ok! */
     x += gc->clip.x;
     y += gc->clip.y;
 
     if (x < gc->clip.w && y < gc->clip.h) {
-	U16 rx, ry, rx1, ry1, dx, dy, sx, sy, dw, i;
+	uint16 rx, ry, rx1, ry1, dx, dy, sx, sy, dw, i;
 	SDL_Surface *dst;
-	U8 color, *dp;
+	uint8 color, *dp;
 
 	rx = x;
 	ry = y;
@@ -510,7 +510,7 @@ void gfxDraw(GC *gc, U16 x, U16 y)
 
         dw = dst->w;
 
-	dp = (U8 *)dst->pixels;
+	dp = (uint8 *)dst->pixels;
         dp += sy * dw + sx;
 
 	if (rx == rx1) {
@@ -541,13 +541,13 @@ void gfxDraw(GC *gc, U16 x, U16 y)
     }
 }
 
-void gfxMoveCursor(GC *gc, U16 x, U16 y)
+void gfxMoveCursor(GC *gc, uint16 x, uint16 y)
 {
-    gc->cursorX = gc->clip.x + min(x, gc->clip.w-1);
-    gc->cursorY = gc->clip.y + min(y, gc->clip.h-1);
+    gc->cursorX = gc->clip.x + MIN(x, uint16(gc->clip.w-1));
+    gc->cursorY = gc->clip.y + MIN(y, uint16(gc->clip.h-1));
 }
 
-void gfxSetPens(GC *gc, U8 foreground, U8 background, U8 outline)
+void gfxSetPens(GC *gc, uint8 foreground, uint8 background, uint8 outline)
 {
     if (foreground != GFX_SAME_PEN)
 	gc->foreground = foreground;
@@ -559,10 +559,10 @@ void gfxSetPens(GC *gc, U8 foreground, U8 background, U8 outline)
 	gc->outline = outline;
 }
 
-void gfxRectFill(GC *gc, U16 sx, U16 sy, U16 ex, U16 ey)
+void gfxRectFill(GC *gc, uint16 sx, uint16 sy, uint16 ex, uint16 ey)
 	/* minimum size: 3 * 3 pixels ! */
 {
-    U16 tmp;
+    uint16 tmp;
     SDL_Rect dst, dst2;
 
     if (sx > ex) {
@@ -606,7 +606,7 @@ void gfxSetFont(GC *gc, Font *font)
 }
 
 /* berechnet die L„nge eines Textes in Pixel */
-U16 gfxTextWidth(GC *gc, const char *txt, size_t len)
+uint16 gfxTextWidth(GC *gc, const char *txt, size_t len)
 {
     size_t w;
 
@@ -623,23 +623,23 @@ U16 gfxTextWidth(GC *gc, const char *txt, size_t len)
  * access & calc functions
  */
 
-struct Collection *gfxGetCollection(uword us_CollId)
+struct Collection *gfxGetCollection(uint16 us_CollId)
 {
-    return (Collection *)GetNthNode(CollectionList, (U32) (us_CollId - 1));
+    return (Collection *)GetNthNode(CollectionList, (uint32) (us_CollId - 1));
 }
 
-struct Picture *gfxGetPicture(uword us_PictId)
+struct Picture *gfxGetPicture(uint16 us_PictId)
 {
-    return (Picture *)GetNthNode(PictureList, (U32) (us_PictId - 1));
+    return (Picture *)GetNthNode(PictureList, (uint32) (us_PictId - 1));
 }
 
 /* the collection must have been prepared (PrepareColl) beforehand */
-void gfxGetPalette(U16 collId, U8 *palette)
+void gfxGetPalette(uint16 collId, uint8 *palette)
 {
     memcpy(palette, ScratchRP.palette, GFX_PALETTE_SIZE);
 }
 
-static S32 gfxGetRealDestY(GC *gc, S32 destY)
+static int32 gfxGetRealDestY(GC *gc, int32 destY)
 {
     destY -= gc->clip.y;
 
@@ -651,7 +651,7 @@ static S32 gfxGetRealDestY(GC *gc, S32 destY)
  */
 
 /* nach dieser Funktion befindet sich im ScratchRP die entpackte Collection */
-void gfxPrepareColl(U16 collId)
+void gfxPrepareColl(uint16 collId)
 {
     struct Collection *coll;
 
@@ -682,22 +682,22 @@ void gfxPrepareColl(U16 collId)
 
 void gfxLoadILBM(char *fileName)
 {
-    U8 *lbm;
+    uint8 *lbm;
 
     /* Collection laden */
-    lbm = (U8 *)dskLoad(fileName);
+    lbm = (uint8 *)dskLoad(fileName);
 
     gfxSetCMAP(lbm);
     gfxILBMToRAW(lbm, ScratchRP.pixels, SCREEN_SIZE);
     free(lbm);
 }
 
-void gfxUnPrepareColl(U16 collId)
+void gfxUnPrepareColl(uint16 collId)
 {
     /* dummy function */
 }
 
-void gfxCollFromMem(U16 collId)
+void gfxCollFromMem(uint16 collId)
 {
     struct Collection *coll;
     MemRastPort *rp;
@@ -707,7 +707,7 @@ void gfxCollFromMem(U16 collId)
     }
 }
 
-void gfxCollToMem(U16 collId, MemRastPort *rp)
+void gfxCollToMem(uint16 collId, MemRastPort *rp)
 {
     struct Collection *coll;
 
@@ -737,7 +737,7 @@ void gfxCollToMem(U16 collId, MemRastPort *rp)
  * print functions
  */
 
-void gfxSetRect(uword us_X, uword us_Width)
+void gfxSetRect(uint16 us_X, uint16 us_Width)
 {
     GlobalPrintRect.us_X = us_X;
     GlobalPrintRect.us_Width = us_Width;
@@ -745,12 +745,12 @@ void gfxSetRect(uword us_X, uword us_Width)
 
 static void
 ScreenBlitChar(GC *gc, SDL_Surface *src, Rect *src_rect,
-               SDL_Surface *dst, Rect *dst_rect, U8 color)
+               SDL_Surface *dst, Rect *dst_rect, uint8 color)
 {
     Rectangle srcR, dstR, dstR2, areaR;
 
-    U8 *dp, *sp;
-    U16 h;
+    uint8 *dp, *sp;
+    uint16 h;
 
     /* clip. */
     srcR.x = src_rect->x;
@@ -776,11 +776,11 @@ ScreenBlitChar(GC *gc, SDL_Surface *src, Rect *src_rect,
     /* blit. */
     areaR.x = dstR.x;
     areaR.y = dstR.y;
-    areaR.w = min(dstR.w, srcR.w);
-    areaR.h = min(dstR.h, srcR.h);
+    areaR.w = MIN(dstR.w, srcR.w);
+    areaR.h = MIN(dstR.h, srcR.h);
 
-    dp = (U8 *)dst->pixels;
-    sp = (U8 *)src->pixels;
+    dp = (uint8 *)dst->pixels;
+    sp = (uint8 *)src->pixels;
 
     dp += dstR.y * dst->w + dstR.x;
     sp += srcR.y * src->w + srcR.x;
@@ -788,7 +788,7 @@ ScreenBlitChar(GC *gc, SDL_Surface *src, Rect *src_rect,
     h = areaR.h;
 
     while (h--) {
-        U16 x;
+        uint16 x;
         for (x=0; x<areaR.w; x++) {
             if (sp[x] != 0) {
                 dp[x] = color;
@@ -799,14 +799,14 @@ ScreenBlitChar(GC *gc, SDL_Surface *src, Rect *src_rect,
     }
 }
 
-void gfxPrintExact(GC *gc, const char *txt, U16 x, U16 y)
+void gfxPrintExact(GC *gc, const char *txt, uint16 x, uint16 y)
 {
     const Font *font = gc->font;
-    const U16 w = font->w,
+    const uint16 w = font->w,
               h = font->h,
               base = font->first;
-    const U16 chars_per_line = SCREEN_WIDTH/w;
-    const U8 fg = gc->foreground;
+    const uint16 chars_per_line = SCREEN_WIDTH/w;
+    const uint8 fg = gc->foreground;
     size_t len = strlen(txt), t;
 
     SDL_Rect area;
@@ -841,9 +841,9 @@ void gfxPrintExact(GC *gc, const char *txt, U16 x, U16 y)
         SDL_LockSurface(src);
 
     for (t=0; t<len; t++) {
-        U16 ch;
+        uint16 ch;
 
-	ch  = (U8)txt[t];
+	ch  = (uint8)txt[t];
         ch -= base;
 
 	srcR.y = (ch / chars_per_line) * h;
@@ -862,10 +862,10 @@ void gfxPrintExact(GC *gc, const char *txt, U16 x, U16 y)
     gfxRefreshArea(area.x, area.y, area.w, area.h);
 }
 
-void gfxPrint(GC *gc, const char *txt, U16 y, U32 mode)
+void gfxPrint(GC *gc, const char *txt, uint16 y, uint32 mode)
 {
-    U16 x = GlobalPrintRect.us_X;
-    U16 w = gfxTextWidth(gc, txt, strlen(txt));
+    uint16 x = GlobalPrintRect.us_X;
+    uint16 w = gfxTextWidth(gc, txt, strlen(txt));
 
     if (mode & GFX_PRINT_RIGHT)
 	x += GlobalPrintRect.us_Width - w;
@@ -876,7 +876,7 @@ void gfxPrint(GC *gc, const char *txt, U16 y, U32 mode)
     }
 
     if (mode & GFX_PRINT_SHADOW) {
-	U8 tmp;
+	uint8 tmp;
 
         tmp = gc->foreground;
 	gc->foreground = gc->background;
@@ -923,7 +923,7 @@ void gfxRefresh(void)
  * presentation
  */
 
-void gfxRAWBlit(U8 * sp, U8 * dp, const int x1, const int y1, const int x2,
+void gfxRAWBlit(uint8 * sp, uint8 * dp, const int x1, const int y1, const int x2,
 		const int y2, const int w, const int h, const int sw,
 		const int dw)
 {
@@ -942,7 +942,7 @@ void gfxRAWBlit(U8 * sp, U8 * dp, const int x1, const int y1, const int x2,
     }
 }
 
-static GC *gfxGetGC(S32 l_DestY)
+static GC *gfxGetGC(int32 l_DestY)
 {
     GC *gc = NULL;
 
@@ -1023,7 +1023,7 @@ void gfxClearArea(GC *gc)
     gfxRefreshArea(area.x, area.y, area.w, area.h);
 }
 
-void gfxSetRGB(GC *gc, U8 color, U8 r, U8 g, U8 b)
+void gfxSetRGB(GC *gc, uint8 color, uint8 r, uint8 g, uint8 b)
 {
     SDL_Color colors[1];
 
@@ -1036,13 +1036,13 @@ void gfxSetRGB(GC *gc, U8 color, U8 r, U8 g, U8 b)
     gfxRealRefreshArea(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
-void gfxSetColorRange(ubyte uch_ColorStart, ubyte uch_End)
+void gfxSetColorRange(byte uch_ColorStart, byte uch_End)
 {
     GlobalColorRange.uch_Start = uch_ColorStart;
     GlobalColorRange.uch_End = uch_End;
 }
 
-void gfxGetPaletteFromReg(U8 *palette)
+void gfxGetPaletteFromReg(uint8 *palette)
 {
     SDL_Palette *pal;
 
@@ -1062,14 +1062,14 @@ void gfxGetPaletteFromReg(U8 *palette)
     }
 }
 
-void gfxChangeColors(GC *gc, U32 delay, U32 mode, U8 *palette)
+void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
 	/* l_Delay is min 1 */
 {
-    U16 t, st, en;
+    uint16 t, st, en;
     SDL_Color colors[256];
-    U8 cols[GFX_PALETTE_SIZE];
+    uint8 cols[GFX_PALETTE_SIZE];
     Rect area;
-    S32 time, fakt, s;
+    int32 time, fakt, s;
 
     if (gc) {
 	st = gc->colorStart;
@@ -1086,7 +1086,7 @@ void gfxChangeColors(GC *gc, U32 delay, U32 mode, U8 *palette)
         area.h = SCREEN_HEIGHT;
     }
 
-    delay = max(delay, 1);	/* delay must not be zero! */
+    delay = MAX(delay, 1u);	/* delay must not be zero! */
 
     time = delay;
 
@@ -1102,9 +1102,9 @@ void gfxChangeColors(GC *gc, U32 delay, U32 mode, U8 *palette)
             gfxWaitTOR();
 
             for (t=st; t<=en; t++) {
-                colors[t].r = ((S32)cols[t*3] * (fakt * s)) / 128;
-                colors[t].g = 16 + (((S32)cols[t*3+1] - 16) * (fakt * s)) / 128;
-                colors[t].b = 12 + (((S32)cols[t*3+2] - 12) * (fakt * s)) / 128;
+                colors[t].r = ((int32)cols[t*3] * (fakt * s)) / 128;
+                colors[t].g = 16 + (((int32)cols[t*3+1] - 16) * (fakt * s)) / 128;
+                colors[t].b = 12 + (((int32)cols[t*3+2] - 12) * (fakt * s)) / 128;
             }
             SDL_SetPaletteColors(Screen->format->palette, &colors[st], st, en - st + 1);
         }
@@ -1136,9 +1136,9 @@ void gfxChangeColors(GC *gc, U32 delay, U32 mode, U8 *palette)
             gfxWaitTOR();
 
             for (t=st; t<=en; t++) {
-                colors[t].r = ((S32)cols[t*3] * (fakt * s)) / 128;
-                colors[t].g = 16 + (((S32)cols[t*3+1] - 16) * (fakt * s)) / 128;
-                colors[t].b = 12 + (((S32)cols[t*3+2] - 12) * (fakt * s)) / 128;
+                colors[t].r = ((int32)cols[t*3] * (fakt * s)) / 128;
+                colors[t].g = 16 + (((int32)cols[t*3+1] - 16) * (fakt * s)) / 128;
+                colors[t].b = 12 + (((int32)cols[t*3+2] - 12) * (fakt * s)) / 128;
             }
             SDL_SetPaletteColors(Screen->format->palette, &colors[st], st, en - st + 1);
         }
@@ -1159,13 +1159,13 @@ void gfxChangeColors(GC *gc, U32 delay, U32 mode, U8 *palette)
 }
 
 
-void gfxShow(uword us_PictId, U32 ul_Mode, S32 l_Delay, S32 l_XPos, S32 l_YPos)
+void gfxShow(uint16 us_PictId, uint32 ul_Mode, int32 l_Delay, int32 l_XPos, int32 l_YPos)
 {
     struct Picture *pict;
     struct Collection *coll;
     GC *gc;
-    U16 destX;
-    U16 destY;
+    uint16 destX;
+    uint16 destY;
 
     if (!(pict = gfxGetPicture(us_PictId)))
 	return;
@@ -1231,13 +1231,13 @@ void gfxShow(uword us_PictId, U32 ul_Mode, S32 l_Delay, S32 l_XPos, S32 l_YPos)
  */
 
 
-S32 gfxGetILBMSize(struct Collection *coll)
+int32 gfxGetILBMSize(struct Collection *coll)
 {
-    uword w = coll->us_TotalWidth;
-    uword h = coll->us_TotalHeight;
-    S32 size;
+    uint16 w = coll->us_TotalWidth;
+    uint16 h = coll->us_TotalHeight;
+    int32 size;
 
-    w = ((w + 15) & 0xfff0);	/* round up to a word */
+    w = ((w + 15) & 0xfff0);	/* round up to a int16 */
 
     size = w * h;
 
@@ -1256,10 +1256,10 @@ static void gfxSetCMAP(const Uint8 *src)
     memcpy(ScratchRP.palette, src, GFX_PALETTE_SIZE);
 }
 
-static void MakeMCGA(U16 b, U8 *pic, uword PlSt, S16 c)
+static void MakeMCGA(uint16 b, uint8 *pic, uint16 PlSt, int16 c)
 {
-    U16 bit;
-    S16 i;
+    uint16 bit;
+    int16 i;
 
     bit = 0x80;
     for (i=0; i<8; i++) {
@@ -1270,19 +1270,19 @@ static void MakeMCGA(U16 b, U8 *pic, uword PlSt, S16 c)
     }
 }
 
-static U16 MemRead_U16BE(const U8 *p)
+static uint16 MemRead_U16BE(const uint8 *p)
 {
-    return ((U16) p[1] | ((U16) p[0] << 8));
+    return ((uint16) p[1] | ((uint16) p[0] << 8));
 }
 
-void gfxILBMToRAW(const U8 *src, U8 *dst, size_t size)
+void gfxILBMToRAW(const uint8 *src, uint8 *dst, size_t size)
 {
-    U16 bpp = 0, w = 0, h = 0;
-    const U8 *sp;
-    U8 *pic, *pic1;
+    uint16 bpp = 0, w = 0, h = 0;
+    const uint8 *sp;
+    uint8 *pic, *pic1;
     int s, t, b, x;
-    uword a, y;
-    uword flag;
+    uint16 a, y;
+    uint16 flag;
 
     sp = src;
     pic = dst;
@@ -1303,7 +1303,7 @@ void gfxILBMToRAW(const U8 *src, U8 *dst, size_t size)
     sp += 2;
     flag = *sp;
 
-    h = min(h, 192);
+    h = MIN(h, (uint16)192);
 
     while (memcmp(sp, "BODY", 4) != 0) {
 	sp++;
@@ -1369,7 +1369,7 @@ void gfxILBMToRAW(const U8 *src, U8 *dst, size_t size)
 }
 
 size_t XMSOffset = 0;
-U8 *XMSHandle;
+uint8 *XMSHandle;
 
 
 static const char *names[5] = {
@@ -1434,7 +1434,7 @@ int CDFrames[MAX_TRACKS * 6] = {
     4, 153, 0, 7, 0, 0
 };
 
-static U32 Amg2Pc(U32 s)
+static uint32 Amg2Pc(uint32 s)
 {
     return ((s & 255) << 24) +
 	(((s >> 8) & 255) << 16) +
@@ -1442,9 +1442,9 @@ static U32 Amg2Pc(U32 s)
 }
 
 
-static void orbyte(U8 *ptr, U8 data, U8 dmask)
+static void orbyte(uint8 *ptr, uint8 data, uint8 dmask)
 {
-  U8 dmaskoff = ~dmask; 
+  uint8 dmaskoff = ~dmask; 
 
   if (0x80 & data) *ptr++ |= dmask; else *ptr++ &= dmaskoff; 
   if (0x40 & data) *ptr++ |= dmask; else *ptr++ &= dmaskoff; 
@@ -1457,12 +1457,12 @@ static void orbyte(U8 *ptr, U8 data, U8 dmask)
 }
 
 
-static void ProcessAnimation(U8 *dp, U8 *sp)
+static void ProcessAnimation(uint8 *dp, uint8 *sp)
 {
-    U32 size, rsize, *lp;
-    U8 *me, *me1, *me2, *st;
-    U32 offs[8];
-    U8 plane, planeMask;
+    uint32 size, rsize, *lp;
+    uint8 *me, *me1, *me2, *st;
+    uint32 offs[8];
+    uint8 plane, planeMask;
     int i, j, col;
 
     /* skip header */
@@ -1483,7 +1483,7 @@ static void ProcessAnimation(U8 *dp, U8 *sp)
     }
 
     sp += 8;
-    lp = (U32 *)sp;
+    lp = (uint32 *)sp;
     st = sp;			/* start of DLTA block */
 
     for (i=0; i<8; i++)
@@ -1497,20 +1497,20 @@ static void ProcessAnimation(U8 *dp, U8 *sp)
 	    me1 = me2;
 
 	    for (col=0; col<40; col++) {
-                U8 op_cnt;
+                uint8 op_cnt;
 
 		me = me1;
 		op_cnt = *sp++;
 
 		for (i=0; i<op_cnt; i++) {
-                    U8 op;
+                    uint8 op;
 
 		    op = *sp++;
 
 		    if (op == 0) {
                         /* same op */
-                        U8 cnt;
-                        U8 val;
+                        uint8 cnt;
+                        uint8 val;
 
 			cnt = *sp++;
 			val = *sp++;
@@ -1522,11 +1522,11 @@ static void ProcessAnimation(U8 *dp, U8 *sp)
 		    } else {
 			if ((op & 0x80)) {
                             /* uniq op */
-                            U8 cnt;
+                            uint8 cnt;
 
 			    cnt = op & 0x7f;
 			    for (j=0; j<cnt; j++) {
-                                U8 val;
+                                uint8 val;
                             
                                 val = *sp++;
                                 orbyte(me, val, planeMask);
@@ -1547,16 +1547,16 @@ static void ProcessAnimation(U8 *dp, U8 *sp)
 
 void ShowIntro(void)
 {
-    U8 *cp;
+    uint8 *cp;
     char head[4];
     int t, s, anims;
     size_t size, rsize;
-    U8 colorTABLE[GFX_PALETTE_SIZE];
+    uint8 colorTABLE[GFX_PALETTE_SIZE];
     bool endi = false;
     GC ScreenGC;
     MemRastPort A, B;
 
-    XMSHandle = (U8 *)malloc(818*1024);
+    XMSHandle = (uint8 *)malloc(818*1024);
 
     /******************************** Init Gfx ********************************/
     gfxInitMemRastPort(&A, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -1720,14 +1720,14 @@ endit2:
     free(XMSHandle);
 }
 
-void gfxInitMemRastPort(MemRastPort *rp, U16 width, U16 height)
+void gfxInitMemRastPort(MemRastPort *rp, uint16 width, uint16 height)
 {
     rp->w = width;
     rp->h = height;
 
     memset(rp->palette, 0, GFX_PALETTE_SIZE);
 
-    rp->pixels = (U8 *)TCAllocMem(width * height, true);
+    rp->pixels = (uint8 *)TCAllocMem(width * height, true);
     rp->collId = GFX_NO_COLL_IN_MEM;
 }
 
@@ -1754,13 +1754,13 @@ void gfxScratchToMem(MemRastPort *dst)
 }
 
 
-void gfxBlit(GC *gc, MemRastPort *src, U16 sx, U16 sy, U16 dx, U16 dy,
-             U16 w, U16 h, bool has_mask)
+void gfxBlit(GC *gc, MemRastPort *src, uint16 sx, uint16 sy, uint16 dx, uint16 dy,
+             uint16 w, uint16 h, bool has_mask)
 {
     Rectangle srcR, srcR2, dstR, dstR2, areaR;
     SDL_Surface *dst;
-    U8 *dp, *sp;
-    U16 x, y;
+    uint8 *dp, *sp;
+    uint16 x, y;
 
     /* clip. */
     srcR.x = 0;
@@ -1794,12 +1794,12 @@ void gfxBlit(GC *gc, MemRastPort *src, U16 sx, U16 sy, U16 dx, U16 dy,
     /* blit. */
     areaR.x = dstR.x;
     areaR.y = dstR.y;
-    areaR.w = min(dstR.w, srcR.w);
-    areaR.h = min(dstR.h, srcR.h);
+    areaR.w = MIN(dstR.w, srcR.w);
+    areaR.h = MIN(dstR.h, srcR.h);
 
     dst = Screen;
 
-    dp = (U8 *)dst->pixels;
+    dp = (uint8 *)dst->pixels;
     sp = src->pixels;
 
     dp += dstR.y * SCREEN_WIDTH + dstR.x;
@@ -1838,7 +1838,7 @@ void gfxBlit(GC *gc, MemRastPort *src, U16 sx, U16 sy, U16 dx, U16 dy,
 static int screen_freeze_count = 0;
 
 /* ZZZ */
-void gfxRealRefreshArea(U16 x, U16 y, U16 w, U16 h)
+void gfxRealRefreshArea(uint16 x, uint16 y, uint16 w, uint16 h)
 {
     Rectangle areaR, areaR2;
     void *pixels;
@@ -1875,7 +1875,7 @@ void gfxRealRefreshArea(U16 x, U16 y, U16 w, U16 h)
 }
 
 
-void gfxRefreshArea(U16 x, U16 y, U16 w, U16 h)
+void gfxRefreshArea(uint16 x, uint16 y, uint16 w, uint16 h)
 {
     if (screen_freeze_count == 0) {
         gfxRealRefreshArea(x, y, w, h);
@@ -1887,7 +1887,7 @@ void gfxScreenFreeze(void)
     screen_freeze_count++;
 }
 
-void gfxScreenThaw(GC *gc, U16 x, U16 y, U16 w, U16 h)
+void gfxScreenThaw(GC *gc, uint16 x, uint16 y, uint16 w, uint16 h)
 {
   if (screen_freeze_count > 0) {
     Rectangle dstR, dstR2;
@@ -1915,8 +1915,8 @@ void MemBlit(MemRastPort *src, Rect *src_rect,
              MemRastPort *dst, Rect *dst_rect, ROpE op)
 {
     Rectangle srcR, srcR2, dstR, dstR2, areaR;
-    U16 sw, dw, x, y;
-    register U8 *dp, *sp;
+    uint16 sw, dw, x, y;
+    register uint8 *dp, *sp;
 
     /* clip. */
     srcR.x = 0;
@@ -1949,8 +1949,8 @@ void MemBlit(MemRastPort *src, Rect *src_rect,
 
     areaR.x = dstR.x;
     areaR.y = dstR.y;
-    areaR.w = min(dstR.w, srcR.w);
-    areaR.h = min(dstR.h, srcR.h);
+    areaR.w = MIN(dstR.w, srcR.w);
+    areaR.h = MIN(dstR.h, srcR.h);
 
     /* blit. */
     sw = src->w;
@@ -2005,7 +2005,7 @@ void MemBlit(MemRastPort *src, Rect *src_rect,
     }
 }
 
-void gfxGetMouseXY(GC *gc, U16 *pMouseX, U16 *pMouseY)
+void gfxGetMouseXY(GC *gc, uint16 *pMouseX, uint16 *pMouseY)
 {
     int MouseX = 0, MouseY = 0;
 

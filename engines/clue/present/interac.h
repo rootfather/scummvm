@@ -53,19 +53,19 @@
 
 #define TXT_MENU_TIMEOUT        (-2)
 
-extern ubyte ChoiceOk(ubyte choice, ubyte exit, LIST * l);
+extern byte ChoiceOk(byte choice, byte exit, LIST * l);
 
-extern ubyte Bubble(LIST * bubble, ubyte activ, void (*func) (ubyte),
-		    U32 waitTime);
-extern ubyte Menu(LIST * menu, U32 possibility, ubyte activ,
-		  void (*func) (ubyte), U32 waitTime);
+extern byte Bubble(LIST * bubble, byte activ, void (*func) (byte),
+		    uint32 waitTime);
+extern byte Menu(LIST * menu, uint32 possibility, byte activ,
+		  void (*func) (byte), uint32 waitTime);
 
 extern void RefreshMenu(void);
 
-extern void SetBubbleType(uword type);
-extern void SetPictID(uword PictID);
+extern void SetBubbleType(uint16 type);
+extern void SetPictID(uint16 PictID);
 void SetMenuTimeOutFunc(void (*func) (void));
 
-extern ubyte GetExtBubbleActionInfo(void);
+extern byte GetExtBubbleActionInfo(void);
 
 #endif

@@ -20,7 +20,7 @@
 
 
 struct FXBase {
-    uword us_AudioOk;
+    uint16 us_AudioOk;
 
     SND_BUFFER *pSfxBuffer;
     SND_BUFFER *pMusicBuffer;

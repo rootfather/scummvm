@@ -76,20 +76,20 @@
 #define PLANING_TIME_USE_STAIRS        8
 
 
-ubyte AnimCounter = 0;
-ubyte PlanChanged = 0;
+byte AnimCounter = 0;
+byte PlanChanged = 0;
 
-static U32 UseObject;
+static uint32 UseObject;
 
 
 /* action support functions */
-static ubyte plRemLastAction(void)
+static byte plRemLastAction(void)
 {
     if (!IsHandlerCleared(plSys)) {
 	plSync(PLANING_ANIMATE_NO,
 	       GetMaxTimer(plSys) - CurrentAction(plSys)->TimeNeeded,
 	       CurrentAction(plSys)->TimeNeeded, 0);
-	lsSetActivLiving(Planing_Name[CurrentPerson], (uword) - 1, (uword) - 1);
+	lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) - 1, (uint16) - 1);
 
 	RemLastAction(plSys);
 
@@ -105,8 +105,8 @@ static ubyte plRemLastAction(void)
 /* actions */
 static void plActionGo(void)
 {
-    U32 choice = 0L;
-    ubyte direction;
+    uint32 choice = 0L;
+    byte direction;
     struct Action *action = CurrentAction(plSys);
 
     plMessage("WALK", PLANING_MSG_REFRESH);
@@ -143,7 +143,7 @@ static void plActionGo(void)
 		if (!lsInitScrollLandScape(direction, LS_SCROLL_PREPARE)) {
 		    if (!action || (action->Type != ACTION_GO)) {
 			if ((action =
-			     InitAction(plSys, ACTION_GO, (U32) direction, 0L,
+			     InitAction(plSys, ACTION_GO, (uint32) direction, 0L,
 					0L)))
 			    PlanChanged = 1;
 			else {
@@ -156,7 +156,7 @@ static void plActionGo(void)
 		    }
 
 		    if (ActionData(action, struct ActionGo *)->Direction ==
-			(uword) direction)
+			(uint16) direction)
 			 IncCurrentTimer(plSys, 1, 1);
 		    else {
 			if ((action =
@@ -174,7 +174,7 @@ static void plActionGo(void)
 		    plSync(PLANING_ANIMATE_STD, GetMaxTimer(plSys), 1, 1);
 		    plMove(CurrentPerson, direction);
 
-		    lsScrollLandScape((ubyte) - 1);
+		    lsScrollLandScape((byte) - 1);
 		    livDoAnims((AnimCounter++) % 2, 1);
 
 		    plDisplayTimer(0, 0);
@@ -191,8 +191,8 @@ static void plActionGo(void)
 static void plActionWait(void)
 {
     LIST *menu = txtGoKey(PLAN_TXT, "MENU_4");
-    ubyte activ = 0;
-    U32 choice1 = 0L, choice2 = 0L, bitset;
+    byte activ = 0;
+    uint32 choice1 = 0L, choice2 = 0L, bitset;
 
     while (activ != PLANING_WAIT_RETURN) {
 	bitset = BIT(PLANING_WAIT) + BIT(PLANING_WAIT_RETURN);
@@ -349,10 +349,10 @@ static void plActionWait(void)
 static void plLevelDesigner(LSObject lso)
 {
     LIST *menu = txtGoKey(PLAN_TXT, "MENU_8");
-    ubyte ende = 0, activ = 0;
-    U32 bitset;
-    uword originX = lso->us_DestX, originY = lso->us_DestY;
-    U32 area = lsGetActivAreaID();
+    byte ende = 0, activ = 0;
+    uint32 bitset;
+    uint16 originX = lso->us_DestX, originY = lso->us_DestY;
+    uint32 area = lsGetActivAreaID();
 
     bitset = BIT(PLANING_LD_MOVE) +
 	BIT(PLANING_LD_REFRESH) + BIT(PLANING_LD_OK) + BIT(PLANING_LD_CANCEL);
@@ -376,7 +376,7 @@ static void plLevelDesigner(LSObject lso)
 	switch (activ) {
 	case PLANING_LD_MOVE:
 	    while (1) {
-		S32 choice =
+		int32 choice =
 		    inpWaitFor(INP_RIGHT | INP_LEFT | INP_UP | INP_DOWN |
 			       INP_LBUTTONP);
 
@@ -449,10 +449,10 @@ static void plLevelDesigner(LSObject lso)
     livRefreshAll();
 }
 
-static void plActionOpenClose(uword what)
+static void plActionOpenClose(uint16 what)
 {
     LIST *actionList = plGetObjectsList(CurrentPerson, 0);
-    U32 choice1 = 0L, state;
+    uint32 choice1 = 0L, state;
     char exp[TXT_KEY_LENGTH];
 
     if (LIST_EMPTY(actionList))
@@ -540,7 +540,7 @@ static void plActionOpenClose(uword what)
 static void plActionTake(void)
 {
     LIST *actionList = plGetObjectsList(CurrentPerson, 1);
-    U32 choice = 0L, choice1 = 0L, choice2 = 0L, state;
+    uint32 choice = 0L, choice1 = 0L, choice2 = 0L, state;
     char exp[TXT_KEY_LENGTH];
 
     if (LIST_EMPTY(actionList))
@@ -601,21 +601,21 @@ static void plActionTake(void)
 	    choice = Bubble(takeableList, 0, NULL, 0L);
 
 	    if (ChoiceOk(choice, GET_OUT, takeableList)) {
-		U32 weightPerson =
+		uint32 weightPerson =
 		    tcWeightPersCanCarry((Person)
 					 dbGetObject(OL_NR
 						     (GetNthNode
 						      (BurglarsList,
 						       CurrentPerson))));
-		U32 volumePerson =
+		uint32 volumePerson =
 		    tcVolumePersCanCarry((Person)
 					 dbGetObject(OL_NR
 						     (GetNthNode
 						      (BurglarsList,
 						       CurrentPerson))));
 
-		U32 weightLoot;
-		U32 volumeLoot;
+		uint32 weightLoot;
+		uint32 volumeLoot;
 
 		choice1 = OL_NR(GetNthNode(takeableList, choice));
 		choice2 = OL_TYPE(GetNthNode(takeableList, choice));
@@ -654,7 +654,7 @@ static void plActionTake(void)
 			    }
 
 			    {
-				U32 newValue =
+				uint32 newValue =
 				    GetP(dbGetObject(choice2),
 					 hasLoot(CurrentPerson),
 					 dbGetObject(choice1));
@@ -665,7 +665,7 @@ static void plActionTake(void)
 				      (GetNthNode
 				       (BurglarsList, CurrentPerson))),
 				     take_RelId, dbGetObject(choice1))) {
-				    U32 oldValue =
+				    uint32 oldValue =
 					GetP(dbGetObject
 					     (OL_NR
 					      (GetNthNode
@@ -723,13 +723,13 @@ static void plActionTake(void)
     RemoveList(actionList);
 }
 
-static char *plSetUseString(U32 nr, U32 type, void *data)
+static char *plSetUseString(uint32 nr, uint32 type, void *data)
 {
     static char useString[TXT_KEY_LENGTH];
-    U32 actLoudness =
+    uint32 actLoudness =
 	lsGetLoudness(livGetXPos(Planing_Name[CurrentPerson]),
 		      livGetYPos(Planing_Name[CurrentPerson]));
-    U32 objLoudness = soundGet(((LSObject) dbGetObject(UseObject))->Type, nr);
+    uint32 objLoudness = soundGet(((LSObject) dbGetObject(UseObject))->Type, nr);
 
     useString[0] = '\0';
 
@@ -749,11 +749,11 @@ static char *plSetUseString(U32 nr, U32 type, void *data)
     return useString;
 }
 
-static ubyte plCheckAbilities(U32 persId, U32 checkToolId)
+static byte plCheckAbilities(uint32 persId, uint32 checkToolId)
 {
     NODE *n;
     LIST *requires;
-    ubyte ret = 1;
+    byte ret = 1;
 
     toolRequiresAll(checkToolId, OLF_PRIVATE_LIST, Object_Ability);
     requires = ObjectListPrivate;
@@ -776,11 +776,11 @@ static ubyte plCheckAbilities(U32 persId, U32 checkToolId)
     return ret;
 }
 
-static ubyte plCheckRequiredTools(U32 checkToolId)
+static byte plCheckRequiredTools(uint32 checkToolId)
 {
     LIST *trl;
     NODE *n, *h;
-    ubyte ret = 1;
+    byte ret = 1;
 
     toolRequiresAll(checkToolId, OLF_PRIVATE_LIST, Object_Tool);
     trl = ObjectListPrivate;
@@ -788,7 +788,7 @@ static ubyte plCheckRequiredTools(U32 checkToolId)
     hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Tool);
 
     for (n = (NODE *) LIST_HEAD(trl); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n)) {
-	ubyte found = 0;
+	byte found = 0;
 
 	ret = 0;
 
@@ -809,11 +809,11 @@ static ubyte plCheckRequiredTools(U32 checkToolId)
     return ret;
 }
 
-static void plCorrectToolsList(U32 flags)
+static void plCorrectToolsList(uint32 flags)
 {
     /* only insert time-punch card if a guard has been neutralized */
     if (PersonsNr > BurglarsNr) {
-	ubyte i;
+	byte i;
 
 	for (i = BurglarsNr; i < PersonsNr; i++) {
 	    if (Planing_Guard[i - BurglarsNr] == 2) {
@@ -835,8 +835,8 @@ static void plCorrectToolsList(U32 flags)
 static void plActionUse(void)
 {
     LIST *actionList = plGetObjectsList(CurrentPerson, 0);
-    U32 choice1 = 0L, choice2 = 0L, state;
-    ubyte i;
+    uint32 choice1 = 0L, choice2 = 0L, state;
+    byte i;
     char exp[TXT_KEY_LENGTH];
 
     if (CurrentPerson < BurglarsNr) {
@@ -870,7 +870,7 @@ static void plActionUse(void)
 		    choice1 = OL_NR(GetNthNode(actionList, choice1));
 
 		    if (plIsStair(choice1)) {
-			U32 newAreaId = StairConnectsGet(choice1, choice1);
+			uint32 newAreaId = StairConnectsGet(choice1, choice1);
 
 			if (InitAction
 			    (plSys, ACTION_USE, choice1, lsGetActivAreaID(),
@@ -897,7 +897,7 @@ static void plActionUse(void)
 				   PLANING_TIME_USE_STAIRS *
 				   PLANING_CORRECT_TIME, 1);
 			    lsSetActivLiving(Planing_Name[CurrentPerson],
-					     (uword) - 1, (uword) - 1);
+					     (uint16) - 1, (uint16) - 1);
 			} else
 			    plSay("PLANING_END", CurrentPerson);
 		    } else if (dbIsObject(choice1, Object_Police)) {
@@ -1183,7 +1183,7 @@ static void plActionUse(void)
 					if (has
 					    (Person_Matt_Stuvysunt,
 					     Tool_Strickleiter)) {
-					    uword xpos, ypos;
+					    uint16 xpos, ypos;
 
 					    if (InitAction
 						(plSys, ACTION_USE, choice1, 0L,
@@ -1276,8 +1276,8 @@ static void plActionUse(void)
 static void plAction(void)
 {
     LIST *menu = NULL;
-    ubyte activ = 0;
-    U32 choice1 = 0L, choice2 = 0L, bitset;
+    byte activ = 0;
+    uint32 choice1 = 0L, choice2 = 0L, bitset;
     char exp[TXT_KEY_LENGTH];
 
     if (CurrentPerson < BurglarsNr)
@@ -1340,19 +1340,19 @@ static void plAction(void)
 	    if (GamePlayMode & GP_GUARD_DESIGN) {
 		if (PersonsNr > 2)
 		    choice1 =
-			(U32) Bubble(PersonsList, CurrentPerson, NULL, 0L);
+			(uint32) Bubble(PersonsList, CurrentPerson, NULL, 0L);
 		else
 		    choice1 = ((CurrentPerson) ? 0L : 1L);
 	    } else {
 		if (BurglarsNr > 2)
 		    choice1 =
-			(U32) Bubble(BurglarsList, CurrentPerson, NULL, 0L);
+			(uint32) Bubble(BurglarsList, CurrentPerson, NULL, 0L);
 		else
 		    choice1 = ((CurrentPerson) ? 0L : 1L);
 	    }
 
 	    if (choice1 != GET_OUT) {
-		U32 oldTime = CurrentTimer(plSys);
+		uint32 oldTime = CurrentTimer(plSys);
 
 		plMessage("PERSON_NOTES", PLANING_MSG_REFRESH);
 
@@ -1374,8 +1374,8 @@ static void plAction(void)
 		    plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys),
 			   oldTime - GetMaxTimer(plSys), 0);
 
-		lsSetActivLiving(Planing_Name[CurrentPerson], (uword) - 1,
-				 (uword) - 1);
+		lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) - 1,
+				 (uint16) - 1);
 
 		RemoveList(menu);
 
@@ -1425,8 +1425,8 @@ static void plAction(void)
 		choice1 = Bubble(ObjectList, 0, NULL, 0L);
 
 		if (ChoiceOk(choice1, GET_OUT, ObjectList)) {
-		    U32 weightLoot;
-		    U32 volumeLoot;
+		    uint32 weightLoot;
+		    uint32 volumeLoot;
 
 		    choice1 = OL_NR(GetNthNode(ObjectList, choice1));
 
@@ -1535,7 +1535,7 @@ static void plAction(void)
 static void plNoteBook(void)
 {
     LIST *l, *bubble = txtGoKey(PLAN_TXT, "MENU_6");
-    U32 choice1 = 0, choice2 = 0;
+    uint32 choice1 = 0, choice2 = 0;
     char exp[TXT_KEY_LENGTH];
 
     while (choice1 != GET_OUT) {
@@ -1611,14 +1611,14 @@ static void plNoteBook(void)
 static void plLook(void)
 {
     LIST *menu = txtGoKey(PLAN_TXT, "MENU_7");
-    ubyte activ = 0, choice;
-    U32 timer = 0L, maxTimer = GetMaxTimer(plSys), realCurrentPerson =
+    byte activ = 0, choice;
+    uint32 timer = 0L, maxTimer = GetMaxTimer(plSys), realCurrentPerson =
 	CurrentPerson, choice1;
-    U32 bitset;
+    uint32 bitset;
 
     plMessage("PERSON_NOTES", PLANING_MSG_REFRESH);
     plSync(PLANING_ANIMATE_NO, timer, maxTimer, 0);
-    lsSetActivLiving(Planing_Name[CurrentPerson], (uword) - 1, (uword) - 1);
+    lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) - 1, (uint16) - 1);
 
     while (activ != PLANING_LOOK_RETURN) {
 	plDisplayTimer(timer / PLANING_CORRECT_TIME, 0);
@@ -1642,7 +1642,7 @@ static void plLook(void)
 	switch (activ) {
 	case PLANING_LOOK_PLAN:
 	    {
-		ubyte last = 0;
+		byte last = 0;
 
 		plMessage("LOOK_START", PLANING_MSG_REFRESH);
 
@@ -1701,7 +1701,7 @@ static void plLook(void)
 	    plMessage("CHANGE_PERSON_2", PLANING_MSG_REFRESH);
 
 	    if (PersonsNr > 2)
-		choice1 = (U32) Bubble(PersonsList, CurrentPerson, NULL, 0L);
+		choice1 = (uint32) Bubble(PersonsList, CurrentPerson, NULL, 0L);
 	    else
 		choice1 = ((CurrentPerson) ? 0L : 1L);
 
@@ -1717,8 +1717,8 @@ static void plLook(void)
 				    Planing_Name[choice1]);
 		}
 
-		lsSetActivLiving(Planing_Name[CurrentPerson], (uword) - 1,
-				 (uword) - 1);
+		lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) - 1,
+				 (uint16) - 1);
 	    }
 	    break;
 	}
@@ -1747,17 +1747,17 @@ static void plLook(void)
 	plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys),
 	       timer - GetMaxTimer(plSys), 0);
 
-    lsSetActivLiving(Planing_Name[CurrentPerson], (uword) - 1, (uword) - 1);
+    lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) - 1, (uint16) - 1);
 
     RemoveList(menu);
 }
 
 /* Planer */
-void plPlaner(U32 objId)
+void plPlaner(uint32 objId)
 {
     LIST *menu = txtGoKey(PLAN_TXT, "MENU_1");
-    ubyte activ = 0;
-    U32 bitset;
+    byte activ = 0;
+    uint32 bitset;
 
     plPrepareSys(0L, objId,
 		 PLANING_INIT_PERSONSLIST | PLANING_HANDLER_ADD |
@@ -1780,7 +1780,7 @@ void plPlaner(U32 objId)
 	plPrepareSys(0L, 0, PLANING_HANDLER_SET);
 
 	plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), GetMaxTimer(plSys), 1);
-	lsSetActivLiving(Planing_Name[CurrentPerson], (uword) - 1, (uword) - 1);
+	lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) - 1, (uint16) - 1);
 
 	PlanChanged = 0;
     }
@@ -1841,8 +1841,8 @@ void plPlaner(U32 objId)
 	    plMessage("PERSON_NOTES", PLANING_MSG_REFRESH);
 	    plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), GetMaxTimer(plSys),
 		   1);
-	    lsSetActivLiving(Planing_Name[CurrentPerson], (uword) - 1,
-			     (uword) - 1);
+	    lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) - 1,
+			     (uint16) - 1);
 
 	    PlanChanged = 0;
 	    break;
@@ -1857,8 +1857,8 @@ void plPlaner(U32 objId)
 	    plPrepareSys(0L, 0, PLANING_HANDLER_CLEAR | PLANING_HANDLER_SET);
 	    plPrepareData();
 
-	    lsSetActivLiving(Planing_Name[CurrentPerson], (uword) - 1,
-			     (uword) - 1);
+	    lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) - 1,
+			     (uint16) - 1);
 
 	    PlanChanged = 0;
 	    break;

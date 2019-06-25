@@ -21,10 +21,10 @@
 #include "clue/living/living.h"
 #include "clue/living/living_p.h"
 
-void livInit(uword us_VisLScapeX, uword us_VisLScapeY,
-	     uword us_VisLScapeWidth, uword us_VisLScapeHeight,
-	     uword us_TotalLScapeWidth, uword us_TotalLScapeHeight,
-	     ubyte uch_FrameCount, U32 ul_StartArea)
+void livInit(uint16 us_VisLScapeX, uint16 us_VisLScapeY,
+	     uint16 us_VisLScapeWidth, uint16 us_VisLScapeHeight,
+	     uint16 us_TotalLScapeWidth, uint16 us_TotalLScapeHeight,
+	     byte uch_FrameCount, uint32 ul_StartArea)
 {
     sc = (SpriteControl *)TCAllocMem(sizeof(*sc), 0);
 
@@ -82,13 +82,13 @@ void livDone(void)
     }
 }
 
-void livSetActivAreaId(U32 areaId)
+void livSetActivAreaId(uint32 areaId)
 {
     if (sc)
 	sc->ul_ActivAreaId = areaId;
 }
 
-void livLivesInArea(char *uch_Name, U32 areaId)
+void livLivesInArea(char *uch_Name, uint32 areaId)
 {
     struct Living *liv = livGet(uch_Name);
 
@@ -112,7 +112,7 @@ void livSetAllInvisible(void)
     }
 }
 
-void livSetPlayMode(U32 playMode)
+void livSetPlayMode(uint32 playMode)
 {
     sc->ul_SprPlayMode = playMode;
 
@@ -124,15 +124,15 @@ void livSetPlayMode(U32 playMode)
 
     if (sc->ul_SprPlayMode & LIV_PM_REVERSE) {
 	sc->uch_FirstFrame = sc->uch_FrameCount - 1;
-	sc->uch_LastFrame = (ubyte) - 1;
-	sc->ch_PlayDirection = (ubyte) - 1;
+	sc->uch_LastFrame = (byte) - 1;
+	sc->ch_PlayDirection = (byte) - 1;
     }
 }
 
-U32 livWhereIs(char *uch_Name)
+uint32 livWhereIs(char *uch_Name)
 {
     struct Living *liv = livGet(uch_Name);
-    U32 loc = 0;
+    uint32 loc = 0;
 
     if (liv)
 	loc = liv->ul_LivesInAreaId;
@@ -140,7 +140,7 @@ U32 livWhereIs(char *uch_Name)
     return loc;
 }
 
-void livSetPos(char *uch_Name, uword XPos, uword YPos)
+void livSetPos(char *uch_Name, uint16 XPos, uint16 YPos)
 {
     struct Living *liv = livGet(uch_Name);
 
@@ -150,7 +150,7 @@ void livSetPos(char *uch_Name, uword XPos, uword YPos)
     }
 }
 
-void livAnimate(char *uch_Name, ubyte uch_Action, word s_XSpeed, word s_YSpeed)
+void livAnimate(char *uch_Name, byte uch_Action, int16 s_XSpeed, int16 s_YSpeed)
 {
     struct Living *liv = livGet(uch_Name);
 
@@ -163,12 +163,12 @@ void livAnimate(char *uch_Name, ubyte uch_Action, word s_XSpeed, word s_YSpeed)
 	liv->s_XSpeed = s_XSpeed;
 	liv->s_YSpeed = s_YSpeed;
 
-	if (((ubyte) liv->ch_CurrFrameNr == sc->uch_LastFrame))
+	if (((byte) liv->ch_CurrFrameNr == sc->uch_LastFrame))
 	    liv->ch_CurrFrameNr = (char) sc->uch_FirstFrame;
     }
 }
 
-void livTurn(char *puch_Name, ubyte uch_Status)
+void livTurn(char *puch_Name, byte uch_Status)
 {
     struct Living *liv = livGet(puch_Name);
 
@@ -204,7 +204,7 @@ void livPrepareAnims(void)
 {
 }
 
-void livDoAnims(ubyte uch_Play, ubyte uch_Move)
+void livDoAnims(byte uch_Play, byte uch_Move)
 {
     struct Living *liv;
 
@@ -239,7 +239,7 @@ void livDoAnims(ubyte uch_Play, ubyte uch_Move)
 		if ((uch_Play) && (liv->uch_Action != ANM_STAND))
 		    liv->ch_CurrFrameNr += (char) sc->ch_PlayDirection;
 
-		if ((ubyte) liv->ch_CurrFrameNr == sc->uch_LastFrame)
+		if ((byte) liv->ch_CurrFrameNr == sc->uch_LastFrame)
 		    livAnimate(NODE_NAME(liv), ANM_STAND, 0, 0);
 	    } else
 		livHide(liv);
@@ -247,45 +247,45 @@ void livDoAnims(ubyte uch_Play, ubyte uch_Move)
     }
 }
 
-void livSetVisLScape(uword us_VisLScapeX, uword us_VisLScapeY)
+void livSetVisLScape(uint16 us_VisLScapeX, uint16 us_VisLScapeY)
 {
     sc->us_VisLScapeX = us_VisLScapeX;
     sc->us_VisLScapeY = us_VisLScapeY;
 }
 
-uword livGetXPos(char *Name)
+uint16 livGetXPos(char *Name)
 {
     struct Living *liv = livGet(Name);
 
     return (liv->us_XPos);
 }
 
-uword livGetYPos(char *Name)
+uint16 livGetYPos(char *Name)
 {
     struct Living *liv = livGet(Name);
 
     return (liv->us_YPos);
 }
 
-ubyte livGetViewDirection(char *uch_Name)
+byte livGetViewDirection(char *uch_Name)
 {
     struct Living *liv = livGet(uch_Name);
 
     return (liv->uch_ViewDirection);
 }
 
-ubyte livGetOldAction(char *uch_Name)
+byte livGetOldAction(char *uch_Name)
 {
     struct Living *liv = livGet(uch_Name);
 
     return (liv->uch_OldAction);
 }
 
-ubyte livIsPositionInViewDirection(uword us_GXPos, uword us_GYPos,
-				   uword us_XPos, uword us_YPos,
-				   ubyte uch_ViewDirection)
+byte livIsPositionInViewDirection(uint16 us_GXPos, uint16 us_GYPos,
+				   uint16 us_XPos, uint16 us_YPos,
+				   byte uch_ViewDirection)
 {
-    ubyte InDirection = 1;
+    byte InDirection = 1;
 
     switch (uch_ViewDirection) {
     case ANM_MOVE_LEFT:
@@ -312,12 +312,12 @@ ubyte livIsPositionInViewDirection(uword us_GXPos, uword us_GYPos,
     return InDirection;
 }
 
-ubyte livCanWalk(char *puch_Name)
+byte livCanWalk(char *puch_Name)
 {
     struct Living *liv = livGet(puch_Name);
 
     if (liv) {
-	ubyte direction;
+	byte direction;
 
 	switch (liv->uch_Action) {
 	case ANM_MOVE_UP:
@@ -358,8 +358,8 @@ static struct Living *livGet(char *uch_Name)
     return (liv);
 }
 
-static void livAdd(char *uch_Name, char *uch_TemplateName, ubyte uch_XSize,
-		   ubyte uch_YSize, word s_XSpeed, word s_YSpeed)
+static void livAdd(char *uch_Name, char *uch_TemplateName, byte uch_XSize,
+		   byte uch_YSize, int16 s_XSpeed, int16 s_YSpeed)
 {
     struct Living *liv;
     struct AnimTemplate *tlt;
@@ -400,7 +400,7 @@ static void livRem(struct Living *liv)
 
 static void livLoadTemplates(void)
 {
-    uword cnt, i;
+    uint16 cnt, i;
     char *line;
     LIST *l = CreateList();
     struct AnimTemplate *tlt;
@@ -418,10 +418,10 @@ static void livLoadTemplates(void)
 						 sizeof(struct AnimTemplate),
 						 txtGetKey(1, line));
 
-	tlt->us_Width = (uword) txtGetKeyAsULONG(2, line);
-	tlt->us_Height = (uword) txtGetKeyAsULONG(3, line);
+	tlt->us_Width = (uint16) txtGetKeyAsULONG(2, line);
+	tlt->us_Height = (uint16) txtGetKeyAsULONG(3, line);
 
-	tlt->us_FrameOffsetNr = (uword) txtGetKeyAsULONG(4, line);
+	tlt->us_FrameOffsetNr = (uint16) txtGetKeyAsULONG(4, line);
     }
 
     RemoveList(l);
@@ -434,7 +434,7 @@ static void livRemTemplate(struct AnimTemplate *tlt)
 
 static void livLoadLivings(void)
 {
-    uword cnt, i;
+    uint16 cnt, i;
     char *line;
     LIST *l = CreateList();
     char pathname[DSK_PATH_MAX];
@@ -454,10 +454,10 @@ static void livLoadLivings(void)
 
 	livAdd(name,
 	       templateName,
-	       (ubyte) txtGetKeyAsULONG(3, line),
-	       (ubyte) txtGetKeyAsULONG(4, line),
-	       (word) txtGetKeyAsULONG(5, line),
-	       (word) txtGetKeyAsULONG(6, line));
+	       (byte) txtGetKeyAsULONG(3, line),
+	       (byte) txtGetKeyAsULONG(4, line),
+	       (int16) txtGetKeyAsULONG(5, line),
+	       (int16) txtGetKeyAsULONG(6, line));
     }
 
     RemoveList(l);
@@ -470,8 +470,8 @@ static void livHide(struct Living *liv)
 
 static void livShow(struct Living *liv)
 {
-    uword frameNr, action;
-    uword srcX, srcY, offset;
+    uint16 frameNr, action;
+    uint16 srcX, srcY, offset;
     struct AnimTemplate *tlt = liv->p_OriginTemplate;
 
     /* shitty exception because Marx didn't provide a standing anim */
@@ -494,10 +494,10 @@ static void livShow(struct Living *liv)
 	BobVis(liv->us_LivingNr);
 }
 
-static ubyte livIsVisible(struct Living *liv)
+static byte livIsVisible(struct Living *liv)
 {
-    uword left, right, up, down;
-    ubyte visible = 0;
+    uint16 left, right, up, down;
+    byte visible = 0;
 
     left = liv->us_XPos;
     right = left + liv->uch_XSize;

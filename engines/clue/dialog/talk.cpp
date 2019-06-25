@@ -9,15 +9,15 @@
 struct DynDlgNode {
     NODE Link;
 
-    ubyte KnownBefore;		/* wie gut Sie bekannt sein mssen */
-    ubyte KnownAfter;		/* wie gut Sie danach bekannt sind ! */
+    byte KnownBefore;		/* wie gut Sie bekannt sein mssen */
+    byte KnownAfter;		/* wie gut Sie danach bekannt sind ! */
 };
 
-U32 Talk(void)
+uint32 Talk(void)
 {
-    U32 succ_event_nr = 0L, locNr, personID;
+    uint32 succ_event_nr = 0L, locNr, personID;
     LIST *bubble;
-    ubyte choice, helloFriends[KEY_LENGTH];
+    byte choice, helloFriends[KEY_LENGTH];
 
     TurnESC(0);
 
@@ -36,7 +36,7 @@ U32 Talk(void)
 
 	    if (ChoiceOk((choice = Bubble(bubble, 0, 0L, 0L)), GET_OUT, bubble)) {
 		personID =
-		    ((struct ObjectNode *) GetNthNode(bubble, (U32) choice))->
+		    ((struct ObjectNode *) GetNthNode(bubble, (uint32) choice))->
 		    nr;
 
 		TurnESC(0);
@@ -59,13 +59,13 @@ U32 Talk(void)
     return (succ_event_nr);
 }
 
-void DynamicTalk(U32 Person1ID, U32 Person2ID, ubyte TalkMode)
+void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode)
 {
-    ubyte *Extension[4] = { "_UNKNOWN", "_KNOWN", "_FRIENDLY", "_BUSINESS" };
-    ubyte *Standard = "STANDARD", known = 0;
+    byte *Extension[4] = { "_UNKNOWN", "_KNOWN", "_FRIENDLY", "_BUSINESS" };
+    byte *Standard = "STANDARD", known = 0;
     Person p1 = (Person) dbGetObject(Person1ID);
     Person p2 = (Person) dbGetObject(Person2ID);
-    ubyte key[KEY_LENGTH], name[KEY_LENGTH], choice = 0, max =
+    byte key[KEY_LENGTH], name[KEY_LENGTH], choice = 0, max =
 	1, i, quit, stdcount = 0, j, gencount = 0, textID;
     LIST *origin = 0L, *questions = 0L, *bubble = CreateList(0L, 0), *keyWords;
     struct DynDlgNode *n;
@@ -133,7 +133,7 @@ void DynamicTalk(U32 Person1ID, U32 Person2ID, ubyte TalkMode)
 	gencount = max - stdcount;
 
 	if (choice < gencount) {
-	    n = (struct DynDlgNode *) GetNthNode(keyWords, (U32) choice);
+	    n = (struct DynDlgNode *) GetNthNode(keyWords, (uint32) choice);
 
 	    strcpy(key, name);
 	    strcat(key, "_");
@@ -189,18 +189,18 @@ void DynamicTalk(U32 Person1ID, U32 Person2ID, ubyte TalkMode)
     RemoveList(bubble);
 }
 
-LIST *PrepareQuestions(LIST * keyWords, U32 talkBits, ubyte textID)
+LIST *PrepareQuestions(LIST * keyWords, uint32 talkBits, byte textID)
 {
     LIST *questionList = 0L, *preparedList = CreateList(0L, 0);
     LIST *stdQuestionList = GoKey(BUSINESS_TXT, "STD_QUEST");
     NODE *n;
-    ubyte question[KEY_LENGTH], r, i;
+    byte question[KEY_LENGTH], r, i;
 
-    questionList = GoKey((U32) textID, "QUESTIONS");
+    questionList = GoKey((uint32) textID, "QUESTIONS");
 
     for (n = (NODE *) LIST_HEAD(keyWords); NODE_SUCC((NODE *) n);
 	 n = (NODE *) NODE_SUCC(n)) {
-	r = (ubyte) CalcRandomNr(0L, 6L);
+	r = (byte) CalcRandomNr(0L, 6L);
 
 	sprintf(question, NODE_NAME(GetNthNode(questionList, r)),
 		NODE_NAME((NODE *) n));
@@ -224,13 +224,13 @@ LIST *PrepareQuestions(LIST * keyWords, U32 talkBits, ubyte textID)
     return (preparedList);
 }
 
-LIST *ParseTalkText(LIST * origin, LIST * bubble, ubyte known)
+LIST *ParseTalkText(LIST * origin, LIST * bubble, byte known)
 {
     LIST *keyWords;
     NODE *n, *keyNode;
-    ubyte line[KEY_LENGTH], line_pos = 0, *mem, key[KEY_LENGTH], key_pos;
-    ubyte snr[10], snr1[10], nr, nr1, keyWord[KEY_LENGTH];
-    U32 i;
+    byte line[KEY_LENGTH], line_pos = 0, *mem, key[KEY_LENGTH], key_pos;
+    byte snr[10], snr1[10], nr, nr1, keyWord[KEY_LENGTH];
+    uint32 i;
 
     keyWords = CreateList(0L, 0);
 
@@ -268,8 +268,8 @@ LIST *ParseTalkText(LIST * origin, LIST * bubble, ubyte known)
 		snr1[3] = EOS;
 		keyWord[strlen(key) - 6] = EOS;
 
-		nr = (ubyte) atol(snr);
-		nr1 = (ubyte) atol(snr1);
+		nr = (byte) atol(snr);
+		nr1 = (byte) atol(snr1);
 
 		/* keyword einfgen */
 

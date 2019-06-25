@@ -102,7 +102,7 @@ void tcDisplayCommon(void)
 
     if (Organisation.CarID) {
 	dbGetObjectName(Organisation.CarID, name);
-	tcCutName(name, (ubyte) ' ', 12);
+	tcCutName(name, (byte) ' ', 12);
 	strcat(line, name);
     } else
 	strcat(line, " ? ");
@@ -188,9 +188,9 @@ void tcDisplayCommon(void)
     RemoveList(texts);
 }
 
-void tcDisplayPerson(U32 displayMode)
+void tcDisplayPerson(uint32 displayMode)
 {
-    U32 objNr, i;
+    uint32 objNr, i;
     NODE *node;
     char line[TXT_KEY_LENGTH];
     LIST *guys;
@@ -223,11 +223,11 @@ void tcDisplayPerson(U32 displayMode)
     RemoveList(guys);
 }
 
-void tcDisplayAbilities(U32 personNr, U32 displayData)
+void tcDisplayAbilities(uint32 personNr, uint32 displayData)
 {
     LIST *abilities;
     NODE *node;
-    U32 abiNr, ability;
+    uint32 abiNr, ability;
     unsigned i;
 
     hasAll(personNr, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME, Object_Ability);
@@ -241,11 +241,11 @@ void tcDisplayAbilities(U32 personNr, U32 displayData)
 	     node = NODE_SUCC(node), i++) {
 	    char line[TXT_KEY_LENGTH];
 
-	    abiNr = ((struct ObjectNode *) GetNthNode(abilities, (U32) i))->nr;
+	    abiNr = ((struct ObjectNode *) GetNthNode(abilities, (uint32) i))->nr;
 	    ability = hasGet(personNr, abiNr);
 
 	    sprintf(line, "%s %d%%", NODE_NAME(node),
-		    (uword) ((ability * 100) / 255));
+		    (uint16) ((ability * 100) / 255));
 
 	    prDrawTextBar(line, ability, 255L,
 			  displayData * ORG_DISP_GUY_WIDTH + 5,

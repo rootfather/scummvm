@@ -171,7 +171,7 @@ void *GetNode(LIST *list, const char *name)
     return NULL;
 }
 
-void *GetNthNode(LIST *list, U32 nth)
+void *GetNthNode(LIST *list, uint32 nth)
 {
     register NODE *node;
 
@@ -184,10 +184,10 @@ void *GetNthNode(LIST *list, U32 nth)
     return NULL;
 }
 
-U32 GetNrOfNodes(LIST *list)
+uint32 GetNrOfNodes(LIST *list)
 {
     register NODE *node = NULL;
-    register U32 i = 0;
+    register uint32 i = 0;
 
     for (i = 0, node = LIST_HEAD(list); NODE_SUCC(node);
 	 i++, node = NODE_SUCC(node));
@@ -195,10 +195,10 @@ U32 GetNrOfNodes(LIST *list)
     return i;
 }
 
-U32 GetNodeNrByAddr(LIST *list, void *node)
+uint32 GetNodeNrByAddr(LIST *list, void *node)
 {
     register NODE *s;
-    register U32 i;
+    register uint32 i;
 
     for (s = LIST_HEAD(list), i = 0; NODE_SUCC(s) && (s != node);
 	 s = NODE_SUCC(s), i++);
@@ -206,7 +206,7 @@ U32 GetNodeNrByAddr(LIST *list, void *node)
     return i;
 }
 
-U32 GetNodeNr(LIST *list, const char *name)
+uint32 GetNodeNr(LIST *list, const char *name)
 {
     return GetNodeNrByAddr(list, GetNode(list, name));
 }
@@ -255,10 +255,10 @@ void ReplaceNode(LIST *list, const char *name, NODE *newNode)
     ReplaceNodeByAddr(list, GetNode(list, name), newNode);
 }
 
-U32 ReadList(LIST *list, size_t size, char *fileName)
+uint32 ReadList(LIST *list, size_t size, char *fileName)
 {
     FILE *fh;
-    U32 i = UINT32_C(0);
+    uint32 i = UINT32_C(0);
     char buffer[256];
 
     if ((fh = dskOpen(fileName, "rb"))) {

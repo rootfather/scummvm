@@ -53,7 +53,7 @@ struct ErrorHandler {
 
 struct ErrorHandler ErrorHandler;
 
-bool pcErrOpen(S32 l_Mode, char *ErrorFilename)
+bool pcErrOpen(int32 l_Mode, char *ErrorFilename)
 {
     FILE *p_File;
     bool alright = false;
@@ -82,7 +82,7 @@ bool pcErrOpen(S32 l_Mode, char *ErrorFilename)
     return alright;
 }
 
-void ErrorMsg(ErrorE type, ErrorModuleE moduleId, U32 errorId)
+void ErrorMsg(ErrorE type, ErrorModuleE moduleId, uint32 errorId)
 {
     DebugMsg(ERR_DEBUG, moduleId, "Error %d", errorId);
 

@@ -24,7 +24,7 @@ static void LoadVOC(const char *fileName);
 
 static void sndCallBack(void *udata, Uint8 *stream, int len)
 {
-    S16 *MixStream = (S16 *) stream;
+    int16 *MixStream = (int16 *) stream;
     const float sfxFactor = ((float)setup.SfxVolume) / SND_MAX_VOLUME,
 	    musicFactor = ((float)setup.MusicVolume) / SND_MAX_VOLUME;
     int sizeStream, i;
@@ -35,9 +35,9 @@ static void sndCallBack(void *udata, Uint8 *stream, int len)
 
     SDL_memset(stream, 0, len);
 
-    sizeStream = len / sizeof(S16);
+    sizeStream = len / sizeof(int16);
     for (i = 0; i < sizeStream; i++) {
-	S16 Sfx, Music;
+	int16 Sfx, Music;
 
 	Sfx = Music = 0;
 	if (SfxChannelOn) {
@@ -139,14 +139,14 @@ static const char magicString[] =
 
 static void LoadVOC(const char *fileName)
 {
-    U8 *pSoundFile, *pRawSound;
-    S16 *pResampledSound;
+    uint8 *pSoundFile, *pRawSound;
+    int16 *pResampledSound;
 
     unsigned blockOffset, blockType, numSamples;
-    U8 SR;
+    uint8 SR;
     unsigned sampleRate, compressionType;
 
-    if (!(pSoundFile = (U8 *)dskLoad(fileName))) {
+    if (!(pSoundFile = (uint8 *)dskLoad(fileName))) {
 	return;
     }
 
@@ -210,7 +210,7 @@ static void LoadVOC(const char *fileName)
 	resampleRatio = (float) sampleRate / resampleRate;
 
 	sizeResamples = nResamples * sizeof(*pResampledSound);
-	pResampledSound = (S16 *)malloc(sizeResamples);
+	pResampledSound = (int16 *)malloc(sizeResamples);
 
 	for (i = 0; i < nResamples; i++) {
 	    float middleT, leftT;		/* time */
@@ -224,10 +224,10 @@ static void LoadVOC(const char *fileName)
 	    leftT = floor(middleT);
 
 	    left = leftT;
-	    left = clamp(left, 0, numSamples - 1);
+	    left = CLIP(left, 0u, numSamples - 1);
 
 	    right = left + 1;
-	    right = clamp(right, 0, numSamples - 1);
+	    right = CLIP(right, 0u, numSamples - 1);
 
 	    /* get neighbouring points sample values */
 	    leftS = pRawSound[left];

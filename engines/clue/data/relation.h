@@ -24,10 +24,10 @@
 #include "clue/memory/memory.h"
 #include "clue/disk/disk.h"
 
-#define RELATION           U32
+#define RELATION           uint32
 #define KEY                void *
-#define PARAMETER          U32
-#define COMPARSION         U8
+#define PARAMETER          uint32
+#define COMPARSION         uint8
 
 #define CMP_NO             ((COMPARSION)0)
 #define CMP_EQUAL          ((COMPARSION)(1))
@@ -77,8 +77,8 @@ RELATION AskP(KEY, RELATION, KEY, PARAMETER, COMPARSION);
 void AskAll(KEY, RELATION, void (*)(void *));
 void UnSetAll(KEY, void (*)(KEY));
 
-int SaveRelations(char *, U32, U32, U16 disk_id);
-int LoadRelations(char *, U16 disk_id);
-void RemRelations(U32, U32);
+int SaveRelations(char *, uint32, uint32, uint16 disk_id);
+int LoadRelations(char *, uint16 disk_id);
+void RemRelations(uint32, uint32);
 
 #endif

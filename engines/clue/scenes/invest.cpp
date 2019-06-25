@@ -20,11 +20,11 @@
 
 #include "clue/scenes/scenes.h"
 
-static U32 tcShowPatrol(LIST * bubble_l, char *c_time, char *patr, ubyte first,
-		        Building bui, U32 raise)
+static uint32 tcShowPatrol(LIST * bubble_l, char *c_time, char *patr, byte first,
+		        Building bui, uint32 raise)
 {
     char patrolie[TXT_KEY_LENGTH];
-    U32 choice = 0;
+    uint32 choice = 0;
 
     sprintf(patrolie, "%s  %s", c_time, patr);
 
@@ -32,7 +32,7 @@ static U32 tcShowPatrol(LIST * bubble_l, char *c_time, char *patr, ubyte first,
 
     SetBubbleType(THINK_BUBBLE);
 
-    Bubble(bubble_l, (ubyte) first, 0, 140L);
+    Bubble(bubble_l, (byte) first, 0, 140L);
     choice = GetExtBubbleActionInfo();
 
     tcAddBuildExactlyness(bui, raise);
@@ -47,10 +47,10 @@ void Investigate(char *location)
     NODE *n, *nextMsg;
     LIST *origin, *bubble_l;
     char patr[TXT_KEY_LENGTH], line[TXT_KEY_LENGTH], c_time[10];
-    U32 minutes = 0, guarding = 0, choice = 0, count = 0, buiID = 0, first =
+    uint32 minutes = 0, guarding = 0, choice = 0, count = 0, buiID = 0, first =
 	0, raise;
     Building bui;
-    U32 patrolCount;
+    uint32 patrolCount;
 
     buiID = GetObjNrOfBuilding(GetLocation);
     bui = (Building) dbGetObject(buiID);
@@ -86,7 +86,7 @@ void Investigate(char *location)
     origin = txtGoKey(INVESTIGATIONS_TXT, location);
     bubble_l = CreateList();
     count = GetNrOfNodes(origin);
-    guarding = (U32) tcRGetGRate(bui);
+    guarding = (uint32) tcRGetGRate(bui);
     patrolCount = (270 - guarding) / 4 + 1;
 
     /* Wissensgewinn pro Ereignis =
@@ -147,7 +147,7 @@ void Investigate(char *location)
 
 		SetBubbleType(THINK_BUBBLE);
 
-		Bubble(bubble_l, (ubyte) first++, 0, 140L);
+		Bubble(bubble_l, (byte) first++, 0, 140L);
 		choice = GetExtBubbleActionInfo();
 
 		tcAddBuildExactlyness(bui, raise);
@@ -202,7 +202,7 @@ void Investigate(char *location)
 	tcPlayStreetSound();
 
     if (GamePlayMode & GP_DEMO) {
-	U8 palette[GFX_PALETTE_SIZE];
+	uint8 palette[GFX_PALETTE_SIZE];
 
 	SuspendAnim();
 	gfxPrepareRefresh();

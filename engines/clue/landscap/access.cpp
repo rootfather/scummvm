@@ -33,18 +33,18 @@ bool lsIsLSObjectInActivArea(LSObject lso)
     return false;
 }
 
-void lsSetObjectRetrievalList(U32 ul_AreaId)
+void lsSetObjectRetrievalList(uint32 ul_AreaId)
 {
-    S32 i;
+    int32 i;
 
     for (i = 0; i < 3; i++)
 	if (ul_AreaId == ls->ul_ObjectRetrievalAreaId[i])
 	    ls->p_ObjectRetrieval = ls->p_ObjectRetrievalLists[i];
 }
 
-U32 lsGetCurrObjectRetrieval(void)
+uint32 lsGetCurrObjectRetrieval(void)
 {
-    S32 i;
+    int32 i;
 
     for (i = 0; i < 3; i++)
 	if (ls->p_ObjectRetrieval == ls->p_ObjectRetrievalLists[i])
@@ -148,14 +148,14 @@ bool lsIsObjectAnAddOn(LSObject lso)
     return false;
 }
 
-uword lsGetObjectCount(void)
+uint16 lsGetObjectCount(void)
 {
-    return ((uword) GetNrOfNodes(ls->p_ObjectRetrieval));
+    return ((uint16) GetNrOfNodes(ls->p_ObjectRetrieval));
 }
 
-ubyte lsGetLoudness(uword x, uword y)
+byte lsGetLoudness(uint16 x, uint16 y)
 {
-    word floorIndex = lsGetFloorIndex(x, y), i, j, k;
+    int16 floorIndex = lsGetFloorIndex(x, y), i, j, k;
 
     /* Ursprnglich wurde loudness hier mit MaxVolume initialisiert    */
     /* dadurch waren in der Anzeige der Loudness auch die Nachbarn     */
@@ -163,7 +163,7 @@ ubyte lsGetLoudness(uword x, uword y)
     /* man die Lautst„rke berschritt Alarm durch Mikrophone ->        */
     /* tcAlarmByMicro, bei einer Žnderung der Initialiserung, muá auch */
     /* TcAlarmByMicro ge„ndert werden.   (hg, 14-02-94)                */
-    ubyte loudness = 255;
+    byte loudness = 255;
 
     if ((!LS_NO_FLOOR(ls->p_CurrFloor[floorIndex].uch_FloorType)) &&
 	LS_IS_MICRO_ON_FLOOR(ls->p_CurrFloor[floorIndex].uch_FloorType))
@@ -185,16 +185,16 @@ ubyte lsGetLoudness(uword x, uword y)
     return loudness;
 }
 
-U32 lsGetObjectState(U32 objID)
+uint32 lsGetObjectState(uint32 objID)
 {
     LSObject obj = (LSObject)dbGetObject(objID);
 
     return (lsGetNewState(obj));
 }
 
-U32 lsGetStartArea(void)
+uint32 lsGetStartArea(void)
 {
-    U32 areaID;			/* attention, planing has to be changed to! */
+    uint32 areaID;			/* attention, planing has to be changed to! */
 
     startsWithAll(ls->ul_BuildingID, OLF_NORMAL, Object_LSArea);
 
@@ -203,19 +203,19 @@ U32 lsGetStartArea(void)
     return (areaID);
 }
 
-uword lsGetFloorIndex(uword x, uword y)
+uint16 lsGetFloorIndex(uint16 x, uint16 y)
 {
-    register uword fpl, row, line;
+    register uint16 fpl, row, line;
 
     fpl = LS_FLOORS_PER_LINE;
 
     row = x / LS_FLOOR_X_SIZE;
     line = y / LS_FLOOR_Y_SIZE;
 
-    return (uword) (line * fpl + row);
+    return (uint16) (line * fpl + row);
 }
 
-static void lsExtendGetList(LIST * list, U32 nr, U32 type, void *data)
+static void lsExtendGetList(LIST * list, uint32 nr, uint32 type, void *data)
 {
     struct ObjectNode *newNode =
 	dbAddObjectNode(list, type, OLF_INCLUDE_NAME | OLF_INSERT_STAR);
@@ -225,12 +225,12 @@ static void lsExtendGetList(LIST * list, U32 nr, U32 type, void *data)
     newNode->data = data;
 }
 
-LIST *lsGetObjectsByList(uword x, uword y, uword width, uword height,
-			 ubyte showInvisible, ubyte addLootBags)
+LIST *lsGetObjectsByList(uint16 x, uint16 y, uint16 width, uint16 height,
+			 byte showInvisible, byte addLootBags)
 {
     struct ObjectNode *node;
     LIST *list = CreateList();
-    U32 i;
+    uint32 i;
 
     /* diverse Objekte eintragen */
     for (node = (struct ObjectNode *) LIST_HEAD(ls->p_ObjectRetrieval);
@@ -259,45 +259,45 @@ LIST *lsGetObjectsByList(uword x, uword y, uword width, uword height,
     return (list);
 }
 
-uword lsGetWindowXPos(void)
+uint16 lsGetWindowXPos(void)
 {
     return (ls->us_WindowXPos);
 }
 
-uword lsGetWindowYPos(void)
+uint16 lsGetWindowYPos(void)
 {
     return (ls->us_WindowYPos);
 }
 
-uword lsGetTotalXPos(void)
+uint16 lsGetTotalXPos(void)
 {
-    return (uword) (ls->us_WindowXPos + ls->us_PersonXPos);
+    return (uint16) (ls->us_WindowXPos + ls->us_PersonXPos);
 }
 
-uword lsGetTotalYPos(void)
+uint16 lsGetTotalYPos(void)
 {
-    return (uword) (ls->us_WindowYPos + ls->us_PersonYPos);
+    return (uint16) (ls->us_WindowYPos + ls->us_PersonYPos);
 }
 
-void lsSetCollMode(ubyte collMode)
+void lsSetCollMode(byte collMode)
 {
     ls->uch_CollMode = collMode;
 }
 
-U32 lsGetCurrBuildingID(void)
+uint32 lsGetCurrBuildingID(void)
 {
     return ls->ul_BuildingID;
 }
 
-U32 lsGetActivAreaID(void)
+uint32 lsGetActivAreaID(void)
 {
     return (ls->ul_AreaID);
 }
 
-LIST *lsGetRoomsOfArea(U32 ul_AreaId)
+LIST *lsGetRoomsOfArea(uint32 ul_AreaId)
 {
     LSArea area = (LSArea) dbGetObject(ul_AreaId);
-    U32 roomRelId = area->ul_ObjectBaseNr + REL_HAS_ROOM_OFFSET;
+    uint32 roomRelId = area->ul_ObjectBaseNr + REL_HAS_ROOM_OFFSET;
     NODE *room;
 
     SetObjectListAttr(OLF_PRIVATE_LIST, Object_LSRoom);
@@ -308,10 +308,10 @@ LIST *lsGetRoomsOfArea(U32 ul_AreaId)
 	 room = NODE_SUCC(room)) {
 	LSRoom myroom = (LSRoom)OL_DATA(room);
 
-	if ((word) myroom->us_LeftEdge < 0)
+	if ((int16) myroom->us_LeftEdge < 0)
 	    myroom->us_LeftEdge = 0;
 
-	if ((word) myroom->us_TopEdge < 0)
+	if ((int16) myroom->us_TopEdge < 0)
 	    myroom->us_TopEdge = 0;
     }
 

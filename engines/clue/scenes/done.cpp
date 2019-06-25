@@ -21,12 +21,12 @@
 
 void DoneTaxi(void)
 {
-    static ubyte i = 0;
-    ubyte j;
+    static byte i = 0;
+    byte j;
     char name[TXT_KEY_LENGTH], exp[TXT_KEY_LENGTH];
     LIST *locs = CreateList();
     struct ObjectNode *n, *newNode;
-    U32 locNr;
+    uint32 locNr;
     Location loc;
 
     knowsSet(Person_Matt_Stuvysunt, Person_Dan_Stanford);
@@ -43,7 +43,7 @@ void DoneTaxi(void)
 	newNode->nr = locNr + 1;	/* because of ChoiceOk */
     }
 
-    i = min(i, GetNrOfNodes(locs) - 1);
+    i = MIN((uint32)i, GetNrOfNodes(locs) - 1);
 
     txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
     ExpandObjectList(locs, exp);
@@ -52,11 +52,11 @@ void DoneTaxi(void)
 	i = j;
 
 	locNr = OL_NR(GetNthNode(locs, i)) - 1;
-	SceneArgs.ReturnValue = (U32)GetLocScene(locNr)->EventNr;
+	SceneArgs.ReturnValue = (uint32)GetLocScene(locNr)->EventNr;
     } else {
 	Say(BUSINESS_TXT, 0, MATT_PICTID, "LOVELY_TAXI");
 
-	SceneArgs.ReturnValue = (U32)GetLocScene(GetOldLocation)->EventNr;
+	SceneArgs.ReturnValue = (uint32)GetLocScene(GetOldLocation)->EventNr;
     }
 
     SceneArgs.Ueberschrieben = 1;
@@ -69,8 +69,8 @@ void DoneTaxi(void)
 void DoneInsideHouse(void)
 {
     LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
-    U32 choice, buildingID, areaID;
-    ubyte activ = 0, perc;
+    uint32 choice, buildingID, areaID;
+    byte activ = 0, perc;
     NODE *node;
 
     SceneArgs.ReturnValue = 0;
@@ -109,11 +109,11 @@ void DoneInsideHouse(void)
 	    inpTurnFunctionKey(0);
 	    inpTurnESC(0);
 	    activ =
-		Menu(menu, SceneArgs.Moeglichkeiten, (ubyte) (activ), NULL, 0L);
+		Menu(menu, SceneArgs.Moeglichkeiten, (byte) (activ), NULL, 0L);
 	    inpTurnFunctionKey(1);
 	    inpTurnESC(1);
 
-	    choice = (U32) 1L << activ;
+	    choice = (uint32) 1L << activ;
 
 	    switch (choice) {
 	    case LOOK:
@@ -126,7 +126,7 @@ void DoneInsideHouse(void)
 	    case GO:
 		if (!(areaID = tcGoInsideOfHouse(buildingID)))
 		    SceneArgs.ReturnValue =
-			(U32) (((struct TCEventNode
+			(uint32) (((struct TCEventNode
 				 *) (LIST_HEAD((GetCurrentScene()->
 						std_succ))))->EventNr);
 		else {
@@ -158,8 +158,8 @@ void DoneInsideHouse(void)
 
 void DoneTools(void)
 {
-    ubyte activ = 0;
-    U32 choice = 0;
+    byte activ = 0;
+    uint32 choice = 0;
     LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
 
     SceneArgs.Ueberschrieben = 1;
@@ -172,10 +172,10 @@ void DoneTools(void)
 
 	inpTurnFunctionKey(0);	/* dont save in tools shop */
 	inpTurnESC(0);
-	activ = Menu(menu, SceneArgs.Moeglichkeiten, (ubyte) (activ), NULL, 0L);
+	activ = Menu(menu, SceneArgs.Moeglichkeiten, (byte) (activ), NULL, 0L);
 	inpTurnESC(1);
 
-	choice = (U32) 1L << (activ);
+	choice = (uint32) 1L << (activ);
 
 	if (choice == BUSINESS_TALK) {
 	    tcToolsShop();
@@ -196,8 +196,8 @@ void DoneTools(void)
 
 void DoneDealer(void)
 {
-    ubyte activ = 0;
-    U32 choice = 0;
+    byte activ = 0;
+    uint32 choice = 0;
     LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
 
     SceneArgs.Ueberschrieben = 1;
@@ -214,11 +214,11 @@ void DoneDealer(void)
     while (!SceneArgs.ReturnValue) {
 	inpTurnFunctionKey(0);	/* or call save functions in case of space */
 	inpTurnESC(0);
-	activ = Menu(menu, SceneArgs.Moeglichkeiten, (ubyte) (activ), NULL, 0L);
+	activ = Menu(menu, SceneArgs.Moeglichkeiten, (byte) (activ), NULL, 0L);
 	inpTurnESC(1);
 	inpTurnFunctionKey(1);
 
-	choice = (U32) 1L << (activ);
+	choice = (uint32) 1L << (activ);
 
 	if (choice == BUSINESS_TALK)
 	    tcDealerDlg();
@@ -239,8 +239,8 @@ void DoneParking(void)
 {
     LIST *bubble = txtGoKey(BUSINESS_TXT, "PARKING");
     LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
-    ubyte activ = 0, choice = 0;
-    U32 carID;
+    byte activ = 0, choice = 0;
+    uint32 carID;
     Person marc = (Person)dbGetObject(Person_Marc_Smith);
 
     SceneArgs.Ueberschrieben = 1;
@@ -250,7 +250,7 @@ void DoneParking(void)
 	inpTurnFunctionKey(0);	/* or call save functions in case of space */
 	inpTurnESC(0);
 
-	activ = Menu(menu, SceneArgs.Moeglichkeiten, (ubyte) (activ), 0L, 0L);
+	activ = Menu(menu, SceneArgs.Moeglichkeiten, (byte) (activ), 0L, 0L);
 
 	inpTurnESC(1);
 	inpTurnFunctionKey(1);
@@ -298,8 +298,8 @@ void DoneParking(void)
 void DoneGarage(void)
 {
     LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
-    ubyte activ = 0;
-    U32 choice, carID;
+    byte activ = 0;
+    uint32 choice, carID;
     Person marc = (Person)dbGetObject(Person_Marc_Smith);
 
     SceneArgs.Ueberschrieben = 1;
@@ -309,12 +309,12 @@ void DoneGarage(void)
 	inpTurnFunctionKey(0);	/* or call save functions in case of space */
 	inpTurnESC(0);
 
-	activ = Menu(menu, SceneArgs.Moeglichkeiten, (ubyte) (activ), NULL, 0);
+	activ = Menu(menu, SceneArgs.Moeglichkeiten, (byte) (activ), NULL, 0);
 
 	inpTurnESC(1);
 	inpTurnFunctionKey(1);
 
-	choice = (U32) 1L << (activ);
+	choice = (uint32) 1L << (activ);
 
 	if (choice == BUSINESS_TALK) {
 	    if ((carID = tcChooseCar(26))) {

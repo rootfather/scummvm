@@ -23,17 +23,17 @@
 #include "clue/present/interac.h"
 #include "clue/present/interac_p.h"
 
-void SetBubbleType(uword type)
+void SetBubbleType(uint16 type)
 {
     CurrentBubbleType = type;
 }
 
-void SetPictID(uword PictID)
+void SetPictID(uint16 PictID)
 {
     ActivPersonPictID = PictID;
 }
 
-ubyte GetExtBubbleActionInfo(void)
+byte GetExtBubbleActionInfo(void)
 {
     return ExtBubbleActionInfo;
 }
@@ -43,7 +43,7 @@ void SetMenuTimeOutFunc(void (*func) (void))
     MenuTimeOutFunc = func;
 }
 
-ubyte ChoiceOk(ubyte choice, ubyte exit, LIST * l)
+byte ChoiceOk(byte choice, byte exit, LIST * l)
 {
     if (choice == GET_OUT)
 	return 0;
@@ -62,11 +62,11 @@ ubyte ChoiceOk(ubyte choice, ubyte exit, LIST * l)
     return 1;
 }
 
-static void DrawMenu(LIST * menu, ubyte nr, S32 mode)
+static void DrawMenu(LIST * menu, byte nr, int32 mode)
 {
-    register ubyte i;
+    register byte i;
     register char *m1 = NULL, *m2 = NULL;
-    register S32 x = 8, lastx = 0;
+    register int32 x = 8, lastx = 0;
 
     if (mode == ACTIV_POSS)
 	gfxSetPens(m_gc, 249, GFX_SAME_PEN, GFX_SAME_PEN);
@@ -104,7 +104,7 @@ static void DrawMenu(LIST * menu, ubyte nr, S32 mode)
     }
 }
 
-static char SearchActiv(word delta, ubyte activ, U32 possibility, ubyte max)
+static char SearchActiv(int16 delta, byte activ, uint32 possibility, byte max)
 {
     do {
 	activ += delta;
@@ -119,10 +119,10 @@ static char SearchActiv(word delta, ubyte activ, U32 possibility, ubyte max)
     return -1;
 }
 
-static char SearchMouseActiv(U32 possibility, ubyte max)
+static char SearchMouseActiv(uint32 possibility, byte max)
 {				/* MOD : 14.12.93 hg */
     int activ;
-    U16 x, y;
+    uint16 x, y;
 
     gfxGetMouseXY(m_gc, &x, &y);
 
@@ -149,7 +149,7 @@ static char SearchMouseActiv(U32 possibility, ubyte max)
 
 void RefreshMenu(void)
 {
-    register ubyte max, i;
+    register byte max, i;
 
     if (refreshMenu) {
 	max = GetNrOfNodes(refreshMenu);
@@ -163,15 +163,15 @@ void RefreshMenu(void)
     }
 }
 
-ubyte Menu(LIST * menu, U32 possibility, ubyte activ, void (*func) (ubyte),
-	   U32 waitTime)
+byte Menu(LIST * menu, uint32 possibility, byte activ, void (*func) (byte),
+	   uint32 waitTime)
 {
-    register ubyte i;
-    register S32 action;
+    register byte i;
+    register int32 action;
     register char nextActiv;
-    register ubyte max;
+    register byte max;
     register bool ende = false;
-    uword x;
+    uint16 x;
     NODE *n;
 
     if (menu && !LIST_EMPTY(menu)) {
@@ -183,7 +183,7 @@ ubyte Menu(LIST * menu, U32 possibility, ubyte activ, void (*func) (ubyte),
 	for (max = 0, n = LIST_HEAD(menu); NODE_SUCC(n);
 	     n = NODE_SUCC(n), max++) {
 	    if ((max % 2) == 0) {
-		uword l1 = 0, l2 = 0;
+		uint16 l1 = 0, l2 = 0;
 
 		MenuCoords[max / 2] = x;
 
@@ -194,7 +194,7 @@ ubyte Menu(LIST * menu, U32 possibility, ubyte activ, void (*func) (ubyte),
 		    l2 = gfxTextWidth(m_gc, NODE_NAME(NODE_SUCC(n)),
 				      strlen(NODE_NAME(NODE_SUCC(n)))) + 11;
 
-		x += max(l1, l2);
+		x += MAX(l1, l2);
 	    }
 	}
 
@@ -225,14 +225,14 @@ ubyte Menu(LIST * menu, U32 possibility, ubyte activ, void (*func) (ubyte),
 		if (MenuTimeOutFunc)
 		    MenuTimeOutFunc();
 		else
-		    return (ubyte) TXT_MENU_TIMEOUT;
+		    return (byte) TXT_MENU_TIMEOUT;
 	    }
 
 	    if (action & INP_FUNCTION_KEY) {
 		refreshMenu = menu;
 		refreshPoss = possibility;
 		refreshActiv = activ;
-		return ((ubyte) - 1);
+		return ((byte) - 1);
 	    }
 
 	    if ((action & INP_ESC) || (action & INP_RBUTTONP))
@@ -322,7 +322,7 @@ ubyte Menu(LIST * menu, U32 possibility, ubyte activ, void (*func) (ubyte),
     return activ;
 }
 
-static void DrawBubble(LIST * bubble, U8 firstLine, U8 activ, GC *gc, U32 max)
+static void DrawBubble(LIST * bubble, uint8 firstLine, uint8 activ, GC *gc, uint32 max)
 {
     register unsigned i, j;
     register char *line = NULL;
@@ -384,12 +384,12 @@ static void DrawBubble(LIST * bubble, U8 firstLine, U8 activ, GC *gc, U32 max)
 }
 
 
-ubyte Bubble(LIST * bubble, ubyte activ, void (*func) (ubyte), U32 waitTime)
+byte Bubble(LIST * bubble, byte activ, void (*func) (byte), uint32 waitTime)
 {
-    register ubyte firstVis = 0;
+    register byte firstVis = 0;
     register bool ende = false;
-    register U32 action;
-    register S32 max = GetNrOfNodes(bubble);
+    register uint32 action;
+    register int32 max = GetNrOfNodes(bubble);
 
     SuspendAnim();
 
@@ -406,13 +406,13 @@ ubyte Bubble(LIST * bubble, ubyte activ, void (*func) (ubyte), U32 waitTime)
     if (func)
 	func(activ);
 
-    if (ActivPersonPictID == (uword) - 1)
-	gfxShow((uword) CurrentBubbleType, GFX_NO_REFRESH | GFX_OVERLAY, 0,
+    if (ActivPersonPictID == (uint16) - 1)
+	gfxShow((uint16) CurrentBubbleType, GFX_NO_REFRESH | GFX_OVERLAY, 0,
 		-1, -1);
     else {
-	gfxShow((uword) ActivPersonPictID,
+	gfxShow((uint16) ActivPersonPictID,
 		GFX_NO_REFRESH | GFX_OVERLAY | GFX_BLEND_UP, 0, -1, -1);
-	gfxShow((uword) CurrentBubbleType, GFX_NO_REFRESH | GFX_OVERLAY, 0,
+	gfxShow((uint16) CurrentBubbleType, GFX_NO_REFRESH | GFX_OVERLAY, 0,
 		-1, -1);
 
 	if (CurrentBubbleType == SPEAK_BUBBLE)
@@ -464,7 +464,7 @@ ubyte Bubble(LIST * bubble, ubyte activ, void (*func) (ubyte), U32 waitTime)
 		    ende = true;
 
 		if ((action & INP_MOUSE)) {
-		    U16 x, y;
+		    uint16 x, y;
 
 		    gfxGetMouseXY(u_gc, &x, &y);
 
@@ -502,7 +502,7 @@ ubyte Bubble(LIST * bubble, ubyte activ, void (*func) (ubyte), U32 waitTime)
 				gfxGetMouseXY(u_gc, NULL, &y);
 			    }
 			} else if ((y >= 4) && (y <= 48)) {
-			    ubyte newactiv = firstVis + (y - 4) / 9;
+			    byte newactiv = firstVis + (y - 4) / 9;
 
 			    if (newactiv != activ) {
 				activ = newactiv;

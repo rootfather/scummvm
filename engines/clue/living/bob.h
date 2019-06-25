@@ -15,15 +15,15 @@ struct RastPort;
 
 void BobInitLists(void);
 
-uword BobInit(uword width, uword height);
-void BobDone(uword BobID);
+uint16 BobInit(uint16 width, uint16 height);
+void BobDone(uint16 BobID);
 
-ubyte BobSet(uword BobID, uword xpos, uword ypos, uword xsrc, uword ysrc);
+byte BobSet(uint16 BobID, uint16 xpos, uint16 ypos, uint16 xsrc, uint16 ysrc);
 
-void BobVis(uword BobID);
-void BobInVis(uword BobID);
+void BobVis(uint16 BobID);
+void BobInVis(uint16 BobID);
 
-void BobSetDarkness(ubyte darkness);
+void BobSetDarkness(byte darkness);
 void BobDisplayLists(GC *gc);
 
 #endif

@@ -25,11 +25,11 @@
 #include "clue/landscap/landscap.h"
 #include "clue/landscap/landscap_p.h"
 
-static MemRastPort *lsPrepareFromMemBySize(ubyte uch_Size);
+static MemRastPort *lsPrepareFromMemBySize(byte uch_Size);
 static MemRastPort *lsPrepareFromMem(LSObject lso);
-void lsBlitOneObject(MemRastPort *rp, U16 offsetFact, U16 dx, U16 dy, U16 size);
+void lsBlitOneObject(MemRastPort *rp, uint16 offsetFact, uint16 dx, uint16 dy, uint16 size);
 
-uword us_ScrollX, us_ScrollY;
+uint16 us_ScrollX, us_ScrollY;
 
 void lsShowEscapeCar(void)
 {
@@ -44,7 +44,7 @@ void lsShowEscapeCar(void)
 
 static void lsSetAlarmPict(LSObject lso)
 {
-    U16 x0, x1, y0, y1, destx, desty;
+    uint16 x0, x1, y0, y1, destx, desty;
 
     lsCalcExactSize(lso, &x0, &y0, &x1, &y1);
 
@@ -53,16 +53,16 @@ static void lsSetAlarmPict(LSObject lso)
 
 	rp = lsPrepareFromMemBySize(16);
 
-	destx = ((word) x1 - (word) x0 - 6) / 2 + x0 - 1;
-	desty = ((word) y1 - (word) y0 - 7) / 2 + y0 + 2;
+	destx = ((int16) x1 - (int16) x0 - 6) / 2 + x0 - 1;
+	desty = ((int16) y1 - (int16) y0 - 7) / 2 + y0 + 2;
 
 	lsBlitOneObject(rp, 24, destx, desty, 16);
     }
 }
 
 /* repaints all visible doors in a certain area */
-static void lsRefreshClosedDoors(uword us_X0, uword us_Y0,
-                                 uword us_X1, uword us_Y1)
+static void lsRefreshClosedDoors(uint16 us_X0, uint16 us_Y0,
+                                 uint16 us_X1, uint16 us_Y1)
 {
     NODE *node;
 
@@ -91,7 +91,7 @@ void lsRefreshStatue(LSObject lso)
    directly from the image; to get the correct source image, the
    function lsPrepareFromMem is called with a dummy object */
 {
-    uword srcX, srcY, destX, destY, size;
+    uint16 srcX, srcY, destX, destY, size;
     struct _LSObject dummy;	/* only passed to lsPrepareFromMem */
     MemRastPort *rp;
 
@@ -99,7 +99,7 @@ void lsRefreshStatue(LSObject lso)
 
     size = 16;			/* is the size correct ?? */
 
-    dummy.uch_Size = (ubyte) size;
+    dummy.uch_Size = (byte) size;
 
     rp = lsPrepareFromMem(&dummy);
 
@@ -116,7 +116,7 @@ void lsRefreshStatue(LSObject lso)
 
 void lsFastRefresh(LSObject lso)
 {
-    U16 x0, x1, y0, y1;
+    uint16 x0, x1, y0, y1;
 
     ls->uch_ShowObjectMask = 0x40;	/* ignore bit 6 */
 
@@ -126,12 +126,12 @@ void lsFastRefresh(LSObject lso)
     case Item_Tresorraum:
     case Item_Mauertor:
 	if (lso->ul_Status & (1 << Const_tcOPEN_CLOSE_BIT)) {
-	    word x0, y0;
+	    int16 x0, y0;
 
 	    lsDoDoorRefresh(lso);
 
-	    x0 = max((word) lso->us_DestX - 32, 0);
-	    y0 = max((word) lso->us_DestY - 32, 0);
+	    x0 = MAX((int16) lso->us_DestX - 32, 0);
+	    y0 = MAX((int16) lso->us_DestY - 32, 0);
 
 	    lsRefreshClosedDoors(x0, y0, lso->us_DestX + 32,
 				 lso->us_DestY + 32);
@@ -148,7 +148,7 @@ void lsFastRefresh(LSObject lso)
 	    lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_ALL);
 	else {
 	    LSArea area = (LSArea)dbGetObject(lsGetActivAreaID());
-	    ubyte color = LS_REFRESH_SHADOW_COLOR1;
+	    byte color = LS_REFRESH_SHADOW_COLOR1;
 
 	    lsCalcExactSize(lso, &x0, &y0, &x1, &y1);
 
@@ -208,7 +208,7 @@ void lsFastRefresh(LSObject lso)
     ls->uch_ShowObjectMask = 0;	/* copy all bits */
 }
 
-static MemRastPort *lsPrepareFromMemBySize(ubyte uch_Size)
+static MemRastPort *lsPrepareFromMemBySize(byte uch_Size)
 {
     MemRastPort *rp = NULL;
 
@@ -235,10 +235,10 @@ static MemRastPort *lsPrepareFromMem(LSObject lso)
     return lsPrepareFromMemBySize(lso->uch_Size);
 }
 
-void lsBlitOneObject(MemRastPort *rp, U16 offsetFact, U16 dx, U16 dy, U16 size)
+void lsBlitOneObject(MemRastPort *rp, uint16 offsetFact, uint16 dx, uint16 dy, uint16 size)
 {
-    uword srcWidth = 288;	/* source screen is usually 288 wide */
-    uword srcX, srcY, perRow;
+    uint16 srcWidth = 288;	/* source screen is usually 288 wide */
+    uint16 srcX, srcY, perRow;
 
     /* 32er objects are on a screen that is 320 pixels wide */
     if (size == 32)
@@ -256,11 +256,11 @@ void lsBlitOneObject(MemRastPort *rp, U16 offsetFact, U16 dx, U16 dy, U16 size)
 
 }
 
-S32 lsShowOneObject(LSObject lso, word destx, word desty, U32 ul_Mode)
+int32 lsShowOneObject(LSObject lso, int16 destx, int16 desty, uint32 ul_Mode)
 {
     Item item = (Item)dbGetObject(lso->Type);
-    S32 show = 0;
-    uword offsetFact;
+    int32 show = 0;
+    uint16 offsetFact;
 
     switch (lso->Type) {
     case Item_Sockel:		/* pedestal should not be displayed */
@@ -316,10 +316,10 @@ S32 lsShowOneObject(LSObject lso, word destx, word desty, U32 ul_Mode)
     return show;
 }
 
-void lsBlitFloor(uword floorIndex, uword destx, uword desty)
+void lsBlitFloor(uint16 floorIndex, uint16 destx, uint16 desty)
 {
     MemRastPort *rp = &LS_FLOOR_MEM_RP;
-    uword srcX;
+    uint16 srcX;
 
     srcX =
 	((ls->p_CurrFloor[floorIndex].uch_FloorType) & 0xf) * LS_FLOOR_X_SIZE;
@@ -327,7 +327,7 @@ void lsBlitFloor(uword floorIndex, uword destx, uword desty)
     gfxLSPut(rp, srcX, 0, destx, desty, LS_FLOOR_X_SIZE, LS_FLOOR_Y_SIZE);
 }
 
-void lsSetViewPort(uword x, uword y)
+void lsSetViewPort(uint16 x, uint16 y)
 {
     gfxNCH4SetViewPort(x, y);
 }
@@ -349,13 +349,13 @@ void lsCloseGfx(void)
     inpMousePtrOn();
 }
 
-void lsScrollCorrectData(S32 dx, S32 dy)
+void lsScrollCorrectData(int32 dx, int32 dy)
 {
     ls->us_WindowXPos += dx;
     ls->us_WindowYPos += dy;
 
-    ls->us_RasInfoScrollX = (word) dx;
-    ls->us_RasInfoScrollY = (word) dy;
+    ls->us_RasInfoScrollX = (int16) dx;
+    ls->us_RasInfoScrollY = (int16) dy;
 
     livSetVisLScape(ls->us_WindowXPos, ls->us_WindowYPos);
 }

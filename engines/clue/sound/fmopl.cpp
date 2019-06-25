@@ -57,12 +57,12 @@ Revision History:
 #include "clue/sound/fmopl.h"
 
 /* XXX */
-typedef U8      UINT8;   /* unsigned  8bit */
-typedef U16     UINT16;  /* unsigned 16bit */
-typedef U32     UINT32;  /* unsigned 32bit */
-typedef S8      INT8;    /* signed  8bit   */
-typedef S16     INT16;   /* signed 16bit   */
-typedef S32     INT32;   /* signed 32bit   */
+typedef uint8      UINT8;   /* unsigned  8bit */
+typedef uint16     UINT16;  /* unsigned 16bit */
+typedef uint32     UINT32;  /* unsigned 32bit */
+typedef int8      INT8;    /* signed  8bit   */
+typedef int16     INT16;   /* signed 16bit   */
+typedef int32     INT32;   /* signed 32bit   */
 
 #define INLINE  static
 /* XXX */

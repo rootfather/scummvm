@@ -26,7 +26,7 @@
 
 #include "clue/list/list.h"
 
-#define GFX_NO_MEM_HANDLE	((uword) -1)
+#define GFX_NO_MEM_HANDLE	((uint16) -1)
 
 /* defines for gfxPrint */
 #define GFX_PRINT_CENTER        (1)
@@ -51,7 +51,7 @@ typedef enum {
 #define GFX_DONT_SHOW_FIRST_PIC   64
 
 /* defines for gfxSetPens */
-#define GFX_SAME_PEN						((ubyte)255)
+#define GFX_SAME_PEN						((byte)255)
 
 #define GFX_NO_COLL_IN_MEM               UINT16_MAX
 
@@ -69,40 +69,40 @@ typedef struct _Rect        Rect;
 typedef struct Font         Font;
 
 struct _MemRastPort {
-    U16 w;
-    U16 h;
+    uint16 w;
+    uint16 h;
 
-    U8  palette [GFX_PALETTE_SIZE];
-    U8 *pixels;
+    uint8  palette [GFX_PALETTE_SIZE];
+    uint8 *pixels;
 
-    U16 collId;                 /* Collection, die sich gerade hier befindet! */
+    uint16 collId;                 /* Collection, die sich gerade hier befindet! */
 };
 
 #define SCREEN_WIDTH    320
 #define SCREEN_HEIGHT   200
 #define SCREEN_SIZE     (SCREEN_WIDTH * SCREEN_HEIGHT)
 
-void gfxInitMemRastPort(MemRastPort *rp, U16 width, U16 height);
+void gfxInitMemRastPort(MemRastPort *rp, uint16 width, uint16 height);
 void gfxDoneMemRastPort(MemRastPort *rp);
 
 void gfxScratchFromMem(MemRastPort *src);
 void gfxScratchToMem(MemRastPort *dst);
 
-void gfxCollFromMem(U16 collId);
-void gfxCollToMem(U16 collId, MemRastPort *rp);
+void gfxCollFromMem(uint16 collId);
+void gfxCollToMem(uint16 collId, MemRastPort *rp);
 
 struct _Rect {
-    U16 x;
-    U16 y;
+    uint16 x;
+    uint16 y;
 
-    U16 w;
-    U16 h;
+    uint16 w;
+    uint16 h;
 };
 
 struct Collection {
     NODE Link;
 
-    U16 us_CollId;
+    uint16 us_CollId;
 
     char *puch_Filename;
 
@@ -111,11 +111,11 @@ struct Collection {
     void *p_ColorTable;		/* not always correct (only as long as nothing
   				   else modified the buffer!) */
 
-    uword us_TotalWidth;
-    uword us_TotalHeight;
+    uint16 us_TotalWidth;
+    uint16 us_TotalHeight;
 
-    ubyte uch_ColorRangeStart;
-    ubyte uch_ColorRangeEnd;
+    byte uch_ColorRangeStart;
+    byte uch_ColorRangeEnd;
 };
 
 typedef struct _GC GC;
@@ -123,24 +123,24 @@ typedef struct _GC GC;
 struct Picture {
     NODE Link;
 
-    U16 us_PictId;
-    U16 us_CollId;		/* in welcher Collection sich dieses Bild befindet */
+    uint16 us_PictId;
+    uint16 us_CollId;		/* in welcher Collection sich dieses Bild befindet */
 
-    U16 us_XOffset;		/* innerhalb der Collection */
-    U16 us_YOffset;
+    uint16 us_XOffset;		/* innerhalb der Collection */
+    uint16 us_YOffset;
 
-    U16 us_Width;
-    U16 us_Height;
+    uint16 us_Width;
+    uint16 us_Height;
 
-    U16 us_DestX;
-    U16 us_DestY;
+    uint16 us_DestX;
+    uint16 us_DestY;
 };
 
 struct Font {
     SDL_Surface *bmp;
 
-    U16 w;	                /* width of one character */
-    U16 h;	                /* height of one character */
+    uint16 w;	                /* width of one character */
+    uint16 h;	                /* height of one character */
 
     unsigned char first;
     unsigned char last;
@@ -169,21 +169,21 @@ extern struct Font *menuFont;
 extern void gfxInit(void);
 extern void gfxDone(void);
 
-extern void gfxSetVideoMode(ubyte uch_NewMode);
+extern void gfxSetVideoMode(byte uch_NewMode);
 
 extern void wfd(void);
 extern void wfr(void);
 
-extern S32 gfxGetILBMSize(struct Collection *coll);
+extern int32 gfxGetILBMSize(struct Collection *coll);
 
 extern void gfxCorrectUpperRPBitmap(void);
 
-void gfxSetRGB(GC *gc, U8 color, U8 r, U8 g, U8 b);
+void gfxSetRGB(GC *gc, uint8 color, uint8 r, uint8 g, uint8 b);
 
-void gfxMoveCursor(GC *gc, U16 x, U16 y);
-void gfxSetPens(GC *gc, U8 foreground, U8 background, U8 outline);
-void gfxRectFill(GC *gc, U16 sx, U16 sy, U16 ex, U16 ey);
-void gfxDraw(GC *gc, U16 x, U16 y);
+void gfxMoveCursor(GC *gc, uint16 x, uint16 y);
+void gfxSetPens(GC *gc, uint8 foreground, uint8 background, uint8 outline);
+void gfxRectFill(GC *gc, uint16 sx, uint16 sy, uint16 ex, uint16 ey);
+void gfxDraw(GC *gc, uint16 x, uint16 y);
 void gfxSetDrMd(GC *rp, GfxDrawModeE mode);
 void gfxSetFont(GC *gc, Font *font);
 
@@ -191,29 +191,29 @@ extern void gfxPrepareRefresh(void);
 extern void gfxRefresh(void);
 
 extern void gfxClearArea(GC *gc);
-extern void gfxSetRect(uword us_X, uword us_Width);
+extern void gfxSetRect(uint16 us_X, uint16 us_Width);
 
-extern U16 gfxTextWidth(GC *gc, const char *txt, size_t len);
+extern uint16 gfxTextWidth(GC *gc, const char *txt, size_t len);
 
-extern void gfxPrint(GC *gc, const char *txt, U16 y, U32 mode);
-extern void gfxPrintExact(GC *gc, const char *txt, U16 x, U16 y);
+extern void gfxPrint(GC *gc, const char *txt, uint16 y, uint32 mode);
+extern void gfxPrintExact(GC *gc, const char *txt, uint16 x, uint16 y);
 
-extern void gfxSetColorRange(ubyte uch_ColorStart, ubyte uch_ColorEnd);
+extern void gfxSetColorRange(byte uch_ColorStart, byte uch_ColorEnd);
 
-extern void gfxChangeColors(GC *gc, U32 delay, U32 mode, U8 *palette);
-extern void gfxShow(uword us_PictId, U32 ul_Mode, S32 l_Delay, S32 l_XPos,
-		    S32 l_YPos);
+extern void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette);
+extern void gfxShow(uint16 us_PictId, uint32 ul_Mode, int32 l_Delay, int32 l_XPos,
+		    int32 l_YPos);
 
 extern void gfxSetGC(GC *gc);
 
-extern void gfxGetPaletteFromReg(U8 *palette);
-extern void gfxGetPalette(U16 collId, U8 *palette);
+extern void gfxGetPaletteFromReg(uint8 *palette);
+extern void gfxGetPalette(uint16 collId, uint8 *palette);
 
-void gfxPrepareColl(U16 collId);
-void gfxUnPrepareColl(U16 collId);
+void gfxPrepareColl(uint16 collId);
+void gfxUnPrepareColl(uint16 collId);
 
-extern struct Collection *gfxGetCollection(uword us_CollId);
-extern struct Picture *gfxGetPicture(uword us_PictId);
+extern struct Collection *gfxGetCollection(uint16 us_CollId);
+extern struct Picture *gfxGetPicture(uint16 us_PictId);
 
 void gfxLoadILBM(char *fileName);
 
@@ -221,7 +221,7 @@ void gfxWaitTOF(void);
 void gfxWaitTOR(void);
 void gfxWaitTOS(void);
 
-void gfxRAWBlit(U8 * sp, U8 * dp, const int x1, const int y1, const int x2,
+void gfxRAWBlit(uint8 * sp, uint8 * dp, const int x1, const int y1, const int x2,
 		const int y2, const int w, const int h, const int sw,
 		const int dw);
 
@@ -232,19 +232,19 @@ typedef enum {
     GFX_ROP_SET       = 3
 } ROpE;
 
-void gfxBlit(GC *gc, MemRastPort *src, U16 sx, U16 sy, U16 dx, U16 dy,
-             U16 w, U16 h, bool has_mask);
+void gfxBlit(GC *gc, MemRastPort *src, uint16 sx, uint16 sy, uint16 dx, uint16 dy,
+             uint16 w, uint16 h, bool has_mask);
 
 void MemBlit(MemRastPort *src, Rect *src_rect,
              MemRastPort *dst, Rect *dst_rect, ROpE op);
 
-void gfxRefreshArea(U16 x, U16 y, U16 w, U16 h);
+void gfxRefreshArea(uint16 x, uint16 y, uint16 w, uint16 h);
 
 void gfxScreenFreeze(void);
-void gfxScreenThaw(GC *gc, U16 x, U16 y, U16 w, U16 h);
+void gfxScreenThaw(GC *gc, uint16 x, uint16 y, uint16 w, uint16 h);
 void gfxScreenUnFreeze(void);
 
-void gfxGetMouseXY(GC *gc, U16 *pMouseX, U16 *pMouseY);
+void gfxGetMouseXY(GC *gc, uint16 *pMouseX, uint16 *pMouseY);
 
 void ShowIntro(void);
 

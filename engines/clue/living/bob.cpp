@@ -15,11 +15,11 @@
 #define	BOB_UPDATED		4
 
 struct Bob {
-    uword w, h;
-    uword xsrc, ysrc;
-    uword xdst, ydst;
+    uint16 w, h;
+    uint16 xsrc, ysrc;
+    uint16 xdst, ydst;
 
-    uword sx, sy;
+    uint16 sx, sy;
 
     int flags;
 };
@@ -44,7 +44,7 @@ void BobInitLists(void)
     }
 }
 
-static struct Bob *GetNthBob(uword BobID)
+static struct Bob *GetNthBob(uint16 BobID)
 {
     if (BobID < BOB_MAX)
 	return &list[BobID];
@@ -52,10 +52,10 @@ static struct Bob *GetNthBob(uword BobID)
 	return NULL;
 }
 
-uword BobInit(uword width, uword height)
+uint16 BobInit(uint16 width, uint16 height)
 {
     struct Bob *bob;
-    uword BobID;
+    uint16 BobID;
 
     for (BobID = 0; BobID < BOB_MAX && list[BobID].flags != 0; BobID++);
 
@@ -70,14 +70,14 @@ uword BobInit(uword width, uword height)
     return BobID;
 }
 
-void BobDone(uword BobID)
+void BobDone(uint16 BobID)
 {
     struct Bob *bob = GetNthBob(BobID);
 
     bob->flags = 0;
 }
 
-ubyte BobSet(uword BobID, uword xdst, uword ydst, uword xsrc, uword ysrc)
+byte BobSet(uint16 BobID, uint16 xdst, uint16 ydst, uint16 xsrc, uint16 ysrc)
 {
     struct Bob *bob = GetNthBob(BobID);
 
@@ -91,7 +91,7 @@ ubyte BobSet(uword BobID, uword xdst, uword ydst, uword xsrc, uword ysrc)
 
 extern int ScrX, ScrY;
 
-void BobVis(uword BobID)
+void BobVis(uint16 BobID)
 {
     struct Bob *bob = GetNthBob(BobID);
 
@@ -100,7 +100,7 @@ void BobVis(uword BobID)
     gfxNCH4Refresh();
 }
 
-void BobInVis(uword BobID)
+void BobInVis(uint16 BobID)
 {
     struct Bob *bob = GetNthBob(BobID);
 
@@ -109,13 +109,13 @@ void BobInVis(uword BobID)
     gfxNCH4Refresh();
 }
 
-void BobSetDarkness(ubyte darkness)
+void BobSetDarkness(byte darkness)
 {
 }
 
 void BobDisplayLists(GC *gc)
 {
-    word i;
+    int16 i;
 
     gfxPrepareColl(137);
 

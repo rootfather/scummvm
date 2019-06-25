@@ -285,70 +285,70 @@ enum LootE { Ein_Bild, Gold, Geld, Juwelen, Delikatessen, Eine_Statue,
 #define Object_Person              9900L
 #define Object_Person_Size         sizeof(struct _Person)
 struct _Person {
-    U16 PictID;
+    uint16 PictID;
     enum JobE Job;
     enum SexE Sex;
-    S8 Age;
-    U8 Health;
-    U8 Mood;
-    U8 Intelligence;
-    U8 Strength;
-    U8 Stamina;
-    U8 Loyality;
-    U8 Skill;
-    U8 Known;
-    U8 Popularity;
-    U8 Avarice;
-    U8 Panic;
-    U8 KnownToPolice;
-    U32 TalkBits;
-    U8 TalkFileID;
-    U8 OldHealth;
+    int8 Age;
+    uint8 Health;
+    uint8 Mood;
+    uint8 Intelligence;
+    uint8 Strength;
+    uint8 Stamina;
+    uint8 Loyality;
+    uint8 Skill;
+    uint8 Known;
+    uint8 Popularity;
+    uint8 Avarice;
+    uint8 Panic;
+    uint8 KnownToPolice;
+    uint32 TalkBits;
+    uint8 TalkFileID;
+    uint8 OldHealth;
 };
 typedef struct _Person *Person;
 
 #define Object_Player              9901L
 #define Object_Player_Size         sizeof(struct _Player)
 struct _Player {
-    U32 Money;
-    U32 StolenMoney;
-    U32 MyStolenMoney;
-    U8 NrOfBurglaries;
-    U8 JobOfferCount;
-    U8 MattsPart;
-    U32 CurrScene;
-    U32 CurrDay;
-    U32 CurrMinute;
-    U32 CurrLocation;
+    uint32 Money;
+    uint32 StolenMoney;
+    uint32 MyStolenMoney;
+    uint8 NrOfBurglaries;
+    uint8 JobOfferCount;
+    uint8 MattsPart;
+    uint32 CurrScene;
+    uint32 CurrDay;
+    uint32 CurrMinute;
+    uint32 CurrLocation;
 };
 typedef struct _Player *Player;
 
 #define Object_Car              9902L
 #define Object_Car_Size         sizeof(struct _Car)
 struct _Car {
-    U16 PictID;
+    uint16 PictID;
     enum LandE Land;
-    U32 Value;
-    U16 YearOfConstruction;
+    uint32 Value;
+    uint16 YearOfConstruction;
     enum ColorE ColorIndex;
-    U8 Strike;
-    U32 Capacity;
-    U8 PS;
-    U8 Speed;
-    U8 State;
-    U8 MotorState;
-    U8 BodyWorkState;
-    U8 TyreState;
-    U8 PlacesInCar;
+    uint8 Strike;
+    uint32 Capacity;
+    uint8 PS;
+    uint8 Speed;
+    uint8 State;
+    uint8 MotorState;
+    uint8 BodyWorkState;
+    uint8 TyreState;
+    uint8 PlacesInCar;
 };
 typedef struct _Car *Car;
 
 #define Object_Location              9903L
 #define Object_Location_Size         sizeof(struct _Location)
 struct _Location {
-    U32 LocationNr;
-    U16 OpenFromMinute;
-    U16 OpenToMinute;
+    uint32 LocationNr;
+    uint16 OpenFromMinute;
+    uint16 OpenToMinute;
 };
 typedef struct _Location *Location;
 
@@ -356,7 +356,7 @@ typedef struct _Location *Location;
 #define Object_Ability_Size         sizeof(struct _Ability)
 struct _Ability {
     enum AbilityE Name;
-    U32 Use;
+    uint32 Use;
 };
 typedef struct _Ability *Ability;
 
@@ -364,64 +364,64 @@ typedef struct _Ability *Ability;
 #define Object_Item_Size         sizeof(struct _Item)
 struct _Item {
     enum ItemE Type;
-    U16 OffsetFact;
-    U16 HExactXOffset;
-    U16 HExactYOffset;
-    U16 HExactWidth;
-    U16 HExactHeight;
-    U16 VExactXOffset;
-    U16 VExactYOffset;
-    U16 VExactWidth;
-    U16 VExactHeight;
-    U8 Size;
-    U8 ColorNr;
+    uint16 OffsetFact;
+    uint16 HExactXOffset;
+    uint16 HExactYOffset;
+    uint16 HExactWidth;
+    uint16 HExactHeight;
+    uint16 VExactXOffset;
+    uint16 VExactYOffset;
+    uint16 VExactWidth;
+    uint16 VExactHeight;
+    uint8 Size;
+    uint8 ColorNr;
 };
 typedef struct _Item *Item;
 
 #define Object_Tool              9906L
 #define Object_Tool_Size         sizeof(struct _Tool)
 struct _Tool {
-    U16 PictID;
-    U32 Value;
-    U8 Danger;
-    U8 Volume;
-    U8 Effect;
+    uint16 PictID;
+    uint32 Value;
+    uint8 Danger;
+    uint8 Volume;
+    uint8 Effect;
 };
 typedef struct _Tool *Tool;
 
 #define Object_Environment              9907L
 #define Object_Environment_Size         sizeof(struct _Environment)
 struct _Environment {
-    U8 MattHasHotelRoom;
-    U8 MattHasIdentityCard;
-    U8 WithOrWithoutYou;
-    U8 MattIsInLove;
-    U8 SouthhamptonHappened;
-    U8 Present;
-    U8 FirstTimeInSouth;
-    U8 PostzugDone;                     /* PROFIDISK */
+    uint8 MattHasHotelRoom;
+    uint8 MattHasIdentityCard;
+    uint8 WithOrWithoutYou;
+    uint8 MattIsInLove;
+    uint8 SouthhamptonHappened;
+    uint8 Present;
+    uint8 FirstTimeInSouth;
+    uint8 PostzugDone;                     /* PROFIDISK */
 };
 typedef struct _Environment *Environment;
 
 #define Object_London              9908L
 #define Object_London_Size         sizeof(struct _London)
 struct _London {
-    U8 Useless;
+    uint8 Useless;
 };
 typedef struct _London *London;
 
 #define Object_Evidence              9909L
 #define Object_Evidence_Size         sizeof(struct _Evidence)
 struct _Evidence {
-    U32 pers;
-    U8 Recognition;
-    U8 WalkTrail;
-    U8 WaitTrail;
-    U8 WorkTrail;
-    U8 KillTrail;
-    U8 CallTrail;
-    U8 PaperTrail;
-    U8 FotoTrail;
+    uint32 pers;
+    uint8 Recognition;
+    uint8 WalkTrail;
+    uint8 WaitTrail;
+    uint8 WorkTrail;
+    uint8 KillTrail;
+    uint8 CallTrail;
+    uint8 PaperTrail;
+    uint8 FotoTrail;
 };
 typedef struct _Evidence *Evidence;
 
@@ -430,9 +430,9 @@ typedef struct _Evidence *Evidence;
 struct _Loot {
     enum LootE Type;
     enum LootNameE Name;
-    U32 Volume;
-    U16 Weight;
-    U16 PictID;
+    uint32 Volume;
+    uint16 Weight;
+    uint16 PictID;
 
 };
 typedef struct _Loot *Loot;
@@ -440,18 +440,18 @@ typedef struct _Loot *Loot;
 #define Object_CompleteLoot              9911L
 #define Object_CompleteLoot_Size         sizeof(struct _CompleteLoot)
 struct _CompleteLoot {
-    U32 Bild;
-    U32 Gold;
-    U32 Geld;
-    U32 Juwelen;
-    U32 Delikates;
-    U32 Statue;
-    U32 Kuriositaet;
-    U32 HistKunst;
-    U32 GebrauchsArt;
-    U32 Vase;
-    U32 TotalWeight;
-    U32 TotalVolume;
+    uint32 Bild;
+    uint32 Gold;
+    uint32 Geld;
+    uint32 Juwelen;
+    uint32 Delikates;
+    uint32 Statue;
+    uint32 Kuriositaet;
+    uint32 HistKunst;
+    uint32 GebrauchsArt;
+    uint32 Vase;
+    uint32 TotalWeight;
+    uint32 TotalVolume;
 };
 typedef struct _CompleteLoot *CompleteLoot;
 
@@ -465,18 +465,18 @@ typedef struct _LSOLock *LSOLock;
 #define Object_LSObject              9913L
 #define Object_LSObject_Size         sizeof(struct _LSObject)
 struct _LSObject {
-    U16 us_OffsetFact;
-    U16 us_DestX;
-    U16 us_DestY;
-    U8 uch_ExactX;
-    U8 uch_ExactY;
-    U8 uch_ExactX1;
-    U8 uch_ExactY1;
-    U8 uch_Size;
-    U8 uch_Visible;
-    U8 uch_Chained;
-    U32 ul_Status;
-    U32 Type;
+    uint16 us_OffsetFact;
+    uint16 us_DestX;
+    uint16 us_DestY;
+    uint8 uch_ExactX;
+    uint8 uch_ExactY;
+    uint8 uch_ExactX1;
+    uint8 uch_ExactY1;
+    uint8 uch_Size;
+    uint8 uch_Visible;
+    uint8 uch_Chained;
+    uint32 ul_Status;
+    uint32 Type;
 };
 typedef struct _LSObject *LSObject;
 
@@ -528,59 +528,59 @@ enum RouteE { Innenstadt, Stadt, Landstrasse, Autobahn };
 #define Object_Building              509990L
 #define Object_Building_Size         sizeof(struct _Building)
 struct _Building {
-    U32 LocationNr;
-    U16 PoliceTime;
-    U16 GTime;
-    U8 Exactlyness;
-    U8 GRate;
-    U8 Strike;
-    U32 Values;
+    uint32 LocationNr;
+    uint16 PoliceTime;
+    uint16 GTime;
+    uint8 Exactlyness;
+    uint8 GRate;
+    uint8 Strike;
+    uint32 Values;
     enum RouteE EscapeRoute;
-    U8 EscapeRouteLength;
-    U8 RadioGuarding;
-    U8 MaxVolume;
-    U8 GuardStrength;
-    U16 CarXPos;
-    U16 CarYPos;
-    U8 DiskId;                      /* PROFIDISK */
+    uint8 EscapeRouteLength;
+    uint8 RadioGuarding;
+    uint8 MaxVolume;
+    uint8 GuardStrength;
+    uint16 CarXPos;
+    uint16 CarYPos;
+    uint8 DiskId;                      /* PROFIDISK */
 };
 typedef struct _Building *Building;
 
 #define Object_Police              509991L
 #define Object_Police_Size         sizeof(struct _Police)
 struct _Police {
-    U16 PictID;
-    U8 LivingID;
+    uint16 PictID;
+    uint8 LivingID;
 };
 typedef struct _Police *Police;
 
 #define Object_LSArea              509992L
 #define Object_LSArea_Size         sizeof(struct _LSArea)
 struct _LSArea {
-    U16 us_Coll16ID;
-    U16 us_Coll32ID;
-    U16 us_Coll48ID;
-    U16 us_PlanColl16ID;
-    U16 us_PlanColl32ID;
-    U16 us_PlanColl48ID;
-    U16 us_FloorCollID;
-    U16 us_PlanFloorCollID;
-    U16 us_Width;
-    U16 us_Height;
-    U32 ul_ObjectBaseNr;
-    U8 uch_Darkness;
-    U16 us_StartX0;
-    U16 us_StartX1;
-    U16 us_StartX2;
-    U16 us_StartX3;
-    U16 us_StartX4;
-    U16 us_StartX5;
-    U16 us_StartY0;
-    U16 us_StartY1;
-    U16 us_StartY2;
-    U16 us_StartY3;
-    U16 us_StartY4;
-    U16 us_StartY5;
+    uint16 us_Coll16ID;
+    uint16 us_Coll32ID;
+    uint16 us_Coll48ID;
+    uint16 us_PlanColl16ID;
+    uint16 us_PlanColl32ID;
+    uint16 us_PlanColl48ID;
+    uint16 us_FloorCollID;
+    uint16 us_PlanFloorCollID;
+    uint16 us_Width;
+    uint16 us_Height;
+    uint32 ul_ObjectBaseNr;
+    uint8 uch_Darkness;
+    uint16 us_StartX0;
+    uint16 us_StartX1;
+    uint16 us_StartX2;
+    uint16 us_StartX3;
+    uint16 us_StartX4;
+    uint16 us_StartX5;
+    uint16 us_StartY0;
+    uint16 us_StartY1;
+    uint16 us_StartY2;
+    uint16 us_StartY3;
+    uint16 us_StartY4;
+    uint16 us_StartY5;
 
 };
 typedef struct _LSArea *LSArea;
@@ -588,10 +588,10 @@ typedef struct _LSArea *LSArea;
 #define Object_LSRoom              509993L
 #define Object_LSRoom_Size         sizeof(struct _LSRoom)
 struct _LSRoom {
-    U16 us_LeftEdge;
-    U16 us_TopEdge;
-    U16 us_Width;
-    U16 us_Height;
+    uint16 us_LeftEdge;
+    uint16 us_TopEdge;
+    uint16 us_Width;
+    uint16 us_Height;
 };
 typedef struct _LSRoom *LSRoom;
 

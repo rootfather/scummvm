@@ -69,12 +69,12 @@ void lsDoneSpots(void)
     sc = NULL;
 }
 
-static S32 lsIsSpotVisible(struct Spot *spot)
+static int32 lsIsSpotVisible(struct Spot *spot)
 {
     return 1;
 }
 
-void lsMoveAllSpots(U32 time)
+void lsMoveAllSpots(uint32 time)
 	/*
 	 * zeigt alle Spots, die sich bewegen
 	 */
@@ -90,7 +90,7 @@ void lsMoveAllSpots(U32 time)
 			lsShowSpot(spot, time);	/* Spot darstellen (auch in der aktiven Area */
 }
 
-void lsShowAllSpots(U32 time, U32 mode)
+void lsShowAllSpots(uint32 time, uint32 mode)
 {
     struct Spot *spot;
 
@@ -108,12 +108,12 @@ void lsShowAllSpots(U32 time, U32 mode)
     }
 }
 
-void lsShowSpot(struct Spot *s, U32 time)
+void lsShowSpot(struct Spot *s, uint32 time)
 {				/* zum Abspielen! */
     struct SpotPosition *pos;
 
     if (!(time % s->us_Speed)) {	/* nur alle x Sekunden Bewegung */
-	U32 count = (time / s->us_Speed);
+	uint32 count = (time / s->us_Speed);
 
 	/* wegen Ping-Pong dauert ein Zyklus doppelt so lang -> * 2 */
 	/* abzglich 2 (letztes und erstes kommen nur einmal        */
@@ -143,13 +143,13 @@ void lsShowSpot(struct Spot *s, U32 time)
 void lsHideSpot(struct Spot *s)
 {
     /* den alten Spot l”schen!  */
-    if ((s->us_OldXPos != (uword) - 1) && (s->us_OldYPos != (uword) - 1))
+    if ((s->us_OldXPos != (uint16) - 1) && (s->us_OldYPos != (uint16) - 1))
 	lsBlitSpot(s->us_Size, s->us_OldXPos, s->us_OldYPos, 0);
 }
 
 static void lsGetAreaForSpot(struct Spot *spot)
 {
-    U32 area = (spot->ul_CtrlObjId / 1000) * 1000;
+    uint32 area = (spot->ul_CtrlObjId / 1000) * 1000;
 
     switch (area) {
     case 170000:
@@ -241,10 +241,10 @@ static void lsGetAreaForSpot(struct Spot *spot)
     }
 }
 
-struct Spot *lsAddSpot(uword us_Size, uword us_Speed, U32 ul_CtrlObjId)
+struct Spot *lsAddSpot(uint16 us_Size, uint16 us_Speed, uint32 ul_CtrlObjId)
 {
     struct Spot *spot;
-    U32 SpotNr;
+    uint32 SpotNr;
     char line[TXT_KEY_LENGTH];
 
     SpotNr = GetNrOfNodes(sc->p_spots);
@@ -258,8 +258,8 @@ struct Spot *lsAddSpot(uword us_Size, uword us_Speed, U32 ul_CtrlObjId)
     spot->us_Speed = us_Speed;
     spot->p_positions = CreateList();
 
-    spot->us_OldXPos = (uword) - 1;
-    spot->us_OldYPos = (uword) - 1;
+    spot->us_OldXPos = (uint16) - 1;
+    spot->us_OldYPos = (uint16) - 1;
 
     spot->uch_Status = LS_SPOT_ON;
     spot->us_PosCount = 0;
@@ -273,7 +273,7 @@ struct Spot *lsAddSpot(uword us_Size, uword us_Speed, U32 ul_CtrlObjId)
     return (spot);
 }
 
-void lsSetSpotStatus(U32 CtrlObjId, ubyte uch_Status)
+void lsSetSpotStatus(uint32 CtrlObjId, byte uch_Status)
 {
     struct Spot *s;
 
@@ -283,7 +283,7 @@ void lsSetSpotStatus(U32 CtrlObjId, ubyte uch_Status)
 	    s->uch_Status = uch_Status;
 }
 
-void lsAddSpotPosition(struct Spot *spot, uword us_XPos, uword us_YPos)
+void lsAddSpotPosition(struct Spot *spot, uint16 us_XPos, uint16 us_YPos)
 {
     struct SpotPosition *pos;
 
@@ -291,8 +291,8 @@ void lsAddSpotPosition(struct Spot *spot, uword us_XPos, uword us_YPos)
 	(struct SpotPosition *) CreateNode(spot->p_positions, sizeof(*pos),
 					   NULL);
 
-    pos->us_XPos = (word) us_XPos + (word) LS_PC_CORRECT_X;
-    pos->us_YPos = (word) us_YPos + (word) LS_PC_CORRECT_Y;
+    pos->us_XPos = (int16) us_XPos + (int16) LS_PC_CORRECT_X;
+    pos->us_YPos = (int16) us_YPos + (int16) LS_PC_CORRECT_Y;
 
     spot->us_PosCount++;
 }
@@ -300,8 +300,8 @@ void lsAddSpotPosition(struct Spot *spot, uword us_XPos, uword us_YPos)
 void lsLoadSpotBitMap(MemRastPort *rp)
 {
     char path[DSK_PATH_MAX];
-    U16 i, j;
-    U8 *sp, *dp;
+    uint16 i, j;
+    uint8 *sp, *dp;
 
     /* create file name */
     dskBuildPathName(DISK_CHECK_FILE, PICTURE_DIRECTORY, LS_SPOT_FILENAME, path);
@@ -329,12 +329,12 @@ void lsLoadSpotBitMap(MemRastPort *rp)
     }
 }
 
-void lsLoadSpots(U32 bldId, char *uch_FileName)
+void lsLoadSpots(uint32 bldId, char *uch_FileName)
 {
     FILE *file;
     char filename[DSK_PATH_MAX], buffer[TXT_KEY_LENGTH];
-    uword SpotCount, i, j;
-    U32 CtrlObjId;
+    uint16 SpotCount, i, j;
+    uint32 CtrlObjId;
     struct Spot *spot;
 
     dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, uch_FileName, filename);
@@ -342,31 +342,31 @@ void lsLoadSpots(U32 bldId, char *uch_FileName)
     file = dskOpen(filename, "r");
 
     fgets(buffer, TXT_KEY_LENGTH - 1, file);
-    SpotCount = (uword) atol(buffer);
+    SpotCount = (uint16) atol(buffer);
 
     for (i = 0; i < SpotCount; i++) {
-	uword Size, Speed, Count, XPos, YPos;
+	uint16 Size, Speed, Count, XPos, YPos;
 
 	fgets(buffer, TXT_KEY_LENGTH - 1, file);
-	Size = (uword) atol(buffer);
+	Size = (uint16) atol(buffer);
 
 	fgets(buffer, TXT_KEY_LENGTH - 1, file);
-	Speed = (uword) atol(buffer);
+	Speed = (uint16) atol(buffer);
 
 	fgets(buffer, TXT_KEY_LENGTH - 1, file);
 	CtrlObjId = atol(buffer);
 
 	fgets(buffer, TXT_KEY_LENGTH - 1, file);
-	Count = (uword) atol(buffer);
+	Count = (uint16) atol(buffer);
 
 	spot = lsAddSpot(Size, Speed, CtrlObjId);
 
 	for (j = 0; j < Count; j++) {
 	    fgets(buffer, TXT_KEY_LENGTH - 1, file);
-	    XPos = (uword) atol(buffer);
+	    XPos = (uint16) atol(buffer);
 
 	    fgets(buffer, TXT_KEY_LENGTH - 1, file);
-	    YPos = (uword) atol(buffer);
+	    YPos = (uint16) atol(buffer);
 
 	    lsAddSpotPosition(spot, XPos, YPos);
 	}
@@ -397,9 +397,9 @@ LIST *lsGetSpotList(void)
     return (sc->p_spots);
 }
 
-void lsBlitSpot(uword us_Size, uword us_XPos, uword us_YPos, ubyte visible)
+void lsBlitSpot(uint16 us_Size, uint16 us_XPos, uint16 us_YPos, byte visible)
 {
-    U16 sourceX = 0;
+    uint16 sourceX = 0;
 
     switch (us_Size) {
     case LS_SPOT_SMALL_SIZE:

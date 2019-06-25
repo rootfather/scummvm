@@ -31,11 +31,11 @@ void PrintStatus(char *text)
     gfxPrint(m_gc, text, 10, GFX_PRINT_SHADOW | GFX_PRINT_CENTER);
 }
 
-U32 ShowTheClouRequester(S32 error_class)
+uint32 ShowTheClouRequester(int32 error_class)
 {
     LIST *menu;
-    U32 answer = 0;
-    ubyte choices;
+    uint32 answer = 0;
+    byte choices;
     Player player = (Player)dbGetObject(Player_Player_1);
 
     inpTurnESC(0);

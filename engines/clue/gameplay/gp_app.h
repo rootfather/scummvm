@@ -77,37 +77,37 @@
 
 struct Scene;
 
-extern void TCGamePause(ubyte activ);
+extern void TCGamePause(byte activ);
 
-extern ubyte tcPersonIsHere(void);
+extern byte tcPersonIsHere(void);
 
 extern void tcPlaySound(void);
 extern void tcPlayStreetSound(void);
 extern void tcPersonGreetsMatt(void);
 
-extern U32 StdHandle(U32 choice);
+extern uint32 StdHandle(uint32 choice);
 
 extern void SetFunc(struct Scene *sc, void (*init) (void), void (*done) (void));
 void PrintStatus(char *text);
 extern void InitTaxiLocations(void);
 extern void LinkScenes(void);
 
-extern void tcGetLastName(char *Name, char *dest, U32 maxLength);
-extern void tcCutName(char *Name, ubyte Sign, U32 maxLength);
+extern void tcGetLastName(char *Name, char *dest, uint32 maxLength);
+extern void tcCutName(char *Name, byte Sign, uint32 maxLength);
 
-extern ubyte tcLoadTheClou(void);
+extern byte tcLoadTheClou(void);
 extern void tcSaveTheClou(void);
-extern U32 tcBurglary(U32 buildingID);
+extern uint32 tcBurglary(uint32 buildingID);
 
-extern ubyte tcLoadChangesInScenes(char *fileName);
-extern ubyte tcSaveChangesInScenes(char *fileName);
+extern byte tcLoadChangesInScenes(char *fileName);
+extern byte tcSaveChangesInScenes(char *fileName);
 
-extern void tcRefreshLocationInTitle(U32 locNr);
-extern void ShowTime(U32 delay);
+extern void tcRefreshLocationInTitle(uint32 locNr);
+extern void ShowTime(uint32 delay);
 extern void RefreshAfterDiskRequester(void);
 
-extern ubyte tcLoadIt(char activ);
-extern void tcRefreshAfterLoad(ubyte loaded);
+extern byte tcLoadIt(char activ);
+extern void tcRefreshAfterLoad(byte loaded);
 
 extern void ShowMenuBackground(void);
 

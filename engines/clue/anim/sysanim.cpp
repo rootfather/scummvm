@@ -45,33 +45,33 @@
 struct AnimHandler {
     char *RunningAnimID;	/* Anim, die gerade l„uft */
 
-    U16 destX;
-    U16 destY;
-    U16 width;
-    U16 height;
+    uint16 destX;
+    uint16 destY;
+    uint16 width;
+    uint16 height;
 
-    U16 offset;
-    U16 frameCount;
+    uint16 offset;
+    uint16 frameCount;
 
-    U16 pictsPerRow;
-    U16 totalWidth;
+    uint16 pictsPerRow;
+    uint16 totalWidth;
 
-    U16 NrOfAnims;
-    U16 PictureRate;		/* Rate mit der Anim gespielt wird */
-    U16 Repeatation;		/* wie oft wiederholen */
+    uint16 NrOfAnims;
+    uint16 PictureRate;		/* Rate mit der Anim gespielt wird */
+    uint16 Repeatation;		/* wie oft wiederholen */
 
-    U16 RepeatationCount;	/* wie oft schon wiederholt */
+    uint16 RepeatationCount;	/* wie oft schon wiederholt */
 
-    U16 AnimCollection;	/* einzelnen Animphasen */
+    uint16 AnimCollection;	/* einzelnen Animphasen */
 
-    U32 WaitCounter;
+    uint32 WaitCounter;
 
-    U16 CurrPictNr;
-    S16 Direction;
+    uint16 CurrPictNr;
+    int16 Direction;
 
-    U8 PlayMode;
+    uint8 PlayMode;
 
-    U8 AnimatorState;
+    uint8 AnimatorState;
 };
 
 static struct AnimHandler Handler;
@@ -120,24 +120,24 @@ static void PrepareAnim(char *AnimID)
 
     GetAnim(AnimID, pict_list);
 
-    if ((U32) (txtCountKey(pict_list)) > PIC_1_ID_POS) {
+    if ((uint32) (txtCountKey(pict_list)) > PIC_1_ID_POS) {
 	coll =
 	    gfxGetCollection(txtGetKeyAsULONG(ANIM_COLL_ID_POS, pict_list));
 
 	Handler.frameCount = txtGetKeyAsULONG(PIC_COUNT_POS, pict_list);
 
 	Handler.width =
-	    (U16) txtGetKeyAsULONG(PHASE_WIDTH_POS, pict_list);
+	    (uint16) txtGetKeyAsULONG(PHASE_WIDTH_POS, pict_list);
 	Handler.height =
-	    (U16) txtGetKeyAsULONG(PHASE_HEIGHT_POS, pict_list);
+	    (uint16) txtGetKeyAsULONG(PHASE_HEIGHT_POS, pict_list);
 
 	Handler.offset =
-	    (U16) txtGetKeyAsULONG(PHASE_OFFSET_POS, pict_list);
+	    (uint16) txtGetKeyAsULONG(PHASE_OFFSET_POS, pict_list);
 
 	Handler.destX =
-	    (U16) txtGetKeyAsULONG(X_DEST_OFFSET_POS, pict_list);
+	    (uint16) txtGetKeyAsULONG(X_DEST_OFFSET_POS, pict_list);
 	Handler.destY =
-	    (U16) txtGetKeyAsULONG(Y_DEST_OFFSET_POS, pict_list);
+	    (uint16) txtGetKeyAsULONG(Y_DEST_OFFSET_POS, pict_list);
 
 	/* need to add an offset for total width! Example:
 	 * 3 images with Width = 80, Offset = 2 -> TotalWidth = 244
@@ -161,10 +161,10 @@ static void PrepareAnim(char *AnimID)
  * StopAnim
  */
 
-void PlayAnim(char *AnimID, U16 how_often, U32 mode)
+void PlayAnim(char *AnimID, uint16 how_often, uint32 mode)
 {
     char pict_list[TXT_KEY_LENGTH];
-    U16 pict_id = 0, rate;
+    uint16 pict_id = 0, rate;
 
     GetAnim(AnimID, pict_list);
 
@@ -177,16 +177,16 @@ void PlayAnim(char *AnimID, U16 how_often, U32 mode)
 
 	if (!(mode & GFX_DONT_SHOW_FIRST_PIC)) {
 	    if (!mode)
-		mode = (U32) txtGetKeyAsULONG((U16) PIC_MODE_POS, pict_list);
+		mode = (uint32) txtGetKeyAsULONG((uint16) PIC_MODE_POS, pict_list);
 
-	    pict_id = (U16) txtGetKeyAsULONG((U16) PIC_1_ID_POS, pict_list);
+	    pict_id = (uint16) txtGetKeyAsULONG((uint16) PIC_1_ID_POS, pict_list);
 	}
 
 	if (pict_id)
 	    gfxShow(pict_id, mode, 2, -1L, -1L);
 
-	if ((U32) (txtCountKey(pict_list)) > PIC_1_ID_POS) {
-	    rate = (U16) txtGetKeyAsULONG((U16) PIC_P_SEC_POS, pict_list);
+	if ((uint32) (txtCountKey(pict_list)) > PIC_1_ID_POS) {
+	    rate = (uint16) txtGetKeyAsULONG((uint16) PIC_P_SEC_POS, pict_list);
 
 /* ZZZZZZXXXZZZZZ NOTE: UHHHHHHHHHHHHHHH? WTF???
    LOOK AT 'texts/animd.txt! WTF?'
@@ -197,7 +197,7 @@ void PlayAnim(char *AnimID, U16 how_often, U32 mode)
 	 they 'dropped' it for the PC version? too hard to do pingpong?
 	 who knows!
 
-			Handler.PlayMode    = (U8) txtGetKeyAsULONG((U16)PLAY_MODE_POS, pict_list);
+			Handler.PlayMode    = (uint8) txtGetKeyAsULONG((uint16)PLAY_MODE_POS, pict_list);
 */
 	    Handler.PlayMode = PM_NORMAL;
 
@@ -230,16 +230,16 @@ void StopAnim(void)
 
 	    /* "unprepare" pictures for the sake of completeness */
 	    pict =
-		gfxGetPicture((U16)
-			      txtGetKeyAsULONG((U16) PIC_1_ID_POS,
+		gfxGetPicture((uint16)
+			      txtGetKeyAsULONG((uint16) PIC_1_ID_POS,
 					       pict_list));
 
 	    if (pict)
-		gfxUnPrepareColl((U16) pict->us_CollId);
+		gfxUnPrepareColl((uint16) pict->us_CollId);
 
 	    if (txtCountKey(pict_list) > PIC_1_ID_POS)
-		gfxUnPrepareColl((U16)
-				 txtGetKeyAsULONG((U16) ANIM_COLL_ID_POS,
+		gfxUnPrepareColl((uint16)
+				 txtGetKeyAsULONG((uint16) ANIM_COLL_ID_POS,
 						  pict_list));
 
 	    Handler.RunningAnimID[0] = '\0';
@@ -272,8 +272,8 @@ void GetAnim(char *AnimID, char *Dest)
 
 void animator(void)
 {
-    U16 destX = Handler.destX;
-    U16 destY = Handler.destY;
+    uint16 destX = Handler.destX;
+    uint16 destY = Handler.destY;
 
     if (!(Handler.AnimatorState & ANIM_STATE_SUSPENDED)) {
 	if (Handler.RunningAnimID && Handler.RunningAnimID[0] != '\0') {
@@ -298,8 +298,8 @@ void animator(void)
 		    }
 
 		    if (Handler.RepeatationCount <= Handler.Repeatation) {
-			U16 sourceX;
-			U16 sourceY;
+			uint16 sourceX;
+			uint16 sourceY;
 
                         sourceX =
 			    ((Handler.width +

@@ -32,7 +32,7 @@
 #include "clue/data/objstd/tcdata.h"
 
 
-#define GET_OUT					((U8)-1)
+#define GET_OUT					((uint8)-1)
 
 /* public defines */
 #define DB_LOAD_MODE_STD        1
@@ -57,21 +57,21 @@
 /* public structures */
 struct dbObject {
     NODE link;
-    U32 nr;
-    U32 type;
-    U32 realNr;
+    uint32 nr;
+    uint32 type;
+    uint32 realNr;
 };
 
 struct dbObjectHeader {
-    U32 nr;
-    U32 type;
-    U32 size;
+    uint32 nr;
+    uint32 type;
+    uint32 size;
 };
 
 struct ObjectNode {
     NODE Link;
-    U32 nr;
-    U32 type;
+    uint32 nr;
+    uint32 type;
     void *data;
 };
 
@@ -79,53 +79,53 @@ struct ObjectNode {
 /* public global data */
 extern LIST *ObjectList;
 extern LIST *ObjectListPrivate;
-extern U32 ObjectListWidth;
-extern char *(*ObjectListPrevString) (U32, U32, void *);
-extern char *(*ObjectListSuccString) (U32, U32, void *);
+extern uint32 ObjectListWidth;
+extern char *(*ObjectListPrevString) (uint32, uint32, void *);
+extern char *(*ObjectListSuccString) (uint32, uint32, void *);
 
 extern LIST *objHash[OBJ_HASH_SIZE];
 
 
 /* public prototypes - OBJECTS */
-U8 dbLoadAllObjects(char *fileName, U16 diskId);
-U8 dbSaveAllObjects(char *fileName, U32 offset, U32 size, U16 diskId);
-void dbDeleteAllObjects(U32 offset, U32 size);
+uint8 dbLoadAllObjects(char *fileName, uint16 diskId);
+uint8 dbSaveAllObjects(char *fileName, uint32 offset, uint32 size, uint16 diskId);
+void dbDeleteAllObjects(uint32 offset, uint32 size);
 
-U32 dbGetObjectCountOfDB(U32 offset, U32 size);
+uint32 dbGetObjectCountOfDB(uint32 offset, uint32 size);
 
-void dbSetLoadObjectsMode(U8 mode);
+void dbSetLoadObjectsMode(uint8 mode);
 
 /* public prototypes - OBJECT */
-void *dbNewObject(U32 nr, U32 type, U32 size, char *name, U32 realNr);
-void dbDeleteObject(U32 nr);
+void *dbNewObject(uint32 nr, uint32 type, uint32 size, char *name, uint32 realNr);
+void dbDeleteObject(uint32 nr);
 
-void *dbGetObject(U32 nr);
-U32 dbGetObjectNr(void *key);
-char *dbGetObjectName(U32 nr, char *objName);
+void *dbGetObject(uint32 nr);
+uint32 dbGetObjectNr(void *key);
+char *dbGetObjectName(uint32 nr, char *objName);
 
-void *dbIsObject(U32 nr, U32 type);
+void *dbIsObject(uint32 nr, uint32 type);
 
 /* public prototypes - OBJECTNODE */
-struct ObjectNode *dbAddObjectNode(LIST * objectList, U32 nr, U32 flags);
-void dbRemObjectNode(LIST * objectList, U32 nr);
-struct ObjectNode *dbHasObjectNode(LIST * objectList, U32 nr);
+struct ObjectNode *dbAddObjectNode(LIST * objectList, uint32 nr, uint32 flags);
+void dbRemObjectNode(LIST * objectList, uint32 nr);
+struct ObjectNode *dbHasObjectNode(LIST * objectList, uint32 nr);
 
-void SetObjectListAttr(U32 flags, U32 type);
+void SetObjectListAttr(uint32 flags, uint32 type);
 void BuildObjectList(void *key);
 void ExpandObjectList(LIST * objectList, char *expandItem);
 
-S16 dbStdCompareObjects(struct ObjectNode *obj1, struct ObjectNode *obj2);
-S32 dbSortObjectList(LIST ** objectList,
-		     S16(*processNode) (struct ObjectNode *,
+int16 dbStdCompareObjects(struct ObjectNode *obj1, struct ObjectNode *obj2);
+int32 dbSortObjectList(LIST ** objectList,
+		     int16(*processNode) (struct ObjectNode *,
 					 struct ObjectNode *));
 void dbSortPartOfList(LIST * objectList, struct ObjectNode *start,
 		      struct ObjectNode *end,
-		      S16(*processNode) (struct ObjectNode *,
+		      int16(*processNode) (struct ObjectNode *,
 					  struct ObjectNode *));
 
 
-struct ObjectNode *dbAddObjectNode(LIST * objectList, U32 nr, U32 flags);
-void dbRemObjectNode(LIST * objectList, U32 nr);
+struct ObjectNode *dbAddObjectNode(LIST * objectList, uint32 nr, uint32 flags);
+void dbRemObjectNode(LIST * objectList, uint32 nr);
 
 /* public prototypes */
 void dbInit(void);

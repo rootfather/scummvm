@@ -22,8 +22,8 @@
 
 
 /* Sync functions */
-static uword plXMoveSync(U32 id, uword xpos, ubyte animate, ubyte direction,
-		         uword gowhere)
+static uint16 plXMoveSync(uint32 id, uint16 xpos, byte animate, byte direction,
+		         uint16 gowhere)
 {
     if (direction) {
 	if ((animate & PLANING_ANIMATE_FOCUS) && (id == CurrentPerson))
@@ -36,9 +36,9 @@ static uword plXMoveSync(U32 id, uword xpos, ubyte animate, ubyte direction,
 			   -1 * LS_STD_SCROLL_SPEED, 0);
 
 	    if ((animate & PLANING_ANIMATE_FOCUS) && (id == CurrentPerson))
-		lsScrollLandScape((ubyte) - 1);
+		lsScrollLandScape((byte) - 1);
 
-	    xpos = (uword) (xpos - LS_STD_SCROLL_SPEED);
+	    xpos = (uint16) (xpos - LS_STD_SCROLL_SPEED);
 	    break;
 
 	case DIRECTION_RIGHT:
@@ -47,9 +47,9 @@ static uword plXMoveSync(U32 id, uword xpos, ubyte animate, ubyte direction,
 			   1 * LS_STD_SCROLL_SPEED, 0);
 
 	    if ((animate & PLANING_ANIMATE_FOCUS) && (id == CurrentPerson))
-		lsScrollLandScape((ubyte) - 1);
+		lsScrollLandScape((byte) - 1);
 
-	    xpos = (uword) (xpos + LS_STD_SCROLL_SPEED);
+	    xpos = (uint16) (xpos + LS_STD_SCROLL_SPEED);
 	    break;
 	}
     } else {
@@ -72,9 +72,9 @@ static uword plXMoveSync(U32 id, uword xpos, ubyte animate, ubyte direction,
 			   1 * LS_STD_SCROLL_SPEED, 0);
 
 	    if ((animate & PLANING_ANIMATE_FOCUS) && (id == CurrentPerson))
-		lsScrollLandScape((ubyte) - 1);
+		lsScrollLandScape((byte) - 1);
 
-	    xpos = (uword) (xpos + LS_STD_SCROLL_SPEED);
+	    xpos = (uint16) (xpos + LS_STD_SCROLL_SPEED);
 	    break;
 
 	case DIRECTION_RIGHT:
@@ -83,9 +83,9 @@ static uword plXMoveSync(U32 id, uword xpos, ubyte animate, ubyte direction,
 			   -1 * LS_STD_SCROLL_SPEED, 0);
 
 	    if ((animate & PLANING_ANIMATE_FOCUS) && (id == CurrentPerson))
-		lsScrollLandScape((ubyte) - 1);
+		lsScrollLandScape((byte) - 1);
 
-	    xpos = (uword) (xpos - LS_STD_SCROLL_SPEED);
+	    xpos = (uint16) (xpos - LS_STD_SCROLL_SPEED);
 	    break;
 	}
     }
@@ -93,8 +93,8 @@ static uword plXMoveSync(U32 id, uword xpos, ubyte animate, ubyte direction,
     return xpos;
 }
 
-static uword plYMoveSync(U32 id, uword ypos, ubyte animate, ubyte direction,
-		         uword gowhere)
+static uint16 plYMoveSync(uint32 id, uint16 ypos, byte animate, byte direction,
+		         uint16 gowhere)
 {
     if (direction) {
 	if ((animate & PLANING_ANIMATE_FOCUS) && (id == CurrentPerson))
@@ -107,9 +107,9 @@ static uword plYMoveSync(U32 id, uword ypos, ubyte animate, ubyte direction,
 			   -1 * LS_STD_SCROLL_SPEED);
 
 	    if ((animate & PLANING_ANIMATE_FOCUS) && (id == CurrentPerson))
-		lsScrollLandScape((ubyte) - 1);
+		lsScrollLandScape((byte) - 1);
 
-	    ypos = (uword) (ypos - LS_STD_SCROLL_SPEED);
+	    ypos = (uint16) (ypos - LS_STD_SCROLL_SPEED);
 	    break;
 
 	case DIRECTION_DOWN:
@@ -118,9 +118,9 @@ static uword plYMoveSync(U32 id, uword ypos, ubyte animate, ubyte direction,
 			   1 * LS_STD_SCROLL_SPEED);
 
 	    if ((animate & PLANING_ANIMATE_FOCUS) && (id == CurrentPerson))
-		lsScrollLandScape((ubyte) - 1);
+		lsScrollLandScape((byte) - 1);
 
-	    ypos = (uword) (ypos + LS_STD_SCROLL_SPEED);
+	    ypos = (uint16) (ypos + LS_STD_SCROLL_SPEED);
 	    break;
 	}
     } else {
@@ -143,9 +143,9 @@ static uword plYMoveSync(U32 id, uword ypos, ubyte animate, ubyte direction,
 			   1 * LS_STD_SCROLL_SPEED);
 
 	    if ((animate & PLANING_ANIMATE_FOCUS) && (id == CurrentPerson))
-		lsScrollLandScape((ubyte) - 1);
+		lsScrollLandScape((byte) - 1);
 
-	    ypos = (uword) (ypos + LS_STD_SCROLL_SPEED);
+	    ypos = (uint16) (ypos + LS_STD_SCROLL_SPEED);
 	    break;
 
 	case DIRECTION_DOWN:
@@ -154,9 +154,9 @@ static uword plYMoveSync(U32 id, uword ypos, ubyte animate, ubyte direction,
 			   -1 * LS_STD_SCROLL_SPEED);
 
 	    if ((animate & PLANING_ANIMATE_FOCUS) && (id == CurrentPerson))
-		lsScrollLandScape((ubyte) - 1);
+		lsScrollLandScape((byte) - 1);
 
-	    ypos = (uword) (ypos - LS_STD_SCROLL_SPEED);
+	    ypos = (uint16) (ypos - LS_STD_SCROLL_SPEED);
 	    break;
 	}
     }
@@ -164,16 +164,16 @@ static uword plYMoveSync(U32 id, uword ypos, ubyte animate, ubyte direction,
     return ypos;
 }
 
-void plSync(ubyte animate, U32 targetTime, U32 times, ubyte direction)
+void plSync(byte animate, uint32 targetTime, uint32 times, byte direction)
 {
-    ubyte i;
-    U32 seconds, lastAreaId = 0;
+    byte i;
+    uint32 seconds, lastAreaId = 0;
 
     for (seconds = 0; seconds < times; seconds++) {
 	for (i = 0; i < PersonsNr; i++) {
 	    struct Action *action;
-	    uword xpos = livGetXPos(Planing_Name[i]);
-	    uword ypos = livGetYPos(Planing_Name[i]);
+	    uint16 xpos = livGetXPos(Planing_Name[i]);
+	    uint16 ypos = livGetYPos(Planing_Name[i]);
 
 	    SetActivHandler(plSys, OL_NR(GetNthNode(PersonsList, i)));
 
@@ -497,7 +497,7 @@ void plSync(ubyte animate, U32 targetTime, U32 times, ubyte direction)
 				if (plIgnoreLock
 				    (ActionData(action, struct ActionUse *)->
 				     ItemId)) {
-				    U32 state =
+				    uint32 state =
 					lsGetObjectState(ActionData
 							 (action,
 							  struct ActionUse *)->
@@ -560,13 +560,13 @@ void plSync(ubyte animate, U32 targetTime, U32 times, ubyte direction)
 
 			if (ActionEnded(plSys)) {
 			    if (direction) {
-				U32 weightLoot =
+				uint32 weightLoot =
 				    ((Loot)
 				     dbGetObject(ActionData
 						 (action,
 						  struct ActionTake *)->
 						 LootId))->Weight;
-				U32 volumeLoot =
+				uint32 volumeLoot =
 				    ((Loot)
 				     dbGetObject(ActionData
 						 (action,
@@ -614,7 +614,7 @@ void plSync(ubyte animate, U32 targetTime, U32 times, ubyte direction)
 				}
 
 				{
-				    U32 newValue =
+				    uint32 newValue =
 					GetP(dbGetObject
 					     (ActionData
 					      (action,
@@ -633,7 +633,7 @@ void plSync(ubyte animate, U32 targetTime, U32 times, ubyte direction)
 						     (action,
 						      struct ActionTake *)->
 						     LootId))) {
-					U32 oldValue =
+					uint32 oldValue =
 					    GetP(dbGetObject
 						 (OL_NR
 						  (GetNthNode
@@ -675,13 +675,13 @@ void plSync(ubyte animate, U32 targetTime, U32 times, ubyte direction)
 				Planing_Weight[i] += weightLoot;
 				Planing_Volume[i] += volumeLoot;
 			    } else {
-				U32 weightLoot =
+				uint32 weightLoot =
 				    ((Loot)
 				     dbGetObject(ActionData
 						 (action,
 						  struct ActionTake *)->
 						 LootId))->Weight;
-				U32 volumeLoot =
+				uint32 volumeLoot =
 				    ((Loot)
 				     dbGetObject(ActionData
 						 (action,
@@ -797,13 +797,13 @@ void plSync(ubyte animate, U32 targetTime, U32 times, ubyte direction)
 
 			if (ActionEnded(plSys)) {
 			    if (direction) {
-				U32 weightLoot =
+				uint32 weightLoot =
 				    ((Loot)
 				     dbGetObject(ActionData
 						 (action,
 						  struct ActionDrop *)->
 						 LootId))->Weight;
-				U32 volumeLoot =
+				uint32 volumeLoot =
 				    ((Loot)
 				     dbGetObject(ActionData
 						 (action,
@@ -897,13 +897,13 @@ void plSync(ubyte animate, U32 targetTime, U32 times, ubyte direction)
 				Planing_Weight[i] -= weightLoot;
 				Planing_Volume[i] -= volumeLoot;
 			    } else {
-				U32 weightLoot =
+				uint32 weightLoot =
 				    ((Loot)
 				     dbGetObject(ActionData
 						 (action,
 						  struct ActionDrop *)->
 						 LootId))->Weight;
-				U32 volumeLoot =
+				uint32 volumeLoot =
 				    ((Loot)
 				     dbGetObject(ActionData
 						 (action,
@@ -951,7 +951,7 @@ void plSync(ubyte animate, U32 targetTime, U32 times, ubyte direction)
 				}
 
 				{
-				    U32 newValue =
+				    uint32 newValue =
 					GetP(dbGetObject
 					     (ActionData
 					      (action,
@@ -970,7 +970,7 @@ void plSync(ubyte animate, U32 targetTime, U32 times, ubyte direction)
 						     (action,
 						      struct ActionDrop *)->
 						     LootId))) {
-					U32 oldValue =
+					uint32 oldValue =
 					    GetP(dbGetObject
 						 (OL_NR
 						  (GetNthNode
@@ -1160,7 +1160,7 @@ void plSync(ubyte animate, U32 targetTime, U32 times, ubyte direction)
 		register struct Action *a;
 		register struct Handler *h =
 		    (struct Handler *) plSys->ActivHandler;
-		register uword dir;
+		register uint16 dir;
 
 		if (i < BurglarsNr)
 		    dir = ANM_STAND;

@@ -65,15 +65,15 @@ extern void inpCloseAllInputDevs(void);
 extern void inpMousePtrOn(void);
 extern void inpMousePtrOff(void);
 
-extern S32 inpWaitFor(S32 l_Mask);	/* retourniert was passiert ist
+extern int32 inpWaitFor(int32 l_Mask);	/* retourniert was passiert ist
 					 * (siehe defines) */
-extern void inpSetWaitTicks(U32 l_Ticks);
+extern void inpSetWaitTicks(uint32 l_Ticks);
 
 void inpTurnESC(bool us_NewStatus);	    /* 0 means off, 1 means on */
 void inpTurnFunctionKey(bool us_NewStatus); /* 0 means off, 1 means on */
 void inpTurnMouse(bool us_NewStatus);	    /* 0 means off, 1 means on */
 
-extern void inpDelay(S32 l_Ticks);
+extern void inpDelay(int32 l_Ticks);
 extern void inpSetKeyRepeat(unsigned char rate);
 
 extern void inpClearKbBuffer(void);

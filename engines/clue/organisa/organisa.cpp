@@ -22,9 +22,9 @@
 
 #include "clue/organisa/organisa.h"
 
-U32 tcChooseDestBuilding(U32);
-U32 tcChooseEscapeCar(U32);
-U32 tcChooseDriver(U32);
+uint32 tcChooseDestBuilding(uint32);
+uint32 tcChooseEscapeCar(uint32);
+uint32 tcChooseDriver(uint32);
 
 void tcChooseAccomplice(void);
 void tcSpreadTools(void);
@@ -37,7 +37,7 @@ void tcRemGuyFromParty(void);
 void tcAddToolToGuy(void);
 void tcRemToolFromGuy(void);
 
-ubyte tcCheckOrganisation(void);
+byte tcCheckOrganisation(void);
 
 /* display functions */
 
@@ -47,9 +47,9 @@ void tcDoneDisplayOrganisation(void);
 void tcDisplayOrganisation(void);
 
 void tcDisplayCommon(void);
-void tcDisplayPerson(U32 displayMode);
-void tcDisplayAbilities(U32 personNr, U32 displayData);
-void tcDisplayTools(U32 personNr, U32 displayData);
+void tcDisplayPerson(uint32 displayMode);
+void tcDisplayAbilities(uint32 personNr, uint32 displayData);
+void tcDisplayTools(uint32 personNr, uint32 displayData);
 
 struct Organisation Organisation;
 
@@ -83,7 +83,7 @@ static void tcOrganisationSetCar(void)
     Organisation.PlacesInCar = car->PlacesInCar;
 }
 
-static ubyte tcMakeCarOk(void)
+static byte tcMakeCarOk(void)
 {
     joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_INSERT_STAR,
 		 Object_Person);
@@ -97,7 +97,7 @@ static ubyte tcMakeCarOk(void)
 	    return 0;
 
 	while (GetNrOfNodes(ObjectList) > Organisation.PlacesInCar) {
-	    ubyte choice;
+	    byte choice;
 
 	    dbRemObjectNode(ObjectList, Person_Matt_Stuvysunt);
 
@@ -106,7 +106,7 @@ static ubyte tcMakeCarOk(void)
 	    choice = Bubble(ObjectList, 0, 0L, 0L);
 	    Organisation.GuyCount--;
 	    joined_byUnSet(Person_Matt_Stuvysunt,
-			   OL_NR(GetNthNode(ObjectList, (U32) choice)));
+			   OL_NR(GetNthNode(ObjectList, (uint32) choice)));
 
 	    inpTurnESC(1);
 
@@ -118,10 +118,10 @@ static ubyte tcMakeCarOk(void)
     return 1;
 }
 
-U32 tcOrganisation(void)
+uint32 tcOrganisation(void)
 {
     LIST *menu = txtGoKey(MENU_TXT, "ORGANISATION");
-    ubyte activ = 0, ende = 0;
+    byte activ = 0, ende = 0;
     char line[TXT_KEY_LENGTH];
 
 	/* activate first or memorized building */
@@ -185,7 +185,7 @@ U32 tcOrganisation(void)
 
 	PrintStatus(line);
 
-	activ = Menu(menu, (U32) 255, activ, 0, 0);
+	activ = Menu(menu, (uint32) 255, activ, 0, 0);
 	inpTurnESC(1);
 
 	switch (activ) {
@@ -245,10 +245,10 @@ U32 tcOrganisation(void)
     return ((ende - 1) * Organisation.BuildingID);
 }
 
-ubyte tcCheckOrganisation(void)
+byte tcCheckOrganisation(void)
 {
     Player player = (Player)dbGetObject(Player_Player_1);
-    ubyte check = 0;
+    byte check = 0;
 
     if (Organisation.BuildingID) {
 	if ((((Building) dbGetObject(Organisation.BuildingID))->Exactlyness) >
@@ -283,12 +283,12 @@ ubyte tcCheckOrganisation(void)
     return (check);
 }
 
-U32 tcChooseDriver(U32 persID)
+uint32 tcChooseDriver(uint32 persID)
 {
     LIST *list;
-    ubyte choice;
+    byte choice;
     Person matt = (Person) dbGetObject(Person_Matt_Stuvysunt);
-    U32 newPersID;
+    uint32 newPersID;
 
     joined_byAll(Person_Matt_Stuvysunt,
 		 OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
@@ -305,7 +305,7 @@ U32 tcChooseDriver(U32 persID)
 	ExpandObjectList(list, exp);
 
 	if (ChoiceOk(choice = Bubble(list, 0, 0L, 0L), GET_OUT, list)) {
-	    newPersID = OL_NR(GetNthNode(list, (U32) choice));
+	    newPersID = OL_NR(GetNthNode(list, (uint32) choice));
 
 	    if (!has(newPersID, Ability_Autos)) {
 		Person pers = (Person)dbGetObject(newPersID);
@@ -330,10 +330,10 @@ U32 tcChooseDriver(U32 persID)
     return (persID);
 }
 
-U32 tcChooseDestBuilding(U32 objID)
+uint32 tcChooseDestBuilding(uint32 objID)
 {
     LIST *list;
-    ubyte choice;
+    byte choice;
     char exp[TXT_KEY_LENGTH];
 
     hasAll(Person_Matt_Stuvysunt,
@@ -345,7 +345,7 @@ U32 tcChooseDestBuilding(U32 objID)
     ExpandObjectList(list, exp);
 
     if (ChoiceOk(choice = Bubble(list, 0, 0L, 0L), GET_OUT, list)) {
-	objID = OL_NR(GetNthNode(list, (U32) choice));
+	objID = OL_NR(GetNthNode(list, (uint32) choice));
 
 	rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Building);
 
@@ -360,12 +360,12 @@ U32 tcChooseDestBuilding(U32 objID)
     return (objID);
 }
 
-U32 tcChooseEscapeCar(U32 objID)
+uint32 tcChooseEscapeCar(uint32 objID)
 {
     LIST *l1, *l2;
-    ubyte choice;
+    byte choice;
     Person matt = (Person) dbGetObject(Person_Matt_Stuvysunt);
-    U32 newObjID;
+    uint32 newObjID;
 
     hasAll(Person_Matt_Stuvysunt,
 	   OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST, Object_Car);
@@ -383,9 +383,9 @@ U32 tcChooseEscapeCar(U32 objID)
 	ExpandObjectList(l1, exp);
 
 	if (ChoiceOk(choice = Bubble(l1, 0, 0L, 0L), GET_OUT, l1)) {
-	    newObjID = OL_NR(GetNthNode(l1, (U32) choice));
+	    newObjID = OL_NR(GetNthNode(l1, (uint32) choice));
 
-	    car = (Car) OL_DATA(GetNthNode(l1, (U32) choice));
+	    car = (Car) OL_DATA(GetNthNode(l1, (uint32) choice));
 
 	    if (GetNrOfNodes(l2) <= car->PlacesInCar) {
 		Organisation.PlacesInCar = car->PlacesInCar;
@@ -432,7 +432,7 @@ void tcChooseGuys(void)
     } else {
 	LIST *menu = txtGoKey(MENU_TXT, "ORG_KOMPLIZEN");
 	char line[TXT_KEY_LENGTH];
-	ubyte activ = 0;
+	byte activ = 0;
 
 	ShowMenuBackground();
 
@@ -467,8 +467,8 @@ void tcAddGuyToParty(void)
 {
     LIST *l1, *l2;
     struct ObjectNode *n;
-    U32 persID;
-    ubyte choice;
+    uint32 persID;
+    byte choice;
 
     joinAll(Person_Matt_Stuvysunt,
 	    OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
@@ -492,8 +492,8 @@ void tcAddGuyToParty(void)
 
 	    if (ChoiceOk(choice = Bubble(l1, 0, 0L, 0L), GET_OUT, l1)) {
 		persID =
-		    (U32) (((struct ObjectNode *)
-			    GetNthNode(l1, (U32) choice))->nr);
+		    (uint32) (((struct ObjectNode *)
+			    GetNthNode(l1, (uint32) choice))->nr);
 
 		Organisation.GuyCount++;
 		joined_bySet(Person_Matt_Stuvysunt, persID);
@@ -533,8 +533,8 @@ void tcRemGuyFromParty(void)
 	SetBubbleType(THINK_BUBBLE);
 	Say(BUSINESS_TXT, 0, matt->PictID, "PLAN_TO_FEW_GUYS");
     } else {
-	ubyte choice;
-	U32 persID;
+	byte choice;
+	uint32 persID;
 	char exp[TXT_KEY_LENGTH];
 
 	txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
@@ -542,7 +542,7 @@ void tcRemGuyFromParty(void)
 
 	if (ChoiceOk(choice = Bubble(list, 0, 0L, 0L), GET_OUT, list)) {
 	    persID =
-		(U32) (((struct ObjectNode *) GetNthNode(list, (U32) choice))->
+		(uint32) (((struct ObjectNode *) GetNthNode(list, (uint32) choice))->
 		       nr);
 
 	    Organisation.GuyCount--;

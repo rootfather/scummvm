@@ -73,10 +73,10 @@
 
 /* Zugriffsdefines */
 
-#define SetMinute(zeit)         (film->akt_Minute=(U32)(zeit))
-#define SetLocation(loc)	{film->alter_Ort = film->akt_Ort; film->akt_Ort=(U32)(loc);}
-#define SetDay(tag)             (film->akt_Tag=(U32)(tag))
-#define SetTime(time)		(film->akt_Minute=(U32)(time))
+#define SetMinute(zeit)         (film->akt_Minute=(uint32)(zeit))
+#define SetLocation(loc)	{film->alter_Ort = film->akt_Ort; film->akt_Ort=(uint32)(loc);}
+#define SetDay(tag)             (film->akt_Tag=(uint32)(tag))
+#define SetTime(time)		(film->akt_Minute=(uint32)(time))
 
 #define GetDay                  (film->akt_Tag)
 #define GetMinute               (film->akt_Minute)
@@ -87,7 +87,7 @@
 #define GetToDay(x)             (((x) << 16) >> 16)
 
 struct Film {
-    U32 AmountOfScenes;
+    uint32 AmountOfScenes;
 
     struct Scene *act_scene;
     struct Scene *gameplay;
@@ -95,33 +95,33 @@ struct Film {
     LIST *loc_names;		/* Liste aller Orte im Spiel */
     /* OrtNr = Nr der Node in der */
     /* Liste */
-    U32 StartScene;
-    U32 StartZeit;		/* =Tag seit dem Jahr 0 */
-    U32 StartOrt;
+    uint32 StartScene;
+    uint32 StartZeit;		/* =Tag seit dem Jahr 0 */
+    uint32 StartOrt;
 
-    U32 akt_Tag;
-    U32 akt_Minute;
-    U32 akt_Ort;
-    U32 alter_Ort;
+    uint32 akt_Tag;
+    uint32 akt_Minute;
+    uint32 akt_Ort;
+    uint32 alter_Ort;
 
-    U32 EnabledChoices;
+    uint32 EnabledChoices;
 
-    ubyte StoryIsRunning;
+    byte StoryIsRunning;
 };
 
 struct SceneArgs {
-    U32 Moeglichkeiten;
-    U32 ReturnValue;		/* wird AUCH (!) als Input verwendet,
+    uint32 Moeglichkeiten;
+    uint32 ReturnValue;		/* wird AUCH (!) als Input verwendet,
 				 * wenn als Output verwendet = EventNr der
 				 * Nachfolgerszene
 				 */
-    ubyte Ueberschrieben;	/*  0...direkter Nachfahre,
+    byte Ueberschrieben;	/*  0...direkter Nachfahre,
 				 * >0......uberschriebene Methode
 				 */
 };
 
 struct Scene {
-    U32 EventNr;
+    uint32 EventNr;
 
     void (*Init) (void);
     void (*Done) (void);
@@ -130,19 +130,19 @@ struct Scene {
 
     LIST *std_succ;		/* Standardnachfolger TCEventNode */
 
-    U32 Moeglichkeiten;		/* siehe defines oben                   */
-    U32 Dauer;			/* Dauer dieser Szene in Sekunden       */
-    uword Anzahl;		/* wie oft sie geschehen kann           */
-    uword Geschehen;		/* wie oft sie SCHON geschehen ist */
-    ubyte Probability;		/* mit der sie eintritt         0-255   */
+    uint32 Moeglichkeiten;		/* siehe defines oben                   */
+    uint32 Dauer;			/* Dauer dieser Szene in Sekunden       */
+    uint16 Anzahl;		/* wie oft sie geschehen kann           */
+    uint16 Geschehen;		/* wie oft sie SCHON geschehen ist */
+    byte Probability;		/* mit der sie eintritt         0-255   */
 
-    U32 LocationNr;		/* Ort, den diese Szene darstellt       */
+    uint32 LocationNr;		/* Ort, den diese Szene darstellt       */
     /* == -1 falls Szene = StorySzene       */
     /* ansonsten Nr des Ortes               */
 };
 
 struct Bedingungen {
-    U32 Ort;			/* der erfÅllt sein mu· */
+    uint32 Ort;			/* der erfÅllt sein mu· */
 
     LIST *events;		/* welche Events schon geschehen sein muessen */
     LIST *n_events;		/* Events, die nicht geschehen sein dÅrfen */
@@ -151,17 +151,17 @@ struct Bedingungen {
 struct TCEventNode {
     NODE Node;
 
-    U32 EventNr;
+    uint32 EventNr;
 };
 
 /* global functions */
 void InitStory(char *story_filename);
 extern void CloseStory(void);
 
-extern U32 PlayStory(void);
+extern uint32 PlayStory(void);
 extern void PatchStory(void);
 
-extern void SetEnabledChoices(U32 ChoiceMask);
+extern void SetEnabledChoices(uint32 ChoiceMask);
 
 extern void StdDone(void);
 extern void StdInit(void);
@@ -171,22 +171,22 @@ extern void SetCurrentScene(struct Scene *scene);
 
 extern char *GetCurrLocName(void);
 
-char *BuildDate(U32 days, char *date);
-char *BuildTime(U32 min, char *time);
+char *BuildDate(uint32 days, char *date);
+char *BuildTime(uint32 min, char *time);
 
-void FormatDigit(U32 digit, char *s);
+void FormatDigit(uint32 digit, char *s);
 
 extern struct Scene *GetCurrentScene(void);
-extern struct Scene *GetLocScene(U32 locNr);
-extern struct Scene *GetScene(U32 EventNr);
+extern struct Scene *GetLocScene(uint32 locNr);
+extern struct Scene *GetScene(uint32 EventNr);
 
-extern void AddVTime(U32 Zeit);
+extern void AddVTime(uint32 Zeit);
 
 extern void LinkScenes(void);	/* Init und Done in jeder Scene Struktur setzen */
 
 extern struct SceneArgs SceneArgs;
 extern struct Film *film;
-extern U32 GamePlayMode;
-extern ubyte RefreshMode;
+extern uint32 GamePlayMode;
+extern byte RefreshMode;
 
 #endif

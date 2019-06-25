@@ -34,19 +34,19 @@
 #define   ORG_DISP_TOOLS       (1<<1)
 
 struct Organisation {
-    U32 CarID;
-    U32 DriverID;
-    U32 BuildingID;
+    uint32 CarID;
+    uint32 DriverID;
+    uint32 BuildingID;
 
-    ubyte GuyCount;
-    ubyte PlacesInCar;
+    byte GuyCount;
+    byte PlacesInCar;
 
     struct RastPort *rp;
 };
 
 extern struct Organisation Organisation;
 
-extern U32 tcOrganisation(void);
+extern uint32 tcOrganisation(void);
 extern void tcResetOrganisation(void);
 
 #endif

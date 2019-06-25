@@ -233,14 +233,14 @@
 #define FACE_GLUDO_SAILOR     126
 #define FACE_GLUDO_MAGIC      124
 
-ubyte tcKarateOpa(U32 ul_ActionTime, U32 ul_BuildingId);
+byte tcKarateOpa(uint32 ul_ActionTime, uint32 ul_BuildingId);
 
-void tcTheAlmighty(U32 time);
-void tcMattGoesTo(U32 locNr);
-void tcMovePersons(U32 personCount, U32 time);
-void tcMoveAPerson(U32 persID, U32 newLocID);
-void tcAsTimeGoesBy(U32 untilMinute);
-void tcAsDaysGoBy(U32 day, U32 stepSize);
+void tcTheAlmighty(uint32 time);
+void tcMattGoesTo(uint32 locNr);
+void tcMovePersons(uint32 personCount, uint32 time);
+void tcMoveAPerson(uint32 persID, uint32 newLocID);
+void tcAsTimeGoesBy(uint32 untilMinute);
+void tcAsDaysGoBy(uint32 day, uint32 stepSize);
 
 void tcDoneFreeTicket(void);
 void tcDoneMamiCalls(void);
@@ -299,12 +299,12 @@ void tcDoneMafia(void);
 void tcDoneKaserne(void);
 void tcInitPrison(void);
 
-S32 tcIsLastBurglaryOk(void);
-S32 tcDoTowerBurglary(void);
-S32 tcIsDeadlock(void);
+int32 tcIsLastBurglaryOk(void);
+int32 tcDoTowerBurglary(void);
+int32 tcIsDeadlock(void);
 void tcCheckForBones(void);
 
-U32 tcLastBurglary(void);
+uint32 tcLastBurglary(void);
 
 void tcCheckForDowning(void);
 

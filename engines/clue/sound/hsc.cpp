@@ -34,34 +34,34 @@ static const int freq_table[] =
 };
 
 static struct {
-    U8 car_am_vib_eg_ksr_multi;
-    U8 mod_am_vib_eg_ksr_multi;
+    uint8 car_am_vib_eg_ksr_multi;
+    uint8 mod_am_vib_eg_ksr_multi;
 
-    U8 car_ksl_volume;
-    U8 mod_ksl_volume;
+    uint8 car_ksl_volume;
+    uint8 mod_ksl_volume;
 
-    U8 car_attack_decay;
-    U8 mod_attack_decay;
+    uint8 car_attack_decay;
+    uint8 mod_attack_decay;
 
-    U8 car_sustain_release;
-    U8 mod_sustain_release;
+    uint8 car_sustain_release;
+    uint8 mod_sustain_release;
 
-    U8 feedback_fm;
+    uint8 feedback_fm;
 
-    U8 car_waveform;
-    U8 mod_waveform;
+    uint8 car_waveform;
+    uint8 mod_waveform;
 
-    U8 slide;
+    uint8 slide;
 } instrument[128];
 
 
 static struct {
-    U8 note[9][64];
-    U8 effect[9][64];
+    uint8 note[9][64];
+    uint8 effect[9][64];
 } pattern[50];
 
 
-static U8 pattern_table[51];
+static uint8 pattern_table[51];
 
 
 
@@ -405,7 +405,7 @@ static void hsc_process_row()
 #define HSC_BUFFER_SIZE		(SND_FREQUENCY / 18)
 
 /* Generic audio & audio mixing functions */
-static S16 MusicStream[HSC_BUFFER_SIZE];
+static int16 MusicStream[HSC_BUFFER_SIZE];
 
 void hscMusicPlayer(unsigned len)
 {
@@ -413,7 +413,7 @@ void hscMusicPlayer(unsigned len)
 	if (sndLenBuffer(FXBase.pMusicBuffer) < len) {
 
 	    hsc_process_row();
-	    YM3812UpdateOne(OPL_CHIP0, MusicStream, array_len(MusicStream));
+	    YM3812UpdateOne(OPL_CHIP0, MusicStream, ARRAYSIZE(MusicStream));
 
 	    sndInsertBuffer(FXBase.pMusicBuffer, MusicStream, sizeof(MusicStream));
 	}
@@ -439,7 +439,7 @@ int hscLoad(const char *filename)
 {
     int i, line, channel, num_pattern;
 
-    U8 *hsc_file, *hsc_data;
+    uint8 *hsc_file, *hsc_data;
 
     if (!OPL_Ok)
 	return 0;
@@ -448,7 +448,7 @@ int hscLoad(const char *filename)
 
     hsc_in_process = true;
 
-    hsc_file = (U8 *)dskLoad(filename);
+    hsc_file = (uint8 *)dskLoad(filename);
     hsc_data = hsc_file;
 
     for (i = 0; i < 128; i++) {

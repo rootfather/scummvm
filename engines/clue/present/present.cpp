@@ -25,7 +25,7 @@ struct PresentControl PresentControl = { NULL, 0, 0 };
 
 #include "clue/present/presenta.cpp"
 
-void DrawPresent(LIST * present, U8 firstLine, GC *gc, U8 max)
+void DrawPresent(LIST * present, uint8 firstLine, GC *gc, uint8 max)
 {
     unsigned i, j, k;
     struct presentationInfo *p;
@@ -91,14 +91,14 @@ void DrawPresent(LIST * present, U8 firstLine, GC *gc, U8 max)
     gfxScreenThaw(gc, 88, 3, 228, 46);
 }
 
-U8 Present(U32 nr, char *presentationText,
-	   void (*initPresentation) (U32, LIST *, LIST *))
+uint8 Present(uint32 nr, char *presentationText,
+	   void (*initPresentation) (uint32, LIST *, LIST *))
 {
-    U8 firstVis = 0;
-    U8 max = 0;
+    uint8 firstVis = 0;
+    uint8 max = 0;
 
-    U8 exit = 0;
-    U32 action;
+    uint8 exit = 0;
+    uint32 action;
 
     LIST *presentationData = CreateList(), *list;
 
@@ -116,7 +116,7 @@ U8 Present(U32 nr, char *presentationText,
     } else if (dbIsObject(nr, Object_Evidence)) {
 	Evidence e = (Evidence)dbGetObject(nr);
 
-	gfxShow((uword) ((Person) dbGetObject(e->pers))->PictID,
+	gfxShow((uint16) ((Person) dbGetObject(e->pers))->PictID,
 		GFX_NO_REFRESH | GFX_OVERLAY | GFX_BLEND_UP, 0, -1, -1);
     } else if (dbIsObject(nr, Object_Tool))
 	gfxShow(((Tool) (dbGetObject(nr)))->PictID,
@@ -125,7 +125,7 @@ U8 Present(U32 nr, char *presentationText,
 	gfxShow(((Loot) (dbGetObject(nr)))->PictID,
 		GFX_NO_REFRESH | GFX_OVERLAY | GFX_BLEND_UP, 0, -1, -1);
 
-    gfxShow((uword) BIG_SHEET, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);	/* nur die Farben ! */
+    gfxShow((uint16) BIG_SHEET, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);	/* nur die Farben ! */
 
     list = txtGoKey(PRESENT_TXT, presentationText);
 
@@ -149,7 +149,7 @@ U8 Present(U32 nr, char *presentationText,
 	    exit = 2;
 
 	if ((action & INP_MOUSE)) {
-	    U16 y;
+	    uint16 y;
 
 	    gfxGetMouseXY(u_gc, NULL, &y);
 
@@ -197,17 +197,17 @@ U8 Present(U32 nr, char *presentationText,
     if (exit == 1)
 	return GET_OUT;
     else
-	return ((U8) (exit - 1));
+	return ((uint8) (exit - 1));
 }
 
-static struct presentationInfo *AddPresentInfo(LIST * l, U32 max,
-					       LIST * texts, U16 textNr)
+static struct presentationInfo *AddPresentInfo(LIST * l, uint32 max,
+					       LIST * texts, uint16 textNr)
 {
     char *name = NULL;
     struct presentationInfo *p;
 
-    if (textNr != ((U16) - 1))
-	name = NODE_NAME(GetNthNode(texts, (U32) textNr));
+    if (textNr != ((uint16) - 1))
+	name = NODE_NAME(GetNthNode(texts, (uint32) textNr));
 
     p = (struct presentationInfo *) CreateNode(l,
 					       sizeof(struct presentationInfo),
@@ -217,8 +217,8 @@ static struct presentationInfo *AddPresentInfo(LIST * l, U32 max,
     return p;
 }
 
-void AddPresentTextLine(LIST * l, const char *data, U32 max, LIST * texts,
-			U16 textNr)
+void AddPresentTextLine(LIST * l, const char *data, uint32 max, LIST * texts,
+			uint16 textNr)
 {
     struct presentationInfo *p;
 
@@ -232,8 +232,8 @@ void AddPresentTextLine(LIST * l, const char *data, U32 max, LIST * texts,
 }
 
 /* XXX: ONLY FOR NUMBERIC VALUES! */
-void AddPresentLine(LIST * l, U8 presentHow, U32 data, U32 max,
-		    LIST * texts, U16 textNr)
+void AddPresentLine(LIST * l, uint8 presentHow, uint32 data, uint32 max,
+		    LIST * texts, uint16 textNr)
 {
     struct presentationInfo *p;
 
@@ -253,9 +253,9 @@ void AddPresentLine(LIST * l, U8 presentHow, U32 data, U32 max,
 	p->extendedNr = data;
 }
 
-void prSetBarPrefs(GC *gc, uword us_BarWidth,
-		   uword us_BarHeight, ubyte uch_FCol, ubyte uch_BCol,
-		   ubyte uch_TCol)
+void prSetBarPrefs(GC *gc, uint16 us_BarWidth,
+		   uint16 us_BarHeight, byte uch_FCol, byte uch_BCol,
+		   byte uch_TCol)
 {
     PresentControl.gc = gc;
     PresentControl.us_BarWidth = us_BarWidth;
@@ -265,12 +265,12 @@ void prSetBarPrefs(GC *gc, uword us_BarWidth,
     PresentControl.uch_TCol = uch_TCol;
 }
 
-void prDrawTextBar(char *puch_Text, U32 ul_Value, U32 ul_Max,
-		   uword us_XPos, uword us_YPos)
+void prDrawTextBar(char *puch_Text, uint32 ul_Value, uint32 ul_Max,
+		   uint16 us_XPos, uint16 us_YPos)
 {
     GC *gc = PresentControl.gc;
-    uword us_Width = PresentControl.us_BarWidth;
-    uword us_Height = PresentControl.us_BarHeight;
+    uint16 us_Width = PresentControl.us_BarWidth;
+    uint16 us_Height = PresentControl.us_BarHeight;
 
     if (gc) {
 	gfxSetRect(us_XPos, us_Width);
@@ -280,7 +280,7 @@ void prDrawTextBar(char *puch_Text, U32 ul_Value, U32 ul_Max,
 	gfxRectFill(gc, us_XPos, us_YPos, us_XPos + us_Width - 1,
 		    us_YPos + us_Height - 1);
 
-	us_Width = (uword) ((us_Width * ul_Value) / ul_Max);
+	us_Width = (uint16) ((us_Width * ul_Value) / ul_Max);
 
 	gfxSetPens(gc, PresentControl.uch_FCol, GFX_SAME_PEN, GFX_SAME_PEN);
 	gfxRectFill(gc, us_XPos, us_YPos, us_XPos + us_Width - 1,

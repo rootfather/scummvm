@@ -17,7 +17,7 @@ void CDROM_UnInstall(void);
 
 void CDROM_WaitForMedia(void);
 
-void CDROM_PlayAudioSequence(U8 TrackNum, U32 StartOffset, U32 EndOffset);
+void CDROM_PlayAudioSequence(uint8 TrackNum, uint32 StartOffset, uint32 EndOffset);
 void CDROM_StopAudioTrack(void);
 
 #endif

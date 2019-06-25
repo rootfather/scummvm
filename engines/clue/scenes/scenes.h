@@ -67,21 +67,21 @@
 #include "clue/landscap/raster.h"
 #endif
 
-extern uword CurrentBackground;
+extern uint16 CurrentBackground;
 
 /* standard scene functions - look at scenes.c */
 
-extern U32 Go(LIST * succ);
-extern U32 tcTelefon(void);
+extern uint32 Go(LIST * succ);
+extern uint32 tcTelefon(void);
 
-extern void Look(U32 locNr);
+extern void Look(uint32 locNr);
 extern void Information(void);
 extern void tcWait(void);
 
 /* taxi functions */
 
-extern void AddTaxiLocation(U32 locNr);
-extern void RemTaxiLocation(U32 locNr);
+extern void AddTaxiLocation(uint32 locNr);
+extern void RemTaxiLocation(uint32 locNr);
 
 /* Done Funktionen */
 
@@ -100,41 +100,41 @@ void tcDoneFahndung(void);
 
 void Investigate(char *location);
 
-void SetCarColors(ubyte index);
+void SetCarColors(byte index);
 
-void tcSellCar(U32 ObjectID);
+void tcSellCar(uint32 ObjectID);
 void tcColorCar(Car car);
 void tcRepairCar(Car car, char *repairWhat);
 void tcCarGeneralOverhoul(Car car);
 void tcToolsShop(void);
 
-S32 tcEscapeFromBuilding(U32 escBits);
-S32 tcEscapeByCar(U32 escBits, S32 timeLeft);
+int32 tcEscapeFromBuilding(uint32 escBits);
+int32 tcEscapeByCar(uint32 escBits, int32 timeLeft);
 
-U32 tcChooseCar(U32 backgroundNr);
+uint32 tcChooseCar(uint32 backgroundNr);
 
-LIST *tcMakeLootList(U32 containerID, U32 relID);
+LIST *tcMakeLootList(uint32 containerID, uint32 relID);
 
-char *tcShowPriceOfCar(U32 nr, U32 type, void *data);
-char *tcShowPriceOfTool(U32 nr, U32 type, void *data);
+char *tcShowPriceOfCar(uint32 nr, uint32 type, void *data);
+char *tcShowPriceOfTool(uint32 nr, uint32 type, void *data);
 
-void tcDealerSays(Person dealer, ubyte textNr, S32 perc);
-void tcDealerOffer(Person dealer, ubyte which);
+void tcDealerSays(Person dealer, byte textNr, int32 perc);
+void tcDealerOffer(Person dealer, byte which);
 
 void tcBuyCar(void);
-void tcCarInGarage(U32 carID);
+void tcCarInGarage(uint32 carID);
 
-ubyte tcBuyTool(ubyte choice);
+byte tcBuyTool(byte choice);
 void tcSellTool(void);
-ubyte tcShowTool(ubyte choice);
-ubyte tcDescTool(ubyte choice);
+byte tcShowTool(byte choice);
+byte tcDescTool(byte choice);
 void tcDealerDlg(void);
 
-U32 tcStartEvidence(void);
-U32 tcGoInsideOfHouse(U32 buildingID);
+uint32 tcStartEvidence(void);
+uint32 tcGoInsideOfHouse(uint32 buildingID);
 
 void tcShowLootInfo(Loot loot);
-void tcInsideOfHouse(U32 buildingID, U32 areaID, ubyte perc);
-void tcShowObjectData(U32 areaID, NODE * node, ubyte perc);
+void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc);
+void tcShowObjectData(uint32 areaID, NODE * node, byte perc);
 
 #endif

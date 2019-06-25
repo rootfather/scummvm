@@ -62,29 +62,29 @@ typedef enum {
 void txtInit(char lang);
 void txtDone(void);
 
-void txtLoad(U32 textId);
-void txtUnLoad(U32 textId);
+void txtLoad(uint32 textId);
+void txtUnLoad(uint32 textId);
 
-void txtPrepare(U32 textId);
-void txtUnPrepare(U32 textId);
+void txtPrepare(uint32 textId);
+void txtUnPrepare(uint32 textId);
 
-void txtReset(U32 textId);
+void txtReset(uint32 textId);
 
 
 /* public prototypes - KEY */
-char *txtGetKey(U16 keyNr, char *key);
-U32 txtGetKeyAsULONG(U16 keyNr, char *key);
+char *txtGetKey(uint16 keyNr, char *key);
+uint32 txtGetKeyAsULONG(uint16 keyNr, char *key);
 
-LIST *txtGoKey(U32 textId, const char *key);
-LIST *txtGoKeyAndInsert(U32 textId, char *key, ...);
+LIST *txtGoKey(uint32 textId, const char *key);
+LIST *txtGoKeyAndInsert(uint32 textId, char *key, ...);
 
-bool txtKeyExists(U32 textId, const char *key);
-U32 txtCountKey(char *key);
+bool txtKeyExists(uint32 textId, const char *key);
+uint32 txtCountKey(char *key);
 
 
 /* public prototypes - STRING */
-char *txtGetString(U32 textId, const char *key, char *dest);
-char *txtGetNthString(U32 textId, const char *key, U32 nth, char *dest);
-void txtPutCharacter(LIST * list, uword pos, U8 c);
+char *txtGetString(uint32 textId, const char *key, char *dest);
+char *txtGetNthString(uint32 textId, const char *key, uint32 nth, char *dest);
+void txtPutCharacter(LIST * list, uint16 pos, uint8 c);
 
 #endif

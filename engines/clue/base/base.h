@@ -91,8 +91,8 @@ struct Setup {
     bool FullScreen;
     bool Profidisk;
     bool CDRom;
-    S32 SfxVolume;
-    S32 MusicVolume;
+    int32 SfxVolume;
+    int32 MusicVolume;
     unsigned Debug;
     bool CDAudio;
     unsigned Scale;
@@ -121,7 +121,7 @@ extern void tcSetPermanentColors(void);
 void tcDone(void);
 int clue_main(const char *path);
 
-U32 tcGetProcessorType(void);
+uint32 tcGetProcessorType(void);
 
 #define PROC_80286		1L
 #define PROC_80386		2L

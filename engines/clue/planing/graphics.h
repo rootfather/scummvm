@@ -103,12 +103,12 @@
 #define PLANING_REFRESH_RP_DEPTH    2
 
 void plPrintInfo(char *person);
-void plMessage(char *msg, ubyte flags);
-void plPersonPict(U32 personId);
+void plMessage(char *msg, byte flags);
+void plPersonPict(uint32 personId);
 void plDisplayAbilities(void);
-void plDisplayTimer(U32 time, ubyte doSpotsImmediatly);
+void plDisplayTimer(uint32 time, byte doSpotsImmediatly);
 void plDisplayInfo(void);
-void plRefresh(U32 ItemId);
-void plDrawWait(U32 sec);
-ubyte plSay(char *msg, U32 persId);
+void plRefresh(uint32 ItemId);
+void plDrawWait(uint32 sec);
+byte plSay(char *msg, uint32 persId);
 #endif

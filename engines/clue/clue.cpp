@@ -20,10 +20,7 @@
  *
  */
 
-#define FORBIDDEN_SYMBOL_ALLOW_ALL
-#define byte _byte
 #include "clue/base/base.h"
-#undef byte
 
 #include "common/error.h"
 #include "common/events.h"

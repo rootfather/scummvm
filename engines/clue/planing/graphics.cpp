@@ -34,7 +34,7 @@ void plPrintInfo(char *person)
     gfxPrint(m_gc, info, 12, GFX_PRINT_CENTER);
 }
 
-void plMessage(char *msg, ubyte flags)
+void plMessage(char *msg, byte flags)
 {
     LIST *m = txtGoKey(PLAN_TXT, msg);
 
@@ -53,10 +53,10 @@ void plMessage(char *msg, ubyte flags)
     }
 }
 
-void plDisplayTimer(U32 time, ubyte doSpotsImmediatly)
+void plDisplayTimer(uint32 time, byte doSpotsImmediatly)
 {
     char info[80];
-    U32 oldTimer = -1;
+    uint32 oldTimer = -1;
 
     if (!time)
 	time = CurrentTimer(plSys) / PLANING_CORRECT_TIME;
@@ -65,8 +65,8 @@ void plDisplayTimer(U32 time, ubyte doSpotsImmediatly)
 	sprintf(info, "x:%d, y:%d   %s %.2d:%.2d:%.2d %s",
 		livGetXPos(Planing_Name[CurrentPerson]),
 		livGetYPos(Planing_Name[CurrentPerson]), txtTimer,
-		(U32) (time / 3600), (U32) ((time / 60) % 60),
-		(U32) (time % 60), txtSeconds);
+		(uint32) (time / 3600), (uint32) ((time / 60) % 60),
+		(uint32) (time % 60), txtSeconds);
 
 	gfxSetPens(m_gc, 0, 0, 0);
 	gfxRectFill(m_gc, 120, 0, 320, 10);
@@ -75,8 +75,8 @@ void plDisplayTimer(U32 time, ubyte doSpotsImmediatly)
 	gfxSetPens(m_gc, 248, GFX_SAME_PEN, GFX_SAME_PEN);
 	gfxPrint(m_gc, info, 2, GFX_PRINT_RIGHT);
     } else {
-	sprintf(info, "%s %.2d:%.2d:%.2d %s", txtTimer, (U32) (time / 3600),
-		(U32) ((time / 60) % 60), (U32) (time % 60), txtSeconds);
+	sprintf(info, "%s %.2d:%.2d:%.2d %s", txtTimer, (uint32) (time / 3600),
+		(uint32) ((time / 60) % 60), (uint32) (time % 60), txtSeconds);
 
 	gfxSetPens(m_gc, 0, 0, 0);
 	gfxRectFill(m_gc, 220, 0, 320, 10);
@@ -106,10 +106,10 @@ void plDisplayInfo(void)
     gfxPrint(m_gc, info, 2, GFX_PRINT_LEFT | GFX_PRINT_SHADOW);
 }
 
-ubyte plSay(char *msg, U32 persId)
+byte plSay(char *msg, uint32 persId)
 {
     register LIST *l = txtGoKey(PLAN_TXT, msg);
-    register ubyte choice;
+    register byte choice;
 
     SetPictID(((Person) dbGetObject(OL_NR(GetNthNode(PersonsList, persId))))->
 	      PictID);
@@ -131,11 +131,11 @@ ubyte plSay(char *msg, U32 persId)
     return choice;
 }
 
-void plDrawWait(U32 sec)
+void plDrawWait(uint32 sec)
 {
     char time[10];
 
-    sprintf(time, "%.2d:%.2d", (U32) (sec / 60), (U32) (sec % 60));
+    sprintf(time, "%.2d:%.2d", (uint32) (sec / 60), (uint32) (sec % 60));
 
     gfxSetDrMd(m_gc, GFX_JAM_2);
     gfxSetPens(m_gc, 248, GFX_SAME_PEN, GFX_SAME_PEN);
@@ -144,7 +144,7 @@ void plDrawWait(U32 sec)
     gfxSetDrMd(m_gc, GFX_JAM_1);
 }
 
-void plRefresh(U32 ItemId)
+void plRefresh(uint32 ItemId)
 {
     register LSObject obj = (LSObject) dbGetObject(ItemId);
 

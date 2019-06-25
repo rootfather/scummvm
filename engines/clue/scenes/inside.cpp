@@ -20,20 +20,20 @@
 
 #include "clue/scenes/scenes.h"
 
-U32 CurrAreaId;
+uint32 CurrAreaId;
 LSObject CurrLSO;		/* for FadeObjectInside */
 
 static void FadeInsideObject(void)
 {
-    static ubyte status = 1;
+    static byte status = 1;
 
     lsFadeRasterObject(CurrAreaId, CurrLSO, (status++) % 2);
 }
 
-U32 tcGoInsideOfHouse(U32 buildingID)
+uint32 tcGoInsideOfHouse(uint32 buildingID)
 {
     LIST *menu = txtGoKey(MENU_TXT, "INSIDE_MENU"), *areas;
-    U32 count, i, areaID = 0;
+    uint32 count, i, areaID = 0;
 
     consistsOfAll(buildingID, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME,
 		  Object_LSArea);
@@ -50,7 +50,7 @@ U32 tcGoInsideOfHouse(U32 buildingID)
 
 	inpTurnFunctionKey(0);
 	inpTurnESC(0);
-	i = (U32) Menu(menu, (1L << count) - 1, 0, 0L, 0L);
+	i = (uint32) Menu(menu, (1L << count) - 1, 0, 0L, 0L);
 	inpTurnESC(1);
 	inpTurnFunctionKey(1);
 
@@ -69,11 +69,11 @@ U32 tcGoInsideOfHouse(U32 buildingID)
     return (areaID);
 }
 
-void tcInsideOfHouse(U32 buildingID, U32 areaID, ubyte perc)
+void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc)
 {
     LIST *objects;
     NODE *node, *n;
-    U32 action = 0, count;
+    uint32 action = 0, count;
     char name[TXT_KEY_LENGTH];
     char alarm[TXT_KEY_LENGTH], power[TXT_KEY_LENGTH];
     LSObject lso;
@@ -140,7 +140,7 @@ void tcInsideOfHouse(U32 buildingID, U32 areaID, ubyte perc)
 
 	    inpTurnFunctionKey(0);
 	    inpTurnESC(0);
-	    action = Menu(menu, 31, (ubyte) action, 0, 10);
+	    action = Menu(menu, 31, (byte) action, 0, 10);
 	    inpTurnESC(1);
 	    inpTurnFunctionKey(1);
 
@@ -183,7 +183,7 @@ void tcInsideOfHouse(U32 buildingID, U32 areaID, ubyte perc)
     inpSetWaitTicks(0);
 }
 
-void tcShowObjectData(U32 areaID, NODE * node, ubyte perc)
+void tcShowObjectData(uint32 areaID, NODE * node, byte perc)
 {
     NODE *n;
 

@@ -49,7 +49,7 @@ struct System {
 
 struct System *InitSystem(void);	/* Initialize system for use */
 void CloseSystem(struct System *sys);	/* Close all system immedietly */
-void SetActivHandler(struct System *sys, U32 id);
+void SetActivHandler(struct System *sys, uint32 id);
 
 void SaveSystem(FILE * fh, struct System *sys);
 LIST *LoadSystem(FILE * fh, struct System *sys);
@@ -63,27 +63,27 @@ LIST *LoadSystem(FILE * fh, struct System *sys);
 struct Handler {
     NODE Link;			/* Link to next handler */
 
-    U32 Id;			/* ID of handler (all handlers will be identified with their ID and
+    uint32 Id;			/* ID of handler (all handlers will be identified with their ID and
 				   not through pointers, which will save global data) */
 
-    U32 Timer;			/* Handler time in seconds/3 */
+    uint32 Timer;			/* Handler time in seconds/3 */
 
-    U32 Flags;			/* Handler flags */
+    uint32 Flags;			/* Handler flags */
 
     LIST *Actions;		/* Action table */
     NODE *CurrentAction;	/* Current action */
 };
 
 
-struct Handler *InitHandler(struct System *sys, U32 id, U32 flags);	/* Initialize handler         */
-void CloseHandler(struct System *sys, U32 id);	/* Close Handler              */
-struct Handler *ClearHandler(struct System *sys, U32 id);	/* Clear Handlers action list */
-struct Handler *FindHandler(struct System *sys, U32 id);
+struct Handler *InitHandler(struct System *sys, uint32 id, uint32 flags);	/* Initialize handler         */
+void CloseHandler(struct System *sys, uint32 id);	/* Close Handler              */
+struct Handler *ClearHandler(struct System *sys, uint32 id);	/* Clear Handlers action list */
+struct Handler *FindHandler(struct System *sys, uint32 id);
 
-ubyte IsHandlerCleared(struct System *sys);
+byte IsHandlerCleared(struct System *sys);
 
-void SaveHandler(FILE * fh, struct System *sys, U32 id);
-ubyte LoadHandler(FILE * fh, struct System *sys, U32 id);
+void SaveHandler(FILE * fh, struct System *sys, uint32 id);
+byte LoadHandler(FILE * fh, struct System *sys, uint32 id);
 
 size_t plGetUsedMem(void);
 
@@ -102,16 +102,16 @@ size_t plGetUsedMem(void);
 struct Action {
     NODE Link;
 
-    uword Type;
+    uint16 Type;
 
-    uword TimeNeeded;		/* times in seconds/3 */
-    uword Timer;
+    uint16 TimeNeeded;		/* times in seconds/3 */
+    uint16 Timer;
 };
 
 /* Type : ACTION_GO 
    Figure will go in one direction for x steps */
 struct ActionGo {
-    uword Direction;
+    uint16 Direction;
 };
 
 #define DIRECTION_NO    0
@@ -128,60 +128,60 @@ struct ActionGo {
 /* Type : ACTION_SIGNAL
    Figure sends out a signal of a special type to a receiver */
 struct ActionSignal {
-    U32 ReceiverId;
+    uint32 ReceiverId;
 };
 
 /* Type : ACTION_WAIT_SIGNAL
    Figure waits until it receives a signal of a special type from a special sender */
 struct ActionWaitSignal {
-    U32 SenderId;
+    uint32 SenderId;
 };
 
 /* Type : ACTION_USE */
 struct ActionUse {
-    U32 ItemId;
-    U32 ToolId;
+    uint32 ItemId;
+    uint32 ToolId;
 };
 
 /* Type : ACTION_TAKE */
 struct ActionTake {
-    U32 ItemId;
-    U32 LootId;
+    uint32 ItemId;
+    uint32 LootId;
 };
 
 /* Type : ACTION_DROP */
 struct ActionDrop {
-    U32 ItemId;
-    U32 LootId;
+    uint32 ItemId;
+    uint32 LootId;
 };
 
 /* Type : ACTION_OPEN */
 struct ActionOpen {
-    U32 ItemId;
+    uint32 ItemId;
 };
 
 /* Type : ACTION_CLOSE */
 struct ActionClose {
-    U32 ItemId;
+    uint32 ItemId;
 };
 
 /* Type : ACTION_CONTROL */
 struct ActionControl {
-    U32 ItemId;
+    uint32 ItemId;
 };
 
 
 #define ActionData(ac,type)      ((type)(ac+1))
 
-struct Action *InitAction(struct System *sys, uword type, U32 data1, U32 data2,
-			  U32 time);
+struct Action *InitAction(struct System *sys, uint16 type, uint32 data1, uint32 data2,
+			  uint32 time);
 struct Action *CurrentAction(struct System *sys);
 struct Action *GoFirstAction(struct System *sys);
 struct Action *GoLastAction(struct System *sys);
 struct Action *NextAction(struct System *sys);
 struct Action *PrevAction(struct System *sys);
-ubyte ActionStarted(struct System *sys);
-ubyte ActionEnded(struct System *sys);
+byte ActionStarted(struct System *sys);
+byte ActionEnded(struct System *sys);
 void RemLastAction(struct System *sys);
 void IgnoreAction(struct System *sys);
 
@@ -194,18 +194,18 @@ void IgnoreAction(struct System *sys);
 struct plSignal {
     NODE Link;
 
-    U32 SenderId;
-    U32 ReceiverId;
+    uint32 SenderId;
+    uint32 ReceiverId;
 };
 
-struct plSignal *InitSignal(struct System *sys, U32 sender, U32 receiver);
+struct plSignal *InitSignal(struct System *sys, uint32 sender, uint32 receiver);
 void CloseSignal(struct plSignal *sig);
-struct plSignal *IsSignal(struct System *sys, U32 sender, U32 receiver);
+struct plSignal *IsSignal(struct System *sys, uint32 sender, uint32 receiver);
 
 
-U32 CurrentTimer(struct System *sys);
-void IncCurrentTimer(struct System *sys, U32 time, ubyte alsoTime);
-U32 GetMaxTimer(struct System *sys);
+uint32 CurrentTimer(struct System *sys);
+void IncCurrentTimer(struct System *sys, uint32 time, byte alsoTime);
+uint32 GetMaxTimer(struct System *sys);
 
 void ResetMem(void);
 void CorrectMem(LIST * l);

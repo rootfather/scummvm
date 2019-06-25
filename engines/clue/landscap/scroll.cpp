@@ -23,14 +23,14 @@
 #include "clue/landscap/landscap.h"
 #include "clue/landscap/landscap_p.h"
 
-uword DX, DY, PX, PY;
+uint16 DX, DY, PX, PY;
 
-ubyte lsScrollLandScape(ubyte direction)
+byte lsScrollLandScape(byte direction)
 {
     struct LandScape *l = ls;
-    ubyte collis = 0, back = 0, speed = ls->uch_ScrollSpeed;
+    byte collis = 0, back = 0, speed = ls->uch_ScrollSpeed;
 
-    if (direction != (ubyte) - 1)
+    if (direction != (byte) - 1)
 	collis = lsInitScrollLandScape(direction, LS_SCROLL_PREPARE);
 
     if (!collis) {
@@ -39,31 +39,31 @@ ubyte lsScrollLandScape(ubyte direction)
 	l->us_PersonXPos += (PX * speed);
 	l->us_PersonYPos += (PY * speed);
 
-	back = (ubyte) direction;
+	back = (byte) direction;
     }
 
     return back;
 }
 
-ubyte lsInitScrollLandScape(ubyte direction, ubyte mode)
+byte lsInitScrollLandScape(byte direction, byte mode)
 {
     register struct LandScape *l = ls;
-    S32 dx = 0, dy = 0, px = 0, py = 0, tx = 0, ty = 0, speed =
-	(S32) l->uch_ScrollSpeed;
-    ubyte collis = 0;
+    int32 dx = 0, dy = 0, px = 0, py = 0, tx = 0, ty = 0, speed =
+	(int32) l->uch_ScrollSpeed;
+    byte collis = 0;
 
     if (direction & LS_SCROLL_LEFT) {
 	if ((l->us_WindowXPos >= speed) && (l->us_PersonXPos <= LS_CENTER_X)) {
 	    dx = -1L;
 
-	    l->us_LivingXSpeed = (word) dx;
+	    l->us_LivingXSpeed = (int16) dx;
 	    l->us_LivingYSpeed = 0;
 	    l->uch_LivingAction = ANM_MOVE_LEFT;
 	} else {
 	    if (l->us_PersonXPos > speed) {
 		px = -1L;
 
-		l->us_LivingXSpeed = (word) px;
+		l->us_LivingXSpeed = (int16) px;
 		l->us_LivingYSpeed = 0;
 		l->uch_LivingAction = ANM_MOVE_LEFT;
 	    }
@@ -76,14 +76,14 @@ ubyte lsInitScrollLandScape(ubyte direction, ubyte mode)
 	    && (l->us_PersonXPos >= LS_CENTER_X)) {
 	    dx = 1;
 
-	    l->us_LivingXSpeed = (word) dx;
+	    l->us_LivingXSpeed = (int16) dx;
 	    l->us_LivingYSpeed = 0;
 	    l->uch_LivingAction = ANM_MOVE_RIGHT;
 	} else {
 	    if (l->us_PersonXPos < (LS_VISIBLE_X_SIZE - speed)) {
 		px = 1L;
 
-		l->us_LivingXSpeed = (word) px;
+		l->us_LivingXSpeed = (int16) px;
 		l->us_LivingYSpeed = 0;
 		l->uch_LivingAction = ANM_MOVE_RIGHT;
 	    }
@@ -95,14 +95,14 @@ ubyte lsInitScrollLandScape(ubyte direction, ubyte mode)
 	    dy = -1L;
 
 	    l->us_LivingXSpeed = 0;
-	    l->us_LivingYSpeed = (word) dy;
+	    l->us_LivingYSpeed = (int16) dy;
 	    l->uch_LivingAction = ANM_MOVE_UP;
 	} else {
 	    if (l->us_PersonYPos > (speed)) {
 		py = -1L;
 
 		l->us_LivingXSpeed = 0;
-		l->us_LivingYSpeed = (word) py;
+		l->us_LivingYSpeed = (int16) py;
 		l->uch_LivingAction = ANM_MOVE_UP;
 	    }
 	}
@@ -114,14 +114,14 @@ ubyte lsInitScrollLandScape(ubyte direction, ubyte mode)
 	    dy = 1L;
 
 	    l->us_LivingXSpeed = 0;
-	    l->us_LivingYSpeed = (word) dy;
+	    l->us_LivingYSpeed = (int16) dy;
 	    l->uch_LivingAction = ANM_MOVE_DOWN;
 	} else {
 	    if (l->us_PersonYPos < (LS_VISIBLE_Y_SIZE - speed)) {
 		py = 1L;
 
 		l->us_LivingXSpeed = 0;
-		l->us_LivingYSpeed = (word) py;
+		l->us_LivingYSpeed = (int16) py;
 		l->uch_LivingAction = ANM_MOVE_DOWN;
 	    }
 	}
@@ -142,11 +142,11 @@ ubyte lsInitScrollLandScape(ubyte direction, ubyte mode)
     return (collis);
 }
 
-ubyte lsIsCollision(S32 x, S32 y, ubyte direction)
+byte lsIsCollision(int32 x, int32 y, byte direction)
 {
-    S32 i;
-    ubyte collis = 0;
-    ubyte color[14], collisDir = 0;
+    int32 i;
+    byte collis = 0;
+    byte color[14], collisDir = 0;
 
     if (GamePlayMode & GP_COLLISION_CHECKING_OFF)
 	return 0;

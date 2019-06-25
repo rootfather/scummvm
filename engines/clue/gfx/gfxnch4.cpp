@@ -15,11 +15,11 @@
 
 int ScrX, ScrY;
 
-static U8 ScrDark;
+static uint8 ScrDark;
 
-void gfxSetDarkness(U8 value)
+void gfxSetDarkness(uint8 value)
 {
-    U8 *dp;
+    uint8 *dp;
     int h, i;
 
     dp = LSRPInMem.pixels;
@@ -76,13 +76,13 @@ void gfxNCH4Scroll(int x, int y)
 {
     int sx, sy;
 
-    sx = clamp(ScrX + x, ScrLEFT, ScrRIGHT);
-    sy = clamp(ScrY + y, ScrTOP, ScrBOTTOM);
+    sx = CLIP(ScrX + x, ScrLEFT, ScrRIGHT);
+    sy = CLIP(ScrY + y, ScrTOP, ScrBOTTOM);
 
     gfxNCH4SetViewPort(sx, sy);
 }
 
-void gfxNCH4SetSplit(uword line)
+void gfxNCH4SetSplit(uint16 line)
 {
 }
 
@@ -94,7 +94,7 @@ void gfxLSInit(void)
     gfxLSRectFill(0, 0, LS_MAX_AREA_WIDTH-1, LS_MAX_AREA_HEIGHT-1, 0);
 }
 
-void gfxLSPut(MemRastPort *sp, U16 sx, U16 sy, U16 dx, U16 dy, U16 w, U16 h)
+void gfxLSPut(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, uint16 w, uint16 h)
 {
     Rect srcR, dstR;
 
@@ -111,7 +111,7 @@ void gfxLSPut(MemRastPort *sp, U16 sx, U16 sy, U16 dx, U16 dy, U16 w, U16 h)
     MemBlit(sp, &srcR, &LSRPInMem, &dstR, GFX_ROP_BLIT);
 }
 
-void gfxLSPutMsk(MemRastPort *sp, U16 sx, U16 sy, U16 dx, U16 dy, U16 w, U16 h)
+void gfxLSPutMsk(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, uint16 w, uint16 h)
 {
     Rect srcR, dstR;
 
@@ -128,7 +128,7 @@ void gfxLSPutMsk(MemRastPort *sp, U16 sx, U16 sy, U16 dx, U16 dy, U16 w, U16 h)
     MemBlit(sp, &srcR, &LSRPInMem, &dstR, GFX_ROP_MASK_BLIT);
 }
 
-void gfxLSPutClr(MemRastPort *sp, U16 sx, U16 sy, U16 dx, U16 dy, U16 w, U16 h)
+void gfxLSPutClr(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, uint16 w, uint16 h)
 {
     Rect srcR, dstR;
 
@@ -145,7 +145,7 @@ void gfxLSPutClr(MemRastPort *sp, U16 sx, U16 sy, U16 dx, U16 dy, U16 w, U16 h)
     MemBlit(sp, &srcR, &LSRPInMem, &dstR, GFX_ROP_CLR);
 }
 
-void gfxLSPutSet(MemRastPort *sp, U16 sx, U16 sy, U16 dx, U16 dy, U16 w, U16 h)
+void gfxLSPutSet(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, uint16 w, uint16 h)
 {
     Rect srcR, dstR;
 
@@ -162,10 +162,10 @@ void gfxLSPutSet(MemRastPort *sp, U16 sx, U16 sy, U16 dx, U16 dy, U16 w, U16 h)
     MemBlit(sp, &srcR, &LSRPInMem, &dstR, GFX_ROP_SET);
 }
 
-void gfxLSRectFill(U16 sx, U16 sy, U16 ex, U16 ey, U8 color)
+void gfxLSRectFill(uint16 sx, uint16 sy, uint16 ex, uint16 ey, uint8 color)
 {
-    U16 tmp, w, h;
-    U8 *dp;
+    uint16 tmp, w, h;
+    uint8 *dp;
 
     if (sx > ex) {
         tmp = sx;
@@ -179,8 +179,8 @@ void gfxLSRectFill(U16 sx, U16 sy, U16 ex, U16 ey, U8 color)
         ey = tmp;
     }
 
-    ex = min(ex, LS_MAX_AREA_WIDTH-1);
-    ey = min(ey, LS_MAX_AREA_HEIGHT-1);
+    ex = MIN(ex, uint16(LS_MAX_AREA_WIDTH-1));
+    ey = MIN(ey, uint16(LS_MAX_AREA_HEIGHT-1));
 
     w = ex - sx + 1;
     h = ey - sy + 1;
@@ -194,10 +194,10 @@ void gfxLSRectFill(U16 sx, U16 sy, U16 ex, U16 ey, U8 color)
     } while (--h);
 }
 
-U8 gfxLSReadPixel(U16 x, U16 y)
+uint8 gfxLSReadPixel(uint16 x, uint16 y)
 {
-    x = min(x, LS_MAX_AREA_WIDTH-1);
-    y = min(y, LS_MAX_AREA_HEIGHT-1);
+    x = MIN(x, uint16(LS_MAX_AREA_WIDTH-1));
+    y = MIN(y, uint16(LS_MAX_AREA_HEIGHT-1));
 
     return LSRPInMem.pixels[y * LS_MAX_AREA_WIDTH + x];
 }

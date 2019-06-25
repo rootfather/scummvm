@@ -49,7 +49,7 @@ void CDROM_WaitForMedia(void)
     }*/
 }
 
-void CDROM_PlayAudioSequence(U8 TrackNum, U32 StartOffset, U32 EndOffset)
+void CDROM_PlayAudioSequence(uint8 TrackNum, uint32 StartOffset, uint32 EndOffset)
 {/*
     if (cdrom && CD_INDRIVE(SDL_CDStatus(cdrom))) {
         SDL_CDPlayTracks(cdrom,TrackNum,StartOffset,1,EndOffset-StartOffset);

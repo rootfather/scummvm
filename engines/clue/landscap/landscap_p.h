@@ -99,54 +99,54 @@
 #define  LS_CENTER_Y              (LS_VISIBLE_Y_SIZE / 2)
 
 struct LandScape {
-    U32 ul_BuildingID;
-    U32 ul_AreaID;
+    uint32 ul_BuildingID;
+    uint32 ul_AreaID;
 
-    ubyte uch_ScrollSpeed;
+    byte uch_ScrollSpeed;
 
-    uword us_WindowXSize;	/* total Size of Window    */
-    uword us_WindowYSize;
+    uint16 us_WindowXSize;	/* total Size of Window    */
+    uint16 us_WindowYSize;
 
-    uword us_WindowXPos;	/* linke, obere Ecke des des   */
-    uword us_WindowYPos;	/* sichtbaren Windows ! */
+    uint16 us_WindowXPos;	/* linke, obere Ecke des des   */
+    uint16 us_WindowYPos;	/* sichtbaren Windows ! */
 
-    uword us_PersonXPos;	/* Offset zur linken, oberen Ecke */
-    uword us_PersonYPos;	/* des sichtbaren Windows ! */
+    uint16 us_PersonXPos;	/* Offset zur linken, oberen Ecke */
+    uint16 us_PersonYPos;	/* des sichtbaren Windows ! */
 
-    ubyte uch_FloorsPerWindowColumn;	/* total window */
-    ubyte uch_FloorsPerWindowLine;	/* total window */
+    byte uch_FloorsPerWindowColumn;	/* total window */
+    byte uch_FloorsPerWindowLine;	/* total window */
 
-    ubyte uch_CollMode;		/* "Plan" oder "echte Objekte", Ldesigner */
+    byte uch_CollMode;		/* "Plan" oder "echte Objekte", Ldesigner */
 
     char uch_ActivLiving[TXT_KEY_LENGTH];
 
     struct LSFloorSquare *p_CurrFloor;	/* holds floor and object information */
     struct LSFloorSquare *p_AllFloors[3];
-    U32 ul_FloorAreaId[3];
+    uint32 ul_FloorAreaId[3];
 
     LIST *p_ObjectRetrieval;
     LIST *p_ObjectRetrievalLists[3];
-    U32 ul_ObjectRetrievalAreaId[3];
+    uint32 ul_ObjectRetrievalAreaId[3];
 
     LIST *p_DoorRefreshList;
 
-    uword us_LivingXSpeed;
-    uword us_LivingYSpeed;
+    uint16 us_LivingXSpeed;
+    uint16 us_LivingYSpeed;
 
-    word us_RasInfoScrollX;	/* Åbernimmt die Aufgabe der RasInfo Struct */
-    word us_RasInfoScrollY;	/* des Amiga */
+    int16 us_RasInfoScrollX;	/* Åbernimmt die Aufgabe der RasInfo Struct */
+    int16 us_RasInfoScrollY;	/* des Amiga */
 
-    uword us_EscapeCarBobId;
+    uint16 us_EscapeCarBobId;
 
-    uword us_DoorXOffset;
-    uword us_DoorYOffset;
+    uint16 us_DoorXOffset;
+    uint16 us_DoorYOffset;
 
-    ubyte uch_LivingAction;
-    ubyte uch_ShowObjectMask;
+    byte uch_LivingAction;
+    byte uch_ShowObjectMask;
 };
 
 struct LSFloorSquare {
-    ubyte uch_FloorType;	/* 7 : object, 6 : Micro , siehe floor defines ! */
+    byte uch_FloorType;	/* 7 : object, 6 : Micro , siehe floor defines ! */
 };
 
 struct LSDoorRefreshNode	/* fÅr jede TÅr existiert eine Node */
@@ -155,8 +155,8 @@ struct LSDoorRefreshNode	/* fÅr jede TÅr existiert eine Node */
 
     LSObject lso;
 
-    uword us_XOffset;
-    uword us_YOffset;
+    uint16 us_XOffset;
+    uint16 us_YOffset;
 };
 
 extern struct LandScape *ls;

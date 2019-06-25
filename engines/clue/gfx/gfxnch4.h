@@ -32,21 +32,21 @@
 
 struct RastPort;
 
-extern U32 gfxNCH4GetCurrScrollOffset(void);
-void gfxSetDarkness(ubyte value);
+extern uint32 gfxNCH4GetCurrScrollOffset(void);
+void gfxSetDarkness(byte value);
 
 void gfxNCH4Refresh(void);
 
 extern void gfxNCH4SetViewPort(int x, int y);
 extern void gfxNCH4Scroll(int x, int y);
-extern void gfxNCH4SetSplit(uword line);
+extern void gfxNCH4SetSplit(uint16 line);
 void gfxLSInit(void);
 
-void gfxLSPut(MemRastPort *sp, U16 sx, U16 sy, U16 dx, U16 dy, U16 w, U16 h);
-void gfxLSPutMsk(MemRastPort *sp, U16 sx, U16 sy, U16 dx, U16 dy, U16 w, U16 h);
-void gfxLSPutClr(MemRastPort *sp, U16 sx, U16 sy, U16 dx, U16 dy, U16 w, U16 h);
-void gfxLSPutSet(MemRastPort *sp, U16 sx, U16 sy, U16 dx, U16 dy, U16 w, U16 h);
+void gfxLSPut(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, uint16 w, uint16 h);
+void gfxLSPutMsk(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, uint16 w, uint16 h);
+void gfxLSPutClr(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, uint16 w, uint16 h);
+void gfxLSPutSet(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, uint16 w, uint16 h);
 
-void gfxLSRectFill(U16 sx, U16 sy, U16 ex, U16 ey, U8 color);
-U8 gfxLSReadPixel(U16 x, U16 y);
+void gfxLSRectFill(uint16 sx, uint16 sy, uint16 ex, uint16 ey, uint8 color);
+uint8 gfxLSReadPixel(uint16 x, uint16 y);
 #endif

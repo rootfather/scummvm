@@ -34,19 +34,19 @@
 #define GFX_CMAP_OFFSET					61440	// -> Maximalgr”áe 320 * 192
 
 struct PrintRect {
-    uword us_X;
-    uword us_Width;
+    uint16 us_X;
+    uint16 us_Width;
 };
 
 struct ColorRange {
-    ubyte uch_Start;
-    ubyte uch_End;
+    byte uch_Start;
+    byte uch_End;
 };
 
 struct GfxBase {
     GC *gc;
 
-    ubyte uch_VideoMode;
+    byte uch_VideoMode;
 };
 
 GC LowerGC;
@@ -94,7 +94,7 @@ MemRastPort LSRPInMem;
 SDL_Surface *GfxBoardBase;
 SDL_Surface *Screen;
 
-ubyte DecrBuffer[GFX_DECR_BUFFER_SIZE];
+byte DecrBuffer[GFX_DECR_BUFFER_SIZE];
 
 struct PrintRect GlobalPrintRect;
 struct ColorRange GlobalColorRange;
@@ -111,15 +111,15 @@ GC *u_gc;
 struct Font *bubbleFont;
 struct Font *menuFont;
 
-static void gfxInitGC(GC *gc, U16 x, U16 y, U16 w, U16 h,
-                      U8 colorStart, U8 colorEnd, Font *font);
+static void gfxInitGC(GC *gc, uint16 x, uint16 y, uint16 w, uint16 h,
+                      uint8 colorStart, uint8 colorEnd, Font *font);
 
 static void gfxInitCollList(void);
 static void gfxInitPictList(void);
 
 static void gfxSetCMAP(const Uint8 *src);
 
-static Font *gfxOpenFont(char *fileName, U16 w, U16 h,
+static Font *gfxOpenFont(char *fileName, uint16 w, uint16 h,
                          unsigned char first, unsigned char last,
-                         U16 sw, U16 sh);
+                         uint16 sw, uint16 sh);
 static void gfxCloseFont(Font *font);

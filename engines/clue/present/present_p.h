@@ -17,20 +17,20 @@
 struct PresentControl {
     GC *gc;
 
-    uword us_BarWidth;
-    uword us_BarHeight;
+    uint16 us_BarWidth;
+    uint16 us_BarHeight;
 
-    ubyte uch_FCol;
-    ubyte uch_BCol;
-    ubyte uch_TCol;
+    byte uch_FCol;
+    byte uch_BCol;
+    byte uch_TCol;
 };
 
 struct presentationInfo {
     NODE link;
 
     char extendedText[70];
-    U32 extendedNr;
-    U32 maxNr;
+    uint32 extendedNr;
+    uint32 maxNr;
 
-    ubyte presentHow;
+    byte presentHow;
 };

@@ -15,10 +15,10 @@
 #define OPL_SAMPLE_BITS 16
 
 #if (OPL_SAMPLE_BITS==16)
-typedef S16 OPLSAMPLE;
+typedef int16 OPLSAMPLE;
 #endif
 #if (OPL_SAMPLE_BITS==8)
-typedef S8 OPLSAMPLE;
+typedef int8 OPLSAMPLE;
 #endif
 
 
@@ -37,7 +37,7 @@ void YM3812ResetChip(int which);
 int YM3812Write(int which, int a, int v);
 unsigned char YM3812Read(int which, int a);
 int YM3812TimerOver(int which, int c);
-void YM3812UpdateOne(int which, S16 * buffer, int length);
+void YM3812UpdateOne(int which, int16 * buffer, int length);
 
 void YM3812SetTimerHandler(int which, OPL_TIMERHANDLER TimerHandler,
 			   int channelOffset);
@@ -71,7 +71,7 @@ int YM3526TimerOver(int which, int c);
 ** '*buffer' is the output buffer pointer
 ** 'length' is the number of samples that should be generated
 */
-void YM3526UpdateOne(int which, S16 * buffer, int length);
+void YM3526UpdateOne(int which, int16 * buffer, int length);
 
 void YM3526SetTimerHandler(int which, OPL_TIMERHANDLER TimerHandler,
 			   int channelOffset);
@@ -100,7 +100,7 @@ void Y8950ResetChip(int which);
 int Y8950Write(int which, int a, int v);
 unsigned char Y8950Read(int which, int a);
 int Y8950TimerOver(int which, int c);
-void Y8950UpdateOne(int which, S16 * buffer, int length);
+void Y8950UpdateOne(int which, int16 * buffer, int length);
 
 void Y8950SetTimerHandler(int which, OPL_TIMERHANDLER TimerHandler,
 			  int channelOffset);

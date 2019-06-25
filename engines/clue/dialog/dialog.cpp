@@ -21,31 +21,31 @@
 #include "clue/dialog/dialog.h"
 #include "clue/dialog/talkappl.h"
 
-#define DLG_NO_SPEECH	((U32) -1)
-U32 StartFrame = DLG_NO_SPEECH;
-U32 EndFrame = DLG_NO_SPEECH;
+#define DLG_NO_SPEECH	((uint32) -1)
+uint32 StartFrame = DLG_NO_SPEECH;
+uint32 EndFrame = DLG_NO_SPEECH;
 
 struct DynDlgNode {
     NODE Link;
 
-    ubyte KnownBefore;		/* wie gut Sie bekannt sein mÅssen */
-    ubyte KnownAfter;		/* wie gut Sie danach bekannt sind ! */
+    byte KnownBefore;		/* wie gut Sie bekannt sein mÅssen */
+    byte KnownAfter;		/* wie gut Sie danach bekannt sind ! */
 };
 
 
-static LIST *PrepareQuestions(LIST * keyWords, U32 talkBits, ubyte textID)
+static LIST *PrepareQuestions(LIST * keyWords, uint32 talkBits, byte textID)
 {
     LIST *questionList = 0L, *preparedList = CreateList();
     LIST *stdQuestionList = txtGoKey(BUSINESS_TXT, "STD_QUEST");
     NODE *n;
     char question[TXT_KEY_LENGTH];
-    ubyte r, i;
+    byte r, i;
 
-    questionList = txtGoKey((U32) textID, "QUESTIONS");
+    questionList = txtGoKey((uint32) textID, "QUESTIONS");
 
     for (n = (NODE *) LIST_HEAD(keyWords); NODE_SUCC((NODE *) n);
 	 n = (NODE *) NODE_SUCC(n)) {
-	r = (ubyte) CalcRandomNr(0L, 6L);
+	r = (byte) CalcRandomNr(0L, 6L);
 
 	sprintf(question, NODE_NAME(GetNthNode(questionList, r)),
 		NODE_NAME((NODE *) n));
@@ -69,16 +69,16 @@ static LIST *PrepareQuestions(LIST * keyWords, U32 talkBits, ubyte textID)
     return (preparedList);
 }
 
-static LIST *ParseTalkText(LIST * origin, LIST * bubble, ubyte known)
+static LIST *ParseTalkText(LIST * origin, LIST * bubble, byte known)
 {
     LIST *keyWords;
     NODE *n, *keyNode;
     char line[TXT_KEY_LENGTH], key[TXT_KEY_LENGTH], keyWord[TXT_KEY_LENGTH];
     char *mem, *start;
-    ubyte line_pos = 0, key_pos;
+    byte line_pos = 0, key_pos;
     char snr[10], snr1[10];
-    ubyte nr, nr1;
-    U32 i;
+    byte nr, nr1;
+    uint32 i;
 
     keyWords = CreateList();
 
@@ -116,8 +116,8 @@ static LIST *ParseTalkText(LIST * origin, LIST * bubble, ubyte known)
 		snr1[3] = EOS;
 		keyWord[strlen(key) - 6] = EOS;
 
-		nr = (ubyte) atol(snr);
-		nr1 = (ubyte) atol(snr1);
+		nr = (byte) atol(snr);
+		nr1 = (byte) atol(snr1);
 
 		/* keyword einfÅgen */
 		for (i = 0; i < strlen(keyWord); i++)
@@ -142,15 +142,15 @@ static LIST *ParseTalkText(LIST * origin, LIST * bubble, ubyte known)
     return (keyWords);
 }
 
-void DynamicTalk(U32 Person1ID, U32 Person2ID, ubyte TalkMode)
+void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode)
 {
     char *Extension[4] = { "_UNKNOWN", "_KNOWN", "_FRIENDLY", "_BUSINESS" };
     char *Standard = "STANDARD";
-    U8 known = 0;
+    uint8 known = 0;
     Person p1 = (Person) dbGetObject(Person1ID);
     Person p2 = (Person) dbGetObject(Person2ID);
     char key[TXT_KEY_LENGTH], name[TXT_KEY_LENGTH];
-    U8 choice = 0, max = 1, i, quit, stdcount = 0, j, gencount = 0, textID;
+    uint8 choice = 0, max = 1, i, quit, stdcount = 0, j, gencount = 0, textID;
     LIST *origin = 0L, *questions = 0L, *bubble = CreateList(), *keyWords;
     struct DynDlgNode *n;
 
@@ -206,7 +206,7 @@ void DynamicTalk(U32 Person1ID, U32 Person2ID, ubyte TalkMode)
 	gencount = max - stdcount;
 
 	if (choice < gencount) {
-	    n = (struct DynDlgNode *) GetNthNode(keyWords, (U32) choice);
+	    n = (struct DynDlgNode *) GetNthNode(keyWords, (uint32) choice);
 
 	    strcpy(key, name);
 	    strcat(key, "_");
@@ -262,15 +262,15 @@ void PlayFromCDROM(void)
     }
 }
 
-ubyte Say(U32 TextID, ubyte activ, uword Person, const char *text)
+byte Say(uint32 TextID, byte activ, uint16 Person, const char *text)
 {
     LIST *bubble;
-    ubyte choice;
+    byte choice;
 
     if (setup.CDRom) {
         bubble = txtGoKey(TextID, text);
 
-        if (Person != (uword) - 1)
+        if (Person != (uint16) - 1)
             SetPictID(Person);
 
         /* speech output must be started out of the bubble because
@@ -310,7 +310,7 @@ ubyte Say(U32 TextID, ubyte activ, uword Person, const char *text)
     } else {
         bubble = txtGoKey(TextID, text);
 
-        if (Person != (uword) - 1)
+        if (Person != (uint16) - 1)
 	    SetPictID(Person);
 
         choice = Bubble(bubble, activ, NULL, 0L);
@@ -321,11 +321,11 @@ ubyte Say(U32 TextID, ubyte activ, uword Person, const char *text)
 }
 
 
-U32 Talk(void)
+uint32 Talk(void)
 {
-    U32 succ_event_nr = 0L, locNr, personID;
+    uint32 succ_event_nr = 0L, locNr, personID;
     LIST *bubble;
-    ubyte choice;
+    byte choice;
     char helloFriends[TXT_KEY_LENGTH];
 
     inpTurnESC(0);
@@ -345,7 +345,7 @@ U32 Talk(void)
 
 	    if (ChoiceOk((choice = Bubble(bubble, 0, 0L, 0L)), GET_OUT, bubble)) {
 		personID =
-		    ((struct ObjectNode *) GetNthNode(bubble, (U32) choice))->
+		    ((struct ObjectNode *) GetNthNode(bubble, (uint32) choice))->
 		    nr;
 
 		inpTurnESC(0);

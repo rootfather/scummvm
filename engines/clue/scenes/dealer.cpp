@@ -21,9 +21,9 @@
 
 void tcDealerDlg(void)
 {
-    U32 locNr = GetObjNrOfLocation(GetLocation);
+    uint32 locNr = GetObjNrOfLocation(GetLocation);
     Person dealer = NULL;
-    ubyte dealerNr, choice = 0;
+    byte dealerNr, choice = 0;
 
     if (locNr == Location_Parker) {
         dealer = (Person)dbGetObject(Person_Helen_Parker);
@@ -73,9 +73,9 @@ void tcDealerDlg(void)
     ShowTime(2);
 }
 
-void tcDealerOffer(Person dealer, ubyte which)
+void tcDealerOffer(Person dealer, byte which)
 {
-    ubyte Price[3][10] = { {70, 150, 220, 90, 210, 110, 200, 0, 190, 80},	/* maloya */
+    byte Price[3][10] = { {70, 150, 220, 90, 210, 110, 200, 0, 190, 80},	/* maloya */
     {120, 200, 180, 220, 79, 110, 0, 0, 110, 200},	/* pooly */
     {220, 66, 0, 110, 0, 220, 0, 212, 20, 130}
     };				/* parker */
@@ -84,35 +84,35 @@ void tcDealerOffer(Person dealer, ubyte which)
     RemoveList(tcMakeLootList(Person_Matt_Stuvysunt, Relation_has));
 
     if (comp->Bild)
-	tcDealerSays(dealer, 0, (S32) Price[which][0]);
+	tcDealerSays(dealer, 0, (int32) Price[which][0]);
     if (comp->Gold)
-	tcDealerSays(dealer, 1, (S32) Price[which][1]);
+	tcDealerSays(dealer, 1, (int32) Price[which][1]);
     if (comp->Geld)
-	tcDealerSays(dealer, 2, (S32) Price[which][2]);
+	tcDealerSays(dealer, 2, (int32) Price[which][2]);
     if (comp->Juwelen)
-	tcDealerSays(dealer, 3, (S32) Price[which][3]);
+	tcDealerSays(dealer, 3, (int32) Price[which][3]);
     if (comp->Delikates)
-	tcDealerSays(dealer, 4, (S32) Price[which][4]);
+	tcDealerSays(dealer, 4, (int32) Price[which][4]);
     if (comp->Statue)
-	tcDealerSays(dealer, 5, (S32) Price[which][5]);
+	tcDealerSays(dealer, 5, (int32) Price[which][5]);
     if (comp->Kuriositaet)
-	tcDealerSays(dealer, 6, (S32) Price[which][6]);
+	tcDealerSays(dealer, 6, (int32) Price[which][6]);
     if (comp->HistKunst)
-	tcDealerSays(dealer, 7, (S32) Price[which][7]);
+	tcDealerSays(dealer, 7, (int32) Price[which][7]);
     if (comp->GebrauchsArt)
-	tcDealerSays(dealer, 8, (S32) Price[which][8]);
+	tcDealerSays(dealer, 8, (int32) Price[which][8]);
     if (comp->Vase)
-	tcDealerSays(dealer, 9, (S32) Price[which][9]);
+	tcDealerSays(dealer, 9, (int32) Price[which][9]);
 }
 
-void tcDealerSays(Person dealer, ubyte textNr, S32 perc)
+void tcDealerSays(Person dealer, byte textNr, int32 perc)
 {
     LIST *lootNames = txtGoKey(OBJECTS_ENUM_TXT, "enum_LootE");
     LIST *specialLoot = txtGoKey(OBJECTS_ENUM_TXT, "enum_LootNameE");
     LIST *dealerText = txtGoKey(BUSINESS_TXT, "DEALER_OFFER");
     LIST *dealerOffer = CreateList();
     char line[TXT_KEY_LENGTH];
-    ubyte symp, i;
+    byte symp, i;
     struct ObjectNode *n;
     Person others[3];
     Player player = (Player)dbGetObject(Player_Player_1);
@@ -123,7 +123,7 @@ void tcDealerSays(Person dealer, ubyte textNr, S32 perc)
 
     if (perc == 0) {
 	sprintf(line, NODE_NAME(GetNthNode(dealerText, 4)),
-		NODE_NAME(GetNthNode(lootNames, (U32) textNr)));
+		NODE_NAME(GetNthNode(lootNames, (uint32) textNr)));
 	CreateNode(dealerOffer, 0L, line);
 
 	CreateNode(dealerOffer, 0L, NODE_NAME(GetNthNode(dealerText, 5)));
@@ -137,10 +137,10 @@ void tcDealerSays(Person dealer, ubyte textNr, S32 perc)
 	for (n = (struct ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n);
 	     n = (struct ObjectNode *) NODE_SUCC(n)) {
 	    Loot loot = (Loot)OL_DATA(n);
-	    U32 price = hasGet(Person_Matt_Stuvysunt, OL_NR(n)), offer;
+	    uint32 price = hasGet(Person_Matt_Stuvysunt, OL_NR(n)), offer;
 
 	    offer = tcGetDealerOffer(price, perc);
-	    offer = max(offer, 1);
+	    offer = MAX(offer, 1u);
 
 	    RemoveNode(dealerOffer, NULL);
 
@@ -150,7 +150,7 @@ void tcDealerSays(Person dealer, ubyte textNr, S32 perc)
 
 		    sprintf(line, NODE_NAME(GetNthNode(dealerText, 2)),
 			    NODE_NAME(GetNthNode
-				      (specialLoot, (U32) loot->Name)));
+				      (specialLoot, (uint32) loot->Name)));
 		    CreateNode(dealerOffer, 0L, line);
 
 		    sprintf(line, NODE_NAME(GetNthNode(dealerText, 3)), offer);
@@ -159,7 +159,7 @@ void tcDealerSays(Person dealer, ubyte textNr, S32 perc)
 		    symp = 1;
 
 		    sprintf(line, NODE_NAME(GetNthNode(dealerText, 0)),
-			    NODE_NAME(GetNthNode(lootNames, (U32) textNr)));
+			    NODE_NAME(GetNthNode(lootNames, (uint32) textNr)));
 		    CreateNode(dealerOffer, 0L, line);
 
 		    sprintf(line, NODE_NAME(GetNthNode(dealerText, 1)), price,
@@ -171,11 +171,11 @@ void tcDealerSays(Person dealer, ubyte textNr, S32 perc)
 		Bubble(dealerOffer, 0, 0L, 0L);
 
 		if (!(Say(BUSINESS_TXT, 0, MATT_PICTID, "DEALER_ANSWER"))) {
-		    S32 mattsMoney;
+		    int32 mattsMoney;
 
 		    hasUnSet(Person_Matt_Stuvysunt, OL_NR(n));
 
-		    mattsMoney = max(((offer * (player->MattsPart)) / 100), 1);
+		    mattsMoney = MAX((((int32)offer * (player->MattsPart)) / 100), 1);
 
 		    tcAddDealerSymp(dealer, symp);
 		    tcAddPlayerMoney(mattsMoney);
@@ -197,13 +197,13 @@ void tcDealerSays(Person dealer, ubyte textNr, S32 perc)
     RemoveList(lootNames);
 }
 
-LIST *tcMakeLootList(U32 containerID, U32 relID)
+LIST *tcMakeLootList(uint32 containerID, uint32 relID)
 {
     NODE *n;
     Loot loot;
     CompleteLoot comp = (CompleteLoot)dbGetObject(CompleteLoot_LastLoot);
     char data[TXT_KEY_LENGTH];
-    U32 value;
+    uint32 value;
     LIST *out = CreateList();
     LIST *loots;
     LIST *lootE = txtGoKey(OBJECTS_ENUM_TXT, "enum_LootE");

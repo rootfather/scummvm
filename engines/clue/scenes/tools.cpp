@@ -20,7 +20,7 @@
 
 #include "clue/scenes/scenes.h"
 
-char *tcShowPriceOfTool(U32 nr, U32 type, void *data)
+char *tcShowPriceOfTool(uint32 nr, uint32 type, void *data)
 {
     static char line[TXT_KEY_LENGTH];
     char line1[TXT_KEY_LENGTH];
@@ -32,14 +32,14 @@ char *tcShowPriceOfTool(U32 nr, U32 type, void *data)
     return line;
 }
 
-ubyte tcBuyTool(ubyte choice)
+byte tcBuyTool(byte choice)
 {
     LIST *tools;
     NODE *node;
-    U32 toolID, price, count;
+    uint32 toolID, price, count;
     Person mary = (Person)dbGetObject(Person_Mary_Bolton);
     Tool tool;
-    U8 oldChoice = GET_OUT;
+    uint8 oldChoice = GET_OUT;
     char exp[TXT_KEY_LENGTH];
 
     ObjectListSuccString = tcShowPriceOfTool;
@@ -60,7 +60,7 @@ ubyte tcBuyTool(ubyte choice)
 
     count = GetNrOfNodes(tools) - 1;
 
-    choice = min(choice, count);
+    choice = MIN((uint32)choice, count);
 
     while (choice != GET_OUT) {
 	SetPictID(MATT_PICTID);
@@ -68,7 +68,7 @@ ubyte tcBuyTool(ubyte choice)
 	oldChoice = choice;
 
 	if (ChoiceOk(choice = Bubble(tools, choice, 0L, 0L), GET_OUT, tools)) {
-	    node = (NODE *)GetNthNode(tools, (U32) choice);
+	    node = (NODE *)GetNthNode(tools, (uint32) choice);
 	    toolID = OL_NR(node);
 	    tool = (Tool) dbGetObject(toolID);
 	    price = tcGetToolPrice(tool);
@@ -90,11 +90,11 @@ ubyte tcBuyTool(ubyte choice)
     return (oldChoice);
 }
 
-ubyte tcDescTool(ubyte choice)
+byte tcDescTool(byte choice)
 {
     LIST *tools, *desc;
     char line[TXT_KEY_LENGTH], exp[TXT_KEY_LENGTH];
-    U8 oldChoice = GET_OUT;
+    uint8 oldChoice = GET_OUT;
     Person mary = (Person) dbGetObject(Person_Mary_Bolton);
 
     ObjectListSuccString = tcShowPriceOfTool;
@@ -111,7 +111,7 @@ ubyte tcDescTool(ubyte choice)
     txtGetFirstLine(BUSINESS_TXT, "THANKS", exp);
     ExpandObjectList(tools, exp);
 
-    choice = min(choice, (GetNrOfNodes(tools) - 1));
+    choice = MIN((uint32)choice, (GetNrOfNodes(tools) - 1));
 
     while (choice != GET_OUT) {
 	SetPictID(MATT_PICTID);
@@ -119,7 +119,7 @@ ubyte tcDescTool(ubyte choice)
 	oldChoice = choice;
 
 	if (ChoiceOk(choice = Bubble(tools, choice, 0L, 0L), GET_OUT, tools)) {
-	    dbGetObjectName(OL_NR(GetNthNode(tools, (U32) choice)), line);
+	    dbGetObjectName(OL_NR(GetNthNode(tools, (uint32) choice)), line);
 
 	    desc = txtGoKey(TOOLS_TXT, line);
 
@@ -136,12 +136,12 @@ ubyte tcDescTool(ubyte choice)
     return (oldChoice);
 }
 
-ubyte tcShowTool(ubyte choice)
+byte tcShowTool(byte choice)
 {
     LIST *tools;
     NODE *node;
-    U32 toolID;
-    U8 oldChoice = GET_OUT;
+    uint32 toolID;
+    uint8 oldChoice = GET_OUT;
     char exp[TXT_KEY_LENGTH];
 
     ObjectListSuccString = tcShowPriceOfTool;
@@ -158,7 +158,7 @@ ubyte tcShowTool(ubyte choice)
     txtGetFirstLine(BUSINESS_TXT, "THANKS", exp);
     ExpandObjectList(tools, exp);
 
-    choice = min(choice, (GetNrOfNodes(tools) - 1));
+    choice = MIN((uint32)choice, (GetNrOfNodes(tools) - 1));
 
     while (choice != GET_OUT) {
 	SetPictID(MATT_PICTID);
@@ -166,7 +166,7 @@ ubyte tcShowTool(ubyte choice)
 	oldChoice = choice;
 
 	if (ChoiceOk(choice = Bubble(tools, choice, 0L, 0L), GET_OUT, tools)) {
-	    node = (NODE *)GetNthNode(tools, (U32) choice);
+	    node = (NODE *)GetNthNode(tools, (uint32) choice);
 	    toolID = OL_NR(node);
 
 	    Present(toolID, "Tool", InitToolPresent);
@@ -183,8 +183,8 @@ void tcSellTool()
 {
     LIST *bubble, *tools;
     NODE *node;
-    U32 toolID, price;
-    ubyte choice = 0;
+    uint32 toolID, price;
+    byte choice = 0;
     Tool tool;
     Person mary;
 
@@ -208,9 +208,9 @@ void tcSellTool()
 
 	SetPictID(MATT_PICTID);
 	if (ChoiceOk(choice = Bubble(tools, 0, NULL, 0L), GET_OUT, tools)) {
-	    ubyte choice2 = 0;
+	    byte choice2 = 0;
 
-	    node = (NODE *)GetNthNode(tools, (U32) choice);
+	    node = (NODE *)GetNthNode(tools, (uint32) choice);
 	    toolID = OL_NR(node);
 
 	    tool = (Tool) dbGetObject(toolID);
@@ -253,8 +253,8 @@ void tcSellTool()
 
 void tcToolsShop(void)
 {
-    ubyte choice = 0;
-    static ubyte choice1 = 0;
+    byte choice = 0;
+    static byte choice1 = 0;
 
     if (!(knows(Person_Matt_Stuvysunt, Person_Mary_Bolton)))
 	knowsSet(Person_Matt_Stuvysunt, Person_Mary_Bolton);

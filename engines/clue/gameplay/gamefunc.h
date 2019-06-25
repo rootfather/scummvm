@@ -29,58 +29,58 @@
 
 
 struct StoryHeader {
-    ubyte StoryName[20];
+    byte StoryName[20];
 
-    U32 EventCount;		/* Zaehler mit der hîchsten EventNr */
-    U32 SceneCount;
+    uint32 EventCount;		/* Zaehler mit der hîchsten EventNr */
+    uint32 SceneCount;
 
-    U32 AmountOfScenes;
-    U32 AmountOfEvents;
+    uint32 AmountOfScenes;
+    uint32 AmountOfEvents;
 
-    U32 StartZeit;
-    U32 StartOrt;
-    U32 StartSzene;
+    uint32 StartZeit;
+    uint32 StartOrt;
+    uint32 StartSzene;
 };
 
 struct NewStory {
-    ubyte StoryName[20];
+    byte StoryName[20];
 
     struct StoryHeader *sh;
 
     struct List *scenes;	/* Liste von SceneNodes */
     struct List *events;
 
-    U32 StartZeit;
-    U32 StartOrt;
+    uint32 StartZeit;
+    uint32 StartOrt;
 };
 
 struct NewScene {
-    U32 EventNr;
-    U8 SceneName[20];
+    uint32 EventNr;
+    uint8 SceneName[20];
 
-    S32 Tag;			/* der Tag an dem sie eintritt */
-    S32 MinZeitPunkt;		/* zeitlicher Bereich in dem    */
-    S32 MaxZeitPunkt;		/* sie eintritt                         */
-    U32 Ort;			/* der erfÅllt sein mu·                 */
+    int32 Tag;			/* der Tag an dem sie eintritt */
+    int32 MinZeitPunkt;		/* zeitlicher Bereich in dem    */
+    int32 MaxZeitPunkt;		/* sie eintritt                         */
+    uint32 Ort;			/* der erfÅllt sein mu·                 */
 
-    U32 AnzahlderEvents;
-    U32 AnzahlderN_Events;
+    uint32 AnzahlderEvents;
+    uint32 AnzahlderN_Events;
 
-    U32 *events;		/* Nr. der Events, die erfÅllt sein mÅssen */
-    U32 *n_events;		/* Nr. der Events, die nicht erfÅllt sein mÅssen */
+    uint32 *events;		/* Nr. der Events, die erfÅllt sein mÅssen */
+    uint32 *n_events;		/* Nr. der Events, die nicht erfÅllt sein mÅssen */
 
-    U32 AnzahlderNachfolger;
-    U32 *nachfolger;		/* Nr. der NachfolgerEvents */
+    uint32 AnzahlderNachfolger;
+    uint32 *nachfolger;		/* Nr. der NachfolgerEvents */
 
-    U32 Moeglichkeiten;		/* siehe defines oben                   */
-    U32 Dauer;			/* Dauer dieser Szene in Minuten     */
-    U16 Anzahl;			/* wie oft sie geschehen kann                */
-    U16 Geschehen;		/* wie oft sie SCHON geschehen ist */
-    U8 Possibility;		/* mit der sie eintritt 0-255   */
+    uint32 Moeglichkeiten;		/* siehe defines oben                   */
+    uint32 Dauer;			/* Dauer dieser Szene in Minuten     */
+    uint16 Anzahl;			/* wie oft sie geschehen kann                */
+    uint16 Geschehen;		/* wie oft sie SCHON geschehen ist */
+    uint8 Possibility;		/* mit der sie eintritt 0-255   */
 
-    U32 Sample;			/* Nummer des Samples */
-    U32 Anim;			/* Nummer der Animation */
-    U32 NewOrt;			/* Ort der Scene */
+    uint32 Sample;			/* Nummer des Samples */
+    uint32 Anim;			/* Nummer der Animation */
+    uint32 NewOrt;			/* Ort der Scene */
 };
 
 struct SceneNode {
@@ -89,8 +89,8 @@ struct SceneNode {
 };
 
 struct NewEvent {
-    U32 EventNr;
-    ubyte EventName[20];
+    uint32 EventNr;
+    byte EventName[20];
 };
 
 struct EventNode {
@@ -101,25 +101,25 @@ struct EventNode {
 
 /* Prototypes */
 /* Story */
-extern void NewStory(ubyte * name, U32 StartZeit, U32 StartOrt);
-extern void ChangeStory(U32 StartZeit, U32 StartOrt);
+extern void NewStory(byte * name, uint32 StartZeit, uint32 StartOrt);
+extern void ChangeStory(uint32 StartZeit, uint32 StartOrt);
 extern void RemoveStory(void);
-extern void WriteStory(ubyte * filename);
-extern void ReadStory(ubyte * filename);
+extern void WriteStory(byte * filename);
+extern void ReadStory(byte * filename);
 
 /* Scenes */
 extern void AddScene(struct NewScene *ns);
-extern void ChangeScene(ubyte * name, struct NewScene *ns);
-extern void RemoveScene(ubyte * name);
+extern void ChangeScene(byte * name, struct NewScene *ns);
+extern void RemoveScene(byte * name);
 extern void RemoveAllScenes(void);
 
 /* Events */
 extern void AddEvent(struct NewEvent *ev);
-extern void RemoveEvent(ubyte * name);
+extern void RemoveEvent(byte * name);
 extern void RemoveAllEvents(void);
 
 /* Specials */
-char *GetName(U32 EventNr);
+char *GetName(uint32 EventNr);
 
 
 extern struct NewStory *story;

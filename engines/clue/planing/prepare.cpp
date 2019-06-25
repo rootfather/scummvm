@@ -26,27 +26,27 @@
 LIST *PersonsList = NULL;
 LIST *BurglarsList = NULL;
 
-ubyte PersonsNr = 0;
-ubyte BurglarsNr = 0;
-U32 CurrentPerson = 0;
+byte PersonsNr = 0;
+byte BurglarsNr = 0;
+uint32 CurrentPerson = 0;
 
-U32 Planing_Weight[PLANING_NR_PERSONS];
-U32 Planing_Volume[PLANING_NR_PERSONS];
+uint32 Planing_Weight[PLANING_NR_PERSONS];
+uint32 Planing_Volume[PLANING_NR_PERSONS];
 
-ubyte Planing_Loot[PLANING_NR_LOOTS];
-ubyte Planing_Guard[PLANING_NR_GUARDS];
+byte Planing_Loot[PLANING_NR_LOOTS];
+byte Planing_Guard[PLANING_NR_GUARDS];
 
 char Planing_Name[PLANING_NR_PERSONS + PLANING_NR_GUARDS][20];
 
 LIST *Planing_GuardRoomList[PLANING_NR_GUARDS];
 
-U32 Planing_BldId;
+uint32 Planing_BldId;
 
 
 /* Handler functions */
 void plBuildHandler(NODE * n)
 {
-    U32 flags = SHF_NORMAL;
+    uint32 flags = SHF_NORMAL;
 
     if (OL_TYPE(n) == Object_Police)
 	flags |= SHF_AUTOREVERS;
@@ -67,7 +67,7 @@ void plCloseHandler(NODE * n)
 /* Preparation & Unpreparation functions */
 void plPrepareData(void)
 {
-    register ubyte i;
+    register byte i;
 
     for (i = 0; i < PLANING_NR_LOOTS; i++)
 	Planing_Loot[i] = 0;
@@ -82,10 +82,10 @@ void plPrepareData(void)
 	Planing_Guard[i] = 0;
 }
 
-void plPrepareSprite(U32 livNr, U32 areaId)
+void plPrepareSprite(uint32 livNr, uint32 areaId)
 {
     LSArea activArea = (LSArea) dbGetObject(areaId);
-    uword xpos, ypos;
+    uint16 xpos, ypos;
 
     livLivesInArea(Planing_Name[livNr], areaId);
 
@@ -144,7 +144,7 @@ void plPrepareSprite(U32 livNr, U32 areaId)
     }
 }
 
-void plPrepareGfx(U32 objId, ubyte landscapMode, ubyte prepareMode)
+void plPrepareGfx(uint32 objId, byte landscapMode, byte prepareMode)
 {
     if (prepareMode & PLANING_GFX_LANDSCAPE)
 	lsInitLandScape(objId, landscapMode);
@@ -158,7 +158,7 @@ void plPrepareGfx(U32 objId, ubyte landscapMode, ubyte prepareMode)
     }
 
     if (prepareMode & PLANING_GFX_SPRITES) {
-	U32 i;
+	uint32 i;
 
 	for (i = 0; i < PersonsNr; i++) {
 	    if (dbIsObject(OL_NR(GetNthNode(PersonsList, i)), Object_Person))
@@ -173,13 +173,13 @@ void plPrepareGfx(U32 objId, ubyte landscapMode, ubyte prepareMode)
 	    }
 	}
 
-	lsSetActivLiving(Planing_Name[CurrentPerson], (uword) - 1, (uword) - 1);
+	lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) - 1, (uint16) - 1);
     }
 }
 
 void plUnprepareGfx(void)
 {
-    register ubyte i;
+    register byte i;
 
     gfxShow(CurrentBackground, GFX_NO_REFRESH | GFX_FADE_OUT, 5, -1, -1);
 
@@ -224,7 +224,7 @@ void plUnprepareRel(void)
 
 void plPrepareNames(void)
 {
-    register ubyte i;
+    register byte i;
 
     for (i = 0; i < PersonsNr; i++) {
 	if (dbIsObject(OL_NR(GetNthNode(PersonsList, i)), Object_Person))
@@ -235,7 +235,7 @@ void plPrepareNames(void)
     }
 }
 
-void plPrepareSys(U32 currPer, U32 objId, ubyte sysMode)
+void plPrepareSys(uint32 currPer, uint32 objId, byte sysMode)
 {
     CurrentPerson = currPer;
 

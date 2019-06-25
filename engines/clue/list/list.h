@@ -70,17 +70,17 @@ void *CreateNode(LIST *list, size_t size, const char *name);
 void RemoveNode(LIST *list, const char *name);
 void FreeNode(void *node);
 void *GetNode(LIST *list, const char *name);
-void *GetNthNode(LIST *list, U32 nth);
-U32 GetNrOfNodes(LIST *list);
-U32 GetNodeNrByAddr(LIST *list, void *node);
-U32 GetNodeNr(LIST *list, const char *name);
+void *GetNthNode(LIST *list, uint32 nth);
+uint32 GetNrOfNodes(LIST *list);
+uint32 GetNodeNrByAddr(LIST *list, void *node);
+uint32 GetNodeNr(LIST *list, const char *name);
 void foreach(LIST *list, void (*processNode) (void *));
 void Link(LIST *list, void *node, void *predNode);
 void *UnLinkByAddr(LIST *list, void *node, NODE **predNode);
 void *UnLink(LIST *list, const char *name, NODE **predNode);
 void ReplaceNodeByAddr(LIST *list, void *node, NODE *newNode);
 void ReplaceNode(LIST *list, const char *name, NODE *newNode);
-U32 ReadList(LIST *list, size_t size, char *fileName);
+uint32 ReadList(LIST *list, size_t size, char *fileName);
 void WriteList(LIST *list, char *fileName);
 
 #endif				/* MODULE_LIST */

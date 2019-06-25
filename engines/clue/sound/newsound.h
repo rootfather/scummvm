@@ -13,8 +13,8 @@
 void sndInit(void);
 void sndDone(void);
 
-void sndPlaySound(char *name, U32 mode);
-void sndStopSound(U8 dummy);
+void sndPlaySound(char *name, uint32 mode);
+void sndStopSound(uint8 dummy);
 void sndFading(short int targetVol);
 
 char *sndGetCurrSoundName(void);

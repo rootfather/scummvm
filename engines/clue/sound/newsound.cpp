@@ -33,7 +33,7 @@ void sndDone(void)
     SDL_UnlockAudio();
 }
 
-void sndPlaySound(char *name, U32 mode)
+void sndPlaySound(char *name, uint32 mode)
 {
     char path[DSK_PATH_MAX];
 
@@ -64,7 +64,7 @@ void sndFading(short int targetVol)
     }
 }
 
-void sndStopSound(U8 dummy)
+void sndStopSound(uint8 dummy)
 {
     if (FXBase.us_AudioOk) {
         SDL_LockAudio();

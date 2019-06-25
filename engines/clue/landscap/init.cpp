@@ -24,15 +24,15 @@
 
 static void lsInitFloorSquares(void);
 static void lsLoadAllSpots(void);
-static void lsSetCurrFloorSquares(U32 areaId);
+static void lsSetCurrFloorSquares(uint32 areaId);
 
 /*------------------------------------------------------------------------------
  *   global functions for landscape
  *------------------------------------------------------------------------------*/
 
-void lsInitLandScape(U32 bID, ubyte mode)
+void lsInitLandScape(uint32 bID, byte mode)
 {				/* initialisiert das Landschaftsmodul */
-    S32 i;
+    int32 i;
 
     if (!ls)
 	ls = (LandScape *)TCAllocMem(sizeof(*ls), 0);
@@ -55,8 +55,8 @@ void lsInitLandScape(U32 bID, ubyte mode)
 
     lsLoadAllSpots();
 
-    ls->uch_FloorsPerWindowColumn = (ubyte) (LS_FLOORS_PER_COLUMN);
-    ls->uch_FloorsPerWindowLine = (ubyte) (LS_FLOORS_PER_LINE);
+    ls->uch_FloorsPerWindowColumn = (byte) (LS_FLOORS_PER_COLUMN);
+    ls->uch_FloorsPerWindowLine = (byte) (LS_FLOORS_PER_LINE);
 
     ls->ul_AreaID = lsGetStartArea();	/* !! MOD 04-01 - vor Sprites!!! */
 
@@ -73,7 +73,7 @@ void lsInitLandScape(U32 bID, ubyte mode)
            but as handle for the bob */
 	lso->us_OffsetFact = BobInit(14, 14);
 
-	hasLootBagUnSet(ls->ul_AreaID, (U32) i);
+	hasLootBagUnSet(ls->ul_AreaID, (uint32) i);
     }
 
     livInit(0, 0, LS_VISIBLE_X_SIZE, LS_VISIBLE_Y_SIZE, LS_MAX_AREA_WIDTH,
@@ -88,11 +88,11 @@ void lsInitLandScape(U32 bID, ubyte mode)
 
     lsInitFloorSquares();
 
-    lsInitActivArea(ls->ul_AreaID, (uword) - 1, (uword) - 1, NULL);
+    lsInitActivArea(ls->ul_AreaID, (uint16) - 1, (uint16) - 1, NULL);
     lsShowEscapeCar();
 }
 
-void lsInitActivArea(U32 areaID, uword x, uword y, char *livingName)
+void lsInitActivArea(uint32 areaID, uint16 x, uint16 y, char *livingName)
 {
     LSArea area = (LSArea) dbGetObject(areaID);
 
@@ -104,9 +104,9 @@ void lsInitActivArea(U32 areaID, uword x, uword y, char *livingName)
     ls->us_WindowXSize = area->us_Width;
     ls->us_WindowYSize = area->us_Height;
 
-    if (x == (uword) - 1)
+    if (x == (uint16) - 1)
 	x = area->us_StartX0;
-    if (y == (uword) - 1)
+    if (y == (uint16) - 1)
 	y = area->us_StartY0;
 
     lsSetVisibleWindow(x, y);
@@ -125,7 +125,7 @@ void lsInitActivArea(U32 areaID, uword x, uword y, char *livingName)
     lsRefreshAllLootBags();
 }
 
-void lsInitRelations(U32 areaID)
+void lsInitRelations(uint32 areaID)
 {
     LSArea area = (LSArea)dbGetObject(areaID);
 
@@ -137,7 +137,7 @@ void lsInitRelations(U32 areaID)
     AddRelation(area->ul_ObjectBaseNr + REL_HAS_ROOM_OFFSET);
 }
 
-void lsSetRelations(U32 areaID)
+void lsSetRelations(uint32 areaID)
 {
     LSArea area = (LSArea)dbGetObject(areaID);
 
@@ -151,7 +151,7 @@ void lsSetRelations(U32 areaID)
 
 void lsInitObjects(void)
 {
-    U32 areaCount = 0, i;
+    uint32 areaCount = 0, i;
     LIST *areas;
     NODE *n;
 
@@ -188,7 +188,7 @@ void lsInitObjects(void)
     RemoveList(areas);
 }
 
-void lsLoadGlobalData(U32 bld, U32 ul_AreaId)
+void lsLoadGlobalData(uint32 bld, uint32 ul_AreaId)
 {
     char areaName[TXT_KEY_LENGTH], fileName[DSK_PATH_MAX];
 
@@ -203,7 +203,7 @@ void lsLoadGlobalData(U32 bld, U32 ul_AreaId)
 	ErrorMsg(Disk_Defect, ERROR_MODULE_LANDSCAP, 2);
 }
 
-void lsInitObjectDB(U32 bld, U32 areaID)
+void lsInitObjectDB(uint32 bld, uint32 areaID)
 {
     char fileName[DSK_PATH_MAX], areaName[TXT_KEY_LENGTH];
 
@@ -229,7 +229,7 @@ void lsInitObjectDB(U32 bld, U32 areaID)
 /* contrary to the Amiga version this loads all floor data into memory at once */
 static void lsInitFloorSquares(void)
 {
-    U32 count;
+    uint32 count;
     unsigned i;
     char fileName[DSK_PATH_MAX], areaName[TXT_KEY_LENGTH];
     NODE *n;
@@ -259,7 +259,7 @@ static void lsInitFloorSquares(void)
 
 	if ((fh = dskOpen(fileName, "rb"))) {
 	    for (j = 0; j < count; j++)
-		dskRead(fh, &ls->p_AllFloors[i][j].uch_FloorType, sizeof(U8));
+		dskRead(fh, &ls->p_AllFloors[i][j].uch_FloorType, sizeof(uint8));
 
 	    dskClose(fh);
 	}
@@ -291,9 +291,9 @@ static void lsLoadAllSpots(void)
     RemoveList(areas);
 }
 
-static void lsSetCurrFloorSquares(U32 areaId)
+static void lsSetCurrFloorSquares(uint32 areaId)
 {
-    S32 i;
+    int32 i;
 
     for (i = 0; i < 3; i++)
 	if (areaId == ls->ul_FloorAreaId[i])
@@ -325,7 +325,7 @@ static void lsDoneFloorSquares(void)
 
 }
 
-void lsDoneObjectDB(U32 areaID)
+void lsDoneObjectDB(uint32 areaID)
 {
     LSArea area = (LSArea)dbGetObject(areaID);
 
@@ -344,7 +344,7 @@ void lsDoneObjectDB(U32 areaID)
 void lsDoneLandScape(void)
 {
     NODE *n;
-    S32 areaCount = 0, i;
+    int32 areaCount = 0, i;
 
     if (ls) {
 	LIST *areas;
@@ -391,7 +391,7 @@ void lsDoneLandScape(void)
     }
 }
 
-void lsDoneActivArea(U32 newAreaID)
+void lsDoneActivArea(uint32 newAreaID)
 {
     livSetAllInvisible();	/* MOD 14-01-94 */
 }

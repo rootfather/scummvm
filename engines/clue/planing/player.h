@@ -94,5 +94,5 @@
 #include "clue/planing/guards.h"
 #endif
 
-S32 plPlayer(U32 objId, U32 actionTime, ubyte(*actionFunc) (U32, U32));
+int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc) (uint32, uint32));
 #endif

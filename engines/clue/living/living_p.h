@@ -23,7 +23,7 @@
 
 #define LIV_TEMPLATE_BUFFER	StdBuffer1	/* auch LS_LOOTBAG_BUFFER „ndern!!! */
 
-#define LIV_NO_FRAME				((uword) -1)
+#define LIV_NO_FRAME				((uint16) -1)
 
 #define LIV_COLL_WIDTH			308	/* ein Frame ist 14 * 14 */
 
@@ -36,20 +36,20 @@ struct SpriteControl {
     LIST *p_Livings;
     LIST *p_Template;
 
-    U32 ul_SprPlayMode;
-    U32 ul_ActivAreaId;
+    uint32 ul_SprPlayMode;
+    uint32 ul_ActivAreaId;
 
-    uword us_VisLScapeX;
-    uword us_VisLScapeY;
-    uword us_VisLScapeWidth;
-    uword us_VisLScapeHeight;
+    uint16 us_VisLScapeX;
+    uint16 us_VisLScapeY;
+    uint16 us_VisLScapeWidth;
+    uint16 us_VisLScapeHeight;
 
-    uword us_TotalLScapeWidth;
-    uword us_TotalLScapeHeight;
+    uint16 us_TotalLScapeWidth;
+    uint16 us_TotalLScapeHeight;
 
-    ubyte uch_FirstFrame;
-    ubyte uch_LastFrame;
-    ubyte uch_FrameCount;	/* Anzahl der Frames pro Anim */
+    byte uch_FirstFrame;
+    byte uch_LastFrame;
+    byte uch_FrameCount;	/* Anzahl der Frames pro Anim */
 
     char ch_PlayDirection;
 };
@@ -57,38 +57,38 @@ struct SpriteControl {
 struct AnimTemplate {
     NODE Link;
 
-    uword us_Width;
-    uword us_Height;
+    uint16 us_Width;
+    uint16 us_Height;
 
-    uword us_FrameOffsetNr;
+    uint16 us_FrameOffsetNr;
 };
 
 struct Living {			/* komplette Daten einer Instanz   *//* eines Lebewesens                */
     NODE Link;
 
-    U32 ul_LivesInAreaId;	/* Area -> LandScap */
+    uint32 ul_LivesInAreaId;	/* Area -> LandScap */
 
-    uword us_LivingNr;
+    uint16 us_LivingNr;
 
     struct AnimTemplate *p_OriginTemplate;
 
-    ubyte uch_XSize;
-    ubyte uch_YSize;
+    byte uch_XSize;
+    byte uch_YSize;
 
-    word s_XSpeed;
-    word s_YSpeed;
+    int16 s_XSpeed;
+    int16 s_YSpeed;
 
-    uword us_XPos;		/* absolut */
-    uword us_YPos;
+    uint16 us_XPos;		/* absolut */
+    uint16 us_YPos;
 
-    ubyte uch_ViewDirection;	/* 0 .. left, right, up, down */
+    byte uch_ViewDirection;	/* 0 .. left, right, up, down */
 
-    ubyte uch_Action;
-    ubyte uch_OldAction;
+    byte uch_Action;
+    byte uch_OldAction;
 
     char ch_CurrFrameNr;
 
-    ubyte uch_Status;		/* enabled or disabled */
+    byte uch_Status;		/* enabled or disabled */
 };
 
 static struct SpriteControl *sc = NULL;
@@ -102,7 +102,7 @@ static void livRem(struct Living *liv);
 static void livHide(struct Living *liv);
 static void livShow(struct Living *liv);
 
-static void livAdd(char *uch_Name, char *uch_TemplateName, ubyte uch_XSize,
-		   ubyte uch_YSize, word s_XSpeed, word s_YSpeed);
+static void livAdd(char *uch_Name, char *uch_TemplateName, byte uch_XSize,
+		   byte uch_YSize, int16 s_XSpeed, int16 s_YSpeed);
 
-static ubyte livIsVisible(struct Living *liv);
+static byte livIsVisible(struct Living *liv);
