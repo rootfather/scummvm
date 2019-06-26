@@ -65,6 +65,19 @@ static const ADGameDescription gameDescriptions[] = {
 		ADGF_NO_FLAGS,
 		GUIO0()
 	},
+		{
+		"clue",
+		"",
+		{
+			{ "THECLOUE.TXT", 0, "e11f380d78fc41ffe6347f4a68303cee", 2288 },
+			{ "TCMAINEE.TXT", 0, "a21fa4dbe3798586271ba3c723bd2def", 2372 },
+			AD_LISTEND
+		},
+		Common::CZ_CZE,
+		Common::kPlatformDOS,
+		ADGF_NO_FLAGS,
+		GUIO0()
+	},
 	{
 		"clue",
 		"",
