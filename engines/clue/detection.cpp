@@ -58,7 +58,7 @@ static const ADGameDescription gameDescriptions[] = {
 		{
 			{ "THECLOUE.TXT", 0, "2ef27892c565679069d97fd830b97dd0", 2564 },
 			{ "TCMAINOE.TXT", 0, "2973a01ecd8d13d82f201e1f38fcb763", 14160},
-			{ NULL, 0, NULL, 0 }
+			AD_LISTEND
 		},
 		Common::EN_ANY,
 		Common::kPlatformDOS,
@@ -70,7 +70,7 @@ static const ADGameDescription gameDescriptions[] = {
 		"",
 		{
 			{ "TITLE.BK", 0, "8007db7e506015cf7f82388414c8add7", 11955 },
-			{ NULL, 0, NULL, 0 }
+			AD_LISTEND
 		},
 		Common::DE_DEU,
 		Common::kPlatformDOS,
@@ -82,7 +82,7 @@ static const ADGameDescription gameDescriptions[] = {
 		"CD",
 		{
 			{ "TITLE.BK", 0, "d6da5307af9bbfcefc6ab015cac8914f", 11955 },
-			{ NULL, 0, NULL, 0 }
+			AD_LISTEND
 		},
 		Common::DE_DEU,
 		Common::kPlatformDOS,
@@ -95,7 +95,7 @@ static const ADGameDescription gameDescriptions[] = {
 		{
 			{ "TITLE.BK", 0, "8007db7e506015cf7f82388414c8add7", 11955 },
 			{ "PICT.LST", 0, "852a0c798b272eacb86a8dcbb939621d", 6124 },
-			{ NULL, 0, NULL, 0 }
+			AD_LISTEND
 		},
 		Common::DE_DEU,
 		Common::kPlatformDOS,
@@ -108,7 +108,7 @@ static const ADGameDescription gameDescriptions[] = {
 		{
 			{ "TITLE.BK", 0, "d6da5307af9bbfcefc6ab015cac8914f", 11955 },
 			{ "PICT.LST", 0, "852a0c798b272eacb86a8dcbb939621d", 6124 },
-			{ NULL, 0, NULL, 0 }
+			AD_LISTEND
 		},
 		Common::DE_DEU,
 		Common::kPlatformDOS,
@@ -140,7 +140,7 @@ public:
 	}
 
 	virtual const char *getOriginalCopyright() const {
-		return "The Clue! (C) 1994 neo Software";
+		return "The Clue! (C) 1994 neo Software Produktions GmbH";
 	}
 
 	virtual bool hasFeature(MetaEngineFeature f) const;

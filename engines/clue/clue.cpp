@@ -45,9 +45,6 @@ ClueEngine::~ClueEngine() {
 }
 
 Common::Error ClueEngine::run() {
-	// Initialize backend
-	initGraphics(320, 200);
-
 	// Game entry point
 	clue_main(ConfMan.get("path").c_str());
 

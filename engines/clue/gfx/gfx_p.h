@@ -18,8 +18,6 @@
   distribution.
  ****************************************************************************/
 
-#include "SDL.h"
-
 #define GFX_SEG_ADDR						(0xA0000000L)
 #define GFX_PAGE_SIZE					(64000L)	/* 320*200 = 64000 Bytes groá */
 
@@ -91,8 +89,9 @@ MemRastPort BobRPInMem;
 
 MemRastPort LSRPInMem;
 
-SDL_Surface *GfxBoardBase;
-SDL_Surface *Screen;
+Graphics::PixelFormat ScreenFormat;
+Graphics::Surface *GfxBoardBase;
+Graphics::Surface *Screen;
 
 byte DecrBuffer[GFX_DECR_BUFFER_SIZE];
 

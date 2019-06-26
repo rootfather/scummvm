@@ -168,15 +168,11 @@ void gfxLSRectFill(uint16 sx, uint16 sy, uint16 ex, uint16 ey, uint8 color)
     uint8 *dp;
 
     if (sx > ex) {
-        tmp = sx;
-        sx = ex;
-        ex = tmp;
+		SWAP(sx, ex);
     }
 
     if (sy > ey) {
-        tmp = sy;
-        sy = ey;
-        ey = tmp;
+		SWAP(sy, ey);
     }
 
     ex = MIN(ex, uint16(LS_MAX_AREA_WIDTH-1));

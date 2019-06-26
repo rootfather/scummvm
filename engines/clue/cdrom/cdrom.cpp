@@ -9,7 +9,6 @@
 
 unsigned int CDRomInstalled = 0;
 
-#include "SDL.h"
 /*
 static SDL_CD *cdrom;
 */

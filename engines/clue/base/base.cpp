@@ -23,8 +23,6 @@
 extern unsigned _stklen = 16 * 1024;
 #endif
 
-#include "SDL.h"
-
 void *StdBuffer0 = NULL;
 void *StdBuffer1 = NULL;
 
@@ -78,7 +76,6 @@ void tcDone(void)
         }
 
         pcErrClose();
-        SDL_Quit();
     }
 }
 
@@ -134,8 +131,6 @@ static char AutoDetectLanguage(void)
 
 static bool tcInit(void)
 {
-    SDL_Init(0);
-
     if (setup.Debug >= ERR_DEBUG) {
         pcErrOpen(ERR_OUTPUT_TO_DISK, "debug.txt");
     } else {

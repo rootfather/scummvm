@@ -22,7 +22,7 @@
 #define MODULE_GFX
 
 #include "clue/theclou.h"
-#include "SDL.h"
+#include "graphics/surface.h"
 
 #include "clue/list/list.h"
 
@@ -137,7 +137,7 @@ struct Picture {
 };
 
 struct Font {
-    SDL_Surface *bmp;
+    Graphics::Surface *bmp;
 
     uint16 w;	                /* width of one character */
     uint16 h;	                /* height of one character */
