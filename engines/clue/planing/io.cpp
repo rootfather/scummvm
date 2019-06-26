@@ -29,7 +29,7 @@ struct IOData {
 };
 
 
-static char *Planing_Open[3] = { "rb", "wb", "rb" };
+static const char *Planing_Open[3] = { "rb", "wb", "rb" };
 
 
 /* Loading & saving functions */

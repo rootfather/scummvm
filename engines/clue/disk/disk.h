@@ -24,7 +24,7 @@ extern void dskSetRootPath(const char *newRootPath);
 extern char *dskGetRootPath(char *result);
 
 void *dskLoad(const char *Pathname);
-void dskSave(char *Pathname, void *src, size_t size);
+void dskSave(const char *Pathname, void *src, size_t size);
 bool dskBuildPathName(DiskCheckE check,
 		      const char *Directory, const char *Filename, char *Result);
 void dskClose(FILE *fp);

@@ -46,7 +46,7 @@
 #define OLF_ADD_SUCC_STRING   (1 << 4)
 #define OLF_ALIGNED           (1 << 5)
 
-#define OL_NAME(n)         ((char *)NODE_NAME((NODE *)n))
+#define OL_NAME(n)         ((const char *)NODE_NAME((NODE *)n))
 #define OL_NR(n)           (((struct ObjectNode *)n)->nr)
 #define OL_TYPE(n)         (((struct ObjectNode *)n)->type)
 #define OL_DATA(n)         (((struct ObjectNode *)n)->data)
@@ -87,8 +87,8 @@ extern LIST *objHash[OBJ_HASH_SIZE];
 
 
 /* public prototypes - OBJECTS */
-uint8 dbLoadAllObjects(char *fileName, uint16 diskId);
-uint8 dbSaveAllObjects(char *fileName, uint32 offset, uint32 size, uint16 diskId);
+uint8 dbLoadAllObjects(const char *fileName, uint16 diskId);
+uint8 dbSaveAllObjects(const char *fileName, uint32 offset, uint32 size, uint16 diskId);
 void dbDeleteAllObjects(uint32 offset, uint32 size);
 
 uint32 dbGetObjectCountOfDB(uint32 offset, uint32 size);

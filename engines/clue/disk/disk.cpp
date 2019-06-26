@@ -67,7 +67,7 @@ void *dskLoad(const char *Pathname)
     return NULL;
 }
 
-void dskSave(char *Pathname, void *src, size_t size)
+void dskSave(const char *Pathname, void *src, size_t size)
 {
     FILE *fp;
 

@@ -23,7 +23,7 @@
 #include "clue/planing/graphics.h"
 
 
-void plPrintInfo(char *person)
+void plPrintInfo(const char *person)
 {
     char info[80];
 
@@ -34,7 +34,7 @@ void plPrintInfo(char *person)
     gfxPrint(m_gc, info, 12, GFX_PRINT_CENTER);
 }
 
-void plMessage(char *msg, byte flags)
+void plMessage(const char *msg, byte flags)
 {
     LIST *m = txtGoKey(PLAN_TXT, msg);
 
@@ -42,7 +42,7 @@ void plMessage(char *msg, byte flags)
 	ShowMenuBackground();
 
     if (m)
-	plPrintInfo((char *) NODE_NAME(LIST_HEAD(m)));
+	plPrintInfo((const char *) NODE_NAME(LIST_HEAD(m)));
 
     RemoveList(m);
 
@@ -106,7 +106,7 @@ void plDisplayInfo(void)
     gfxPrint(m_gc, info, 2, GFX_PRINT_LEFT | GFX_PRINT_SHADOW);
 }
 
-byte plSay(char *msg, uint32 persId)
+byte plSay(const char *msg, uint32 persId)
 {
     register LIST *l = txtGoKey(PLAN_TXT, msg);
     register byte choice;

@@ -113,6 +113,6 @@ byte grdAddToList(uint32 bldId, LIST * l);
 byte grdDraw(struct _GC *gc, uint32 bldId, uint32 areaId);
 
 /* con- & destructor */
-byte grdInit(FILE ** fh, char *mode, uint32 bldId, uint32 areaId);
+byte grdInit(FILE ** fh, const char *mode, uint32 bldId, uint32 areaId);
 void grdDone(FILE * fh);
 #endif

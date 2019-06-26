@@ -72,14 +72,14 @@ void txtReset(uint32 textId);
 
 
 /* public prototypes - KEY */
-char *txtGetKey(uint16 keyNr, char *key);
-uint32 txtGetKeyAsULONG(uint16 keyNr, char *key);
+char *txtGetKey(uint16 keyNr, const char *key);
+uint32 txtGetKeyAsULONG(uint16 keyNr, const char *key);
 
 LIST *txtGoKey(uint32 textId, const char *key);
-LIST *txtGoKeyAndInsert(uint32 textId, char *key, ...);
+LIST *txtGoKeyAndInsert(uint32 textId, const char *key, ...);
 
 bool txtKeyExists(uint32 textId, const char *key);
-uint32 txtCountKey(char *key);
+uint32 txtCountKey(const char *key);
 
 
 /* public prototypes - STRING */

@@ -59,7 +59,7 @@ char *dbDecode(KEY key)
 }
 
 
-KEY dbEncode(char *key)
+KEY dbEncode(const char *key)
 {
     void *obj = dbGetObject(atol(key));
 
@@ -1198,7 +1198,7 @@ dbRWObject(void *obj, int RW, uint32 type, uint32 size, uint32 localSize, FILE *
 }
 
 
-uint8 dbLoadAllObjects(char *fileName, uint16 diskId)
+uint8 dbLoadAllObjects(const char *fileName, uint16 diskId)
 {
     FILE *fh;
 
@@ -1263,7 +1263,7 @@ uint8 dbLoadAllObjects(char *fileName, uint16 diskId)
     return 0;
 }
 
-uint8 dbSaveAllObjects(char *fileName, uint32 offset, uint32 size, uint16 diskId)
+uint8 dbSaveAllObjects(const char *fileName, uint32 offset, uint32 size, uint16 diskId)
 {
     FILE *fh;
     register struct dbObject *obj;

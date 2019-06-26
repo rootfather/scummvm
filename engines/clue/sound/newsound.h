@@ -13,7 +13,7 @@
 void sndInit(void);
 void sndDone(void);
 
-void sndPlaySound(char *name, uint32 mode);
+void sndPlaySound(const char *name, uint32 mode);
 void sndStopSound(uint8 dummy);
 void sndFading(short int targetVol);
 

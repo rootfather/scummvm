@@ -375,7 +375,7 @@ static void gfxInitGC(GC *gc, uint16 x, uint16 y, uint16 w, uint16 h,
  * gfxCloseFont
  */
 
-static Font *gfxOpenFont(char *fileName, uint16 w, uint16 h,
+static Font *gfxOpenFont(const char *fileName, uint16 w, uint16 h,
                          unsigned char first, unsigned char last,
                          uint16 sw, uint16 sh)
 {
@@ -631,7 +631,7 @@ void gfxPrepareColl(uint16 collId)
     }
 }
 
-void gfxLoadILBM(char *fileName)
+void gfxLoadILBM(const char *fileName)
 {
     uint8 *lbm;
 

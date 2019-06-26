@@ -778,9 +778,9 @@ void tcPersonGreetsMatt(void)
     ShowTime(0);
 }
 
-void tcGetLastName(char *Name, char *dest, uint32 maxLength)
+void tcGetLastName(const char *Name, char *dest, uint32 maxLength)
 {
-    char *s;
+    const char *s;
     char lastName[TXT_KEY_LENGTH];
 
     for (s = Name; *s != '\0'; s++)

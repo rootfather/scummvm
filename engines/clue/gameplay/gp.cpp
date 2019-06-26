@@ -27,7 +27,7 @@ void FreeLocations(void);
 void InitSceneInfo(void);
 void FreeSceneInfo(void);
 
-void PrepareStory(char *filename);
+void PrepareStory(const char *filename);
 void LoadSceneforStory(struct NewScene *dest, FILE * file);
 
 void InitConditions(struct Scene *scene, struct NewScene *ns);
@@ -45,7 +45,7 @@ struct Film *film = NULL;
 struct SceneArgs SceneArgs;
 
 
-void InitStory(char *story_filename)
+void InitStory(const char *story_filename)
 {
     if (film)
 	CloseStory();
@@ -377,7 +377,7 @@ int32 CheckConditions(struct Scene *scene)
     return (1L);
 }
 
-void PrepareStory(char *filename)
+void PrepareStory(const char *filename)
 	/*
 	 * completely revised 02-02-93
 	 * tested : 26-03-93

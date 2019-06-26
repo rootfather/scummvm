@@ -62,7 +62,7 @@ struct relation {
 
 
 extern int (*CompareKey) (KEY, KEY);
-extern KEY(*EncodeKey) (char *);
+extern KEY(*EncodeKey) (const char *);
 extern char *(*DecodeKey) (KEY);
 
 
@@ -77,8 +77,8 @@ RELATION AskP(KEY, RELATION, KEY, PARAMETER, COMPARSION);
 void AskAll(KEY, RELATION, void (*)(void *));
 void UnSetAll(KEY, void (*)(KEY));
 
-int SaveRelations(char *, uint32, uint32, uint16 disk_id);
-int LoadRelations(char *, uint16 disk_id);
+int SaveRelations(const char *, uint32, uint32, uint16 disk_id);
+int LoadRelations(const char *, uint16 disk_id);
 void RemRelations(uint32, uint32);
 
 #endif

@@ -33,7 +33,7 @@ void sndDone(void)
     SDL_UnlockAudio();
 }
 
-void sndPlaySound(char *name, uint32 mode)
+void sndPlaySound(const char *name, uint32 mode)
 {
     char path[DSK_PATH_MAX];
 

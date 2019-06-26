@@ -81,7 +81,7 @@ char RunningAnimLine[TXT_KEY_LENGTH];
 
 #define ANIM_STATE_SUSPENDED	(1<<0)
 
-void LoadAnim(char *AnimID);
+void LoadAnim(const char *AnimID);
 
 /*
  * init & dones
@@ -112,7 +112,7 @@ void ContinueAnim(void)
  * prepare...
  */
 
-static void PrepareAnim(char *AnimID)
+static void PrepareAnim(const char *AnimID)
 /* initializes various values and afterwards copies anim phases into memory */
 {
     char pict_list[TXT_KEY_LENGTH];
@@ -161,7 +161,7 @@ static void PrepareAnim(char *AnimID)
  * StopAnim
  */
 
-void PlayAnim(char *AnimID, uint16 how_often, uint32 mode)
+void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode)
 {
     char pict_list[TXT_KEY_LENGTH];
     uint16 pict_id = 0, rate;
@@ -252,7 +252,7 @@ void StopAnim(void)
  * GetAnim
  */
 
-void GetAnim(char *AnimID, char *Dest)
+void GetAnim(const char *AnimID, char *Dest)
 {
     int i;
     char ID[TXT_KEY_LENGTH];

@@ -93,7 +93,7 @@ struct Living {			/* komplette Daten einer Instanz   *//* eines Lebewesens      
 
 static struct SpriteControl *sc = NULL;
 
-static struct Living *livGet(char *uch_Name);
+static struct Living *livGet(const char *uch_Name);
 
 static void livLoadTemplates(void);
 static void livLoadLivings(void);
@@ -102,7 +102,7 @@ static void livRem(struct Living *liv);
 static void livHide(struct Living *liv);
 static void livShow(struct Living *liv);
 
-static void livAdd(char *uch_Name, char *uch_TemplateName, byte uch_XSize,
+static void livAdd(const char *uch_Name, char *uch_TemplateName, byte uch_XSize,
 		   byte uch_YSize, int16 s_XSpeed, int16 s_YSpeed);
 
 static byte livIsVisible(struct Living *liv);

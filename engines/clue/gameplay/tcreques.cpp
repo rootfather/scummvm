@@ -21,7 +21,7 @@
 #include "clue/gameplay/gp.h"
 #include "clue/gameplay/gp_app.h"
 
-void PrintStatus(char *text)
+void PrintStatus(const char *text)
 {
     gfxSetDrMd(m_gc, GFX_JAM_1);
     gfxSetRect(0, 320);

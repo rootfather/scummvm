@@ -215,7 +215,7 @@ void gfxUnPrepareColl(uint16 collId);
 extern struct Collection *gfxGetCollection(uint16 us_CollId);
 extern struct Picture *gfxGetPicture(uint16 us_PictId);
 
-void gfxLoadILBM(char *fileName);
+void gfxLoadILBM(const char *fileName);
 
 void gfxWaitTOF(void);
 void gfxWaitTOR(void);

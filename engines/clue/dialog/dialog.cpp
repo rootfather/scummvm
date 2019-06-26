@@ -144,8 +144,8 @@ static LIST *ParseTalkText(LIST * origin, LIST * bubble, byte known)
 
 void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode)
 {
-    char *Extension[4] = { "_UNKNOWN", "_KNOWN", "_FRIENDLY", "_BUSINESS" };
-    char *Standard = "STANDARD";
+    const char *Extension[4] = { "_UNKNOWN", "_KNOWN", "_FRIENDLY", "_BUSINESS" };
+    const char *Standard = "STANDARD";
     uint8 known = 0;
     Person p1 = (Person) dbGetObject(Person1ID);
     Person p2 = (Person) dbGetObject(Person2ID);

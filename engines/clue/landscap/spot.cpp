@@ -387,7 +387,7 @@ void lsFreeAllSpots(void)
 	RemoveList(spot->p_positions);
 }
 
-struct Spot *lsGetSpot(char *uch_Name)
+struct Spot *lsGetSpot(const char *uch_Name)
 {
     return ((struct Spot *) GetNode(sc->p_spots, uch_Name));
 }

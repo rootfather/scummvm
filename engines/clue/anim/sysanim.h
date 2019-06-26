@@ -44,10 +44,10 @@
 extern void InitAnimHandler(void);
 extern void CloseAnimHandler(void);
 
-extern void PlayAnim(char *AnimID, uint16 how_often, uint32 mode);	/* -> docs vom 16.08.92 ! */
+extern void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode);	/* -> docs vom 16.08.92 ! */
 extern void StopAnim(void);
 
-extern void GetAnim(char *AnimID, char *Dest);
+extern void GetAnim(const char *AnimID, char *Dest);
 extern void animator(void);
 
 extern void SuspendAnim(void);

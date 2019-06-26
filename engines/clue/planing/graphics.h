@@ -102,13 +102,13 @@
 #define PLANING_REFRESH_RP_HEIGHT   50
 #define PLANING_REFRESH_RP_DEPTH    2
 
-void plPrintInfo(char *person);
-void plMessage(char *msg, byte flags);
+void plPrintInfo(const char *person);
+void plMessage(const char *msg, byte flags);
 void plPersonPict(uint32 personId);
 void plDisplayAbilities(void);
 void plDisplayTimer(uint32 time, byte doSpotsImmediatly);
 void plDisplayInfo(void);
 void plRefresh(uint32 ItemId);
 void plDrawWait(uint32 sec);
-byte plSay(char *msg, uint32 persId);
+byte plSay(const char *msg, uint32 persId);
 #endif

@@ -91,7 +91,7 @@ void DrawPresent(LIST * present, uint8 firstLine, GC *gc, uint8 max)
     gfxScreenThaw(gc, 88, 3, 228, 46);
 }
 
-uint8 Present(uint32 nr, char *presentationText,
+uint8 Present(uint32 nr, const char *presentationText,
 	   void (*initPresentation) (uint32, LIST *, LIST *))
 {
     uint8 firstVis = 0;
@@ -265,7 +265,7 @@ void prSetBarPrefs(GC *gc, uint16 us_BarWidth,
     PresentControl.uch_TCol = uch_TCol;
 }
 
-void prDrawTextBar(char *puch_Text, uint32 ul_Value, uint32 ul_Max,
+void prDrawTextBar(const char *puch_Text, uint32 ul_Value, uint32 ul_Max,
 		   uint16 us_XPos, uint16 us_YPos)
 {
     GC *gc = PresentControl.gc;

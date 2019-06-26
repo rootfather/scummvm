@@ -222,7 +222,7 @@ void txtReset(uint32 textId)
 
 
 /* public functions - KEY */
-char *txtGetKey(uint16 keyNr, char *key)
+char *txtGetKey(uint16 keyNr, const char *key)
 {
     uint16 i;
 
@@ -253,7 +253,7 @@ char *txtGetKey(uint16 keyNr, char *key)
     return keyBuffer;
 }
 
-uint32 txtGetKeyAsULONG(uint16 keyNr, char *key)
+uint32 txtGetKeyAsULONG(uint16 keyNr, const char *key)
 {
     char *res = txtGetKey(keyNr, key);
 
@@ -323,7 +323,7 @@ LIST *txtGoKey(uint32 textId, const char *key)
     return txtList;
 }
 
-LIST *txtGoKeyAndInsert(uint32 textId, char *key, ...)
+LIST *txtGoKeyAndInsert(uint32 textId, const char *key, ...)
 {
     va_list argument;
     LIST *txtList = CreateList(), *originList = NULL;
@@ -381,7 +381,7 @@ bool txtKeyExists(uint32 textId, const char *key)
     return found;
 }
 
-uint32 txtCountKey(char *key)
+uint32 txtCountKey(const char *key)
 {
     uint32 i = strlen(key), j, k;
 

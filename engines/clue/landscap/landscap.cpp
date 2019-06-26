@@ -254,7 +254,7 @@ byte lsIsInside(LSObject lso, uint16 x, uint16 y, uint16 x1, uint16 y1)
 	return (0);
 }
 
-void lsSetActivLiving(char *Name, uint16 x, uint16 y)
+void lsSetActivLiving(const char *Name, uint16 x, uint16 y)
 {
     if (Name) {
 	strcpy(ls->uch_ActivLiving, Name);

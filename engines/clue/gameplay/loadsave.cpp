@@ -237,7 +237,7 @@ void tcRefreshAfterLoad(byte loaded)
     }
 }
 
-byte tcSaveChangesInScenes(char *fileName)
+byte tcSaveChangesInScenes(const char *fileName)
 {
     uint32 i;
     byte back = 0;
@@ -258,7 +258,7 @@ byte tcSaveChangesInScenes(char *fileName)
     return (back);
 }
 
-byte tcLoadChangesInScenes(char *fileName)
+byte tcLoadChangesInScenes(const char *fileName)
 {
     uint32 i;
     byte back = 1;

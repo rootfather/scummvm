@@ -88,7 +88,7 @@ void livSetActivAreaId(uint32 areaId)
 	sc->ul_ActivAreaId = areaId;
 }
 
-void livLivesInArea(char *uch_Name, uint32 areaId)
+void livLivesInArea(const char *uch_Name, uint32 areaId)
 {
     struct Living *liv = livGet(uch_Name);
 
@@ -129,7 +129,7 @@ void livSetPlayMode(uint32 playMode)
     }
 }
 
-uint32 livWhereIs(char *uch_Name)
+uint32 livWhereIs(const char *uch_Name)
 {
     struct Living *liv = livGet(uch_Name);
     uint32 loc = 0;
@@ -140,7 +140,7 @@ uint32 livWhereIs(char *uch_Name)
     return loc;
 }
 
-void livSetPos(char *uch_Name, uint16 XPos, uint16 YPos)
+void livSetPos(const char *uch_Name, uint16 XPos, uint16 YPos)
 {
     struct Living *liv = livGet(uch_Name);
 
@@ -150,7 +150,7 @@ void livSetPos(char *uch_Name, uint16 XPos, uint16 YPos)
     }
 }
 
-void livAnimate(char *uch_Name, byte uch_Action, int16 s_XSpeed, int16 s_YSpeed)
+void livAnimate(const char *uch_Name, byte uch_Action, int16 s_XSpeed, int16 s_YSpeed)
 {
     struct Living *liv = livGet(uch_Name);
 
@@ -168,7 +168,7 @@ void livAnimate(char *uch_Name, byte uch_Action, int16 s_XSpeed, int16 s_YSpeed)
     }
 }
 
-void livTurn(char *puch_Name, byte uch_Status)
+void livTurn(const char *puch_Name, byte uch_Status)
 {
     struct Living *liv = livGet(puch_Name);
 
@@ -253,28 +253,28 @@ void livSetVisLScape(uint16 us_VisLScapeX, uint16 us_VisLScapeY)
     sc->us_VisLScapeY = us_VisLScapeY;
 }
 
-uint16 livGetXPos(char *Name)
+uint16 livGetXPos(const char *Name)
 {
     struct Living *liv = livGet(Name);
 
     return (liv->us_XPos);
 }
 
-uint16 livGetYPos(char *Name)
+uint16 livGetYPos(const char *Name)
 {
     struct Living *liv = livGet(Name);
 
     return (liv->us_YPos);
 }
 
-byte livGetViewDirection(char *uch_Name)
+byte livGetViewDirection(const char *uch_Name)
 {
     struct Living *liv = livGet(uch_Name);
 
     return (liv->uch_ViewDirection);
 }
 
-byte livGetOldAction(char *uch_Name)
+byte livGetOldAction(const char *uch_Name)
 {
     struct Living *liv = livGet(uch_Name);
 
@@ -312,7 +312,7 @@ byte livIsPositionInViewDirection(uint16 us_GXPos, uint16 us_GYPos,
     return InDirection;
 }
 
-byte livCanWalk(char *puch_Name)
+byte livCanWalk(const char *puch_Name)
 {
     struct Living *liv = livGet(puch_Name);
 
@@ -346,7 +346,7 @@ byte livCanWalk(char *puch_Name)
     return 0;
 }
 
-static struct Living *livGet(char *uch_Name)
+static struct Living *livGet(const char *uch_Name)
 {
     struct Living *liv = NULL;
 
@@ -358,7 +358,7 @@ static struct Living *livGet(char *uch_Name)
     return (liv);
 }
 
-static void livAdd(char *uch_Name, char *uch_TemplateName, byte uch_XSize,
+static void livAdd(const char *uch_Name, char *uch_TemplateName, byte uch_XSize,
 		   byte uch_YSize, int16 s_XSpeed, int16 s_YSpeed)
 {
     struct Living *liv;

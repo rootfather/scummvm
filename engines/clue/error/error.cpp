@@ -54,7 +54,7 @@ struct ErrorHandler {
 
 struct ErrorHandler ErrorHandler;
 
-bool pcErrOpen(int32 l_Mode, char *ErrorFilename)
+bool pcErrOpen(int32 l_Mode, const char *ErrorFilename)
 {
 	return true;
 }

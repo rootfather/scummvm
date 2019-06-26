@@ -84,36 +84,36 @@ extern void livDone(void);
 
 extern void livSetAllInvisible(void);
 
-extern void livSetPos(char *uch_Name, uint16 XPos, uint16 YPos);
+extern void livSetPos(const char *uch_Name, uint16 XPos, uint16 YPos);
 extern void livSetPlayMode(uint32 playMode);
 extern void livSetActivAreaId(uint32 areaId);
 extern void livRefreshAll(void);
 
-extern void livLivesInArea(char *uch_Name, uint32 areaId);
-extern uint32 livWhereIs(char *uch_Name);
+extern void livLivesInArea(const char *uch_Name, uint32 areaId);
+extern uint32 livWhereIs(const char *uch_Name);
 
-extern uint16 livGetXPos(char *uch_Name);
-extern uint16 livGetYPos(char *uch_Name);
+extern uint16 livGetXPos(const char *uch_Name);
+extern uint16 livGetYPos(const char *uch_Name);
 
-extern byte livCanWalk(char *puch_Name);
-extern byte livGetViewDirection(char *uch_Name);
+extern byte livCanWalk(const char *puch_Name);
+extern byte livGetViewDirection(const char *uch_Name);
 extern byte livIsPositionInViewDirection(uint16 us_GXPos, uint16 us_GYPos,
 					  uint16 us_XPos, uint16 us_YPos,
 					  byte uch_ViewDirection);
 
-extern void livTurn(char *puch_Name, byte uch_Status);	/* enabled or disabled */
+extern void livTurn(const char *puch_Name, byte uch_Status);	/* enabled or disabled */
 
 extern void livSetVisLScape(uint16 us_VisLScapeX, uint16 us_VisLScapeY);
 
-extern void livSetSpeed(char *uch_Name, int16 s_Speed);
+extern void livSetSpeed(const char *uch_Name, int16 s_Speed);
 
-extern void livAnimate(char *uch_Name, byte uch_Action, int16 s_XSpeed,
+extern void livAnimate(const char *uch_Name, byte uch_Action, int16 s_XSpeed,
 		       int16 s_YSpeed);
 extern void livPrepareAnims(void);
 extern void livDoAnims(byte uch_Play, byte uch_Move);
 extern void livStopAll(void);
 
-extern byte livGetOldAction(char *uch_Name);
+extern byte livGetOldAction(const char *uch_Name);
 
 /* uint16 spotInit(bitmap, uint16 1 = 48, 2 = 32, 3 = 16 ); */
 /* uint16 spotDone */

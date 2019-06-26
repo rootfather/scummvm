@@ -42,7 +42,7 @@ static uint32 tcShowPatrol(LIST * bubble_l, char *c_time, char *patr, byte first
     return choice;
 }
 
-void Investigate(char *location)
+void Investigate(const char *location)
 {
     NODE *n, *nextMsg;
     LIST *origin, *bubble_l;

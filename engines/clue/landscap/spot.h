@@ -99,13 +99,13 @@ extern void lsSetSpotStatus(uint32 CtrlObjId, byte uch_Status);
 
 extern void lsAddSpotPosition(struct Spot *spot, uint16 us_XPos, uint16 us_YPos);
 extern void lsLoadSpots(uint32 bldId, char *uch_FileName);
-extern void lsWriteSpots(char *uch_FileName);
+extern void lsWriteSpots(const char *uch_FileName);
 extern void lsFreeAllSpots(void);
 extern void lsRemSpot(struct Spot *spot);
 
 extern LIST *lsGetSpotList(void);
 
 extern struct Spot *lsAddSpot(uint16 us_Size, uint16 us_Speed, uint32 ul_CtrlObjId);
-extern struct Spot *lsGetSpot(char *uch_Name);
+extern struct Spot *lsGetSpot(const char *uch_Name);
 
 #endif

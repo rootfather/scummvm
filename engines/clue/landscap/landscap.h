@@ -133,7 +133,7 @@ extern void lsInitLandScape(uint32 bID, byte mode);
 extern void lsDoneLandScape(void);
 
 extern void lsSetScrollSpeed(byte pixel);
-extern void lsSetActivLiving(char *Name, uint16 x, uint16 y);
+extern void lsSetActivLiving(const char *Name, uint16 x, uint16 y);
 
 extern void lsRefreshObjectList(uint32 areaID);
 

@@ -39,7 +39,7 @@ void grdDo(FILE * fh, struct System *sys, LIST * PersonsList, uint32 BurglarsNr,
     }
 }
 
-byte grdInit(FILE ** fh, char *mode, uint32 bldId, uint32 areaId)
+byte grdInit(FILE ** fh, const char *mode, uint32 bldId, uint32 areaId)
 {
     char bldName[TXT_KEY_LENGTH], fileName[DSK_PATH_MAX];
 

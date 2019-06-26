@@ -17,7 +17,7 @@ static RELATION nrOfRelations = 1;
 static struct relationDef *relationsDefBase = NULL;
 
 int (*CompareKey) (KEY, KEY) = NULL;
-KEY(*EncodeKey) (char *) = NULL;
+KEY(*EncodeKey) (const char *) = NULL;
 char *(*DecodeKey) (KEY) = NULL;
 
 
@@ -255,7 +255,7 @@ void UnSetAll(KEY key, void (*UseKey) (KEY))
     }
 }
 
-int SaveRelations(char *file, uint32 offset, uint32 size, uint16 disk_id)
+int SaveRelations(const char *file, uint32 offset, uint32 size, uint16 disk_id)
 {
     if (relationsDefBase && DecodeKey) {
 	register struct relationDef *rd;
@@ -295,7 +295,7 @@ int SaveRelations(char *file, uint32 offset, uint32 size, uint16 disk_id)
     return 0;
 }
 
-int LoadRelations(char *file, uint16 disk_id)
+int LoadRelations(const char *file, uint16 disk_id)
 {
     RELATION rd;
     PARAMETER parameter;

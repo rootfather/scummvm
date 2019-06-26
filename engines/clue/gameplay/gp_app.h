@@ -88,19 +88,19 @@ extern void tcPersonGreetsMatt(void);
 extern uint32 StdHandle(uint32 choice);
 
 extern void SetFunc(struct Scene *sc, void (*init) (void), void (*done) (void));
-void PrintStatus(char *text);
+void PrintStatus(const char *text);
 extern void InitTaxiLocations(void);
 extern void LinkScenes(void);
 
-extern void tcGetLastName(char *Name, char *dest, uint32 maxLength);
+extern void tcGetLastName(const char *Name, char *dest, uint32 maxLength);
 extern void tcCutName(char *Name, byte Sign, uint32 maxLength);
 
 extern byte tcLoadTheClou(void);
 extern void tcSaveTheClou(void);
 extern uint32 tcBurglary(uint32 buildingID);
 
-extern byte tcLoadChangesInScenes(char *fileName);
-extern byte tcSaveChangesInScenes(char *fileName);
+extern byte tcLoadChangesInScenes(const char *fileName);
+extern byte tcSaveChangesInScenes(const char *fileName);
 
 extern void tcRefreshLocationInTitle(uint32 locNr);
 extern void ShowTime(uint32 delay);

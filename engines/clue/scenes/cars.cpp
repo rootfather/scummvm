@@ -270,7 +270,7 @@ void tcSellCar(uint32 ObjectID)
     AddVTime(97);
 }
 
-void tcRepairCar(Car car, char *repairWhat)
+void tcRepairCar(Car car, const char *repairWhat)
 {
     LIST *presentationData = CreateList();
     LIST *list = NULL;

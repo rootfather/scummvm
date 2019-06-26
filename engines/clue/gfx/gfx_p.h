@@ -118,7 +118,7 @@ static void gfxInitPictList(void);
 
 static void gfxSetCMAP(const Uint8 *src);
 
-static Font *gfxOpenFont(char *fileName, uint16 w, uint16 h,
+static Font *gfxOpenFont(const char *fileName, uint16 w, uint16 h,
                          unsigned char first, unsigned char last,
                          uint16 sw, uint16 sh);
 static void gfxCloseFont(Font *font);

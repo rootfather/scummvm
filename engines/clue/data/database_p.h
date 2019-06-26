@@ -43,7 +43,7 @@ extern uint32 ObjectListFlags;
 /* private prototypes - RELATION */
 int dbCompare(KEY key1, KEY key2);
 char *dbDecode(KEY key);
-KEY dbEncode(char *key);
+KEY dbEncode(const char *key);
 
 /* private prototypes - OBJECT */
 struct dbObject *dbFindRealObject(uint32 realNr, uint32 offset, uint32 size);

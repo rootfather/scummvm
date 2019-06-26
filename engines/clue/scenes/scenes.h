@@ -98,13 +98,13 @@ void tcDoneFahndung(void);
 
 /* Hilfsfunktionen */
 
-void Investigate(char *location);
+void Investigate(const char *location);
 
 void SetCarColors(byte index);
 
 void tcSellCar(uint32 ObjectID);
 void tcColorCar(Car car);
-void tcRepairCar(Car car, char *repairWhat);
+void tcRepairCar(Car car, const char *repairWhat);
 void tcCarGeneralOverhoul(Car car);
 void tcToolsShop(void);
 
