@@ -1154,7 +1154,7 @@ int32 gfxGetILBMSize(struct Collection *coll)
     return size;
 }
 
-static void gfxSetCMAP(const Uint8 *src)
+static void gfxSetCMAP(const uint8 *src)
 {
     /* look for CMAP chunk */
     while (memcmp(src, "CMAP", 4) != 0)
@@ -1530,15 +1530,13 @@ void ShowIntro(void)
             gfxScratchToMem(&B);
 
 	    for (t=0, showA=true; t<frames[anims]; t++, showA=!showA) {
-                SDL_Event ev;
+				Common::Event ev;
 
-                while (SDL_PollEvent(&ev)) {
+				while (g_system->getEventManager()->pollEvent(ev)) {
                     switch (ev.type) {
-                    case SDL_KEYDOWN:
-                    case SDL_MOUSEBUTTONDOWN:
-                    case SDL_JOYBUTTONDOWN:
-                    
-                    case SDL_QUIT:
+					case Common::EVENT_KEYDOWN:
+					case Common::EVENT_LBUTTONDOWN:
+					case Common::EVENT_QUIT:
                         endi = true;
                         goto endit;
 

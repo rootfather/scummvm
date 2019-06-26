@@ -7,8 +7,6 @@
   distribution.
  ****************************************************************************/
 
-#include "SDL.h"
-
 #include "clue/landscap/landscap.h"
 
 #include "clue/gfx/gfxnch4.h"

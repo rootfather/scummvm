@@ -9,8 +9,6 @@
 #ifndef TC__BOB_H
 #define TC__BOB_H
 
-#include "SDL.h"
-
 struct RastPort;
 
 void BobInitLists(void);

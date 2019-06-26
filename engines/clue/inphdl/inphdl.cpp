@@ -9,7 +9,8 @@
 
 #include "clue/inphdl/inphdl.h"
 
-#include "SDL.h"
+#include "common/system.h"
+#include "common/events.h"
 
 struct IHandler {
     int32 ul_XSensitivity;
@@ -24,7 +25,7 @@ struct IHandler {
     bool MouseStatus;
 
     bool JoyExists;
-    SDL_Joystick *Joystick;
+    /* SDL_Joystick *Joystick; */
 };
 
 struct IHandler IHandler;
@@ -94,7 +95,7 @@ void inpMousePtrOff(void)
 
 int32 inpWaitFor(int32 l_Mask)
 {
-    SDL_Event ev;
+    Common::Event ev;
     int32 action;
     uint32 WaitTime = 0;
 
@@ -120,58 +121,58 @@ int32 inpWaitFor(int32 l_Mask)
 	    action |= INP_TIME;
         }
 
-	while (SDL_PollEvent(&ev)) {
+	while (g_system->getEventManager()->pollEvent(ev)) {
 	    switch (ev.type) {
-	    case SDL_KEYDOWN:
+		case Common::EVENT_KEYDOWN:
 		{
-		    switch (ev.key.keysym.sym) {
-		    case SDLK_LEFT:
+		    switch (ev.kbd.keycode) {
+		    case Common::KEYCODE_LEFT:
 			if ((l_Mask & INP_LEFT))
 			    action |= INP_KEYBOARD + INP_LEFT;
 			break;
 
-		    case SDLK_RIGHT:
+		    case Common::KEYCODE_RIGHT:
 			if ((l_Mask & INP_RIGHT))
 			    action |= INP_KEYBOARD + INP_RIGHT;
 			break;
 
-		    case SDLK_UP:
+		    case Common::KEYCODE_UP:
 			if ((l_Mask & INP_UP))
 			    action |= INP_KEYBOARD + INP_UP;
 			break;
 
-		    case SDLK_DOWN:
+		    case Common::KEYCODE_DOWN:
 			if ((l_Mask & INP_DOWN))
 			    action |= INP_KEYBOARD + INP_DOWN;
 			break;
 
-		    case SDLK_SPACE:
-		    case SDLK_RETURN:
-		    case SDLK_KP_ENTER:
+		    case Common::KEYCODE_SPACE:
+		    case Common::KEYCODE_RETURN:
+		    case Common::KEYCODE_KP_ENTER:
 			if ((l_Mask & (INP_LBUTTONP | INP_LBUTTONR)))
 			    action |= INP_KEYBOARD + INP_LBUTTONP;
 			break;
 
-		    case SDLK_ESCAPE:
+		    case Common::KEYCODE_ESCAPE:
 			if (IHandler.EscStatus)
 			    action |= INP_KEYBOARD + INP_ESC;
 			break;
 
-		    case SDLK_F1:
-		    case SDLK_F2:
-		    case SDLK_F3:
-		    case SDLK_F4:
-		    case SDLK_F5:
-		    case SDLK_F6:
-		    case SDLK_F7:
-		    case SDLK_F8:
-		    case SDLK_F9:
-		    case SDLK_F10:
-		    case SDLK_F11:
-		    case SDLK_F12:
-		    case SDLK_F13:
-		    case SDLK_F14:
-		    case SDLK_F15:
+		    case Common::KEYCODE_F1:
+		    case Common::KEYCODE_F2:
+		    case Common::KEYCODE_F3:
+		    case Common::KEYCODE_F4:
+		    case Common::KEYCODE_F5:
+		    case Common::KEYCODE_F6:
+		    case Common::KEYCODE_F7:
+		    case Common::KEYCODE_F8:
+		    case Common::KEYCODE_F9:
+		    case Common::KEYCODE_F10:
+		    case Common::KEYCODE_F11:
+		    case Common::KEYCODE_F12:
+		    case Common::KEYCODE_F13:
+		    case Common::KEYCODE_F14:
+		    case Common::KEYCODE_F15:
 			if (IHandler.FunctionKeyStatus)
 			    action |= INP_KEYBOARD + INP_FUNCTION_KEY;
 			break;
@@ -182,8 +183,8 @@ int32 inpWaitFor(int32 l_Mask)
 		}
 		break;
 
-	    case SDL_MOUSEMOTION:
-		if (IHandler.MouseExists && IHandler.MouseStatus) {
+		case Common::EVENT_MOUSEMOVE:
+		if (IHandler.MouseExists && IHandler.MouseStatus) {/*
 		    if ((l_Mask & INP_LEFT) && (ev.motion.xrel < 0))
 			action |= INP_MOUSE + INP_LEFT;
 		    if ((l_Mask & INP_RIGHT) && (ev.motion.xrel > 0))
@@ -192,18 +193,22 @@ int32 inpWaitFor(int32 l_Mask)
 			action |= INP_MOUSE + INP_UP;
 		    if ((l_Mask & INP_DOWN) && (ev.motion.yrel > 0))
 			action |= INP_MOUSE + INP_DOWN;
+		*/}
+		break;
+
+		case Common::EVENT_LBUTTONDOWN:
+		if (IHandler.MouseExists && IHandler.MouseStatus) {
+			action |= INP_MOUSE + INP_LBUTTONP;
+		}
+		break;
+		case Common::EVENT_RBUTTONDOWN:
+		if (IHandler.MouseExists && IHandler.MouseStatus) {
+			action |= INP_MOUSE + INP_RBUTTONP;
 		}
 		break;
 
-	    case SDL_MOUSEBUTTONDOWN:
-		if (IHandler.MouseExists && IHandler.MouseStatus) {
-		    if (ev.button.button == SDL_BUTTON_LEFT) {
-			action |= INP_MOUSE + INP_LBUTTONP;
-		    }
-		    if (ev.button.button == SDL_BUTTON_RIGHT) {
-			action |= INP_MOUSE + INP_RBUTTONP;
-		    }
-		}
+		case Common::EVENT_QUIT:
+			g_system->quit(); // TODO: Hack
 		break;
 
     /*
@@ -269,7 +274,7 @@ void inpDelay(int32 l_Ticks)
 void inpSetKeyRepeat(unsigned char rate)
 {
     int delay, interval;
-    SDL_Event ev;
+	Common::Event ev;
 
     delay = (rate >> 5);
     interval = (rate & 0x1f);
@@ -287,7 +292,7 @@ void inpSetKeyRepeat(unsigned char rate)
 /*    SDL_EnableKeyRepeat(delay, interval);*/
 
     /* flush event queue */
-    while (SDL_PollEvent(&ev)) {
+    while (g_system->getEventManager()->pollEvent(ev)) {
         /* do nothing. */
     }
 }

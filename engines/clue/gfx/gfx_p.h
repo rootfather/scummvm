@@ -116,7 +116,7 @@ static void gfxInitGC(GC *gc, uint16 x, uint16 y, uint16 w, uint16 h,
 static void gfxInitCollList(void);
 static void gfxInitPictList(void);
 
-static void gfxSetCMAP(const Uint8 *src);
+static void gfxSetCMAP(const uint8 *src);
 
 static Font *gfxOpenFont(const char *fileName, uint16 w, uint16 h,
                          unsigned char first, unsigned char last,
