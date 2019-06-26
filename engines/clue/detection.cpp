@@ -55,8 +55,12 @@ static const ADGameDescription gameDescriptions[] = {
 	{
 		"clue",
 		"",
-		AD_ENTRY1s("THECLOU.EXE", "0e65d33e68e8d902cb5068eab5c5aedc", 270496),
-		Common::DE_DEU,
+		{
+			{ "THECLOUE.TXT", 0, "2ef27892c565679069d97fd830b97dd0", 2564 },
+			{ "TCMAINOE.TXT", 0, "2973a01ecd8d13d82f201e1f38fcb763", 14160},
+			{ NULL, 0, NULL, 0 }
+		},
+		Common::EN_ANY,
 		Common::kPlatformDOS,
 		ADGF_NO_FLAGS,
 		GUIO0()
@@ -64,7 +68,22 @@ static const ADGameDescription gameDescriptions[] = {
 	{
 		"clue",
 		"",
-		AD_ENTRY1s("THECLOU.EXE", "e8f62d94f94402a2b1735636350fcb4c", 250192),
+		{
+			{ "TITLE.BK", 0, "8007db7e506015cf7f82388414c8add7", 11955 },
+			{ NULL, 0, NULL, 0 }
+		},
+		Common::DE_DEU,
+		Common::kPlatformDOS,
+		ADGF_NO_FLAGS,
+		GUIO0()
+	},
+	{
+		"clue",
+		"CD",
+		{
+			{ "TITLE.BK", 0, "d6da5307af9bbfcefc6ab015cac8914f", 11955 },
+			{ NULL, 0, NULL, 0 }
+		},
 		Common::DE_DEU,
 		Common::kPlatformDOS,
 		ADGF_CD,
@@ -72,9 +91,26 @@ static const ADGameDescription gameDescriptions[] = {
 	},
 	{
 		"clue",
-		"",
-		AD_ENTRY1s("THECLUE!.EXE", "5dff3defc96466f2719b4189cf5cddf2", 271040),
-		Common::EN_ANY,
+		"Profi-Diskette",
+		{
+			{ "TITLE.BK", 0, "8007db7e506015cf7f82388414c8add7", 11955 },
+			{ "PICT.LST", 0, "852a0c798b272eacb86a8dcbb939621d", 6124 },
+			{ NULL, 0, NULL, 0 }
+		},
+		Common::DE_DEU,
+		Common::kPlatformDOS,
+		ADGF_NO_FLAGS,
+		GUIO0()
+	},
+	{
+		"clue",
+		"Profi-CD",
+		{
+			{ "TITLE.BK", 0, "d6da5307af9bbfcefc6ab015cac8914f", 11955 },
+			{ "PICT.LST", 0, "852a0c798b272eacb86a8dcbb939621d", 6124 },
+			{ NULL, 0, NULL, 0 }
+		},
+		Common::DE_DEU,
 		Common::kPlatformDOS,
 		ADGF_NO_FLAGS,
 		GUIO0()
@@ -85,10 +121,18 @@ static const ADGameDescription gameDescriptions[] = {
 
 } // End of namespace Clue
 
+static const char *directoryGlobs[] = {
+	"TEXTS",
+	"SOUNDS",
+	0
+};
+
 class ClueMetaEngine : public AdvancedMetaEngine {
 public:
 	ClueMetaEngine() : AdvancedMetaEngine(Clue::gameDescriptions, sizeof(ADGameDescription), clueGames) {
 		_singleId = "clue";
+		_maxScanDepth = 2;
+		_directoryGlobs = directoryGlobs;
 	}
 
 	virtual const char *getName() const {
