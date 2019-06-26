@@ -21,7 +21,8 @@
 #define ERR_EXIT_SHUTDOWN   30L
 
 #include "clue/base/base.h"
-
+#include "common/debug.h"
+#include "common/textconsole.h"
 #include "clue/error/error.h"
 
 static const char *moduleNames[ERROR_MODULE_LAST] = {
@@ -55,31 +56,7 @@ struct ErrorHandler ErrorHandler;
 
 bool pcErrOpen(int32 l_Mode, char *ErrorFilename)
 {
-    FILE *p_File;
-    bool alright = false;
-
-    switch (l_Mode) {
-    case ERR_NO_OUTPUT:
-        ErrorHandler.uch_OutputToFile = false;
-        break;
-    case ERR_OUTPUT_TO_DISK:
-        ErrorHandler.uch_OutputToFile = true;
-
-        /* lets have a look if we can open the file */
-        /* and then lets clean it : */
-
-        if ((p_File = dskOpen(ErrorFilename, "w"))) {
-            alright = true;
-            dskClose(p_File);
-        }
-
-        strcpy(ErrorHandler.Filename, ErrorFilename);
-        break;
-    default:
-        break;
-    }
-
-    return alright;
+	return true;
 }
 
 void ErrorMsg(ErrorE type, ErrorModuleE moduleId, uint32 errorId)
@@ -108,30 +85,17 @@ void ErrorMsg(ErrorE type, ErrorModuleE moduleId, uint32 errorId)
 
 static void ErrDebugMsg(DebugE type, const char *moduleName, const char *txt)
 {
-    FILE *fp;
-
-    if (setup.Debug < type) {
-        return;
-    }
-
-    if (ErrorHandler.uch_OutputToFile) {	/* Ausgabe */
-	if ((fp = fopen(ErrorHandler.Filename, "a"))) {
-	    fprintf(fp, "%s\t: %s\n", moduleName, txt);
-	    fclose(fp);
-	}
-    }
-
     switch (type) {
     case ERR_DEBUG:
-	fprintf(stderr, "%s\t: %s\n", moduleName, txt);
+	debug("%s\t: %s", moduleName, txt);
         break;
 
     case ERR_WARNING:
-	fprintf(stderr, "Module %s: %s\n", moduleName, txt);
+	warning("Module %s: %s", moduleName, txt);
         break;
 
     case ERR_ERROR:
-	fprintf(stderr, "ERROR: Module %s: %s\n", moduleName, txt);
+	error("ERROR: Module %s: %s", moduleName, txt);
 
         tcDone();
 
