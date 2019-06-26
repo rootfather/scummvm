@@ -70,7 +70,7 @@ static const ADGameDescription gameDescriptions[] = {
 		"",
 		{
 			{ "THECLOUE.TXT", 0, "e11f380d78fc41ffe6347f4a68303cee", 2288 },
-			{ "TCMAINEE.TXT", 0, "a21fa4dbe3798586271ba3c723bd2def", 2372 },
+			{ "TCMAINOE.TXT", 0, "3424153390d762521ad8b64e6feb4e97", 14141 },
 			AD_LISTEND
 		},
 		Common::CZ_CZE,
@@ -82,7 +82,9 @@ static const ADGameDescription gameDescriptions[] = {
 		"clue",
 		"",
 		{
+			{ "THECLOUD.TXT", 0, "6d490c644b1ecee70fa67bc6aa16be22", 2766 },
 			{ "TITLE.BK", 0, "8007db7e506015cf7f82388414c8add7", 11955 },
+			{ "PICT.LST", 0, "852a0c798b272eacb86a8dcbb939621d", 5465 },
 			AD_LISTEND
 		},
 		Common::DE_DEU,
@@ -95,6 +97,7 @@ static const ADGameDescription gameDescriptions[] = {
 		"CD",
 		{
 			{ "TITLE.BK", 0, "d6da5307af9bbfcefc6ab015cac8914f", 11955 },
+			{ "PICT.LST", 0, "102cc1e183541b7a23f7493459aef632", 5463 },
 			AD_LISTEND
 		},
 		Common::DE_DEU,
