@@ -23,14 +23,6 @@
 
 #include "clue/theclou.h"
 
-#ifndef __STDLIB_H
-#include <stdlib.h>
-#endif
-
-#ifndef __TIME_H
-#include <time.h>
-#endif
-
 extern void rndInit(void);
 extern void rndDone(void);
 

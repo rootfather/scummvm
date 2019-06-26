@@ -37,8 +37,7 @@ namespace Clue {
 
 ClueEngine::ClueEngine(OSystem *syst, const ADGameDescription *gameDesc)
 	: Engine(syst),
-	_gameDescription(gameDesc),
-	_rnd("clue") {
+	_gameDescription(gameDesc) {
 }
 
 ClueEngine::~ClueEngine() {

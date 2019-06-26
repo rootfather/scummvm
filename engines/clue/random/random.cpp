@@ -19,20 +19,22 @@
  ****************************************************************************/
 
 #include "clue/random/random.h"
+#include "common/random.h"
+#include "common/system.h"
+
+Common::RandomSource *rnd;
 
 void rndInit(void)
 {
-    srand((unsigned int) time(NULL));	/* Zufallszahl ber Timer initialiseren */
+	rnd = new Common::RandomSource("clue");	/* Zufallszahl ber Timer initialiseren */
 }
 
 void rndDone(void)
 {
-    return;
+	delete rnd;
 }
 
 uint32 CalcRandomNr(uint32 l_limit, uint32 u_limit)
 {
-    uint32 x = l_limit + (rand() % (u_limit - l_limit));
-
-    return x;
+	return rnd->getRandomNumberRng(l_limit, u_limit);
 }

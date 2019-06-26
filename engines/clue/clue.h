@@ -25,12 +25,6 @@
 
 
 #include "common/scummsys.h"
-#include "common/file.h"
-#include "common/util.h"
-#include "common/str.h"
-#include "common/hashmap.h"
-#include "common/hash-str.h"
-#include "common/random.h"
 
 #include "engines/engine.h"
 #include "engines/advancedDetector.h"
@@ -53,7 +47,6 @@ public:
 	Common::Platform getPlatform() const;
 
 	const ADGameDescription *_gameDescription;
-	Common::RandomSource _rnd;
 };
 
 } // End of namespace Clue
