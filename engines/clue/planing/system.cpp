@@ -260,12 +260,12 @@ void SaveHandler(FILE * fh, struct System *sys, uint32 id)
 
 	for (a = (struct Action *) LIST_HEAD(h->Actions); NODE_SUCC(a);
 	     a = (struct Action *) NODE_SUCC(a)) {
-	    fprintf(fh, FILE_ACTION_ID "\r\n%u\r\n%u\r\n",
+	    fprintf(fh, FILE_ACTION_ID "\r\n%hu\r\n%hu\r\n",
 		    a->Type, a->TimeNeeded);
 
 	    switch (a->Type) {
 	    case ACTION_GO:
-		fprintf(fh, "%u\r\n",
+		fprintf(fh, "%hu\r\n",
 			ActionData(a, struct ActionGo *)->Direction);
 		break;
 
@@ -314,15 +314,15 @@ byte LoadHandler(FILE * fh, struct System *sys, uint32 id)
 
 		    while (dskGetLine(buffer, sizeof(buffer), fh)
 			   && (strcmp(buffer, FILE_ACTION_ID) == 0)) {
-			fscanf(fh, "%u\r\n", &type);
-			fscanf(fh, "%u\r\n", &time);
+			fscanf(fh, "%hu\r\n", &type);
+			fscanf(fh, "%hu\r\n", &time);
 
 			if (type) {
 			    a = InitAction(sys, type, 0L, 0L, time);
 
 			    switch (type) {
 			    case ACTION_GO:
-				fscanf(fh, "%u\r\n", &value16);
+				fscanf(fh, "%hu\r\n", &value16);
 				ActionData(a, struct ActionGo *)->Direction =
 				    value16;
 				break;

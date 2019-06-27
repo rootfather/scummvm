@@ -248,7 +248,7 @@ byte tcSaveChangesInScenes(const char *fileName)
 
 	for (i = 0; i < film->AmountOfScenes; i++) {
 	    fprintf(file, "%u\r\n", film->gameplay[i].EventNr);
-	    fprintf(file, "%u\r\n", film->gameplay[i].Geschehen);
+	    fprintf(file, "%hu\r\n", film->gameplay[i].Geschehen);
 	}
 
 	dskClose(file);
@@ -273,7 +273,7 @@ byte tcLoadChangesInScenes(const char *fileName)
 
 	for (i = 0; i < film->AmountOfScenes; i++) {
 	    fscanf(file, "%u\r\n", &eventNr);
-	    fscanf(file, "%u\r\n", &count);
+	    fscanf(file, "%hu\r\n", &count);
 
 	    if ((sc = GetScene(eventNr)))
 		sc->Geschehen = count;
