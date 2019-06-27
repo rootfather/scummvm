@@ -160,7 +160,7 @@ static bool tcInit(void)
     if (!(GamePlayMode & GP_NO_SAMPLES))
         sndInitFX();
 
-    //ShowIntro();
+    ShowIntro();
 
     /* Start game. */
     inpOpenAllInputDevs();
