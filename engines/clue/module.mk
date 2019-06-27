@@ -55,7 +55,6 @@ MODULE_OBJS = \
 	scenes/scenes.o \
 	scenes/tools.o \
 	sound/buffer.o \
-	sound/fmopl.o \
 	sound/fx.o \
 	sound/newsound.o \
 	sound/hsc.o \

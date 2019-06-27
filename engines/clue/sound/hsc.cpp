@@ -10,7 +10,7 @@
 
 #include "clue/base/base.h"
 
-#include "clue/sound/fmopl.h"
+#include "audio/fmopl.h"
 #include "clue/sound/hsc.h"
 
 
@@ -87,14 +87,13 @@ static bool hsc_valid_data = false;
 
 static volatile bool hsc_in_process = false;
 
-
+static OPL::OPL *opl;
 
 
 
 static void ym3812_write(int reg, int val)
 {
-    YM3812Write(OPL_CHIP0, 0x0388, reg);
-    YM3812Write(OPL_CHIP0, 0x0389, val);
+	opl->writeReg(reg, val);
 }
 
 
@@ -407,16 +406,10 @@ static void hsc_process_row()
 /* Generic audio & audio mixing functions */
 static int16 MusicStream[HSC_BUFFER_SIZE];
 
-void hscMusicPlayer(unsigned len)
+void hscMusicPlayer(void)
 {
     if (OPL_Ok) {
-	if (sndLenBuffer(FXBase.pMusicBuffer) < len) {
-
 	    hsc_process_row();
-	    YM3812UpdateOne(OPL_CHIP0, MusicStream, ARRAYSIZE(MusicStream));
-
-	    sndInsertBuffer(FXBase.pMusicBuffer, MusicStream, sizeof(MusicStream));
-	}
     }
 }
 
@@ -430,7 +423,7 @@ void hscReset(void)
     hsc_in_process = true;
     hsc_valid_data = false;
 
-    YM3812ResetChip(OPL_CHIP0);
+	opl->reset();
 
     hsc_in_process = false;
 }
@@ -514,16 +507,36 @@ int hscLoad(const char *filename)
     return 1;
 }
 
+template<class Res>
+class Functor0Ptr : public Common::Functor0<Res> {
+public:
+	typedef Res(*FuncType)();
+
+	Functor0Ptr(const FuncType &func) : _func(func) {}
+
+	bool isValid() const { return _func != 0; }
+	Res operator()() const {
+		return (*_func)();
+	}
+private:
+	const FuncType _func;
+};
+
 void hscInit(void)
 {
-    if (YM3812Init(OPL_NUM_CHIPS, OPL_INTERNAL_FREQ, SND_FREQUENCY))
-	OPL_Ok = 0;
-    else
-	OPL_Ok = 1;
+	opl = OPL::Config::create();
+	if (!opl || !opl->init()) {
+		OPL_Ok = 0;
+		DebugMsg(ERR_WARNING, ERROR_MODULE_SOUND, "OPL error");
+	}
+	else {
+		OPL_Ok = 1;
+		opl->start(new Functor0Ptr<void>(hscMusicPlayer), 18);
+	}
 }
 
 void hscDone(void)
 {
-    YM3812Shutdown();
+	delete opl;
     OPL_Ok = 0;
 }

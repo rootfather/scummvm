@@ -16,6 +16,6 @@ void hscReset(void);
 void hscDone(void);
 int hscLoad(const char *fileName);
 
-void hscMusicPlayer(unsigned len);
+void hscMusicPlayer(void);
 
 #endif

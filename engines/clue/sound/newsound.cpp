@@ -5,8 +5,6 @@
   publiclicensecontract.doc files which should be contained with this
   distribution.
  ****************************************************************************/
-#include "SDL.h"
-
 #include "clue/disk/disk.h"
 
 #include "clue/sound/fx.h"
@@ -26,11 +24,7 @@ void sndInit(void)
 
 void sndDone(void)
 {
-    SDL_LockAudio();
-
     hscDone();
-
-    SDL_UnlockAudio();
 }
 
 void sndPlaySound(const char *name, uint32 mode)
@@ -43,11 +37,7 @@ void sndPlaySound(const char *name, uint32 mode)
 	if (FXBase.us_AudioOk) {
 	    dskBuildPathName(DISK_CHECK_FILE, SOUND_DIRECTORY, name, path);
 
-            SDL_LockAudio();
-
 	    hscLoad(path);
-
-            SDL_UnlockAudio();
 	}
     }
 }
@@ -67,10 +57,6 @@ void sndFading(short int targetVol)
 void sndStopSound(uint8 dummy)
 {
     if (FXBase.us_AudioOk) {
-        SDL_LockAudio();
-
         hscReset();
-
-        SDL_UnlockAudio();
     }
 }
