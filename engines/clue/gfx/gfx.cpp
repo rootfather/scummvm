@@ -1534,9 +1534,12 @@ void ShowIntro(void)
 
 				while (g_system->getEventManager()->pollEvent(ev)) {
                     switch (ev.type) {
+					case Common::EVENT_QUIT:
+						tcDone();
+						g_system->quit(); // TODO: Hack
 					case Common::EVENT_KEYDOWN:
 					case Common::EVENT_LBUTTONDOWN:
-					case Common::EVENT_QUIT:
+					case Common::EVENT_RBUTTONDOWN:
                         endi = true;
                         goto endit;
 

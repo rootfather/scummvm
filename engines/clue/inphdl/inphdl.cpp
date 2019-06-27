@@ -8,9 +8,11 @@
  ****************************************************************************/
 
 #include "clue/inphdl/inphdl.h"
+#include "clue/base/base.h"
 
 #include "common/system.h"
 #include "common/events.h"
+#include "graphics/cursorman.h"
 
 struct IHandler {
     int32 ul_XSensitivity;
@@ -29,6 +31,38 @@ struct IHandler {
 };
 
 struct IHandler IHandler;
+
+static const byte cursorSprite[] = {
+	1,1,0,0,0,0,0,0,0,0,0,
+	1,2,1,0,0,0,0,0,0,0,0,
+	1,2,2,1,0,0,0,0,0,0,0,
+	1,2,2,2,1,0,0,0,0,0,0,
+	1,2,2,2,2,1,0,0,0,0,0,
+	1,2,2,2,2,2,1,0,0,0,0,
+	1,2,2,2,2,2,2,1,0,0,0,
+	1,2,2,2,2,2,2,2,1,0,0,
+	1,2,2,2,2,2,2,2,2,1,0,
+	1,2,2,2,2,2,2,2,2,2,1,
+	1,2,2,1,2,2,1,1,1,1,1,
+	1,2,1,0,1,2,2,1,0,0,0,
+	1,1,0,0,1,2,2,1,0,0,0,
+	0,0,0,0,0,1,2,2,1,0,0,
+	0,0,0,0,0,1,2,2,1,0,0,
+	0,0,0,0,0,0,1,1,1,0,0
+};
+
+static const byte cursorPalette[] = {
+	0, 0, 0,           // Transparent
+	0x00, 0x00, 0x00,  // Black
+	0xff, 0xff, 0xff   // White
+};
+
+void inpInitMouse(void)
+{
+	CursorMan.replaceCursor(cursorSprite, 11, 16, 0, 0, 0);
+	CursorMan.replaceCursorPalette(cursorPalette, 0, 3);
+	CursorMan.showMouse(true);
+}
 
 
 void gfxWaitTOF(void);
@@ -50,47 +84,23 @@ void inpOpenAllInputDevs(void)
     IHandler.MouseStatus = true;
 
     IHandler.JoyExists = false;
-/*
-    if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) == 0) {
-        if (SDL_NumJoysticks() > 0) {
-            IHandler.Joystick = SDL_JoystickOpen(0);
 
-            if (IHandler.Joystick) {
-                IHandler.JoyExists = true;
-            } else {
-                DebugMsg(ERR_DEBUG, ERROR_MODULE_INPUT,
-                         "Failed to open Joystick 0");
-            }
-        }
-    } else {
-        DebugMsg(ERR_DEBUG, ERROR_MODULE_INPUT,
-                 "SDL_InitSubSystem: %s", SDL_GetError());
-    }
-*/
+	inpInitMouse();
     inpClearKbBuffer();
 }
 
 void inpCloseAllInputDevs(void)
 {
-    /*
-    if (SDL_JoystickOpened(0)) {
-        SDL_JoystickClose(IHandler.Joystick);
-    }
-
-    if (SDL_WasInit(SDL_INIT_JOYSTICK) != 0) {
-        SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
-    }
-    */
 }
 
 void inpMousePtrOn(void)
 {
-/*      SDL_ShowCursor(SDL_ENABLE); */
+	//CursorMan.showMouse(true);
 }
 
 void inpMousePtrOff(void)
 {
-/*      SDL_ShowCursor(SDL_DISABLE); */
+	//CursorMan.showMouse(false);
 }
 
 int32 inpWaitFor(int32 l_Mask)
@@ -184,7 +194,9 @@ int32 inpWaitFor(int32 l_Mask)
 		break;
 
 		case Common::EVENT_MOUSEMOVE:
-		if (IHandler.MouseExists && IHandler.MouseStatus) {/*
+		if (IHandler.MouseExists && IHandler.MouseStatus) {
+			action |= INP_MOUSE;
+			/*
 		    if ((l_Mask & INP_LEFT) && (ev.motion.xrel < 0))
 			action |= INP_MOUSE + INP_LEFT;
 		    if ((l_Mask & INP_RIGHT) && (ev.motion.xrel > 0))
@@ -193,7 +205,9 @@ int32 inpWaitFor(int32 l_Mask)
 			action |= INP_MOUSE + INP_UP;
 		    if ((l_Mask & INP_DOWN) && (ev.motion.yrel > 0))
 			action |= INP_MOUSE + INP_DOWN;
-		*/}
+			*/
+			g_system->updateScreen();
+		}
 		break;
 
 		case Common::EVENT_LBUTTONDOWN:
@@ -208,27 +222,10 @@ int32 inpWaitFor(int32 l_Mask)
 		break;
 
 		case Common::EVENT_QUIT:
+			tcDone();
 			g_system->quit(); // TODO: Hack
 		break;
 
-    /*
-	    case SDL_JOYBUTTONDOWN:
-		if (IHandler.JoyExists) {
-		    switch (ev.jbutton.button) {
-		    case 0:
-			action |= INP_MOUSE + INP_LBUTTONP;
-			break;
-
-		    case 1:
-			action |= INP_MOUSE + INP_RBUTTONP;
-			break;
-
-		    default:
-			break;
-		    }
-		}
-		break;
-    */
 	    default:
 		break;
 	    }
