@@ -85,7 +85,7 @@ void sndPlayFX(void)
 {
     SfxChannelOn = true;
 	if (sfxFile) {
-		g_engine->_mixer->playStream(Audio::Mixer::SoundType::kSFXSoundType, &sfx, sfxFile);
+		g_engine->_mixer->playStream(Audio::Mixer::kSFXSoundType, &sfx, sfxFile);
 	}
 }
 
