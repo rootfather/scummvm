@@ -965,7 +965,7 @@ void gfxSetRGB(GC *gc, uint8 color, uint8 r, uint8 g, uint8 b)
 
 	g_system->getPaletteManager()->setPalette(rgb, color, 1);
 
-    // gfxRealRefreshArea(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    gfxRealRefreshArea(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
 void gfxSetColorRange(byte uch_ColorStart, byte uch_End)
@@ -1015,7 +1015,7 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
         fakt=128/time;
 
         for (s=time; s>=0; s--) {
-			// gfxRealRefreshArea(area.x, area.y, area.w, area.h);
+			gfxRealRefreshArea(area.x, area.y, area.w, area.h);
             gfxWaitTOR();
 
             for (t=st; t<=en; t++) {
@@ -1049,7 +1049,7 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
 	g_system->getPaletteManager()->setPalette(&rgb[st*3], st, en - st + 1);
 
         for (s=0; s<=time; s++) {
-			// gfxRealRefreshArea(area.x, area.y, area.w, area.h);
+			gfxRealRefreshArea(area.x, area.y, area.w, area.h);
             gfxWaitTOR();
 
             for (t=st; t<=en; t++) {
@@ -1060,7 +1060,7 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
 			g_system->getPaletteManager()->setPalette(&rgb[st*3], st, en - st + 1);
         }
 
-		// gfxRealRefreshArea(area.x, area.y, area.w, area.h);
+		gfxRealRefreshArea(area.x, area.y, area.w, area.h);
         gfxWaitTOR();
 
 	for (t=st; t<=en; t++) {
@@ -1072,7 +1072,7 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
 	break;
     }
 
-	// gfxRealRefreshArea(area.x, area.y, area.w, area.h);
+	gfxRealRefreshArea(area.x, area.y, area.w, area.h);
 }
 
 
