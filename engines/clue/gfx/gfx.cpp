@@ -1586,7 +1586,7 @@ void ShowIntro(void)
                 }
 
                 for (s=0; s<MaxAnm; s++) {
-                    if (sync[s*2]==anims && sync[s*2+1] == t) {
+                    if (sync[s*2]==anims && sync[s*2+1]-1 == t) {
                         sndPrepareFX(fname[s]);
                         sndPlayFX();
                     }
