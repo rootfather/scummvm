@@ -205,6 +205,7 @@ int32 inpWaitFor(int32 l_Mask)
 		    if ((l_Mask & INP_DOWN) && (ev.motion.yrel > 0))
 			action |= INP_MOUSE + INP_DOWN;
 			*/
+			g_system->delayMillis(10);
 			g_system->updateScreen();
 		}
 		break;
