@@ -29,7 +29,7 @@
 #include "clue/text/text_p.h"
 
 /* private globals declaration */
-char *txtLanguageMark[TXT_LANG_LAST] = {
+const char *txtLanguageMark[TXT_LANG_LAST] = {
     "d", "e", "f", "s", "d"
 };
 

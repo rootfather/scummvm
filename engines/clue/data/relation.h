@@ -62,7 +62,7 @@ struct relation {
 
 
 extern int (*CompareKey) (KEY, KEY);
-extern KEY(*EncodeKey) (const char *);
+extern KEY(*EncodeKey) (char *);
 extern char *(*DecodeKey) (KEY);
 
 

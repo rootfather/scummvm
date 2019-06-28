@@ -43,7 +43,7 @@
 #include "clue/disk/disk.h"
 #endif
 
-#define LS_SPOT_NAME					((byte*)"s")
+#define LS_SPOT_NAME					("s")
 
 #define LS_SPOT_SMALL_SIZE         16
 #define LS_SPOT_MEDIUM_SIZE        32

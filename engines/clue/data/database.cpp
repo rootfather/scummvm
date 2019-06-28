@@ -59,7 +59,7 @@ char *dbDecode(KEY key)
 }
 
 
-KEY dbEncode(const char *key)
+KEY dbEncode(char *key)
 {
     void *obj = dbGetObject(atol(key));
 

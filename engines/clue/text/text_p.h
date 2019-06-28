@@ -64,12 +64,12 @@ struct Text {
 
 
 /* private gobals definition */
-extern char *txtLanguageMark[];
+extern const char *txtLanguageMark[];
 extern struct TextControl *txtBase;
 extern char keyBuffer[];
 
 
 /* private prototypes - LINE */
-static char *txtGetLine(struct Text *txt, byte lineNr);
+static char *txtGetLine(struct Text *txt, uint8 lineNr);
 
 #endif

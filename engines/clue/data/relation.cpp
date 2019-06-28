@@ -17,7 +17,7 @@ static RELATION nrOfRelations = 1;
 static struct relationDef *relationsDefBase = NULL;
 
 int (*CompareKey) (KEY, KEY) = NULL;
-KEY(*EncodeKey) (const char *) = NULL;
+KEY(*EncodeKey) (char *) = NULL;
 char *(*DecodeKey) (KEY) = NULL;
 
 
