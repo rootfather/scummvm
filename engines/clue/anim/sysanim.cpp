@@ -199,7 +199,7 @@ void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode)
 
 			Handler.PlayMode    = (uint8) txtGetKeyAsULONG((uint16)PLAY_MODE_POS, pict_list);
 */
-	    Handler.PlayMode = PM_NORMAL;
+	    Handler.PlayMode = PM_PING_PONG;
 
 	    Handler.PictureRate = rate;
 	    Handler.Repeatation = how_often;
@@ -288,7 +288,7 @@ void animator(void)
 			Handler.Direction = 1;
 		    }
 
-		    if (Handler.CurrPictNr == Handler.frameCount) {
+		    if (Handler.CurrPictNr == Handler.frameCount - 1) {
 			Handler.RepeatationCount++;
 
 			if (Handler.PlayMode & PM_NORMAL)
