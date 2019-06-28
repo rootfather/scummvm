@@ -32,35 +32,34 @@ struct IHandler {
 
 struct IHandler IHandler;
 
+#define X 15
+#define x 255
+
 static const byte cursorSprite[] = {
-	1,1,0,0,0,0,0,0,0,0,0,
-	1,2,1,0,0,0,0,0,0,0,0,
-	1,2,2,1,0,0,0,0,0,0,0,
-	1,2,2,2,1,0,0,0,0,0,0,
-	1,2,2,2,2,1,0,0,0,0,0,
-	1,2,2,2,2,2,1,0,0,0,0,
-	1,2,2,2,2,2,2,1,0,0,0,
-	1,2,2,2,2,2,2,2,1,0,0,
-	1,2,2,2,2,2,2,2,2,1,0,
-	1,2,2,2,2,2,2,2,2,2,1,
-	1,2,2,1,2,2,1,1,1,1,1,
-	1,2,1,0,1,2,2,1,0,0,0,
-	1,1,0,0,1,2,2,1,0,0,0,
-	0,0,0,0,0,1,2,2,1,0,0,
-	0,0,0,0,0,1,2,2,1,0,0,
-	0,0,0,0,0,0,1,1,1,0,0
+	x,x,0,0,0,0,0,0,0,0,0,
+	x,X,x,0,0,0,0,0,0,0,0,
+	x,X,X,x,0,0,0,0,0,0,0,
+	x,X,X,X,x,0,0,0,0,0,0,
+	x,X,X,X,X,x,0,0,0,0,0,
+	x,X,X,X,X,X,x,0,0,0,0,
+	x,X,X,X,X,X,X,x,0,0,0,
+	x,X,X,X,X,X,X,X,x,0,0,
+	x,X,X,X,X,X,X,X,X,x,0,
+	x,X,X,X,X,X,x,x,x,x,x,
+	x,X,X,x,X,X,x,0,0,0,0,
+	x,X,x,x,x,X,X,x,0,0,0,
+	x,x,0,0,x,X,X,x,0,0,0,
+	0,0,0,0,0,x,X,X,x,0,0,
+	0,0,0,0,0,x,X,X,x,0,0,
+	0,0,0,0,0,0,x,x,0,0,0
 };
 
-static const byte cursorPalette[] = {
-	0, 0, 0,           // Transparent
-	0x00, 0x00, 0x00,  // Black
-	0xff, 0xff, 0xff   // White
-};
+#undef X
+#undef x
 
 void inpInitMouse(void)
 {
 	CursorMan.replaceCursor(cursorSprite, 11, 16, 0, 0, 0);
-	CursorMan.replaceCursorPalette(cursorPalette, 0, 3);
 	CursorMan.showMouse(true);
 }
 
