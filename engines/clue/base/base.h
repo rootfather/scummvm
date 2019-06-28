@@ -63,6 +63,7 @@
 #include "clue/anim/sysanim.h"
 #include "clue/present/interac.h"
 #include "clue/data/relation.h"
+#include "clue/sound/hsc.h"
 
 
 #ifndef MODULE_DATABASE

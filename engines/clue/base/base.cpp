@@ -162,6 +162,8 @@ static bool tcInit(void)
 
     ShowIntro();
 
+	hscReset();
+
     /* Start game. */
     inpOpenAllInputDevs();
 
