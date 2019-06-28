@@ -162,7 +162,7 @@ uint8 Present(uint32 nr, const char *presentationText,
 		gfxGetMouseXY(u_gc, NULL, &y);
 	    }
 
-	    while (y > 50 && y <= 59 && firstVis < (max - 5)) {	/* Scroll down */
+	    while (y > 48 && y <= 58 && firstVis < (max - 5)) {	/* Scroll down */
 		firstVis++;
 		DrawPresent(presentationData, firstVis, u_gc, max);
 

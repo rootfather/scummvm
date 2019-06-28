@@ -925,7 +925,18 @@ void gfxWaitTOR(void)
 
 void gfxWaitTOS(void)
 {
-    g_system->delayMillis(250);
+	Common::Event ev;
+	uint32 next_time;
+	const uint32 interval = 250;
+	uint32 now = g_system->getMillis();
+
+	next_time = now + interval;
+	while (now < next_time) {
+		inpWaitFor(INP_ALL_MODES);
+		g_system->updateScreen();
+		g_system->delayMillis(10);
+		now = g_system->getMillis();
+	}
 }
 
 void gfxClearArea(GC *gc)

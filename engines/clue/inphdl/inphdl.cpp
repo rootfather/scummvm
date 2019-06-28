@@ -194,7 +194,14 @@ int32 inpWaitFor(int32 l_Mask)
 
 		case Common::EVENT_MOUSEMOVE:
 		if (IHandler.MouseExists && IHandler.MouseStatus) {
-			action |= INP_MOUSE;
+			if (l_Mask & INP_LEFT)
+				action |= INP_MOUSE + INP_LEFT;
+			if (l_Mask & INP_RIGHT)
+				action |= INP_MOUSE + INP_RIGHT;
+			if (l_Mask & INP_UP)
+				action |= INP_MOUSE + INP_UP;
+			if (l_Mask & INP_DOWN)
+				action |= INP_MOUSE + INP_DOWN;
 			/*
 		    if ((l_Mask & INP_LEFT) && (ev.motion.xrel < 0))
 			action |= INP_MOUSE + INP_LEFT;

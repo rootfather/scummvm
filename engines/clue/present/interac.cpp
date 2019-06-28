@@ -484,8 +484,8 @@ byte Bubble(LIST * bubble, byte activ, void (*func) (byte), uint32 waitTime)
 
 				gfxGetMouseXY(u_gc, NULL, &y);
 			    }
-			} else if ((y > 48) && (y <= 52) && (firstVis < (max - 5))) {	/* Scroll down */
-			    while ((y > 48) && (y <= 52) && (firstVis < (max - 5))) {
+			} else if ((y > 48) && (y <= 58) && (firstVis < (max - 5))) {	/* Scroll down */
+			    while ((y > 48) && (y <= 58) && (firstVis < (max - 5))) {
 				firstVis += 1;
 				activ = firstVis + 4;
 
