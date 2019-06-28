@@ -533,15 +533,11 @@ void gfxRectFill(GC *gc, uint16 sx, uint16 sy, uint16 ex, uint16 ey)
 
     dst.left = gc->clip.x + sx;
     dst.top = gc->clip.y + sy;
-	dst.right = gc->clip.x + ex;
-	dst.bottom = gc->clip.y + ey;
+	dst.right = gc->clip.x + ex + 1;
+	dst.bottom = gc->clip.y + ey + 1;
 
-    Screen->fillRect(dst, gc->outline);
-
-    dst2 = dst;
-	dst2.grow(-1);
-
-    Screen->fillRect(dst2, gc->foreground);
+	Screen->fillRect(dst, gc->foreground);
+    Screen->frameRect(dst, gc->outline);
 
     gfxRefreshArea(dst.top, dst.left, dst.width(), dst.height());
 }
@@ -958,7 +954,7 @@ void gfxSetRGB(GC *gc, uint8 color, uint8 r, uint8 g, uint8 b)
 
 	g_system->getPaletteManager()->setPalette(rgb, color, 1);
 
-    gfxRealRefreshArea(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    // gfxRealRefreshArea(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
 void gfxSetColorRange(byte uch_ColorStart, byte uch_End)
@@ -1008,7 +1004,7 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
         fakt=128/time;
 
         for (s=time; s>=0; s--) {
-            gfxRealRefreshArea(area.x, area.y, area.w, area.h);
+			// gfxRealRefreshArea(area.x, area.y, area.w, area.h);
             gfxWaitTOR();
 
             for (t=st; t<=en; t++) {
@@ -1042,7 +1038,7 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
 	g_system->getPaletteManager()->setPalette(&rgb[st*3], st, en - st + 1);
 
         for (s=0; s<=time; s++) {
-            gfxRealRefreshArea(area.x, area.y, area.w, area.h);
+			// gfxRealRefreshArea(area.x, area.y, area.w, area.h);
             gfxWaitTOR();
 
             for (t=st; t<=en; t++) {
@@ -1053,7 +1049,7 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
 			g_system->getPaletteManager()->setPalette(&rgb[st*3], st, en - st + 1);
         }
 
-        gfxRealRefreshArea(area.x, area.y, area.w, area.h);
+		// gfxRealRefreshArea(area.x, area.y, area.w, area.h);
         gfxWaitTOR();
 
 	for (t=st; t<=en; t++) {
@@ -1065,7 +1061,7 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
 	break;
     }
 
-    gfxRealRefreshArea(area.x, area.y, area.w, area.h);
+	// gfxRealRefreshArea(area.x, area.y, area.w, area.h);
 }
 
 
@@ -1755,10 +1751,10 @@ void gfxRealRefreshArea(uint16 x, uint16 y, uint16 w, uint16 h)
     areaR.w = SCREEN_WIDTH;
     areaR.h = SCREEN_HEIGHT;
 
-    areaR2.x = x-2;
-    areaR2.y = y-2;
-    areaR2.w = w+4;
-    areaR2.h = h+4;
+    areaR2.x = x;
+    areaR2.y = y;
+    areaR2.w = w;
+    areaR2.h = h;
     areaR = Clip(areaR, areaR2);
 
     x = areaR.x;

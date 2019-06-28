@@ -67,14 +67,14 @@ void DrawPresent(LIST * present, uint8 firstLine, GC *gc, uint8 max)
 
 	case PRESENT_AS_BAR:
 	    gfxSetPens(gc, 250, 250, 251);
-	    gfxRectFill(gc, 206, j, 316, j + 7);
+	    gfxRectFill(gc, 205, j, 315, j + 7);
 	    gfxSetPens(gc, 251, 251, 251);
-	    gfxRectFill(gc, 206, j,
-			206 + ((316 - 206) * p->extendedNr) / p->maxNr, j + 7);
+	    gfxRectFill(gc, 205, j,
+			205 + ((315 - 205) * p->extendedNr) / p->maxNr, j + 7);
 
 	    gfxSetPens(gc, 249, 252, 253);
 
-	    gfxSetRect(206, 316 - 206);
+	    gfxSetRect(206, 315 - 205);
 	    sprintf(s, "%u %%", (p->extendedNr * 100) / (p->maxNr));
 
 	    gfxPrint(gc, s, j, GFX_PRINT_CENTER);
