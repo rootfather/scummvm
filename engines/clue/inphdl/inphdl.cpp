@@ -212,11 +212,13 @@ int32 inpWaitFor(int32 l_Mask)
 
 		case Common::EVENT_LBUTTONDOWN:
 		if (IHandler.MouseExists && IHandler.MouseStatus) {
+		if (l_Mask & INP_LBUTTONP)
 			action |= INP_MOUSE + INP_LBUTTONP;
 		}
 		break;
 		case Common::EVENT_RBUTTONDOWN:
 		if (IHandler.MouseExists && IHandler.MouseStatus) {
+		if (l_Mask & INP_RBUTTONP)
 			action |= INP_MOUSE + INP_RBUTTONP;
 		}
 		break;
