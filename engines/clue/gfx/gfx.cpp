@@ -539,7 +539,7 @@ void gfxRectFill(GC *gc, uint16 sx, uint16 sy, uint16 ex, uint16 ey)
 	Screen->fillRect(dst, gc->foreground);
     Screen->frameRect(dst, gc->outline);
 
-    gfxRefreshArea(dst.top, dst.left, dst.width(), dst.height());
+    gfxRefreshArea(dst.left, dst.top, dst.width(), dst.height());
 }
 
 void gfxSetDrMd(GC *gc, GfxDrawModeE mode)

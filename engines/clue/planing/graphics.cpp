@@ -79,7 +79,7 @@ void plDisplayTimer(uint32 time, byte doSpotsImmediatly)
 		(uint32) ((time / 60) % 60), (uint32) (time % 60), txtSeconds);
 
 	gfxSetPens(m_gc, 0, 0, 0);
-	gfxRectFill(m_gc, 120, 0, 320, 10);
+	gfxRectFill(m_gc, 220, 0, 320, 10);
 
 	gfxSetRect(2, 320);
 	gfxSetPens(m_gc, 248, GFX_SAME_PEN, GFX_SAME_PEN);
