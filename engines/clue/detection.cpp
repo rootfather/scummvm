@@ -128,7 +128,7 @@ static const ADGameDescription gameDescriptions[] = {
 		},
 		Common::DE_DEU,
 		Common::kPlatformDOS,
-		ADGF_NO_FLAGS,
+		ADGF_CD,
 		GUIO0()
 	},
 
