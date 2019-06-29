@@ -748,6 +748,9 @@ ScreenBlitChar(GC *gc, Graphics::Surface *src, Rect *src_rect,
 
 void gfxPrintExact(GC *gc, const char *txt, uint16 x, uint16 y)
 {
+	if (txt[0] == '\0')
+		return;
+
     const Font *font = gc->font;
     const uint16 w = font->w,
               h = font->h,
@@ -801,6 +804,9 @@ void gfxPrintExact(GC *gc, const char *txt, uint16 x, uint16 y)
 
 void gfxPrint(GC *gc, const char *txt, uint16 y, uint32 mode)
 {
+	if (txt[0] == '\0')
+		return;
+
     uint16 x = GlobalPrintRect.us_X;
     uint16 w = gfxTextWidth(gc, txt, strlen(txt));
 
@@ -965,13 +971,20 @@ void gfxSetRGB(GC *gc, uint8 color, uint8 r, uint8 g, uint8 b)
 
 	g_system->getPaletteManager()->setPalette(rgb, color, 1);
 
-    gfxRealRefreshArea(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+	g_system->updateScreen();
 }
 
 void gfxSetColorRange(byte uch_ColorStart, byte uch_End)
 {
     GlobalColorRange.uch_Start = uch_ColorStart;
     GlobalColorRange.uch_End = uch_End;
+}
+
+void gfxSetRGBRange(uint8 *colors, uint start, uint num)
+{
+	g_system->getPaletteManager()->setPalette(colors, start, num);
+
+	g_system->updateScreen();
 }
 
 void gfxGetPaletteFromReg(uint8 *palette)
@@ -985,23 +998,16 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
     uint16 t, st, en;
     byte rgb[GFX_PALETTE_SIZE];
     uint8 cols[GFX_PALETTE_SIZE];
-    Rect area;
     int32 time, fakt, s;
 
     if (gc) {
 	st = gc->colorStart;
 	en = gc->End;
-
-        area = gc->clip;
     } else {
 	st = GlobalColorRange.uch_Start;
 	en = GlobalColorRange.uch_End;
-
-        area.x = 0;
-        area.y = 0;
-        area.w = SCREEN_WIDTH;
-        area.h = SCREEN_HEIGHT;
     }
+	gfxRealRefreshArea(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
     delay = MAX(delay, 1u);	/* delay must not be zero! */
 
@@ -1015,7 +1021,6 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
         fakt=128/time;
 
         for (s=time; s>=0; s--) {
-			gfxRealRefreshArea(area.x, area.y, area.w, area.h);
             gfxWaitTOR();
 
             for (t=st; t<=en; t++) {
@@ -1023,7 +1028,7 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
                 rgb[t*3+1] = 16 + (((int32)cols[t*3+1] - 16) * (fakt * s)) / 128;
                 rgb[t*3+2] = 12 + (((int32)cols[t*3+2] - 12) * (fakt * s)) / 128;
             }
-			g_system->getPaletteManager()->setPalette(&rgb[st*3], st, en - st + 1);
+			gfxSetRGBRange(&rgb[st*3], st, en - st + 1);
         }
 
 	for (t=st; t<=en; t++) {
@@ -1031,7 +1036,7 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
 	    rgb[t*3+1] = 0;
 	    rgb[t*3+2] = 0;
         }
-	g_system->getPaletteManager()->setPalette(&rgb[st*3], st, en - st + 1);
+	gfxSetRGBRange(&rgb[st*3], st, en - st + 1);
 	break;
 
     case GFX_BLEND_UP:
@@ -1041,15 +1046,8 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
 
         fakt=128/time;
 
-	for (t=st; t<=en; t++) {
-	    rgb[t*3] = 0;
-	    rgb[t*3+1] = 0;
-	    rgb[t*3+2] = 0;
-        }
-	g_system->getPaletteManager()->setPalette(&rgb[st*3], st, en - st + 1);
 
         for (s=0; s<=time; s++) {
-			gfxRealRefreshArea(area.x, area.y, area.w, area.h);
             gfxWaitTOR();
 
             for (t=st; t<=en; t++) {
@@ -1057,10 +1055,9 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
                 rgb[t*3+1] = 16 + (((int32)cols[t*3+1] - 16) * (fakt * s)) / 128;
                 rgb[t*3+2] = 12 + (((int32)cols[t*3+2] - 12) * (fakt * s)) / 128;
             }
-			g_system->getPaletteManager()->setPalette(&rgb[st*3], st, en - st + 1);
+			gfxSetRGBRange(&rgb[st*3], st, en - st + 1);
         }
 
-		gfxRealRefreshArea(area.x, area.y, area.w, area.h);
         gfxWaitTOR();
 
 	for (t=st; t<=en; t++) {
@@ -1068,11 +1065,9 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
 	    rgb[t*3+1] = palette[t*3+1];
 	    rgb[t*3+2] = palette[t*3+2];
         }
-	g_system->getPaletteManager()->setPalette(&rgb[st*3], st, en - st + 1);
+	gfxSetRGBRange(&rgb[st*3], st, en - st + 1);
 	break;
     }
-
-	gfxRealRefreshArea(area.x, area.y, area.w, area.h);
 }
 
 
