@@ -265,6 +265,7 @@ void inpTurnFunctionKey(bool us_NewStatus)
 void inpTurnMouse(bool us_NewStatus)
 {
     IHandler.MouseStatus = us_NewStatus;
+	CursorMan.showMouse(us_NewStatus);
 }
 
 void inpDelay(int32 l_Ticks)
