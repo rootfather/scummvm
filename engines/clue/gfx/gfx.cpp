@@ -174,8 +174,8 @@ void gfxSetVideoMode(byte uch_NewMode)
 	u_gc = &LowerGC;
 	m_gc = &MenuGC;
 
-	gfxSetRGB(NULL, 0, 0, 16, 12);
-	gfxSetRGB(NULL, 255, 63, 63, 63);	/* mouse */
+	gfxSetRGB(NULL, 0, 0, 64, 48);
+	gfxSetRGB(NULL, 255, 255, 255, 255);	/* mouse */
 	break;
 
     case GFX_VIDEO_NCH4:
@@ -185,7 +185,7 @@ void gfxSetVideoMode(byte uch_NewMode)
 
 	gfxLSInit();
 
-	gfxSetRGB(NULL, 0, 0, 16, 12);
+	gfxSetRGB(NULL, 0, 0, 64, 48);
 	break;
 
     default:
@@ -999,6 +999,7 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
     byte rgb[GFX_PALETTE_SIZE];
     uint8 cols[GFX_PALETTE_SIZE];
     int32 time, fakt, s;
+	const byte back[] = { 0, 64, 48 };
 
     if (gc) {
 	st = gc->colorStart;
@@ -1024,25 +1025,22 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
             gfxWaitTOR();
 
             for (t=st; t<=en; t++) {
-                rgb[t*3] = ((int32)cols[t*3] * (fakt * s)) / 128;
-                rgb[t*3+1] = 16 + (((int32)cols[t*3+1] - 16) * (fakt * s)) / 128;
-                rgb[t*3+2] = 12 + (((int32)cols[t*3+2] - 12) * (fakt * s)) / 128;
+                rgb[t*3+0] = back[0] + (((int32)cols[t*3+0] - back[0]) * (fakt * s)) / 128;
+                rgb[t*3+1] = back[1] + (((int32)cols[t*3+1] - back[1]) * (fakt * s)) / 128;
+                rgb[t*3+2] = back[2] + (((int32)cols[t*3+2] - back[2]) * (fakt * s)) / 128;
             }
 			gfxSetRGBRange(&rgb[st*3], st, en - st + 1);
         }
 
 	for (t=st; t<=en; t++) {
-	    rgb[t*3] = 0;
-	    rgb[t*3+1] = 0;
-	    rgb[t*3+2] = 0;
+	    rgb[t*3+0] = back[0];
+	    rgb[t*3+1] = back[1];
+	    rgb[t*3+2] = back[2];
         }
 	gfxSetRGBRange(&rgb[st*3], st, en - st + 1);
 	break;
 
     case GFX_BLEND_UP:
-        for (t=0; t<GFX_PALETTE_SIZE; t++) {
-            cols[t] = palette[t];
-        }
 
         fakt=128/time;
 
@@ -1051,9 +1049,9 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
             gfxWaitTOR();
 
             for (t=st; t<=en; t++) {
-                rgb[t*3] = ((int32)cols[t*3] * (fakt * s)) / 128;
-                rgb[t*3+1] = 16 + (((int32)cols[t*3+1] - 16) * (fakt * s)) / 128;
-                rgb[t*3+2] = 12 + (((int32)cols[t*3+2] - 12) * (fakt * s)) / 128;
+                rgb[t*3+0] = back[0] + (((int32)palette[t*3+0] - back[0]) * (fakt * s)) / 128;
+                rgb[t*3+1] = back[1] + (((int32)palette[t*3+1] - back[1]) * (fakt * s)) / 128;
+                rgb[t*3+2] = back[2] + (((int32)palette[t*3+2] - back[2]) * (fakt * s)) / 128;
             }
 			gfxSetRGBRange(&rgb[st*3], st, en - st + 1);
         }
@@ -1061,7 +1059,7 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
         gfxWaitTOR();
 
 	for (t=st; t<=en; t++) {
-	    rgb[t*3] = palette[t*3+0];
+	    rgb[t*3+0] = palette[t*3+0];
 	    rgb[t*3+1] = palette[t*3+1];
 	    rgb[t*3+2] = palette[t*3+2];
         }
