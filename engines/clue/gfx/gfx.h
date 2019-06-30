@@ -206,7 +206,7 @@ extern void gfxShow(uint16 us_PictId, uint32 ul_Mode, int32 l_Delay, int32 l_XPo
 
 extern void gfxSetGC(GC *gc);
 
-extern void gfxGetPaletteFromReg(uint8 *palette);
+extern void gfxGetPaletteFromReg(uint8 *palette, uint32 start, uint32 num);
 extern void gfxGetPalette(uint16 collId, uint8 *palette);
 
 void gfxPrepareColl(uint16 collId);

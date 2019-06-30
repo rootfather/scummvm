@@ -178,23 +178,23 @@ byte Menu(LIST * menu, uint32 possibility, byte activ, void (*func) (byte),
 	if (!possibility)
 	    return 0;
 
-	x = 0;
+	x = 8;
 
 	for (max = 0, n = LIST_HEAD(menu); NODE_SUCC(n);
 	     n = NODE_SUCC(n), max++) {
 	    if ((max % 2) == 0) {
 		uint16 l1 = 0, l2 = 0;
 
-		MenuCoords[max / 2] = x;
+		MenuCoords[max / 2] = x - 8;
 
 		l1 = gfxTextWidth(m_gc, NODE_NAME(n),
-				  strlen(NODE_NAME(n))) + 11;
+				  strlen(NODE_NAME(n)));
 
 		if (NODE_SUCC(NODE_SUCC(n)))
 		    l2 = gfxTextWidth(m_gc, NODE_NAME(NODE_SUCC(n)),
-				      strlen(NODE_NAME(NODE_SUCC(n)))) + 11;
+				      strlen(NODE_NAME(NODE_SUCC(n))));
 
-		x += MAX(l1, l2);
+		x += MAX(l1, l2) + 16;
 	    }
 	}
 

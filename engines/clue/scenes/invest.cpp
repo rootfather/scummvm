@@ -207,7 +207,7 @@ void Investigate(const char *location)
 	SuspendAnim();
 	gfxPrepareRefresh();
 
-	gfxGetPaletteFromReg(palette);
+	gfxGetPaletteFromReg(palette, 0, 256);
 
 	gfxShow(224,
 		GFX_NO_REFRESH | GFX_FADE_OUT | GFX_BLEND_UP | GFX_ONE_STEP, 2,

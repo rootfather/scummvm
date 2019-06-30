@@ -975,16 +975,16 @@ void gfxSetColorRange(byte uch_ColorStart, byte uch_End)
     GlobalColorRange.uch_End = uch_End;
 }
 
-void gfxSetRGBRange(uint8 *colors, uint start, uint num)
+void gfxSetRGBRange(uint8 *colors, uint32 start, uint32 num)
 {
 	g_system->getPaletteManager()->setPalette(colors, start, num);
 
 	g_system->updateScreen();
 }
 
-void gfxGetPaletteFromReg(uint8 *palette)
+void gfxGetPaletteFromReg(uint8 *palette, uint32 start, uint32 num)
 {
-	g_system->getPaletteManager()->grabPalette(palette, 0, 256);
+	g_system->getPaletteManager()->grabPalette(palette, start, num);
 }
 
 void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
@@ -1009,13 +1009,12 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
 
     time = delay;
 
-	gfxGetPaletteFromReg(cols);
-	back[0] = cols[0];
-	back[1] = cols[1];
-	back[2] = cols[2];
+	gfxGetPaletteFromReg(back, 0, 1);
 
     switch (mode) {
     case GFX_FADE_OUT:
+
+		gfxGetPaletteFromReg(cols, 0, 256);
 
         fakt=128/time;
 
