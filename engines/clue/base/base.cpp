@@ -164,6 +164,9 @@ static bool tcInit(void)
 
 	hscReset();
 
+	gfxSetRGB(NULL, 0, 0, 64, 48);
+	gfxSetRGB(NULL, 255, 255, 255, 255);	/* mouse */
+
     /* Start game. */
     inpOpenAllInputDevs();
 

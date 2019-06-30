@@ -173,9 +173,6 @@ void gfxSetVideoMode(byte uch_NewMode)
 	l_gc = &LowerGC;
 	u_gc = &LowerGC;
 	m_gc = &MenuGC;
-
-	gfxSetRGB(NULL, 0, 0, 64, 48);
-	gfxSetRGB(NULL, 255, 255, 255, 255);	/* mouse */
 	break;
 
     case GFX_VIDEO_NCH4:
@@ -184,8 +181,6 @@ void gfxSetVideoMode(byte uch_NewMode)
 	m_gc = &LSMenuGC;
 
 	gfxLSInit();
-
-	gfxSetRGB(NULL, 0, 0, 64, 48);
 	break;
 
     default:
@@ -999,7 +994,7 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
     byte rgb[GFX_PALETTE_SIZE];
     uint8 cols[GFX_PALETTE_SIZE];
     int32 time, fakt, s;
-	const byte back[] = { 0, 64, 48 };
+	byte back[3];
 
     if (gc) {
 	st = gc->colorStart;
@@ -1014,10 +1009,13 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
 
     time = delay;
 
+	gfxGetPaletteFromReg(cols);
+	back[0] = cols[0];
+	back[1] = cols[1];
+	back[2] = cols[2];
+
     switch (mode) {
     case GFX_FADE_OUT:
-	
-        gfxGetPaletteFromReg(cols);
 
         fakt=128/time;
 
@@ -1479,6 +1477,7 @@ void ShowIntro(void)
     gfxSetColorRange(0, 255);
 
     memset(colorTABLE, 0, sizeof(colorTABLE));
+	gfxSetRGBRange(colorTABLE, 0, 256);
 
     for (anims=0; anims<5; anims++) {
         FILE *fp;
