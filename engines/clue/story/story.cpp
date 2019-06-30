@@ -26,10 +26,10 @@ static void tcSomebodyIsComing(void)
 {
     byte i;
 
-    sndPrepareFX("klopfen.voc");
 
     for (i = 0; i < 3; i++) {
 	inpDelay(50);
+	sndPrepareFX("klopfen.voc");
 	sndPlayFX();
     }
 }
@@ -38,10 +38,10 @@ static void tcSomebodyIsCalling(void)
 {
     byte i;
 
-    sndPrepareFX("ring.voc");
 
     for (i = 0; i < CalcRandomNr(1, 4); i++) {
 	inpDelay(180);
+	sndPrepareFX("ring.voc");
 	sndPlayFX();
     }
 }
