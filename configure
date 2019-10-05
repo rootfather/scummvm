@@ -185,6 +185,7 @@ _no_pragma_pack=no
 _bink=yes
 _cloud=auto
 _pandoc=no
+_splashoverride=no
 # Default vkeybd/keymapper/eventrec options
 _vkeybd=no
 _keymapper=no
@@ -1054,6 +1055,8 @@ Optional Features:
                            process
   --enable-tts             build support for text to speech
   --disable-tts            don't build support for text to speech
+  --enable-splash-override allow overriding the default splash screen with
+                           a custom image (requires PNG support)
   --disable-bink           don't build with Bink video support
   --opengl-mode=MODE       OpenGL (ES) mode to use for OpenGL output [auto]
                            available modes: auto for autodetection
@@ -1261,6 +1264,7 @@ for ac_option in $@; do
 	--disable-tts)                _tts=no                ;;
 	--enable-bink)                _bink=yes              ;;
 	--disable-bink)               _bink=no               ;;
+	--enable-splash-override)     _splashoverride=yes;;
 	--opengl-mode=*)
 		_opengl_mode=`echo $ac_option | cut -d '=' -f 2`
 		;;
@@ -5535,6 +5539,26 @@ if test "$_updates" = yes; then
 else
 	echo "$_updates"
 fi
+
+#
+# Check whether to build splash screen overriding support
+#
+
+echo_n "Building custom splash screen support... "
+if test "$_splashoverride" = no; then
+	echo "no"
+else
+	if test "$_png" = yes; then
+		_splashoverride=yes
+		echo "yes"
+	else
+		_splashoverride=no
+		echo "skipped"
+		echo
+	fi
+fi
+define_in_config_if_yes $_splashoverride 'ENABLE_SPLASH_OVERRIDE'
+
 
 #
 # Figure out installation directories
