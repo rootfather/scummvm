@@ -36,5 +36,5 @@ void rndDone(void)
 
 uint32 CalcRandomNr(uint32 l_limit, uint32 u_limit)
 {
-	return rnd->getRandomNumberRng(l_limit, u_limit);
+	return rnd->getRandomNumberRng(l_limit, u_limit - 1);
 }
