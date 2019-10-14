@@ -285,17 +285,15 @@ void dskRead_S32LE(FILE * fp, int32 * x)
 
 bool dskGetLine(char *s, int size, FILE *fp)
 {
-    int ch;
-
-    while ((ch = getc(fp)) != EOF && ch != '\r' && size-- > 0)
-	*s++ = ch;
-    *s = '\0';
-
-    while (ch != '\r' && (ch = getc(fp)) != EOF);
-
-    if (ch == EOF)
+	char *p;
+	if (fgets(s, size, fp)) {
+		if (p = strrchr(s, '\n')) {
+			*p = '\0';
+		}
+		if (p = strrchr(s, '\r')) {
+			*p = '\0';
+		}
+		return true;
+	}
 	return false;
-
-    getc(fp);			/* get trailing '\n' */
-    return true;
 }
