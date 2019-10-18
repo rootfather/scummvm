@@ -15,48 +15,42 @@
 char currSoundName[DSK_PATH_MAX];
 
 
-void sndInit(void)
-{
-    currSoundName[0] = '\0';
+void sndInit(void) {
+	currSoundName[0] = '\0';
 
-    hscInit();
+	hscInit();
 }
 
-void sndDone(void)
-{
-    hscDone();
+void sndDone(void) {
+	hscDone();
 }
 
-void sndPlaySound(const char *name, uint32 mode)
-{
-    char path[DSK_PATH_MAX];
+void sndPlaySound(const char *name, uint32 mode) {
+	char path[DSK_PATH_MAX];
 
-    if (strcmp(currSoundName, name) != 0) {
-	strcpy(currSoundName, name);
+	if (strcmp(currSoundName, name) != 0) {
+		strcpy(currSoundName, name);
 
-	if (FXBase.us_AudioOk) {
-	    dskBuildPathName(DISK_CHECK_FILE, SOUND_DIRECTORY, name, path);
+		if (FXBase.us_AudioOk) {
+			dskBuildPathName(DISK_CHECK_FILE, SOUND_DIRECTORY, name, path);
 
-	    hscLoad(path);
+			hscLoad(path);
+		}
 	}
-    }
 }
 
-char *sndGetCurrSoundName(void)
-{
-    return currSoundName;
+char *sndGetCurrSoundName(void) {
+	return currSoundName;
 }
 
 
-void sndFading(short int targetVol)
-{
-    if (FXBase.us_AudioOk) {
-    }
+void sndFading(short int targetVol) {
+	if (FXBase.us_AudioOk) {
+	}
 }
 
-void sndStopSound(uint8 dummy)
-{
-    if (FXBase.us_AudioOk) {
-        hscReset();
-    }
+void sndStopSound(uint8 dummy) {
+	if (FXBase.us_AudioOk) {
+		hscReset();
+	}
 }

@@ -1,13 +1,13 @@
 /*
-**	$Filename: Error/Error.h
-**	$Release:
-**	$Revision:
-**	$Date:
+**  $Filename: Error/Error.h
+**  $Release:
+**  $Revision:
+**  $Date:
 **
-**	functions for error handling
+**  functions for error handling
 **
-**	(C) 1993, 1994 ...and avoid panic by, H. Gaberschek
-**	    All Rights Reserved
+**  (C) 1993, 1994 ...and avoid panic by, H. Gaberschek
+**      All Rights Reserved
 */
 /****************************************************************************
   Portions copyright (c) 2005 Vasco Alexandre da Silva Costa
@@ -31,21 +31,21 @@
 #include "clue/disk/disk.h"
 
 typedef enum {
-    ERROR_MODULE_BASE       =  3,
-    ERROR_MODULE_TXT        =  4,
-    ERROR_MODULE_DISK       =  5,
-    ERROR_MODULE_MEMORY     =  6,
-    ERROR_MODULE_DATABASE   =  7,
-    ERROR_MODULE_GAMEPLAY   =  8,
-    ERROR_MODULE_LOADSAVE   =  9,
-    ERROR_MODULE_LANDSCAP   = 10,
-    ERROR_MODULE_LIVING     = 11,
-    ERROR_MODULE_PLANING    = 12,
-    ERROR_MODULE_SOUND      = 13,
-    ERROR_MODULE_PRESENT    = 14,
-    ERROR_MODULE_GFX        = 15,
-    ERROR_MODULE_INPUT      = 16,
-    ERROR_MODULE_LAST
+	ERROR_MODULE_BASE       =  3,
+	ERROR_MODULE_TXT        =  4,
+	ERROR_MODULE_DISK       =  5,
+	ERROR_MODULE_MEMORY     =  6,
+	ERROR_MODULE_DATABASE   =  7,
+	ERROR_MODULE_GAMEPLAY   =  8,
+	ERROR_MODULE_LOADSAVE   =  9,
+	ERROR_MODULE_LANDSCAP   = 10,
+	ERROR_MODULE_LIVING     = 11,
+	ERROR_MODULE_PLANING    = 12,
+	ERROR_MODULE_SOUND      = 13,
+	ERROR_MODULE_PRESENT    = 14,
+	ERROR_MODULE_GFX        = 15,
+	ERROR_MODULE_INPUT      = 16,
+	ERROR_MODULE_LAST
 } ErrorModuleE;
 
 /* openerrormanager defines */
@@ -60,21 +60,21 @@ typedef enum {
 /* some error types */
 
 typedef enum {
-    No_Error        = 0,
-    Internal_Error,
-    No_Mem,
-    Disk_Defect,
-    Insert_Disk,
-    Lib_Error,
-    Last_Error
+	No_Error        = 0,
+	Internal_Error,
+	No_Mem,
+	Disk_Defect,
+	Insert_Disk,
+	Lib_Error,
+	Last_Error
 } ErrorE;
 
 /* some debug types */
 
 typedef enum {
-    ERR_ERROR,
-    ERR_WARNING,
-    ERR_DEBUG
+	ERR_ERROR,
+	ERR_WARNING,
+	ERR_DEBUG
 } DebugE;
 
 bool pcErrOpen(int32 l_Mode, const char *ErrorFilename);

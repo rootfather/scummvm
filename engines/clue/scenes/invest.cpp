@@ -1,13 +1,13 @@
 /*
-**	$Filename: scenes/invest.c
-**	$Release:  0
-**	$Revision: 0.1
-**	$Date:     06-02-94
+**  $Filename: scenes/invest.c
+**  $Release:  0
+**  $Revision: 0.1
+**  $Date:     06-02-94
 **
-**	 functions for investigations for "Der Clou!"
+**   functions for investigations for "Der Clou!"
 **
 **   (c) 1994 ...and avoid panic by, H. Gaberschek
-**	    All Rights Reserved.
+**      All Rights Reserved.
 **
 */
 /****************************************************************************
@@ -20,209 +20,207 @@
 
 #include "clue/scenes/scenes.h"
 
-static uint32 tcShowPatrol(LIST * bubble_l, char *c_time, char *patr, byte first,
-		        Building bui, uint32 raise)
-{
-    char patrolie[TXT_KEY_LENGTH];
-    uint32 choice = 0;
+static uint32 tcShowPatrol(LIST *bubble_l, char *c_time, char *patr, byte first,
+                           Building bui, uint32 raise) {
+	char patrolie[TXT_KEY_LENGTH];
+	uint32 choice = 0;
 
-    sprintf(patrolie, "%s  %s", c_time, patr);
+	sprintf(patrolie, "%s  %s", c_time, patr);
 
-    CreateNode(bubble_l, 0L, patrolie);
+	CreateNode(bubble_l, 0L, patrolie);
 
-    SetBubbleType(THINK_BUBBLE);
+	SetBubbleType(THINK_BUBBLE);
 
-    Bubble(bubble_l, (byte) first, 0, 140L);
-    choice = GetExtBubbleActionInfo();
+	Bubble(bubble_l, (byte) first, 0, 140L);
+	choice = GetExtBubbleActionInfo();
 
-    tcAddBuildExactlyness(bui, raise);
+	tcAddBuildExactlyness(bui, raise);
 
-    ShowTime(0);
+	ShowTime(0);
 
-    return choice;
+	return choice;
 }
 
-void Investigate(const char *location)
-{
-    NODE *n, *nextMsg;
-    LIST *origin, *bubble_l;
-    char patr[TXT_KEY_LENGTH], line[TXT_KEY_LENGTH], c_time[10];
-    uint32 minutes = 0, guarding = 0, choice = 0, count = 0, buiID = 0, first =
-	0, raise;
-    Building bui;
-    uint32 patrolCount;
+void Investigate(const char *location) {
+	NODE *n, *nextMsg;
+	LIST *origin, *bubble_l;
+	char patr[TXT_KEY_LENGTH], line[TXT_KEY_LENGTH], c_time[10];
+	uint32 minutes = 0, guarding = 0, choice = 0, count = 0, buiID = 0, first =
+	                                   0, raise;
+	Building bui;
+	uint32 patrolCount;
 
-    buiID = GetObjNrOfBuilding(GetLocation);
-    bui = (Building) dbGetObject(buiID);
+	buiID = GetObjNrOfBuilding(GetLocation);
+	bui = (Building) dbGetObject(buiID);
 
-    if (setup.Profidisk) {
-        if (buiID == Building_Buckingham_Palace) {
-	    bubble_l = txtGoKey(INVESTIGATIONS_TXT, "BuckinghamBeobachtet");
-	    SetBubbleType(THINK_BUBBLE);
-	    Bubble(bubble_l, 0, 0L, 0L);
-	    RemoveList(bubble_l);
-	    return;
-        }
-    }
-
-    if (!(GamePlayMode & GP_MUSIC_OFF))
-	sndPlaySound("invest.bk", 0);
-
-    inpTurnESC(0);
-
-    ShowMenuBackground();	/* Bildschirmaufbau */
-    ShowTime(0);
-    inpSetWaitTicks(50);
-
-    gfxSetRect(0, 320);
-    gfxSetPens(l_gc, 249, GFX_SAME_PEN, 0);
-
-    txtGetFirstLine(INVESTIGATIONS_TXT, "Abbrechen", line);
-    txtGetFirstLine(INVESTIGATIONS_TXT, "Patrolie", patr);
-
-    gfxPrint(m_gc, line, 24, GFX_PRINT_CENTER);
-
-    /* Beobachtungstexte von Disk lesen */
-    origin = txtGoKey(INVESTIGATIONS_TXT, location);
-    bubble_l = CreateList();
-    count = GetNrOfNodes(origin);
-    guarding = (uint32) tcRGetGRate(bui);
-    patrolCount = (270 - guarding) / 4 + 1;
-
-    /* Wissensgewinn pro Ereignis =
-     * (255-guarding) = alle wieviel Minuten Streife kommt
-     * count = diverse andere Ereignisse
-     * 1439 / (255- guarding) = Anzahl der Streifen / Tag
-     * 3 = Konstante zur Beschleunigung (GamePlay)
-     */
-
-    raise = 255 / (1439 / patrolCount + count + 1) + 3;
-
-    hasSet(Person_Matt_Stuvysunt, buiID);
-
-    /* bis zur 1. Meldung Zeit vergehen lassen! */
-    for (nextMsg = 0; nextMsg == 0;) {
-	BuildTime(GetMinute, c_time);
-
-	if (!(GetMinute % 60))
-	    ShowTime(0);
-
-	for (n = (NODE *) LIST_HEAD(origin); NODE_SUCC(n);
-	     n = (NODE *) NODE_SUCC(n)) {
-	    if (strncmp(NODE_NAME(n), c_time, 5) == 0)
-		nextMsg = n;
+	if (setup.Profidisk) {
+		if (buiID == Building_Buckingham_Palace) {
+			bubble_l = txtGoKey(INVESTIGATIONS_TXT, "BuckinghamBeobachtet");
+			SetBubbleType(THINK_BUBBLE);
+			Bubble(bubble_l, 0, 0L, 0L);
+			RemoveList(bubble_l);
+			return;
+		}
 	}
 
-	if (!nextMsg)
-	    AddVTime(1);
+	if (!(GamePlayMode & GP_MUSIC_OFF))
+		sndPlaySound("invest.bk", 0);
 
-	if ((GetMinute % patrolCount) == 0)
-	    choice = tcShowPatrol(bubble_l, c_time, patr, first++, bui, raise);
+	inpTurnESC(0);
 
-	if (CalcRandomNr(0L, 6L) == 1)
-	    tcAddBuildStrike(bui, 1);
-    }
+	ShowMenuBackground();   /* Bildschirmaufbau */
+	ShowTime(0);
+	inpSetWaitTicks(50);
 
-    while (((minutes) < MINUTES_PER_DAY) && (!(choice & INP_LBUTTONP))
-	   && (!(choice & INP_RBUTTONP)) && (!(choice & INP_ESC))) {
-	choice = 0;
+	gfxSetRect(0, 320);
+	gfxSetPens(l_gc, 249, GFX_SAME_PEN, 0);
 
-	/* Anzeigen jeder vollen Stunde */
-	if ((GetMinute % 60) == 0)
-	    ShowTime(0);
+	txtGetFirstLine(INVESTIGATIONS_TXT, "Abbrechen", line);
+	txtGetFirstLine(INVESTIGATIONS_TXT, "Patrolie", patr);
 
-	BuildTime(GetMinute, c_time);
+	gfxPrint(m_gc, line, 24, GFX_PRINT_CENTER);
 
-	/* je nach Bewachungsgrad Meldung : "Patrolie" einsetzen ! */
-	if ((GetMinute % patrolCount) == 0)
-	    choice = tcShowPatrol(bubble_l, c_time, patr, first++, bui, raise);
+	/* Beobachtungstexte von Disk lesen */
+	origin = txtGoKey(INVESTIGATIONS_TXT, location);
+	bubble_l = CreateList();
+	count = GetNrOfNodes(origin);
+	guarding = (uint32) tcRGetGRate(bui);
+	patrolCount = (270 - guarding) / 4 + 1;
 
-	/* öberprÅfen ob zur aktuellen Zeit (time) etwas geschieht : */
-	if (!choice) {
-	    if (strncmp(NODE_NAME(nextMsg), c_time, 5) == 0) {
-		if ((GetMinute % 60) != 0)
-		    ShowTime(0);
+	/* Wissensgewinn pro Ereignis =
+	 * (255-guarding) = alle wieviel Minuten Streife kommt
+	 * count = diverse andere Ereignisse
+	 * 1439 / (255- guarding) = Anzahl der Streifen / Tag
+	 * 3 = Konstante zur Beschleunigung (GamePlay)
+	 */
 
-		n = (NODE *)CreateNode(bubble_l, 0L, NODE_NAME(nextMsg));
+	raise = 255 / (1439 / patrolCount + count + 1) + 3;
 
-		SetBubbleType(THINK_BUBBLE);
+	hasSet(Person_Matt_Stuvysunt, buiID);
 
-		Bubble(bubble_l, (byte) first++, 0, 140L);
-		choice = GetExtBubbleActionInfo();
+	/* bis zur 1. Meldung Zeit vergehen lassen! */
+	for (nextMsg = 0; nextMsg == 0;) {
+		BuildTime(GetMinute, c_time);
 
-		tcAddBuildExactlyness(bui, raise);
+		if (!(GetMinute % 60))
+			ShowTime(0);
 
-		ShowTime(0);
+		for (n = (NODE *) LIST_HEAD(origin); NODE_SUCC(n);
+		        n = (NODE *) NODE_SUCC(n)) {
+			if (strncmp(NODE_NAME(n), c_time, 5) == 0)
+				nextMsg = n;
+		}
 
-		if (NODE_SUCC(NODE_SUCC(nextMsg)))
-		    nextMsg = (NODE *) NODE_SUCC(nextMsg);
-		else
-		    nextMsg = (NODE *) LIST_HEAD(origin);
-	    }
+		if (!nextMsg)
+			AddVTime(1);
+
+		if ((GetMinute % patrolCount) == 0)
+			choice = tcShowPatrol(bubble_l, c_time, patr, first++, bui, raise);
+
+		if (CalcRandomNr(0L, 6L) == 1)
+			tcAddBuildStrike(bui, 1);
 	}
 
-	/* Zeit erhîhen und nach dem Spieler sehen ! */
-	if (CalcRandomNr(0L, 6L) == 1)
-	    tcAddBuildStrike(bui, 1);
+	while (((minutes) < MINUTES_PER_DAY) && (!(choice & INP_LBUTTONP))
+	        && (!(choice & INP_RBUTTONP)) && (!(choice & INP_ESC))) {
+		choice = 0;
 
-	AddVTime(1L);
-	minutes++;
+		/* Anzeigen jeder vollen Stunde */
+		if ((GetMinute % 60) == 0)
+			ShowTime(0);
 
-	if (!choice)
-	    choice =
-		inpWaitFor(INP_TIME | INP_LBUTTONP | INP_RBUTTONP | INP_ESC);
-    }
+		BuildTime(GetMinute, c_time);
 
-    RemoveList(bubble_l);
+		/* je nach Bewachungsgrad Meldung : "Patrolie" einsetzen ! */
+		if ((GetMinute % patrolCount) == 0)
+			choice = tcShowPatrol(bubble_l, c_time, patr, first++, bui, raise);
 
-    if (minutes >= 1440) {	/* wurde 24 Stunden lang beobachtet ? */
-	bubble_l = txtGoKey(INVESTIGATIONS_TXT, "24StundenBeobachtet");
-	SetBubbleType(THINK_BUBBLE);
-	Bubble(bubble_l, 0, 0L, 0L);
+		/* √úberpr√ºfen ob zur aktuellen Zeit (time) etwas geschieht : */
+		if (!choice) {
+			if (strncmp(NODE_NAME(nextMsg), c_time, 5) == 0) {
+				if ((GetMinute % 60) != 0)
+					ShowTime(0);
+
+				n = (NODE *)CreateNode(bubble_l, 0L, NODE_NAME(nextMsg));
+
+				SetBubbleType(THINK_BUBBLE);
+
+				Bubble(bubble_l, (byte) first++, 0, 140L);
+				choice = GetExtBubbleActionInfo();
+
+				tcAddBuildExactlyness(bui, raise);
+
+				ShowTime(0);
+
+				if (NODE_SUCC(NODE_SUCC(nextMsg)))
+					nextMsg = (NODE *) NODE_SUCC(nextMsg);
+				else
+					nextMsg = (NODE *) LIST_HEAD(origin);
+			}
+		}
+
+		/* Zeit erh√∂hen und nach dem Spieler sehen ! */
+		if (CalcRandomNr(0L, 6L) == 1)
+			tcAddBuildStrike(bui, 1);
+
+		AddVTime(1L);
+		minutes++;
+
+		if (!choice)
+			choice =
+			    inpWaitFor(INP_TIME | INP_LBUTTONP | INP_RBUTTONP | INP_ESC);
+	}
+
 	RemoveList(bubble_l);
-    }
 
-    RemoveList(origin);
+	if (minutes >= 1440) {  /* wurde 24 Stunden lang beobachtet ? */
+		bubble_l = txtGoKey(INVESTIGATIONS_TXT, "24StundenBeobachtet");
+		SetBubbleType(THINK_BUBBLE);
+		Bubble(bubble_l, 0, 0L, 0L);
+		RemoveList(bubble_l);
+	}
 
-    Present(buiID, "Building", InitBuildingPresent);
+	RemoveList(origin);
 
-    /* Im Plan dazuaddieren : wie lange beobachtet */
-    /* wenn GebÑiude 2 mal beobachtet wird -> AuffÑllig !! */
-    /* AuffÑllugkeitgrad erhîhen */
-    /* Ergebnisse ! (Genauigkeit) */
-    /* Abschlu·bericht zeigen ! */
+	Present(buiID, "Building", InitBuildingPresent);
 
-    ShowMenuBackground();
-    tcRefreshLocationInTitle(GetLocation);
+	/* Im Plan dazuaddieren : wie lange beobachtet */
+	/* wenn Geb√§iude 2 mal beobachtet wird -> Auff√§llig !! */
+	/* Auff√§llugkeitgrad erh√∂hen */
+	/* Ergebnisse ! (Genauigkeit) */
+	/* Abschlu√übericht zeigen ! */
 
-    inpSetWaitTicks(0);
-    ShowTime(0);
+	ShowMenuBackground();
+	tcRefreshLocationInTitle(GetLocation);
 
-    if (!(GamePlayMode & GP_MUSIC_OFF))
-	tcPlayStreetSound();
+	inpSetWaitTicks(0);
+	ShowTime(0);
 
-    if (GamePlayMode & GP_DEMO) {
-	uint8 palette[GFX_PALETTE_SIZE];
+	if (!(GamePlayMode & GP_MUSIC_OFF))
+		tcPlayStreetSound();
 
-	SuspendAnim();
-	gfxPrepareRefresh();
+	if (GamePlayMode & GP_DEMO) {
+		uint8 palette[GFX_PALETTE_SIZE];
 
-	gfxGetPaletteFromReg(palette, 0, 256);
+		SuspendAnim();
+		gfxPrepareRefresh();
 
-	gfxShow(224,
-		GFX_NO_REFRESH | GFX_FADE_OUT | GFX_BLEND_UP | GFX_ONE_STEP, 2,
-		-1, -1);
+		gfxGetPaletteFromReg(palette, 0, 256);
 
-	inpWaitFor(INP_LBUTTONP);
+		gfxShow(224,
+		        GFX_NO_REFRESH | GFX_FADE_OUT | GFX_BLEND_UP | GFX_ONE_STEP, 2,
+		        -1, -1);
 
-	gfxChangeColors(l_gc, 0, GFX_FADE_OUT, NULL);
-	gfxClearArea(l_gc);
-	gfxChangeColors(l_gc, 0, GFX_BLEND_UP, palette);
+		inpWaitFor(INP_LBUTTONP);
 
-	gfxRefresh();
+		gfxChangeColors(l_gc, 0, GFX_FADE_OUT, NULL);
+		gfxClearArea(l_gc);
+		gfxChangeColors(l_gc, 0, GFX_BLEND_UP, palette);
 
-	ContinueAnim();
-    }
+		gfxRefresh();
 
-    inpTurnESC(1);
+		ContinueAnim();
+	}
+
+	inpTurnESC(1);
 }

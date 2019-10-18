@@ -12,18 +12,18 @@
 
 #include "clue/sound/buffer.h"
 
-#define	SND_FREQUENCY				22050
+#define SND_FREQUENCY               22050
 #define SND_MAX_VOLUME                          255
 
-#define SND_BUFFER_SIZE				65536
+#define SND_BUFFER_SIZE             65536
 #define SND_SAMPLES                             1024
 
 
 struct FXBase {
-    uint16 us_AudioOk;
+	uint16 us_AudioOk;
 
-    SND_BUFFER *pSfxBuffer;
-    SND_BUFFER *pMusicBuffer;
+	SND_BUFFER *pSfxBuffer;
+	SND_BUFFER *pMusicBuffer;
 };
 
 extern struct FXBase FXBase;

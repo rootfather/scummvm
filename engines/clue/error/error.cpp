@@ -1,13 +1,13 @@
 /*
-**	$Filename: error/error.c
-**	$Release:
-**	$Revision:	04.10.1994 (hg)
-**	$Date:
+**  $Filename: error/error.c
+**  $Release:
+**  $Revision:  04.10.1994 (hg)
+**  $Date:
 **
-**	functions for error handling
+**  functions for error handling
 **
-**	(C) 1993, 1994 ...and avoid panic by, H. Gaberschek
-**	    All Rights Reserved
+**  (C) 1993, 1994 ...and avoid panic by, H. Gaberschek
+**      All Rights Reserved
 */
 /****************************************************************************
   Portions copyright (c) 2005 Vasco Alexandre da Silva Costa
@@ -26,96 +26,91 @@
 #include "clue/error/error.h"
 
 static const char *moduleNames[ERROR_MODULE_LAST] = {
-  "",
-  "",
-  "",
-  "Base",
-  "Txt",
-  "Dsk",
-  "Mem",
-  "Data",
-  "GP",
-  "L/S",
-  "Land",
-  "Liv",
-  "Plan",
-  "Snd",
-  "Pres",
-  "Gfx",
-  "Input"
+	"",
+	"",
+	"",
+	"Base",
+	"Txt",
+	"Dsk",
+	"Mem",
+	"Data",
+	"GP",
+	"L/S",
+	"Land",
+	"Liv",
+	"Plan",
+	"Snd",
+	"Pres",
+	"Gfx",
+	"Input"
 };
 
 struct ErrorHandler {
-    char Filename[DSK_PATH_MAX];
-    bool uch_OutputToFile;
+	char Filename[DSK_PATH_MAX];
+	bool uch_OutputToFile;
 };
 
 /* implementation */
 
 struct ErrorHandler ErrorHandler;
 
-bool pcErrOpen(int32 l_Mode, const char *ErrorFilename)
-{
+bool pcErrOpen(int32 l_Mode, const char *ErrorFilename) {
 	return true;
 }
 
-void ErrorMsg(ErrorE type, ErrorModuleE moduleId, uint32 errorId)
-{
-    DebugMsg(ERR_DEBUG, moduleId, "Error %d", errorId);
+void ErrorMsg(ErrorE type, ErrorModuleE moduleId, uint32 errorId) {
+	DebugMsg(ERR_DEBUG, moduleId, "Error %d", errorId);
 
-    tcDone();
+	tcDone();
 
-    switch (type) {
-    case Internal_Error:
-	printf("Internal Error!\n");
-	break;
+	switch (type) {
+	case Internal_Error:
+		printf("Internal Error!\n");
+		break;
 
-    case No_Mem:
-	printf("You don't have enough memory!\n");
-	break;
+	case No_Mem:
+		printf("You don't have enough memory!\n");
+		break;
 
-    case Disk_Defect:
-	printf("Can't open file! Please install DER CLOU! again\n");
-	break;
-    default:
-	break;
-    }
-    exit(-1);
+	case Disk_Defect:
+		printf("Can't open file! Please install DER CLOU! again\n");
+		break;
+	default:
+		break;
+	}
+	exit(-1);
 }
 
-static void ErrDebugMsg(DebugE type, const char *moduleName, const char *txt)
-{
-    switch (type) {
-    case ERR_DEBUG:
-	debug("%s\t: %s", moduleName, txt);
-        break;
+static void ErrDebugMsg(DebugE type, const char *moduleName, const char *txt) {
+	switch (type) {
+	case ERR_DEBUG:
+		debug("%s\t: %s", moduleName, txt);
+		break;
 
-    case ERR_WARNING:
-	warning("Module %s: %s", moduleName, txt);
-        break;
+	case ERR_WARNING:
+		warning("Module %s: %s", moduleName, txt);
+		break;
 
-    case ERR_ERROR:
-	error("ERROR: Module %s: %s", moduleName, txt);
+	case ERR_ERROR:
+		error("ERROR: Module %s: %s", moduleName, txt);
 
-        tcDone();
+		tcDone();
 
-	exit(ERR_EXIT_ERROR);
-        break;
-    }
+		exit(ERR_EXIT_ERROR);
+		break;
+	}
 }
 
-void pcErrClose(void)
-{
+void pcErrClose(void) {
 }
 
-void DebugMsg(DebugE type, ErrorModuleE moduleId, const char *format, ...)
-{
-    va_list arglist;
-    char txt[512];
+void DebugMsg(DebugE type, ErrorModuleE moduleId, const char *format, ...) {
+	va_list arglist;
+	char txt[512];
 
-    va_start(arglist, format);
-    vsprintf(txt, format, arglist);
-    va_end(arglist);
+	va_start(arglist, format);
+	vsprintf(txt, format, arglist);
+	va_end(arglist);
 
-    ErrDebugMsg(type, moduleNames[moduleId], txt);
+	ErrDebugMsg(type, moduleNames[moduleId], txt);
 }

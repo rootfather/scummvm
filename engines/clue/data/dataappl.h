@@ -75,15 +75,15 @@ extern int32 tcCalcEscapeTime(void);
 extern bool tcKillTheGuard(uint32 guyId, uint32 buildingId);
 extern bool tcAlarmByPowerLoss(uint32 powerId);
 extern bool tcAlarmByTouch(uint32 lsoId);
-extern bool tcGuardDetectsGuy(LIST * roomsList, uint16 us_XPos, uint16 us_YPos,
-			      uint8 uch_ViewDirection, char *puch_GuardName,
-			      char *puch_LivingName);
+extern bool tcGuardDetectsGuy(LIST *roomsList, uint16 us_XPos, uint16 us_YPos,
+                              uint8 uch_ViewDirection, char *puch_GuardName,
+                              char *puch_LivingName);
 extern int32 tcGetCarStrike(Car car);
 extern int32 tcCalcEscapeOfTeam(void);
 extern uint32 tcGuyTellsAll(Person p);
 extern uint32 tcGuyCanEscape(Person p);
 extern int32 tcGetCarTraderOffer(Car car);
-extern int32 tcGetTeamMood(uint32 * guyId, uint32 timer);	/* ptr auf 4 U32s */
+extern int32 tcGetTeamMood(uint32 *guyId, uint32 timer);    /* ptr auf 4 U32s */
 extern int32 tcGuyInAction(uint32 persId, int32 exhaustion);
 extern int32 tcGuyIsWaiting(uint32 persId, int32 exhaustion);
 extern int32 tcIsPlanPerfect(uint32 timer);
@@ -96,7 +96,7 @@ extern bool tcAlarmByLoudness(Building b, int32 totalLoudness);
 extern bool tcAlarmByRadio(Building b);
 extern bool tcAlarmByMicro(uint16 us_XPos, uint16 us_YPos, int32 loudness);
 extern bool tcAlarmByPatrol(uint16 objChangedCount, uint16 totalCount,
-			    uint8 patrolCount);
+                            uint8 patrolCount);
 extern bool tcWatchDogWarning(uint32 persId);
 extern bool tcWrongWatchDogWarning(uint32 persId);
 extern int32 tcGetGuyState(uint32 persId);
@@ -109,14 +109,14 @@ extern int32 tcCalcMattsPart(void);
 extern uint32 tcGuyEscapes(void);
 extern uint32 tcGuyUsesTool(uint32 persId, Building b, uint32 toolId, uint32 itemId);
 extern uint32 tcGuyUsesToolInPlayer(uint32 persId, Building b, uint32 toolId, uint32 itemId,
-				 uint32 neededTime);
+                                    uint32 neededTime);
 
-extern void tcInsertGuard(LIST * list, LIST * roomsList, uint16 x, uint16 y,
-			  uint16 width, uint16 height, uint32 guardId, uint8 livId,
-			  uint32 areaId);
+extern void tcInsertGuard(LIST *list, LIST *roomsList, uint16 x, uint16 y,
+                          uint16 width, uint16 height, uint32 guardId, uint8 livId,
+                          uint32 areaId);
 
 /* defines for Persons */
-#define   tcPERSON_IS_ARRESTED          240	/* KnownToPolice */
+#define   tcPERSON_IS_ARRESTED          240 /* KnownToPolice */
 #define   tcVALUE_OF_RING_OF_PATER      320
 
 #define   tcSetPersKnown(p,v)           ((p)->Known = (v))
@@ -125,16 +125,16 @@ extern void tcInsertGuard(LIST * list, LIST * roomsList, uint16 x, uint16 y,
 #define   tcGetPersHealth(p)            ((p)->Health)
 #define   tcGetPersMood(p)              (((Person)p)->Mood)
 
-#define   tcWeightPersCanCarry(p)       (((int32)(p)->Stamina + (int32)(p)->Strength) * 200)	/* 0 - 100000 (100 kg) in gramm ! */
-#define   tcVolumePersCanCarry(p)       (((int32)(p)->Stamina + (int32)(p)->Strength) * 200)	/* in cm3 -> max 1 m3 fr eine Person */
+#define   tcWeightPersCanCarry(p)       (((int32)(p)->Stamina + (int32)(p)->Strength) * 200)    /* 0 - 100000 (100 kg) in gramm ! */
+#define   tcVolumePersCanCarry(p)       (((int32)(p)->Stamina + (int32)(p)->Strength) * 200)    /* in cm3 -> max 1 m3 fÃ¼r eine Person */
 
 #define   tcImprovePanic(p, v)          ((p)->Panic = (p)->Panic - ((p)->Panic / (v)))
 #define   tcImproveKnown(p, v)          ((p)->Known = MIN(255, (v)))
 
 /* defines for object Car */
-#define   tcENGINE_PERC                 50	/* 50 % of costs of a car is engine   */
-#define   tcBODY_PERC                   40	/* 40 % of costs of a car is bodywork */
-#define   tcTYRE_PERC                   10	/* 10 % of costs of a car are tyres   */
+#define   tcENGINE_PERC                 50  /* 50 % of costs of a car is engine   */
+#define   tcBODY_PERC                   40  /* 40 % of costs of a car is bodywork */
+#define   tcTYRE_PERC                   10  /* 10 % of costs of a car are tyres   */
 
 #define   tcCalcCarState(car)           (car->State = ( (int32)(car->MotorState) + (int32)(car->BodyWorkState) + (int32)(car->TyreState)) /3)
 

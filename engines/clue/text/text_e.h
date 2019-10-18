@@ -1,13 +1,13 @@
 /*
-**	$Filename: text/text.eh
-**	$Release:  1
-**	$Revision: 0
-**	$Date:     10-03-94
+**  $Filename: text/text.eh
+**  $Release:  1
+**  $Revision: 0
+**  $Date:     10-03-94
 **
-**	text error defines for "Der Clou!"
+**  text error defines for "Der Clou!"
 **
 ** (c) 1994 ...and avoid panic by, Kaweh Kazemi
-**	All Rights Reserved.
+**  All Rights Reserved.
 **
 */
 /****************************************************************************
@@ -25,6 +25,6 @@
 #define ERR_TXT_FAILED_LIST      2
 #define ERR_TXT_NO_MEM           3
 #define ERR_TXT_NO_KEY           4
-#define ERR_TXT_FAILED_BASE		5
+#define ERR_TXT_FAILED_BASE     5
 
 #endif

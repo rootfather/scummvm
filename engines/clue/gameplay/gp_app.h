@@ -1,13 +1,13 @@
 /*
-**	$Filename: gameplay/gp_app.h
-**	$Release:  0
-**	$Revision: 0.1
-**	$Date:     08-04-94
+**  $Filename: gameplay/gp_app.h
+**  $Release:  0
+**  $Revision: 0.1
+**  $Date:     08-04-94
 **
 **
 **
 **   (c) 1994 ...and avoid panic by, H. Gaberschek
-**	    All Rights Reserved.
+**      All Rights Reserved.
 **
 */
 /****************************************************************************
@@ -87,7 +87,7 @@ extern void tcPersonGreetsMatt(void);
 
 extern uint32 StdHandle(uint32 choice);
 
-extern void SetFunc(struct Scene *sc, void (*init) (void), void (*done) (void));
+extern void SetFunc(struct Scene *sc, void (*init)(void), void (*done)(void));
 void PrintStatus(const char *text);
 extern void InitTaxiLocations(void);
 extern void LinkScenes(void);

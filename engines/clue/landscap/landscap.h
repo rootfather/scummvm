@@ -1,13 +1,13 @@
 /*
-**	$Filename: landscap/landscap.h
-**	$Release:  0
-**	$Revision: 0.1
-**	$Date:     06-04-94
+**  $Filename: landscap/landscap.h
+**  $Release:  0
+**  $Revision: 0.1
+**  $Date:     06-04-94
 **
-**	landscap functions for "Der Clou!"
+**  landscap functions for "Der Clou!"
 **
 **   (c) 1994 ...and avoid panic by, H. Gaberschek
-**	    All Rights Reserved.
+**      All Rights Reserved.
 **
 */
 /****************************************************************************
@@ -80,25 +80,25 @@
 #define   REL_HAS_LOOT_OFFSET      7
 #define   REL_HAS_ROOM_OFFSET     10
 
-#define   LS_OBJECT_VISIBLE   	((byte) 1)
-#define   LS_OBJECT_INVISIBLE 	((byte) 0)
+#define   LS_OBJECT_VISIBLE     ((byte) 1)
+#define   LS_OBJECT_INVISIBLE   ((byte) 0)
 
 
-#define   LS_SCROLL_CHECK     	  0
-#define   LS_SCROLL_PREPARE   	  1
+#define   LS_SCROLL_CHECK         0
+#define   LS_SCROLL_PREPARE       1
 
 /* Scroll defines */
-#define   LS_SCROLL_LEFT				1
-#define   LS_SCROLL_RIGHT		     	2
-#define   LS_SCROLL_UP		   	  	4
-#define   LS_SCROLL_DOWN		     	8
+#define   LS_SCROLL_LEFT                1
+#define   LS_SCROLL_RIGHT               2
+#define   LS_SCROLL_UP              4
+#define   LS_SCROLL_DOWN                8
 
-#define   LS_NO_COLLISION     		0
-#define   LS_COLLISION        		1
+#define   LS_NO_COLLISION           0
+#define   LS_COLLISION              1
 
 
 #define   LS_MAX_AREA_WIDTH        640
-#define   LS_MAX_AREA_HEIGHT       256	/* so that wall fits, also in the last line */
+#define   LS_MAX_AREA_HEIGHT       256  /* so that wall fits, also in the last line */
 
 #define   LS_FLOOR_X_SIZE           32
 #define   LS_FLOOR_Y_SIZE           32
@@ -116,8 +116,8 @@
 #define   LS_BRIGHTNESS            ((byte)0)
 #define   LS_DARK_FUNNY            ((byte)85)
 
-#define	LS_PC_CORRECT_X				(-9)	/* when sign changes landscap.c */
-#define  LS_PC_CORRECT_Y				(19)
+#define LS_PC_CORRECT_X             (-9)    /* when sign changes landscap.c */
+#define  LS_PC_CORRECT_Y                (19)
 
 /* Coll Mode */
 #define   LS_COLL_PLAN                 1
@@ -137,7 +137,7 @@ extern void lsSetActivLiving(const char *Name, uint16 x, uint16 y);
 
 extern void lsRefreshObjectList(uint32 areaID);
 
-extern uint32 lsAddLootBag(uint16 x, uint16 y, byte bagNr);	/* bagNr : 1 - 8! */
+extern uint32 lsAddLootBag(uint16 x, uint16 y, byte bagNr); /* bagNr : 1 - 8! */
 extern void lsRemLootBag(uint32 bagId);
 extern void lsRefreshAllLootBags(void);
 
@@ -167,14 +167,14 @@ extern byte lsScrollLandScape(byte direction);
 extern byte lsInitScrollLandScape(byte direction, byte mode);
 
 extern LIST *lsGetObjectsByList(uint16 x, uint16 y, uint16 width, uint16 height,
-				byte showInvisible, byte addLootBags);
+                                byte showInvisible, byte addLootBags);
 
 void lsInitActivArea(uint32 areaID, uint16 x, uint16 y, char *livingName);
 extern void lsDoneActivArea(uint32 newAreaID);
 extern void lsTurnObject(LSObject lso, byte status, byte Collis);
 
-extern void lsCalcExactSize(LSObject lso, uint16 * x0, uint16 * y0, uint16 * x1,
-			    uint16 * y1);
+extern void lsCalcExactSize(LSObject lso, uint16 *x0, uint16 *y0, uint16 *x1,
+                            uint16 *y1);
 
 extern void lsInitDoorRefresh(uint32 ObjId);
 extern void lsDoDoorRefresh(LSObject lso);
@@ -185,7 +185,7 @@ extern uint16 lsGetWindowXPos(void);
 extern uint16 lsGetWindowYPos(void);
 extern uint16 lsGetFloorIndex(uint16 x, uint16 y);
 
-extern void lsGuyInsideSpot(uint16 * us_XPos, uint16 * us_YPos, uint32 * areaId);
+extern void lsGuyInsideSpot(uint16 *us_XPos, uint16 *us_YPos, uint32 *areaId);
 
 extern bool lsIsObjectAWall(LSObject lso);
 extern bool lsIsObjectAnAddOn(LSObject lso);
@@ -195,7 +195,7 @@ extern bool lsIsObjectSpecial(LSObject lso);
 
 extern bool lsIsLSObjectInActivArea(LSObject lso);
 
-extern byte lsIsCollision(int32 x, int32 y, byte direction);	/* sprite needs it */
+extern byte lsIsCollision(int32 x, int32 y, byte direction);    /* sprite needs it */
 
 extern uint32 lsGetCurrBuildingID(void);
 extern uint32 lsGetActivAreaID(void);
@@ -209,8 +209,8 @@ extern void lsSetRelations(uint32 areaID);
 extern void lsBlitFloor(uint16 floorIndex, uint16 destx, uint16 desty);
 
 extern void lsWalkThroughWindow(LSObject lso, uint16 us_LivXPos,
-				uint16 us_LivYPos, uint16 * us_XPos,
-				uint16 * us_YPos);
+                                uint16 us_LivYPos, uint16 *us_XPos,
+                                uint16 *us_YPos);
 
 /* internal functions ! */
 extern void lsPatchObjects(void);
@@ -227,7 +227,7 @@ extern void lsBuildScrollWindow(void);
 extern void lsShowAlarmAndPower(LSObject lso, uint32 x, uint32 y);
 
 extern int32 lsShowOneObject(LSObject lso, int16 destx, int16 desty,
-			   uint32 ObjTypeFilter);
+                             uint32 ObjTypeFilter);
 
 void  lsSafeRectFill(uint16 x0, uint16 y0, uint16 x1, uint16 y1, uint8 color);
 

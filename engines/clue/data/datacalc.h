@@ -3,7 +3,7 @@
  * (c) 1993 by Helmut Gaberschek & Kaweh Kazemi, ...and avoid panic by
  * All rights reserved.
  *
- * 
+ *
  *
  * Rev   Date        Comment
  * 1     08-09-93    defines for cars
@@ -18,7 +18,7 @@
  ****************************************************************************/
 
 /*
- * set : changes absolutely 
+ * set : changes absolutely
  */
 
 /* defines for random numbers */

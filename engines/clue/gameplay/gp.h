@@ -1,13 +1,13 @@
 /*
-**	$Filename: gameplay/gp.h
-**	$Release:  0
-**	$Revision: 0.1
-**	$Date:     08-04-94
+**  $Filename: gameplay/gp.h
+**  $Release:  0
+**  $Revision: 0.1
+**  $Date:     08-04-94
 **
 **
 **
 **   (c) 1994 ...and avoid panic by, H. Gaberschek
-**	    All Rights Reserved.
+**      All Rights Reserved.
 **
 */
 /****************************************************************************
@@ -74,9 +74,9 @@
 /* Zugriffsdefines */
 
 #define SetMinute(zeit)         (film->akt_Minute=(uint32)(zeit))
-#define SetLocation(loc)	{film->alter_Ort = film->akt_Ort; film->akt_Ort=(uint32)(loc);}
+#define SetLocation(loc)    {film->alter_Ort = film->akt_Ort; film->akt_Ort=(uint32)(loc);}
 #define SetDay(tag)             (film->akt_Tag=(uint32)(tag))
-#define SetTime(time)		(film->akt_Minute=(uint32)(time))
+#define SetTime(time)       (film->akt_Minute=(uint32)(time))
 
 #define GetDay                  (film->akt_Tag)
 #define GetMinute               (film->akt_Minute)
@@ -87,71 +87,71 @@
 #define GetToDay(x)             (((x) << 16) >> 16)
 
 struct Film {
-    uint32 AmountOfScenes;
+	uint32 AmountOfScenes;
 
-    struct Scene *act_scene;
-    struct Scene *gameplay;
+	struct Scene *act_scene;
+	struct Scene *gameplay;
 
-    LIST *loc_names;		/* Liste aller Orte im Spiel */
-    /* OrtNr = Nr der Node in der */
-    /* Liste */
-    uint32 StartScene;
-    uint32 StartZeit;		/* =Tag seit dem Jahr 0 */
-    uint32 StartOrt;
+	LIST *loc_names;        /* Liste aller Orte im Spiel */
+	/* OrtNr = Nr der Node in der */
+	/* Liste */
+	uint32 StartScene;
+	uint32 StartZeit;       /* =Tag seit dem Jahr 0 */
+	uint32 StartOrt;
 
-    uint32 akt_Tag;
-    uint32 akt_Minute;
-    uint32 akt_Ort;
-    uint32 alter_Ort;
+	uint32 akt_Tag;
+	uint32 akt_Minute;
+	uint32 akt_Ort;
+	uint32 alter_Ort;
 
-    uint32 EnabledChoices;
+	uint32 EnabledChoices;
 
-    byte StoryIsRunning;
+	byte StoryIsRunning;
 };
 
 struct SceneArgs {
-    uint32 Moeglichkeiten;
-    uint32 ReturnValue;		/* wird AUCH (!) als Input verwendet,
-				 * wenn als Output verwendet = EventNr der
-				 * Nachfolgerszene
-				 */
-    byte Ueberschrieben;	/*  0...direkter Nachfahre,
-				 * >0......uberschriebene Methode
-				 */
+	uint32 Moeglichkeiten;
+	uint32 ReturnValue;     /* wird AUCH (!) als Input verwendet,
+                 * wenn als Output verwendet = EventNr der
+                 * Nachfolgerszene
+                 */
+	byte Ueberschrieben;    /*  0...direkter Nachfahre,
+                 * >0......uberschriebene Methode
+                 */
 };
 
 struct Scene {
-    uint32 EventNr;
+	uint32 EventNr;
 
-    void (*Init) (void);
-    void (*Done) (void);
+	void (*Init)(void);
+	void (*Done)(void);
 
-    struct Bedingungen *bed;	/* damit das Ereignis eintritt */
+	struct Bedingungen *bed;    /* damit das Ereignis eintritt */
 
-    LIST *std_succ;		/* Standardnachfolger TCEventNode */
+	LIST *std_succ;     /* Standardnachfolger TCEventNode */
 
-    uint32 Moeglichkeiten;		/* siehe defines oben                   */
-    uint32 Dauer;			/* Dauer dieser Szene in Sekunden       */
-    uint16 Anzahl;		/* wie oft sie geschehen kann           */
-    uint16 Geschehen;		/* wie oft sie SCHON geschehen ist */
-    byte Probability;		/* mit der sie eintritt         0-255   */
+	uint32 Moeglichkeiten;      /* siehe defines oben                   */
+	uint32 Dauer;           /* Dauer dieser Szene in Sekunden       */
+	uint16 Anzahl;      /* wie oft sie geschehen kann           */
+	uint16 Geschehen;       /* wie oft sie SCHON geschehen ist */
+	byte Probability;       /* mit der sie eintritt         0-255   */
 
-    uint32 LocationNr;		/* Ort, den diese Szene darstellt       */
-    /* == -1 falls Szene = StorySzene       */
-    /* ansonsten Nr des Ortes               */
+	uint32 LocationNr;      /* Ort, den diese Szene darstellt       */
+	/* == -1 falls Szene = StorySzene       */
+	/* ansonsten Nr des Ortes               */
 };
 
 struct Bedingungen {
-    uint32 Ort;			/* der erfÅllt sein mu· */
+	uint32 Ort;         /* der erf√ºllt sein mu√ü */
 
-    LIST *events;		/* welche Events schon geschehen sein muessen */
-    LIST *n_events;		/* Events, die nicht geschehen sein dÅrfen */
+	LIST *events;       /* welche Events schon geschehen sein muessen */
+	LIST *n_events;     /* Events, die nicht geschehen sein d√ºrfen */
 };
 
 struct TCEventNode {
-    NODE Node;
+	NODE Node;
 
-    uint32 EventNr;
+	uint32 EventNr;
 };
 
 /* global functions */
@@ -182,7 +182,7 @@ extern struct Scene *GetScene(uint32 EventNr);
 
 extern void AddVTime(uint32 Zeit);
 
-extern void LinkScenes(void);	/* Init und Done in jeder Scene Struktur setzen */
+extern void LinkScenes(void);   /* Init und Done in jeder Scene Struktur setzen */
 
 extern struct SceneArgs SceneArgs;
 extern struct Film *film;

@@ -1,13 +1,13 @@
 /*
-**	$Filename: dialog/talkAppl.h
-**	$Release:  0
-**	$Revision: 0.1
-**	$Date:     07-04-94
+**  $Filename: dialog/talkAppl.h
+**  $Release:  0
+**  $Revision: 0.1
+**  $Date:     07-04-94
 **
-**	dialog functions for "Der Clou!"
+**  dialog functions for "Der Clou!"
 **
 **   (c) 1994 ...and avoid panic by, H. Gaberschek
-**	    All Rights Reserved.
+**      All Rights Reserved.
 **
 */
 /****************************************************************************

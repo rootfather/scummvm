@@ -1,13 +1,13 @@
 /*
-**	$Filename: landscap/raster.h
-**	$Release:  0
-**	$Revision: 0.1
-**	$Date:     06-02-94
+**  $Filename: landscap/raster.h
+**  $Release:  0
+**  $Revision: 0.1
+**  $Date:     06-02-94
 **
-**	landscape raster functions for "Der Clou!"
+**  landscape raster functions for "Der Clou!"
 **
 **   (c) 1994 ...and avoid panic by, H. Gaberschek
-**	    All Rights Reserved.
+**      All Rights Reserved.
 **
 */
 /****************************************************************************
@@ -34,14 +34,14 @@
 #define LS_RASTER_DISP_WIDTH       320
 #define LS_RASTER_DISP_HEIGHT      140
 
-#define LS_RASTER_X_SIZE           4	/* Raster is used for collision */
-#define LS_RASTER_Y_SIZE           4	/* dedection, in pixel */
+#define LS_RASTER_X_SIZE           4    /* Raster is used for collision */
+#define LS_RASTER_Y_SIZE           4    /* dedection, in pixel */
 
 
-NODE *lsGetSuccObject(NODE * start);
-NODE *lsGetPredObject(NODE * start);
+NODE *lsGetSuccObject(NODE *start);
+NODE *lsGetPredObject(NODE *start);
 void lsFadeRasterObject(uint32 areaID, LSObject lso, byte status);
-void lsShowAllConnections(uint32 areaID, NODE * node, byte perc);
+void lsShowAllConnections(uint32 areaID, NODE *node, byte perc);
 void lsShowRaster(uint32 areaID, byte perc);
 
 uint16 lsGetRasterXSize(uint32 areaID);

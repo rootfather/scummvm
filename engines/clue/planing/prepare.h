@@ -136,9 +136,9 @@ extern uint32 Planing_BldId;
 
 
 
-void plBuildHandler(NODE * n);
-void plClearHandler(NODE * n);
-void plCloseHandler(NODE * n);
+void plBuildHandler(NODE *n);
+void plClearHandler(NODE *n);
+void plCloseHandler(NODE *n);
 
 void plPrepareData(void);
 void plPrepareSprite(uint32 livNr, uint32 areaId);

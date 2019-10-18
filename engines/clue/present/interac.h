@@ -1,22 +1,22 @@
 /*
-**	$Filename: present/interac.h
-**	$Release:  0
-**	$Revision: 0.1
-**	$Date:     05-04-94
+**  $Filename: present/interac.h
+**  $Release:  0
+**  $Revision: 0.1
+**  $Date:     05-04-94
 **
-**	interactiv presentations for "Der Clou!"
+**  interactiv presentations for "Der Clou!"
 **
 **   (c) 1994 ...and avoid panic by K. Kazemi, H. Gaberschek
-**	    All Rights Reserved.
+**      All Rights Reserved.
 **
 */
- /****************************************************************************
-  Portions copyright (c) 2005 Vasco Alexandre da Silva Costa
+/****************************************************************************
+ Portions copyright (c) 2005 Vasco Alexandre da Silva Costa
 
-  Please read the license terms contained in the LICENSE and
-  publiclicensecontract.doc files which should be contained with this
-  distribution.
- ****************************************************************************/
+ Please read the license terms contained in the LICENSE and
+ publiclicensecontract.doc files which should be contained with this
+ distribution.
+****************************************************************************/
 
 #ifndef MODULE_INTERAC
 #define MODULE_INTERAC
@@ -53,18 +53,18 @@
 
 #define TXT_MENU_TIMEOUT        (-2)
 
-extern byte ChoiceOk(byte choice, byte exit, LIST * l);
+extern byte ChoiceOk(byte choice, byte exit, LIST *l);
 
-extern byte Bubble(LIST * bubble, byte activ, void (*func) (byte),
-		    uint32 waitTime);
-extern byte Menu(LIST * menu, uint32 possibility, byte activ,
-		  void (*func) (byte), uint32 waitTime);
+extern byte Bubble(LIST *bubble, byte activ, void (*func)(byte),
+                   uint32 waitTime);
+extern byte Menu(LIST *menu, uint32 possibility, byte activ,
+                 void (*func)(byte), uint32 waitTime);
 
 extern void RefreshMenu(void);
 
 extern void SetBubbleType(uint16 type);
 extern void SetPictID(uint16 PictID);
-void SetMenuTimeOutFunc(void (*func) (void));
+void SetMenuTimeOutFunc(void (*func)(void));
 
 extern byte GetExtBubbleActionInfo(void);
 

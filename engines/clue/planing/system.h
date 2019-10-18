@@ -41,18 +41,18 @@
 
 /* System main structure - like the kernel in an OS */
 struct System {
-    LIST *Handlers;		/* Pointer to all started handlers */
-    LIST *Signals;		/* Pointer to signal in the system */
+	LIST *Handlers;     /* Pointer to all started handlers */
+	LIST *Signals;      /* Pointer to signal in the system */
 
-    NODE *ActivHandler;
+	NODE *ActivHandler;
 };
 
-struct System *InitSystem(void);	/* Initialize system for use */
-void CloseSystem(struct System *sys);	/* Close all system immedietly */
+struct System *InitSystem(void);    /* Initialize system for use */
+void CloseSystem(struct System *sys);   /* Close all system immedietly */
 void SetActivHandler(struct System *sys, uint32 id);
 
-void SaveSystem(FILE * fh, struct System *sys);
-LIST *LoadSystem(FILE * fh, struct System *sys);
+void SaveSystem(FILE *fh, struct System *sys);
+LIST *LoadSystem(FILE *fh, struct System *sys);
 
 
 /* System Handler Flags */
@@ -61,29 +61,29 @@ LIST *LoadSystem(FILE * fh, struct System *sys);
 
 /* Handler structure - like a task in an OS */
 struct Handler {
-    NODE Link;			/* Link to next handler */
+	NODE Link;          /* Link to next handler */
 
-    uint32 Id;			/* ID of handler (all handlers will be identified with their ID and
-				   not through pointers, which will save global data) */
+	uint32 Id;          /* ID of handler (all handlers will be identified with their ID and
+                   not through pointers, which will save global data) */
 
-    uint32 Timer;			/* Handler time in seconds/3 */
+	uint32 Timer;           /* Handler time in seconds/3 */
 
-    uint32 Flags;			/* Handler flags */
+	uint32 Flags;           /* Handler flags */
 
-    LIST *Actions;		/* Action table */
-    NODE *CurrentAction;	/* Current action */
+	LIST *Actions;      /* Action table */
+	NODE *CurrentAction;    /* Current action */
 };
 
 
-struct Handler *InitHandler(struct System *sys, uint32 id, uint32 flags);	/* Initialize handler         */
-void CloseHandler(struct System *sys, uint32 id);	/* Close Handler              */
-struct Handler *ClearHandler(struct System *sys, uint32 id);	/* Clear Handlers action list */
+struct Handler *InitHandler(struct System *sys, uint32 id, uint32 flags);   /* Initialize handler         */
+void CloseHandler(struct System *sys, uint32 id);   /* Close Handler              */
+struct Handler *ClearHandler(struct System *sys, uint32 id);    /* Clear Handlers action list */
 struct Handler *FindHandler(struct System *sys, uint32 id);
 
 byte IsHandlerCleared(struct System *sys);
 
-void SaveHandler(FILE * fh, struct System *sys, uint32 id);
-byte LoadHandler(FILE * fh, struct System *sys, uint32 id);
+void SaveHandler(FILE *fh, struct System *sys, uint32 id);
+byte LoadHandler(FILE *fh, struct System *sys, uint32 id);
 
 size_t plGetUsedMem(void);
 
@@ -100,18 +100,18 @@ size_t plGetUsedMem(void);
 #define ACTION_CONTROL          10
 
 struct Action {
-    NODE Link;
+	NODE Link;
 
-    uint16 Type;
+	uint16 Type;
 
-    uint16 TimeNeeded;		/* times in seconds/3 */
-    uint16 Timer;
+	uint16 TimeNeeded;      /* times in seconds/3 */
+	uint16 Timer;
 };
 
-/* Type : ACTION_GO 
+/* Type : ACTION_GO
    Figure will go in one direction for x steps */
 struct ActionGo {
-    uint16 Direction;
+	uint16 Direction;
 };
 
 #define DIRECTION_NO    0
@@ -122,59 +122,59 @@ struct ActionGo {
 
 
 /* Type : ACTION_WAIT
-   Figure waits for x seconds 
+   Figure waits for x seconds
    Does not need an extended data structure */
 
 /* Type : ACTION_SIGNAL
    Figure sends out a signal of a special type to a receiver */
 struct ActionSignal {
-    uint32 ReceiverId;
+	uint32 ReceiverId;
 };
 
 /* Type : ACTION_WAIT_SIGNAL
    Figure waits until it receives a signal of a special type from a special sender */
 struct ActionWaitSignal {
-    uint32 SenderId;
+	uint32 SenderId;
 };
 
 /* Type : ACTION_USE */
 struct ActionUse {
-    uint32 ItemId;
-    uint32 ToolId;
+	uint32 ItemId;
+	uint32 ToolId;
 };
 
 /* Type : ACTION_TAKE */
 struct ActionTake {
-    uint32 ItemId;
-    uint32 LootId;
+	uint32 ItemId;
+	uint32 LootId;
 };
 
 /* Type : ACTION_DROP */
 struct ActionDrop {
-    uint32 ItemId;
-    uint32 LootId;
+	uint32 ItemId;
+	uint32 LootId;
 };
 
 /* Type : ACTION_OPEN */
 struct ActionOpen {
-    uint32 ItemId;
+	uint32 ItemId;
 };
 
 /* Type : ACTION_CLOSE */
 struct ActionClose {
-    uint32 ItemId;
+	uint32 ItemId;
 };
 
 /* Type : ACTION_CONTROL */
 struct ActionControl {
-    uint32 ItemId;
+	uint32 ItemId;
 };
 
 
 #define ActionData(ac,type)      ((type)(ac+1))
 
 struct Action *InitAction(struct System *sys, uint16 type, uint32 data1, uint32 data2,
-			  uint32 time);
+                          uint32 time);
 struct Action *CurrentAction(struct System *sys);
 struct Action *GoFirstAction(struct System *sys);
 struct Action *GoLastAction(struct System *sys);
@@ -187,15 +187,15 @@ void IgnoreAction(struct System *sys);
 
 
 /* Signal structure - to make it possible to communicate between handlers, our small attempt of an message system */
-#define SIGNAL_HURRY_UP    1	/* come on, get on */
-#define SIGNAL_DONE        2	/* well, my work is done */
-#define SIGNAL_ESCAPE      3	/* f..., police is coming, let's go */
+#define SIGNAL_HURRY_UP    1    /* come on, get on */
+#define SIGNAL_DONE        2    /* well, my work is done */
+#define SIGNAL_ESCAPE      3    /* f..., police is coming, let's go */
 
 struct plSignal {
-    NODE Link;
+	NODE Link;
 
-    uint32 SenderId;
-    uint32 ReceiverId;
+	uint32 SenderId;
+	uint32 ReceiverId;
 };
 
 struct plSignal *InitSignal(struct System *sys, uint32 sender, uint32 receiver);
@@ -208,5 +208,5 @@ void IncCurrentTimer(struct System *sys, uint32 time, byte alsoTime);
 uint32 GetMaxTimer(struct System *sys);
 
 void ResetMem(void);
-void CorrectMem(LIST * l);
+void CorrectMem(LIST *l);
 #endif

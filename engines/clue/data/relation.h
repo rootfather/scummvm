@@ -38,7 +38,7 @@
 #define REL_FILE_MARK      "RELF"
 #define REL_TABLE_MARK     "RTAB"
 
-#define NO_PARAMETER       UINT_MAX	/* limits.h */
+#define NO_PARAMETER       UINT_MAX /* limits.h */
 
 
 #define Set(leftKey,id,rightKey)  SetP (leftKey, id, rightKey, NO_PARAMETER)
@@ -46,24 +46,24 @@
 
 
 struct relationDef {
-    struct relationDef *rd_next;
+	struct relationDef *rd_next;
 
-    RELATION rd_id;
-    struct relation *rd_relationsTable;
+	RELATION rd_id;
+	struct relation *rd_relationsTable;
 };
 
 struct relation {
-    struct relation *r_next;
+	struct relation *r_next;
 
-    KEY r_leftKey;
-    KEY r_rightKey;
-    PARAMETER r_parameter;
+	KEY r_leftKey;
+	KEY r_rightKey;
+	PARAMETER r_parameter;
 };
 
 
-extern int (*CompareKey) (KEY, KEY);
-extern KEY(*EncodeKey) (char *);
-extern char *(*DecodeKey) (KEY);
+extern int (*CompareKey)(KEY, KEY);
+extern KEY(*EncodeKey)(char *);
+extern char *(*DecodeKey)(KEY);
 
 
 RELATION AddRelation(RELATION);

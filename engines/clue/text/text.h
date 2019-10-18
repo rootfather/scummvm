@@ -1,13 +1,13 @@
 /*
-**	$Filename: text/text.h
-**	$Release:  1
-**	$Revision: 0
-**	$Date:     10-03-94
+**  $Filename: text/text.h
+**  $Release:  1
+**  $Revision: 0
+**  $Date:     10-03-94
 **
-**	text interface for "Der Clou!"
+**  text interface for "Der Clou!"
 **
 ** (c) 1994 ...and avoid panic by, Kaweh Kazemi
-**	All Rights Reserved.
+**  All Rights Reserved.
 **
 */
 /****************************************************************************
@@ -44,12 +44,12 @@
 
 /* public defines */
 typedef enum {
-    TXT_LANG_GERMAN,
-    TXT_LANG_ENGLISH,
-    TXT_LANG_FRENCH,
-    TXT_LANG_SPANISH,
-    TXT_LANG_SLOWAKISCH,
-    TXT_LANG_LAST
+	TXT_LANG_GERMAN,
+	TXT_LANG_ENGLISH,
+	TXT_LANG_FRENCH,
+	TXT_LANG_SPANISH,
+	TXT_LANG_SLOWAKISCH,
+	TXT_LANG_LAST
 } TxtLanguageE;
 
 #define TXT_KEY_LENGTH     256
@@ -85,6 +85,6 @@ uint32 txtCountKey(const char *key);
 /* public prototypes - STRING */
 char *txtGetString(uint32 textId, const char *key, char *dest);
 char *txtGetNthString(uint32 textId, const char *key, uint32 nth, char *dest);
-void txtPutCharacter(LIST * list, uint16 pos, uint8 c);
+void txtPutCharacter(LIST *list, uint16 pos, uint8 c);
 
 #endif

@@ -12,25 +12,25 @@
  */
 
 
-#define BAR_WIDTH         	 255
+#define BAR_WIDTH            255
 
 struct PresentControl {
-    GC *gc;
+	GC *gc;
 
-    uint16 us_BarWidth;
-    uint16 us_BarHeight;
+	uint16 us_BarWidth;
+	uint16 us_BarHeight;
 
-    byte uch_FCol;
-    byte uch_BCol;
-    byte uch_TCol;
+	byte uch_FCol;
+	byte uch_BCol;
+	byte uch_TCol;
 };
 
 struct presentationInfo {
-    NODE link;
+	NODE link;
 
-    char extendedText[70];
-    uint32 extendedNr;
-    uint32 maxNr;
+	char extendedText[70];
+	uint32 extendedNr;
+	uint32 maxNr;
 
-    byte presentHow;
+	byte presentHow;
 };

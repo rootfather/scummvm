@@ -1,13 +1,13 @@
 /*
-**	$Filename: present\interac.c
-**	$Release:  0
-**	$Revision: 0.1
-**	$Date:     05-04-94
+**  $Filename: present\interac.c
+**  $Release:  0
+**  $Revision: 0.1
+**  $Date:     05-04-94
 **
-**	interactiv presentation functions for "Der Clou!"
+**  interactiv presentation functions for "Der Clou!"
 **
 **   (c) 1994 ...and avoid panic by, H. Gaberschek
-**	    All Rights Reserved.
+**      All Rights Reserved.
 **
 */
 /****************************************************************************
@@ -22,17 +22,17 @@
 #define INACTIV_POSS 2L
 #define GHOSTED      1L
 
-#define BG_INACTIVE_COLOR		252
-#define VG_INACTIVE_COLOR		253
+#define BG_INACTIVE_COLOR       252
+#define VG_INACTIVE_COLOR       253
 
 #define TXT_MAX_MENU_COLUMNS     8
 #define TXT_1ST_MENU_LINE_Y     24
 #define TXT_2ND_MENU_LINE_Y     36
 
-#define TRUE				  1
-#define FALSE				  0
+#define TRUE                  1
+#define FALSE                 0
 
-#define INT_BUBBLE_WIDTH		 200
+#define INT_BUBBLE_WIDTH         200
 
 /* misc */
 byte CurrentBubbleType = 3;
@@ -41,7 +41,7 @@ byte ExtBubbleActionInfo = 0;
 uint16 ActivPersonPictID = MATT_PICTID;
 uint16 MenuCoords[TXT_MAX_MENU_COLUMNS];
 
-void (*MenuTimeOutFunc) (void);
+void (*MenuTimeOutFunc)(void);
 
 /* refresh */
 LIST *refreshMenu = NULL;

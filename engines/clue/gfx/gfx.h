@@ -1,13 +1,13 @@
 /*
-**	$Filename: gfx/gfx.h
-**	$Release:  0
-**	$Revision: 0.1
-**	$Date:     06-02-94
+**  $Filename: gfx/gfx.h
+**  $Release:  0
+**  $Revision: 0.1
+**  $Date:     06-02-94
 **
-**	gfx functions for "Der Clou!"
+**  gfx functions for "Der Clou!"
 **
 **   (c) 1994 ...and avoid panic by, H. Gaberschek
-**	    All Rights Reserved.
+**      All Rights Reserved.
 **
 */
 /****************************************************************************
@@ -26,7 +26,7 @@
 
 #include "clue/list/list.h"
 
-#define GFX_NO_MEM_HANDLE	((uint16) -1)
+#define GFX_NO_MEM_HANDLE   ((uint16) -1)
 
 /* defines for gfxPrint */
 #define GFX_PRINT_CENTER        (1)
@@ -37,8 +37,8 @@
 /* defines for SetDrMd */
 
 typedef enum {
-    GFX_JAM_1               = 0,    /* Hintergrund wird gleichbelassen */
-    GFX_JAM_2               = 1	    /* Hintergrund wird mit BackPen Åbermalt */
+	GFX_JAM_1               = 0,    /* Hintergrund wird gleichbelassen */
+	GFX_JAM_2               = 1     /* Hintergrund wird mit BackPen √ºbermalt */
 } GfxDrawModeE;
 
 /* defines for Show */
@@ -47,35 +47,35 @@ typedef enum {
 #define GFX_FADE_OUT               4
 #define GFX_CLEAR_FIRST            8
 #define GFX_OVERLAY               16
-#define GFX_ONE_STEP              32	/* "plain" blit */
+#define GFX_ONE_STEP              32    /* "plain" blit */
 #define GFX_DONT_SHOW_FIRST_PIC   64
 
 /* defines for gfxSetPens */
-#define GFX_SAME_PEN						((byte)255)
+#define GFX_SAME_PEN                        ((byte)255)
 
 #define GFX_NO_COLL_IN_MEM               USHRT_MAX
 
-#define GFX_PALETTE_SIZE			768	/* 256 Farben * 3 Bytes */
-#define GFX_SIZE_OF_COLLECTION(c) 	(gfxGetILBMSize(c) + GFX_COLORTABLE_SIZE)
+#define GFX_PALETTE_SIZE            768 /* 256 Farben * 3 Bytes */
+#define GFX_SIZE_OF_COLLECTION(c)   (gfxGetILBMSize(c) + GFX_COLORTABLE_SIZE)
 
-#define  gfxWaitBOF						wfd
+#define  gfxWaitBOF                     wfd
 
-#define GFX_VIDEO_MCGA					1
-#define GFX_VIDEO_NCH4					2
-#define GFX_VIDEO_TEXT					3
+#define GFX_VIDEO_MCGA                  1
+#define GFX_VIDEO_NCH4                  2
+#define GFX_VIDEO_TEXT                  3
 
 typedef struct _MemRastPort MemRastPort;
 typedef struct _Rect        Rect;
 typedef struct Font         Font;
 
 struct _MemRastPort {
-    uint16 w;
-    uint16 h;
+	uint16 w;
+	uint16 h;
 
-    uint8  palette [GFX_PALETTE_SIZE];
-    uint8 *pixels;
+	uint8  palette [GFX_PALETTE_SIZE];
+	uint8 *pixels;
 
-    uint16 collId;                 /* Collection, die sich gerade hier befindet! */
+	uint16 collId;                 /* Collection, die sich gerade hier befindet! */
 };
 
 #define SCREEN_WIDTH    320
@@ -92,58 +92,58 @@ void gfxCollFromMem(uint16 collId);
 void gfxCollToMem(uint16 collId, MemRastPort *rp);
 
 struct _Rect {
-    uint16 x;
-    uint16 y;
+	uint16 x;
+	uint16 y;
 
-    uint16 w;
-    uint16 h;
+	uint16 w;
+	uint16 h;
 };
 
 struct Collection {
-    NODE Link;
+	NODE Link;
 
-    uint16 us_CollId;
+	uint16 us_CollId;
 
-    char *puch_Filename;
+	char *puch_Filename;
 
-    MemRastPort *prepared;
+	MemRastPort *prepared;
 
-    void *p_ColorTable;		/* not always correct (only as long as nothing
-  				   else modified the buffer!) */
+	void *p_ColorTable;     /* not always correct (only as long as nothing
+                   else modified the buffer!) */
 
-    uint16 us_TotalWidth;
-    uint16 us_TotalHeight;
+	uint16 us_TotalWidth;
+	uint16 us_TotalHeight;
 
-    byte uch_ColorRangeStart;
-    byte uch_ColorRangeEnd;
+	byte uch_ColorRangeStart;
+	byte uch_ColorRangeEnd;
 };
 
 typedef struct _GC GC;
 
 struct Picture {
-    NODE Link;
+	NODE Link;
 
-    uint16 us_PictId;
-    uint16 us_CollId;		/* in welcher Collection sich dieses Bild befindet */
+	uint16 us_PictId;
+	uint16 us_CollId;       /* in welcher Collection sich dieses Bild befindet */
 
-    uint16 us_XOffset;		/* innerhalb der Collection */
-    uint16 us_YOffset;
+	uint16 us_XOffset;      /* innerhalb der Collection */
+	uint16 us_YOffset;
 
-    uint16 us_Width;
-    uint16 us_Height;
+	uint16 us_Width;
+	uint16 us_Height;
 
-    uint16 us_DestX;
-    uint16 us_DestY;
+	uint16 us_DestX;
+	uint16 us_DestY;
 };
 
 struct Font {
-    Graphics::Surface *bmp;
+	Graphics::Surface *bmp;
 
-    uint16 w;	                /* width of one character */
-    uint16 h;	                /* height of one character */
+	uint16 w;                   /* width of one character */
+	uint16 h;                   /* height of one character */
 
-    unsigned char first;
-    unsigned char last;
+	unsigned char first;
+	unsigned char last;
 };
 
 extern GC *l_gc;
@@ -202,7 +202,7 @@ extern void gfxSetColorRange(byte uch_ColorStart, byte uch_ColorEnd);
 
 extern void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette);
 extern void gfxShow(uint16 us_PictId, uint32 ul_Mode, int32 l_Delay, int32 l_XPos,
-		    int32 l_YPos);
+                    int32 l_YPos);
 
 extern void gfxSetGC(GC *gc);
 
@@ -221,15 +221,15 @@ void gfxWaitTOF(void);
 void gfxWaitTOR(void);
 void gfxWaitTOS(void);
 
-void gfxRAWBlit(uint8 * sp, uint8 * dp, const int x1, const int y1, const int x2,
-		const int y2, const int w, const int h, const int sw,
-		const int dw);
+void gfxRAWBlit(uint8 *sp, uint8 *dp, const int x1, const int y1, const int x2,
+                const int y2, const int w, const int h, const int sw,
+                const int dw);
 
 typedef enum {
-    GFX_ROP_BLIT      = 0,
-    GFX_ROP_MASK_BLIT = 1,
-    GFX_ROP_CLR       = 2,
-    GFX_ROP_SET       = 3
+	GFX_ROP_BLIT      = 0,
+	GFX_ROP_MASK_BLIT = 1,
+	GFX_ROP_CLR       = 2,
+	GFX_ROP_SET       = 3
 } ROpE;
 
 void gfxBlit(GC *gc, MemRastPort *src, uint16 sx, uint16 sy, uint16 dx, uint16 dy,

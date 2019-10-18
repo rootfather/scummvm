@@ -25,7 +25,7 @@
 
 #define EOS                     ((char)'\0')
 
-#define	DIR_SEP                 "/"
+#define DIR_SEP                 "/"
 
 /*
  * some version defines
@@ -78,13 +78,13 @@
  *
  */
 
-#define LOCATIONS_TXT		"location.lst"
-#define COLL_LIST_TXT		"coll.lst"
-#define PICT_LIST_TXT		"pict.lst"
-#define GAMES_LIST_TXT		"games.lst"
-#define GAMES_ORIG_TXT		"origin.lst"
+#define LOCATIONS_TXT       "location.lst"
+#define COLL_LIST_TXT       "coll.lst"
+#define PICT_LIST_TXT       "pict.lst"
+#define GAMES_LIST_TXT      "games.lst"
+#define GAMES_ORIG_TXT      "origin.lst"
 
-#define LIV_ANIM_TEMPLATE_LIST	"template.lst"
+#define LIV_ANIM_TEMPLATE_LIST  "template.lst"
 #define LIV_LIVINGS_LIST        "livings.lst"
 
 #define SND_SOUND_LIST          "sounds.list"
@@ -101,29 +101,29 @@
 #define STORY_DAT_DEMO          "tcstory.dem"
 
 /*
- * Nummern der Textdateien in denen die MenÅs stehen
+ * Nummern der Textdateien in denen die Men√ºs stehen
  *
  * siehe Texts.list im Verzeichnis Texts
  *
  */
 
-#define MENU_TXT		 0
-#define OBJECTS_TXT		 1
-#define BUSINESS_TXT 		 2
-#define HOUSEDESC_TXT		 3
-#define THECLOU_TXT		 4
-#define INVESTIGATIONS_TXT 	 5
-#define CDROM_TXT 		 6
-#define OBJECTS_ENUM_TXT	 7
-#define ANIM_TXT		 8
-#define PRESENT_TXT		 9
-#define STORY_0_TXT		10
-#define PLAN_TXT		11
-#define TOOLS_TXT 		12
-#define LOOK_TXT		13
-#define ABILITY_TXT		14
-#define STORY_1_TXT		15
-#define TALK_0_TXT		16
+#define MENU_TXT         0
+#define OBJECTS_TXT      1
+#define BUSINESS_TXT         2
+#define HOUSEDESC_TXT        3
+#define THECLOU_TXT      4
+#define INVESTIGATIONS_TXT   5
+#define CDROM_TXT        6
+#define OBJECTS_ENUM_TXT     7
+#define ANIM_TXT         8
+#define PRESENT_TXT      9
+#define STORY_0_TXT     10
+#define PLAN_TXT        11
+#define TOOLS_TXT       12
+#define LOOK_TXT        13
+#define ABILITY_TXT     14
+#define STORY_1_TXT     15
+#define TALK_0_TXT      16
 #define TALK_1_TXT              17
 
 /*
@@ -136,22 +136,22 @@
  *
  */
 
-#define PICTURE_DIRECTORY	"pictures"
-#define TEXT_DIRECTORY		"texts"
-#define INCLUDE_DIRECTORY	"include"
-#define DATA_DIRECTORY		"data"
-#define SOUND_DIRECTORY 	"sounds"
-#define SAMPLES_DIRECTORY	"samples"
+#define PICTURE_DIRECTORY   "pictures"
+#define TEXT_DIRECTORY      "texts"
+#define INCLUDE_DIRECTORY   "include"
+#define DATA_DIRECTORY      "data"
+#define SOUND_DIRECTORY     "sounds"
+#define SAMPLES_DIRECTORY   "samples"
 
 #define DATADISK                "datadisk"
 
-#define BUILD_DATA_NAME 	"tcbuild"
-#define MAIN_DATA_NAME		"tcmain"
-#define GAME_DATA_EXT		".dat"
-#define GAME_REL_EXT 		".rel"
-#define TAXI_LOC_EXT 		".loc"
+#define BUILD_DATA_NAME     "tcbuild"
+#define MAIN_DATA_NAME      "tcmain"
+#define GAME_DATA_EXT       ".dat"
+#define GAME_REL_EXT        ".rel"
+#define TAXI_LOC_EXT        ".loc"
 
-#define STORY_DATA_NAME 	"tcstory"
+#define STORY_DATA_NAME     "tcstory"
 
 /*
  * defines for Error Module
@@ -159,10 +159,10 @@
  */
 
 #define ERR_OPEN_FUNC           fopen
-#define ERR_CLOSE_FUNC		fclose
-#define ERR_HANDLING_FUNC	ShowTheClouRequester
+#define ERR_CLOSE_FUNC      fclose
+#define ERR_HANDLING_FUNC   ShowTheClouRequester
 
-uint32 ShowTheClouRequester(int32 error_class);	/* siehe Base.c */
+uint32 ShowTheClouRequester(int32 error_class); /* siehe Base.c */
 
 /*
  * defines for Disk Module

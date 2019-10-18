@@ -25,51 +25,46 @@ static bool SfxChannelOn = false;
 static bool MusicChannelOn = true;
 
 
-void InitAudio(void)
-{
+void InitAudio(void) {
 	FXBase.us_AudioOk = 1;
-    if (!g_engine->_mixer->isReady()) {
-        DebugMsg(ERR_WARNING, ERROR_MODULE_SOUND, "Mixer error");
-        FXBase.us_AudioOk = 0;
-	return;
-    }
+	if (!g_engine->_mixer->isReady()) {
+		DebugMsg(ERR_WARNING, ERROR_MODULE_SOUND, "Mixer error");
+		FXBase.us_AudioOk = 0;
+		return;
+	}
 
-    FXBase.pSfxBuffer = sndCreateBuffer(SND_BUFFER_SIZE);
-    FXBase.pMusicBuffer = sndCreateBuffer(SND_BUFFER_SIZE);
+	FXBase.pSfxBuffer = sndCreateBuffer(SND_BUFFER_SIZE);
+	FXBase.pMusicBuffer = sndCreateBuffer(SND_BUFFER_SIZE);
 }
 
-void RemoveAudio(void)
-{
+void RemoveAudio(void) {
 	g_engine->_mixer->stopAll();
-    FXBase.us_AudioOk = 0;
+	FXBase.us_AudioOk = 0;
 }
 
 Audio::SoundHandle sfx;
 Audio::AudioStream *sfxFile;
 
-void sndInitFX(void)
-{
-    SfxChannelOn = false;
+void sndInitFX(void) {
+	SfxChannelOn = false;
 	g_engine->_mixer->stopHandle(sfx);
 	sfxFile = NULL;
 }
 
-void sndDoneFX(void)
-{
-    SfxChannelOn = false;
+void sndDoneFX(void) {
+	SfxChannelOn = false;
 	g_engine->_mixer->stopHandle(sfx);
 	sfxFile = NULL;
 }
 
-void sndPrepareFX(const char *name)
-{
-    sndDoneFX();
-	
-    if (FXBase.us_AudioOk) {
+void sndPrepareFX(const char *name) {
+	sndDoneFX();
+
+	if (FXBase.us_AudioOk) {
 		/*
-        char fileName[DSK_PATH_MAX];
+		char fileName[DSK_PATH_MAX];
 
-        dskBuildPathName(DISK_CHECK_FILE, SAMPLES_DIRECTORY, name, fileName);
+		dskBuildPathName(DISK_CHECK_FILE, SAMPLES_DIRECTORY, name, fileName);
 		LoadVOC(fileName);
 		*/
 		Common::File *file = new Common::File();
@@ -78,12 +73,11 @@ void sndPrepareFX(const char *name)
 		fileName += name;
 		file->open(fileName);
 		sfxFile = Audio::makeVOCStream(file, Audio::FLAG_UNSIGNED, DisposeAfterUse::YES);
-    }
+	}
 }
 
-void sndPlayFX(void)
-{
-    SfxChannelOn = true;
+void sndPlayFX(void) {
+	SfxChannelOn = true;
 	if (sfxFile) {
 		g_engine->_mixer->playStream(Audio::Mixer::kSFXSoundType, &sfx, sfxFile);
 	}

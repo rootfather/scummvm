@@ -30,31 +30,29 @@ char txtSeconds[20];
 
 
 /* System functions */
-void plInit(void)
-{
-    LIST *l;
+void plInit(void) {
+	LIST *l;
 
-    /* Get texts */
-    l = txtGoKey(PLAN_TXT, "TXT_TOO_LOUD");
-    sprintf(txtTooLoud, "%s", NODE_NAME(LIST_HEAD(l)));
-    RemoveList(l);
+	/* Get texts */
+	l = txtGoKey(PLAN_TXT, "TXT_TOO_LOUD");
+	sprintf(txtTooLoud, "%s", NODE_NAME(LIST_HEAD(l)));
+	RemoveList(l);
 
-    l = txtGoKey(PLAN_TXT, "TXT_TIMER");
-    sprintf(txtTimer, "%s", NODE_NAME(LIST_HEAD(l)));
-    RemoveList(l);
+	l = txtGoKey(PLAN_TXT, "TXT_TIMER");
+	sprintf(txtTimer, "%s", NODE_NAME(LIST_HEAD(l)));
+	RemoveList(l);
 
-    l = txtGoKey(PLAN_TXT, "TXT_WEIGHT");
-    sprintf(txtWeight, "%s", NODE_NAME(LIST_HEAD(l)));
-    RemoveList(l);
+	l = txtGoKey(PLAN_TXT, "TXT_WEIGHT");
+	sprintf(txtWeight, "%s", NODE_NAME(LIST_HEAD(l)));
+	RemoveList(l);
 
-    l = txtGoKey(PLAN_TXT, "TXT_SECONDS");
-    sprintf(txtSeconds, "%s", NODE_NAME(LIST_HEAD(l)));
-    RemoveList(l);
+	l = txtGoKey(PLAN_TXT, "TXT_SECONDS");
+	sprintf(txtSeconds, "%s", NODE_NAME(LIST_HEAD(l)));
+	RemoveList(l);
 
-    plSys = InitSystem();
+	plSys = InitSystem();
 }
 
-void plDone(void)
-{
-    CloseSystem(plSys);
+void plDone(void) {
+	CloseSystem(plSys);
 }

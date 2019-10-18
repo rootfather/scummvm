@@ -1,13 +1,13 @@
 /*
-**	$Filename: random/random.h
-**	$Release:  0
-**	$Revision: 0.1
-**	$Date:     28-03-94
+**  $Filename: random/random.h
+**  $Release:  0
+**  $Revision: 0.1
+**  $Date:     28-03-94
 **
-**	random functions for "Der Clou!"
+**  random functions for "Der Clou!"
 **
 **   (c) 1994 ...and avoid panic by, H. Gaberschek
-**	    All Rights Reserved.
+**      All Rights Reserved.
 **
 */
 /****************************************************************************

@@ -1,13 +1,13 @@
 /*
-**	$Filename: organisa/organisa.h
-**	$Release:  0
-**	$Revision: 0.1
-**	$Date:     06-02-94
+**  $Filename: organisa/organisa.h
+**  $Release:  0
+**  $Revision: 0.1
+**  $Date:     06-02-94
 **
-**	functions for organisation of a burglary for "Der Clou!"
+**  functions for organisation of a burglary for "Der Clou!"
 **
 **   (c) 1994 ...and avoid panic by, H. Gaberschek
-**	    All Rights Reserved.
+**      All Rights Reserved.
 **
 */
 /****************************************************************************
@@ -34,14 +34,14 @@
 #define   ORG_DISP_TOOLS       (1<<1)
 
 struct Organisation {
-    uint32 CarID;
-    uint32 DriverID;
-    uint32 BuildingID;
+	uint32 CarID;
+	uint32 DriverID;
+	uint32 BuildingID;
 
-    byte GuyCount;
-    byte PlacesInCar;
+	byte GuyCount;
+	byte PlacesInCar;
 
-    struct RastPort *rp;
+	struct RastPort *rp;
 };
 
 extern struct Organisation Organisation;

@@ -1,13 +1,13 @@
 /*
-**	$Filename: text\text.c
-**	$Release:  1
-**	$Revision: 0
-**	$Date:     10-03-94
+**  $Filename: text\text.c
+**  $Release:  1
+**  $Revision: 0
+**  $Date:     10-03-94
 **
-**	text implementation for "Der Clou!"
+**  text implementation for "Der Clou!"
 **
 ** (c) 1994 ...and avoid panic by, Kaweh Kazemi
-**	All Rights Reserved.
+**  All Rights Reserved.
 **
 */
 /****************************************************************************
@@ -30,7 +30,7 @@
 
 /* private globals declaration */
 const char *txtLanguageMark[TXT_LANG_LAST] = {
-    "d", "e", "f", "s", "d"
+	"d", "e", "f", "s", "d"
 };
 
 struct TextControl *txtBase = NULL;
@@ -38,385 +38,369 @@ char keyBuffer[TXT_KEY_LENGTH];
 
 
 /* private functions */
-static char *txtGetLine(struct Text *txt, uint8 lineNr)
-{
-    uint8 i;
-    char *line = NULL;
+static char *txtGetLine(struct Text *txt, uint8 lineNr) {
+	uint8 i;
+	char *line = NULL;
 
-    if (txt && txt->txt_LastMark && lineNr) {
-	line = txt->txt_LastMark;
-	i = 0;
+	if (txt && txt->txt_LastMark && lineNr) {
+		line = txt->txt_LastMark;
+		i = 0;
 
-	while (i < lineNr) {
-	    if (*line == TXT_CHAR_EOF)
-		return NULL;
+		while (i < lineNr) {
+			if (*line == TXT_CHAR_EOF)
+				return NULL;
 
-	    if (i > 0 && (*line == TXT_CHAR_MARK))
-		return NULL;
+			if (i > 0 && (*line == TXT_CHAR_MARK))
+				return NULL;
 
-	    if (*line == TXT_CHAR_EOS) {
-		line++;		/* skip second EOS */
-		i++;
+			if (*line == TXT_CHAR_EOS) {
+				line++;     /* skip second EOS */
+				i++;
+
+				if (*line == TXT_CHAR_EOF)
+					return NULL;
+
+				/* skip comments */
+				while (*(line + 1) == TXT_CHAR_REMARK) {
+					while (*(++line) != TXT_CHAR_EOS);
+					line++; /* skip second EOS */
+				}
+			}
+
+			line++;
+		}
 
 		if (*line == TXT_CHAR_EOF)
-		    return NULL;
-
-		/* skip comments */
-		while (*(line + 1) == TXT_CHAR_REMARK) {
-		    while (*(++line) != TXT_CHAR_EOS);
-		    line++;	/* skip second EOS */
-		}
-	    }
-
-	    line++;
+			return NULL;
+		if (*line == TXT_CHAR_MARK)
+			return NULL;
 	}
 
-	if (*line == TXT_CHAR_EOF)
-	    return NULL;
-	if (*line == TXT_CHAR_MARK)
-	    return NULL;
-    }
-
-    return line;
+	return line;
 }
 
 /*  public functions - TEXT */
-void txtInit(char lang)
-{
-    char txtListPath[DSK_PATH_MAX];
+void txtInit(char lang) {
+	char txtListPath[DSK_PATH_MAX];
 
-    if ((txtBase = (TextControl *)TCAllocMem(sizeof(*txtBase), 0))) {
-	txtBase->tc_Texts = CreateList();
-	txtBase->tc_Language = lang;
+	if ((txtBase = (TextControl *)TCAllocMem(sizeof(*txtBase), 0))) {
+		txtBase->tc_Texts = CreateList();
+		txtBase->tc_Language = lang;
 
-	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, TXT_LIST, txtListPath);
+		dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, TXT_LIST, txtListPath);
 
-	if (ReadList(txtBase->tc_Texts, sizeof(struct Text), txtListPath)) {
-	    uint32 i, nr;
+		if (ReadList(txtBase->tc_Texts, sizeof(struct Text), txtListPath)) {
+			uint32 i, nr;
 
-            nr = GetNrOfNodes(txtBase->tc_Texts);
+			nr = GetNrOfNodes(txtBase->tc_Texts);
 
-	    for (i=0; i<nr; i++) {
-		txtLoad(i);
-	    }
+			for (i = 0; i < nr; i++) {
+				txtLoad(i);
+			}
+		} else {
+			ErrorMsg(No_Mem, ERROR_MODULE_TXT, ERR_TXT_READING_LIST);
+		}
 	} else {
-	    ErrorMsg(No_Mem, ERROR_MODULE_TXT, ERR_TXT_READING_LIST);
+		ErrorMsg(No_Mem, ERROR_MODULE_TXT, ERR_TXT_FAILED_BASE);
 	}
-    } else {
-	ErrorMsg(No_Mem, ERROR_MODULE_TXT, ERR_TXT_FAILED_BASE);
-    }
 }
 
-void txtDone(void)
-{
-    if (txtBase) {
-	uint32 i, nr;
+void txtDone(void) {
+	if (txtBase) {
+		uint32 i, nr;
 
-        nr = GetNrOfNodes(txtBase->tc_Texts);
+		nr = GetNrOfNodes(txtBase->tc_Texts);
 
-	for (i=0; i<nr; i++) {
-	    txtUnLoad(i);
-        }
+		for (i = 0; i < nr; i++) {
+			txtUnLoad(i);
+		}
 
-	RemoveList(txtBase->tc_Texts);
+		RemoveList(txtBase->tc_Texts);
 
-	TCFreeMem(txtBase, sizeof(*txtBase));
-    }
-}
-
-void txtLoad(uint32 textId)
-{
-    struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
-
-    if (txt) {
-	if (!txt->txt_Handle) {
-	    char txtFile[DSK_PATH_MAX];
-	    char txtPath[DSK_PATH_MAX];
-	    uint8 *ptr, *text;
-	    size_t length;
-
-            sprintf(txtFile, "%s%c%s",
-                NODE_NAME(txt),
-                txtBase->tc_Language,
-                TXT_SUFFIX);
-
-	    dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, txtFile, txtPath);
-
-	    length = dskFileLength(txtPath);
-            txt->length = length;
-
-	    /* loading text into buffer */
-	    text = (uint8 *)dskLoad(txtPath);
-
-	    /* correcting text */
-	    for (ptr=text; length--; ptr++) {
-
-		*ptr ^= TXT_XOR_VALUE;
-
-                switch (*ptr) {
-                case '\r':
-                case '\n':
-                    *ptr = '\0';
-                    break;
-
-                default:
-                    break;
-                }
-	    }
-
-	    /* save text into xms */
-	    if (text) {
-                txt->txt_Handle = (char *)malloc(txt->length+1);
-                memcpy(txt->txt_Handle, text, txt->length);
-                free(text);
-
-		/* let's play safe here... */
-		txt->txt_Handle[txt->length] = TXT_CHAR_EOF;
-		txt->length++;
-	    } else
-		ErrorMsg(No_Mem, ERROR_MODULE_TXT, ERR_TXT_NO_MEM);
+		TCFreeMem(txtBase, sizeof(*txtBase));
 	}
-    }
 }
 
-void txtUnLoad(uint32 textId)
-{
-    struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
+void txtLoad(uint32 textId) {
+	struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 
-    if (txt) {
-	if (txt->txt_Handle) {
-	    free(txt->txt_Handle);
+	if (txt) {
+		if (!txt->txt_Handle) {
+			char txtFile[DSK_PATH_MAX];
+			char txtPath[DSK_PATH_MAX];
+			uint8 *ptr, *text;
+			size_t length;
+
+			sprintf(txtFile, "%s%c%s",
+			        NODE_NAME(txt),
+			        txtBase->tc_Language,
+			        TXT_SUFFIX);
+
+			dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, txtFile, txtPath);
+
+			length = dskFileLength(txtPath);
+			txt->length = length;
+
+			/* loading text into buffer */
+			text = (uint8 *)dskLoad(txtPath);
+
+			/* correcting text */
+			for (ptr = text; length--; ptr++) {
+
+				*ptr ^= TXT_XOR_VALUE;
+
+				switch (*ptr) {
+				case '\r':
+				case '\n':
+					*ptr = '\0';
+					break;
+
+				default:
+					break;
+				}
+			}
+
+			/* save text into xms */
+			if (text) {
+				txt->txt_Handle = (char *)malloc(txt->length + 1);
+				memcpy(txt->txt_Handle, text, txt->length);
+				free(text);
+
+				/* let's play safe here... */
+				txt->txt_Handle[txt->length] = TXT_CHAR_EOF;
+				txt->length++;
+			} else
+				ErrorMsg(No_Mem, ERROR_MODULE_TXT, ERR_TXT_NO_MEM);
+		}
 	}
-
-	txt->txt_Handle = NULL;
-	txt->txt_LastMark = NULL;
-	txt->length = 0;
-    }
 }
 
-void txtPrepare(uint32 textId)
-{
-    struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
+void txtUnLoad(uint32 textId) {
+	struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 
-    if (txt) {
-	memcpy(TXT_BUFFER_WORK, txt->txt_Handle, txt->length);
-	txt->txt_LastMark = (char *)TXT_BUFFER_WORK;
-    }
+	if (txt) {
+		if (txt->txt_Handle) {
+			free(txt->txt_Handle);
+		}
+
+		txt->txt_Handle = NULL;
+		txt->txt_LastMark = NULL;
+		txt->length = 0;
+	}
 }
 
-void txtUnPrepare(uint32 textId)
-{
-    struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
+void txtPrepare(uint32 textId) {
+	struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 
-    if (txt)
-	txt->txt_LastMark = NULL;
+	if (txt) {
+		memcpy(TXT_BUFFER_WORK, txt->txt_Handle, txt->length);
+		txt->txt_LastMark = (char *)TXT_BUFFER_WORK;
+	}
 }
 
-void txtReset(uint32 textId)
-{
-    struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
+void txtUnPrepare(uint32 textId) {
+	struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 
-    if (txt)
-	txt->txt_LastMark = (char *)TXT_BUFFER_WORK;
+	if (txt)
+		txt->txt_LastMark = NULL;
+}
+
+void txtReset(uint32 textId) {
+	struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
+
+	if (txt)
+		txt->txt_LastMark = (char *)TXT_BUFFER_WORK;
 }
 
 
 /* public functions - KEY */
-char *txtGetKey(uint16 keyNr, const char *key)
-{
-    uint16 i;
+char *txtGetKey(uint16 keyNr, const char *key) {
+	uint16 i;
 
-    if (!key)
-	return NULL;
+	if (!key)
+		return NULL;
 
-    for (i = 1; i < keyNr; i++) {
-	while (*key && (*key != TXT_CHAR_KEY_SEPERATOR))
-	    key++;
+	for (i = 1; i < keyNr; i++) {
+		while (*key && (*key != TXT_CHAR_KEY_SEPERATOR))
+			key++;
+
+		if (!*key)
+			return NULL;
+		else
+			key++;
+	}
+
+	while (isspace(*key))
+		key++;
 
 	if (!*key)
-	    return NULL;
+		return NULL;
+
+	for (i = 0;
+	        (i < TXT_KEY_LENGTH) && *key && (*key != TXT_CHAR_KEY_SEPERATOR); i++)
+		keyBuffer[i] = *key++;
+
+	keyBuffer[i] = TXT_CHAR_EOS;
+	return keyBuffer;
+}
+
+uint32 txtGetKeyAsULONG(uint16 keyNr, const char *key) {
+	char *res = txtGetKey(keyNr, key);
+
+	if (res)
+		return ((uint32) atoi(res));
 	else
-	    key++;
-    }
-
-    while (isspace(*key))
-	key++;
-
-    if (!*key)
-	return NULL;
-
-    for (i = 0;
-	 (i < TXT_KEY_LENGTH) && *key && (*key != TXT_CHAR_KEY_SEPERATOR); i++)
-	keyBuffer[i] = *key++;
-
-    keyBuffer[i] = TXT_CHAR_EOS;
-    return keyBuffer;
+		return ((uint32) - 1);
 }
 
-uint32 txtGetKeyAsULONG(uint16 keyNr, const char *key)
-{
-    char *res = txtGetKey(keyNr, key);
+LIST *txtGoKey(uint32 textId, const char *key) {
+	LIST *txtList = NULL;
+	struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 
-    if (res)
-	return ((uint32) atoi(res));
-    else
-	return ((uint32) - 1);
-}
+	if (txt) {
+		char *LastMark = NULL;
 
-LIST *txtGoKey(uint32 textId, const char *key)
-{
-    LIST *txtList = NULL;
-    struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
+		/* MOD: 08-04-94 hg
+		     * if no key was given take the next one
+		 * -> last position is temporarily saved in LastMark because
+		 * txt->LastMark is modified in txtPrepare!
+		 *
+		 * Special case: no key, text never used !!
+		 */
+		if ((!key) && (txt->txt_LastMark))
+			LastMark = txt->txt_LastMark;
 
-    if (txt) {
-	char *LastMark = NULL;
+		txtPrepare(textId);
 
-	/* MOD: 08-04-94 hg
-         * if no key was given take the next one
-	 * -> last position is temporarily saved in LastMark because
-	 * txt->LastMark is modified in txtPrepare!
-	 *
-	 * Special case: no key, text never used !!
-	 */
-	if ((!key) && (txt->txt_LastMark))
-	    LastMark = txt->txt_LastMark;
+		/* Explanation for +1: LastMark points to the last key
+		   -> without "+1" the same key would be returned */
+		if (!key && LastMark)
+			txt->txt_LastMark = LastMark + 1;
 
-	txtPrepare(textId);
+		for (; *txt->txt_LastMark != TXT_CHAR_EOF; txt->txt_LastMark++) {
+			if (*txt->txt_LastMark == TXT_CHAR_MARK) {
+				uint8 found = 1;
 
-	/* Explanation for +1: LastMark points to the last key
-	   -> without "+1" the same key would be returned */
-	if (!key && LastMark)
-	    txt->txt_LastMark = LastMark + 1;
+				if (key) {
+					char mark[TXT_KEY_LENGTH];
 
-	for (; *txt->txt_LastMark != TXT_CHAR_EOF; txt->txt_LastMark++) {
-	    if (*txt->txt_LastMark == TXT_CHAR_MARK) {
-		uint8 found = 1;
+					strcpy(mark, txt->txt_LastMark + 1);
 
-		if (key) {
-		    char mark[TXT_KEY_LENGTH];
+					if (strcmp(key, mark) != 0)
+						found = 0;
+				}
 
-		    strcpy(mark, txt->txt_LastMark + 1);
+				if (found) {
+					uint8 i = 1;
+					char *line;
 
-		    if (strcmp(key, mark) != 0)
-			found = 0;
+					txtList = CreateList();
+
+					while ((line = txtGetLine(txt, i++)))
+						CreateNode(txtList, 0, line);
+					break;
+				}
+			}
 		}
 
-		if (found) {
-		    uint8 i = 1;
-		    char *line;
+	}
 
-		    txtList = CreateList();
+	if (!txtList) {
+		DebugMsg(ERR_ERROR, ERROR_MODULE_TXT, "NOT FOUND KEY '%s'", key);
+	}
 
-		    while ((line = txtGetLine(txt, i++)))
-			CreateNode(txtList, 0, line);
-		    break;
+	return txtList;
+}
+
+LIST *txtGoKeyAndInsert(uint32 textId, const char *key, ...) {
+	va_list argument;
+	LIST *txtList = CreateList(), *originList = NULL;
+	NODE *node;
+
+	va_start(argument, key);
+
+	originList = txtGoKey(textId, key);
+
+	for (node = LIST_HEAD(originList); NODE_SUCC(node); node = NODE_SUCC(node)) {
+		uint8 i;
+		char originLine[256], txtLine[256];
+
+		strcpy(originLine, NODE_NAME(node));
+		strcpy(txtLine, NODE_NAME(node));
+
+		for (i = 2; i < strlen(originLine); i++) {
+			if (originLine[i - 2] == '%') {
+				sprintf(txtLine, originLine, va_arg(argument, uint32));
+				i = strlen(originLine) + 1;
+			}
 		}
-	    }
+
+		CreateNode(txtList, 0, txtLine);
 	}
 
-    }
+	RemoveList(originList);
 
-    if (!txtList) {
-	DebugMsg(ERR_ERROR, ERROR_MODULE_TXT, "NOT FOUND KEY '%s'", key);
-    }
-
-    return txtList;
+	return txtList;
 }
 
-LIST *txtGoKeyAndInsert(uint32 textId, const char *key, ...)
-{
-    va_list argument;
-    LIST *txtList = CreateList(), *originList = NULL;
-    NODE *node;
+bool txtKeyExists(uint32 textId, const char *key) {
+	bool found = false;
+	struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 
-    va_start(argument, key);
+	if (txt && key) {
+		txtPrepare(textId);
 
-    originList = txtGoKey(textId, key);
+		/* after txtPrepare txt_LastMark points to TXT_BUFFER_PREPARE in every case */
+		for (; *txt->txt_LastMark != TXT_CHAR_EOF; txt->txt_LastMark++) {
+			if (*txt->txt_LastMark == TXT_CHAR_MARK) {
+				char mark[TXT_KEY_LENGTH];
 
-    for (node = LIST_HEAD(originList); NODE_SUCC(node); node = NODE_SUCC(node)) {
-	uint8 i;
-	char originLine[256], txtLine[256];
+				strcpy(mark, txt->txt_LastMark + 1);
 
-	strcpy(originLine, NODE_NAME(node));
-	strcpy(txtLine, NODE_NAME(node));
-
-	for (i = 2; i < strlen(originLine); i++) {
-	    if (originLine[i - 2] == '%') {
-		sprintf(txtLine, originLine, va_arg(argument, uint32));
-		i = strlen(originLine) + 1;
-	    }
-	}
-
-	CreateNode(txtList, 0, txtLine);
-    }
-
-    RemoveList(originList);
-
-    return txtList;
-}
-
-bool txtKeyExists(uint32 textId, const char *key)
-{
-    bool found = false;
-    struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
-
-    if (txt && key) {
-	txtPrepare(textId);
-
-	/* after txtPrepare txt_LastMark points to TXT_BUFFER_PREPARE in every case */
-	for (; *txt->txt_LastMark != TXT_CHAR_EOF; txt->txt_LastMark++) {
-	    if (*txt->txt_LastMark == TXT_CHAR_MARK) {
-		char mark[TXT_KEY_LENGTH];
-
-		strcpy(mark, txt->txt_LastMark + 1);
-
-		if (strcmp(key, mark) == 0) {
-		    found = true;
-		    break;
+				if (strcmp(key, mark) == 0) {
+					found = true;
+					break;
+				}
+			}
 		}
-	    }
 	}
-    }
 
-    return found;
+	return found;
 }
 
-uint32 txtCountKey(const char *key)
-{
-    uint32 i = strlen(key), j, k;
+uint32 txtCountKey(const char *key) {
+	uint32 i = strlen(key), j, k;
 
-    for (j = 0, k = 0; j < i; j++) {
-	if (key[j] == TXT_CHAR_KEY_SEPERATOR)
-	    k++;
-    }
+	for (j = 0, k = 0; j < i; j++) {
+		if (key[j] == TXT_CHAR_KEY_SEPERATOR)
+			k++;
+	}
 
-    return k + 1;
+	return k + 1;
 }
 
 
 /* functions - STRING */
-char *txtGetNthString(uint32 textId, const char *key, uint32 nth, char *dest)
-{
-    LIST *txtList = txtGoKey(textId, key);
-    void *src;
+char *txtGetNthString(uint32 textId, const char *key, uint32 nth, char *dest) {
+	LIST *txtList = txtGoKey(textId, key);
+	void *src;
 
-    if ((src = GetNthNode(txtList, nth))) {
-	strcpy(dest, NODE_NAME(src));
-    } else {
-	strcpy(dest, "");
-    }
+	if ((src = GetNthNode(txtList, nth))) {
+		strcpy(dest, NODE_NAME(src));
+	} else {
+		strcpy(dest, "");
+	}
 
-    RemoveList(txtList);
+	RemoveList(txtList);
 
-    return dest;
+	return dest;
 }
 
-void txtPutCharacter(LIST * list, uint16 pos, uint8 c)
-{
-    NODE *node;
+void txtPutCharacter(LIST *list, uint16 pos, uint8 c) {
+	NODE *node;
 
-    for (node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node))
-	NODE_NAME(node)[pos] = c;
+	for (node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node))
+		NODE_NAME(node)[pos] = c;
 }
 
 #endif

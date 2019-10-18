@@ -1,10 +1,10 @@
 /*
-**	$Filename: gfx/gfxnch4.c
-**	$Release:  0
-**	$Revision: 0.1
-**	$Date:     20-04-94
+**  $Filename: gfx/gfxnch4.c
+**  $Release:  0
+**  $Revision: 0.1
+**  $Date:     20-04-94
 **
-**	basic functions for "Der Clou!"
+**  basic functions for "Der Clou!"
 **
 **
 */
@@ -23,7 +23,7 @@
 
 #include "clue/gfx/gfx.h"
 
-#define GFX_NCH4_SCROLLOFFSET 	(160 * 72)	/* memory used by the fixed display */
+#define GFX_NCH4_SCROLLOFFSET   (160 * 72)  /* memory used by the fixed display */
 
 #define ScrLEFT 0
 #define ScrRIGHT 639

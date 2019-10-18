@@ -65,7 +65,7 @@ static const ADGameDescription gameDescriptions[] = {
 		ADGF_NO_FLAGS,
 		GUIO0()
 	},
-		{
+	{
 		"clue",
 		"",
 		{
@@ -169,20 +169,20 @@ public:
 
 bool ClueMetaEngine::hasFeature(MetaEngineFeature f) const {
 	return
-		(f == kSupportsListSaves) ||
-		(f == kSupportsLoadingDuringStartup) ||
-		(f == kSupportsDeleteSave) ||
-		(f == kSavesSupportMetaInfo) ||
-		(f == kSavesSupportThumbnail) ||
-		(f == kSavesSupportCreationDate) ||
-		(f == kSavesSupportPlayTime);
+	    (f == kSupportsListSaves) ||
+	    (f == kSupportsLoadingDuringStartup) ||
+	    (f == kSupportsDeleteSave) ||
+	    (f == kSavesSupportMetaInfo) ||
+	    (f == kSavesSupportThumbnail) ||
+	    (f == kSavesSupportCreationDate) ||
+	    (f == kSavesSupportPlayTime);
 }
 
 bool Clue::ClueEngine::hasFeature(EngineFeature f) const {
 	return
-		(f == kSupportsRTL) ||
-		(f == kSupportsLoadingDuringRuntime) ||
-		(f == kSupportsSavingDuringRuntime);
+	    (f == kSupportsRTL) ||
+	    (f == kSupportsLoadingDuringRuntime) ||
+	    (f == kSupportsSavingDuringRuntime);
 }
 
 bool ClueMetaEngine::createInstance(OSystem *syst, Engine **engine, const ADGameDescription *desc) const {
@@ -211,7 +211,7 @@ SaveStateDescriptor ClueMetaEngine::querySaveMetaInfos(const char *target, int s
 } // End of namespace Clue
 
 #if PLUGIN_ENABLED_DYNAMIC(CLUE)
-	REGISTER_PLUGIN_DYNAMIC(CLUE, PLUGIN_TYPE_ENGINE, ClueMetaEngine);
+REGISTER_PLUGIN_DYNAMIC(CLUE, PLUGIN_TYPE_ENGINE, ClueMetaEngine);
 #else
-	REGISTER_PLUGIN_STATIC(CLUE, PLUGIN_TYPE_ENGINE, ClueMetaEngine);
+REGISTER_PLUGIN_STATIC(CLUE, PLUGIN_TYPE_ENGINE, ClueMetaEngine);
 #endif

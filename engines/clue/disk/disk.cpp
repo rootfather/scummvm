@@ -16,275 +16,250 @@
 char RootPathName[DSK_PATH_MAX];
 
 
-void dskSetRootPath(const char *newRootPath)
-{
-    strcpy(RootPathName, newRootPath);
+void dskSetRootPath(const char *newRootPath) {
+	strcpy(RootPathName, newRootPath);
 }
 
-char *dskGetRootPath(char *result)
-{
-    return strcpy(result, RootPathName);
+char *dskGetRootPath(char *result) {
+	return strcpy(result, RootPathName);
 }
 
-FILE *dskOpen(const char *Pathname, const char *Mode)
-{
-    FILE *fp;
+FILE *dskOpen(const char *Pathname, const char *Mode) {
+	FILE *fp;
 
-    DebugMsg(ERR_DEBUG, ERROR_MODULE_DISK, "Opening :%s (%s)", Pathname, Mode);
+	DebugMsg(ERR_DEBUG, ERROR_MODULE_DISK, "Opening :%s (%s)", Pathname, Mode);
 
-    if (!(fp = fopen(Pathname, Mode))) {
-        DebugMsg(ERR_ERROR, ERROR_MODULE_DISK, "Open :%s", Pathname);
-    }
+	if (!(fp = fopen(Pathname, Mode))) {
+		DebugMsg(ERR_ERROR, ERROR_MODULE_DISK, "Open :%s", Pathname);
+	}
 
-    return fp;
+	return fp;
 }
 
-void *dskLoad(const char *Pathname)
-{
-    FILE *fp;
-    uint8 *ptr;
-    size_t size, pos;
+void *dskLoad(const char *Pathname) {
+	FILE *fp;
+	uint8 *ptr;
+	size_t size, pos;
 
-    pos  = 0;
-    size = BUFSIZ;
-    ptr  = (uint8 *)malloc(size);
+	pos  = 0;
+	size = BUFSIZ;
+	ptr  = (uint8 *)malloc(size);
 
-    if ((fp = dskOpen(Pathname, "rb"))) {
-        size_t nread;
+	if ((fp = dskOpen(Pathname, "rb"))) {
+		size_t nread;
 
-        while ((nread = fread(ptr+pos, 1, BUFSIZ, fp)) == BUFSIZ) {
-            pos  += nread;
-            ptr   = (uint8 *)realloc(ptr, size+BUFSIZ);
-            size += nread;
-        }
+		while ((nread = fread(ptr + pos, 1, BUFSIZ, fp)) == BUFSIZ) {
+			pos  += nread;
+			ptr   = (uint8 *)realloc(ptr, size + BUFSIZ);
+			size += nread;
+		}
 
-        pos += nread;
+		pos += nread;
 
-        ptr = (uint8 *)realloc(ptr, pos);
-        dskClose(fp);
-        return (void *)ptr;
-    }
-    return NULL;
+		ptr = (uint8 *)realloc(ptr, pos);
+		dskClose(fp);
+		return (void *)ptr;
+	}
+	return NULL;
 }
 
-void dskSave(const char *Pathname, void *src, size_t size)
-{
-    FILE *fp;
+void dskSave(const char *Pathname, void *src, size_t size) {
+	FILE *fp;
 
-    if ((fp = dskOpen(Pathname, "wb"))) {
-	dskWrite(fp, src, size);
-	dskClose(fp);
-    }
+	if ((fp = dskOpen(Pathname, "wb"))) {
+		dskWrite(fp, src, size);
+		dskClose(fp);
+	}
 }
 
-static void strUpper(char *s)
-{
-    while (*s != '\0') {
-        *s = toupper(*s);
-        s++;
-    }
+static void strUpper(char *s) {
+	while (*s != '\0') {
+		*s = toupper(*s);
+		s++;
+	}
 }
 
-static void strLower(char *s)
-{
-    while (*s != '\0') {
-        *s = tolower(*s);
-        s++;
-    }
+static void strLower(char *s) {
+	while (*s != '\0') {
+		*s = tolower(*s);
+		s++;
+	}
 }
 
 bool dskBuildPathName(DiskCheckE check,
-		      const char *Directory, const char *Filename, char *Result)
-{
-    char Dir [DSK_PATH_MAX];
-    char File[DSK_PATH_MAX];
-    struct stat status;
+                      const char *Directory, const char *Filename, char *Result) {
+	char Dir [DSK_PATH_MAX];
+	char File[DSK_PATH_MAX];
+	struct stat status;
 
-    int step = 0;
+	int step = 0;
 
-    do {
-        switch (step++) {
-        case 0:
-            strcpy(Dir, Directory);
-            strcpy(File, Filename);
-            break;
+	do {
+		switch (step++) {
+		case 0:
+			strcpy(Dir, Directory);
+			strcpy(File, Filename);
+			break;
 
-        case 1:
-            strUpper(Dir);
-            strUpper(File);
-            break;
+		case 1:
+			strUpper(Dir);
+			strUpper(File);
+			break;
 
-        case 2:
-            strLower(Dir);
-            strLower(File);
-            break;
+		case 2:
+			strLower(Dir);
+			strLower(File);
+			break;
 
-        case 3:
-            sprintf(Result, "%s" DIR_SEP "%s" DIR_SEP "%s",
-                RootPathName, Directory, Filename);
+		case 3:
+			sprintf(Result, "%s" DIR_SEP "%s" DIR_SEP "%s",
+			        RootPathName, Directory, Filename);
 
-            DebugMsg(ERR_DEBUG, ERROR_MODULE_DISK,
-                "Path failure: %s", Result);
-            return false;
-        }
+			DebugMsg(ERR_DEBUG, ERROR_MODULE_DISK,
+			         "Path failure: %s", Result);
+			return false;
+		}
 
-        if (check == DISK_CHECK_FILE) {
-            sprintf(Result, "%s" DIR_SEP "%s" DIR_SEP "%s",
-                RootPathName, Dir, File);
-         } else {
-            sprintf(Result, "%s" DIR_SEP "%s", RootPathName, Dir);
-         }
+		if (check == DISK_CHECK_FILE) {
+			sprintf(Result, "%s" DIR_SEP "%s" DIR_SEP "%s",
+			        RootPathName, Dir, File);
+		} else {
+			sprintf(Result, "%s" DIR_SEP "%s", RootPathName, Dir);
+		}
 
-    } while (stat(Result, &status) == -1);
+	} while (stat(Result, &status) == -1);
 
-    if (check == DISK_CHECK_DIR) {
-        strcat(Result, DIR_SEP);
-        strcat(Result, File);
-    }
+	if (check == DISK_CHECK_DIR) {
+		strcat(Result, DIR_SEP);
+		strcat(Result, File);
+	}
 
-    return true;
+	return true;
 }
 
-size_t dskFileLength(const char *Pathname)
-{
-    struct stat status;
+size_t dskFileLength(const char *Pathname) {
+	struct stat status;
 
-    if (stat(Pathname, &status) == -1) {
-        return 0;
-    } else {
-        return status.st_size;
-    }
+	if (stat(Pathname, &status) == -1) {
+		return 0;
+	} else {
+		return status.st_size;
+	}
 }
 
-void dskClose(FILE *fp)
-{
-    if (fp) {
-	fclose(fp);
-    }
+void dskClose(FILE *fp) {
+	if (fp) {
+		fclose(fp);
+	}
 }
 
-void dskWrite(FILE * fp, void *src, size_t size)
-{
-    if (fwrite(src, 1, size, fp) != size) {
-	ErrorMsg(Disk_Defect, ERROR_MODULE_DISK, ERR_DISK_WRITE_FAILED);
-    }
+void dskWrite(FILE *fp, void *src, size_t size) {
+	if (fwrite(src, 1, size, fp) != size) {
+		ErrorMsg(Disk_Defect, ERROR_MODULE_DISK, ERR_DISK_WRITE_FAILED);
+	}
 }
 
-void dskWrite_U8(FILE * fp, uint8 * x)
-{
-    uint8 tmp;
+void dskWrite_U8(FILE *fp, uint8 *x) {
+	uint8 tmp;
 
-    tmp = *x;
-    dskWrite(fp, &tmp, sizeof(tmp));
+	tmp = *x;
+	dskWrite(fp, &tmp, sizeof(tmp));
 }
 
-void dskWrite_S8(FILE * fp, int8 * x)
-{
-    int8 tmp;
+void dskWrite_S8(FILE *fp, int8 *x) {
+	int8 tmp;
 
-    tmp = *x;
-    dskWrite(fp, &tmp, sizeof(tmp));
+	tmp = *x;
+	dskWrite(fp, &tmp, sizeof(tmp));
 }
 
-void dskWrite_U16LE(FILE * fp, uint16 * x)
-{
-    uint8 tmp[2];
+void dskWrite_U16LE(FILE *fp, uint16 *x) {
+	uint8 tmp[2];
 
-    tmp[0] = (uint8) ((*x) & 0xff);
-    tmp[1] = (uint8) ((*x >> 8) & 0xff);
-    dskWrite(fp, &tmp, sizeof(tmp));
+	tmp[0] = (uint8)((*x) & 0xff);
+	tmp[1] = (uint8)((*x >> 8) & 0xff);
+	dskWrite(fp, &tmp, sizeof(tmp));
 }
 
-void dskWrite_S16LE(FILE * fp, int16 * x)
-{
-    uint8 tmp[2];
+void dskWrite_S16LE(FILE *fp, int16 *x) {
+	uint8 tmp[2];
 
-    tmp[0] = (uint8) ((*x) & 0xff);
-    tmp[1] = (uint8) ((*x >> 8) & 0xff);
-    dskWrite(fp, &tmp, sizeof(tmp));
+	tmp[0] = (uint8)((*x) & 0xff);
+	tmp[1] = (uint8)((*x >> 8) & 0xff);
+	dskWrite(fp, &tmp, sizeof(tmp));
 }
 
-void dskWrite_U32LE(FILE * fp, uint32 * x)
-{
-    uint8 tmp[4];
+void dskWrite_U32LE(FILE *fp, uint32 *x) {
+	uint8 tmp[4];
 
-    tmp[0] = (uint8) ((*x) & 0xff);
-    tmp[1] = (uint8) ((*x >> 8) & 0xff);
-    tmp[2] = (uint8) ((*x >> 16) & 0xff);
-    tmp[3] = (uint8) ((*x >> 24) & 0xff);
-    dskWrite(fp, &tmp, sizeof(tmp));
+	tmp[0] = (uint8)((*x) & 0xff);
+	tmp[1] = (uint8)((*x >> 8) & 0xff);
+	tmp[2] = (uint8)((*x >> 16) & 0xff);
+	tmp[3] = (uint8)((*x >> 24) & 0xff);
+	dskWrite(fp, &tmp, sizeof(tmp));
 }
 
-void dskWrite_S32LE(FILE * fp, int32 * x)
-{
-    uint8 tmp[4];
+void dskWrite_S32LE(FILE *fp, int32 *x) {
+	uint8 tmp[4];
 
-    tmp[0] = (uint8) ((*x) & 0xff);
-    tmp[1] = (uint8) ((*x >> 8) & 0xff);
-    tmp[2] = (uint8) ((*x >> 16) & 0xff);
-    tmp[3] = (uint8) ((*x >> 24) & 0xff);
-    dskWrite(fp, &tmp, sizeof(tmp));
+	tmp[0] = (uint8)((*x) & 0xff);
+	tmp[1] = (uint8)((*x >> 8) & 0xff);
+	tmp[2] = (uint8)((*x >> 16) & 0xff);
+	tmp[3] = (uint8)((*x >> 24) & 0xff);
+	dskWrite(fp, &tmp, sizeof(tmp));
 }
 
-void dskRead(FILE *fp, void *dest, size_t size)
-{
-    if (fread(dest, 1, size, fp) != size) {
-	ErrorMsg(Disk_Defect, ERROR_MODULE_DISK, ERR_DISK_READ_FAILED);
-    }
+void dskRead(FILE *fp, void *dest, size_t size) {
+	if (fread(dest, 1, size, fp) != size) {
+		ErrorMsg(Disk_Defect, ERROR_MODULE_DISK, ERR_DISK_READ_FAILED);
+	}
 }
 
-void dskRead_U8(FILE * fp, uint8 * x)
-{
-    uint8 tmp;
+void dskRead_U8(FILE *fp, uint8 *x) {
+	uint8 tmp;
 
-    dskRead(fp, &tmp, sizeof(tmp));
-    *x = tmp;
+	dskRead(fp, &tmp, sizeof(tmp));
+	*x = tmp;
 }
 
-void dskRead_S8(FILE * fp, int8 * x)
-{
-    int8 tmp;
+void dskRead_S8(FILE *fp, int8 *x) {
+	int8 tmp;
 
-    dskRead(fp, &tmp, sizeof(tmp));
-    *x = tmp;
+	dskRead(fp, &tmp, sizeof(tmp));
+	*x = tmp;
 }
 
-void dskRead_U16LE(FILE * fp, uint16 * x)
-{
-    uint8 tmp[2];
+void dskRead_U16LE(FILE *fp, uint16 *x) {
+	uint8 tmp[2];
 
-    dskRead(fp, &tmp, sizeof(tmp));
-    *x = (uint16) ((uint16) tmp[0] | ((uint16) tmp[1] << 8));
+	dskRead(fp, &tmp, sizeof(tmp));
+	*x = (uint16)((uint16) tmp[0] | ((uint16) tmp[1] << 8));
 }
 
-void dskRead_S16LE(FILE * fp, int16 * x)
-{
-    uint8 tmp[2];
+void dskRead_S16LE(FILE *fp, int16 *x) {
+	uint8 tmp[2];
 
-    dskRead(fp, &tmp, sizeof(tmp));
-    *x = (int16) ((uint16) tmp[0] | ((uint16) tmp[1] << 8));
+	dskRead(fp, &tmp, sizeof(tmp));
+	*x = (int16)((uint16) tmp[0] | ((uint16) tmp[1] << 8));
 }
 
-void dskRead_U32LE(FILE * fp, uint32 * x)
-{
-    uint8 tmp[4];
+void dskRead_U32LE(FILE *fp, uint32 *x) {
+	uint8 tmp[4];
 
-    dskRead(fp, &tmp, sizeof(tmp));
-    *x = (uint32) ((uint32) tmp[0] | ((uint32) tmp[1] << 8)
-		| ((uint32) tmp[2] << 16) | ((uint32) tmp[3] << 24));
+	dskRead(fp, &tmp, sizeof(tmp));
+	*x = (uint32)((uint32) tmp[0] | ((uint32) tmp[1] << 8)
+	              | ((uint32) tmp[2] << 16) | ((uint32) tmp[3] << 24));
 }
 
-void dskRead_S32LE(FILE * fp, int32 * x)
-{
-    uint8 tmp[4];
+void dskRead_S32LE(FILE *fp, int32 *x) {
+	uint8 tmp[4];
 
-    dskRead(fp, &tmp, sizeof(tmp));
-    *x = (int32) ((uint32) tmp[0] | ((uint32) tmp[1] << 8)
-		| ((uint32) tmp[2] << 16) | ((uint32) tmp[3] << 24));
+	dskRead(fp, &tmp, sizeof(tmp));
+	*x = (int32)((uint32) tmp[0] | ((uint32) tmp[1] << 8)
+	             | ((uint32) tmp[2] << 16) | ((uint32) tmp[3] << 24));
 }
 
-bool dskGetLine(char *s, int size, FILE *fp)
-{
+bool dskGetLine(char *s, int size, FILE *fp) {
 	char *p;
 	if (fgets(s, size, fp)) {
 		if (p = strrchr(s, '\n')) {

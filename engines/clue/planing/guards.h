@@ -105,14 +105,14 @@ struct System;
 struct _GC;
 
 /* main method */
-void grdDo(FILE * fh, struct System *sys, LIST * PersonsList, uint32 BurglarsNr,
-	   uint32 PersonsNr, byte grdAction);
+void grdDo(FILE *fh, struct System *sys, LIST *PersonsList, uint32 BurglarsNr,
+           uint32 PersonsNr, byte grdAction);
 
 /* support */
-byte grdAddToList(uint32 bldId, LIST * l);
+byte grdAddToList(uint32 bldId, LIST *l);
 byte grdDraw(struct _GC *gc, uint32 bldId, uint32 areaId);
 
 /* con- & destructor */
-byte grdInit(FILE ** fh, const char *mode, uint32 bldId, uint32 areaId);
-void grdDone(FILE * fh);
+byte grdInit(FILE **fh, const char *mode, uint32 bldId, uint32 areaId);
+void grdDone(FILE *fh);
 #endif

@@ -1,13 +1,13 @@
 /*
-**	$Filename: story/story.h
-**	$Release:  0
-**	$Revision: 0.1
-**	$Date:     06-02-94
+**  $Filename: story/story.h
+**  $Release:  0
+**  $Revision: 0.1
+**  $Date:     06-02-94
 **
-**	story functions for "Der Clou!"
+**  story functions for "Der Clou!"
 **
 **   (c) 1994 ...and avoid panic by, H. Gaberschek
-**	    All Rights Reserved.
+**      All Rights Reserved.
 **
 */
 /****************************************************************************
@@ -100,8 +100,8 @@
 #define tcLAST_BURGLARY_LEFT_CTRL_OBJ   440221L
 #define tcLAST_BURGLARY_RIGHT_CTRL_OBJ  440228L
 
-#define PHONE_PICTID    		     144
-#define LETTER_PICTID         	  151
+#define PHONE_PICTID                 144
+#define LETTER_PICTID             151
 
 #define SCENE_NEW_GAME        45350912L
 #define SCENE_CREDITS         46399488L
@@ -226,7 +226,7 @@
 #define SCENE_PROFI_23_INSIDE 48234496
 #define SCENE_PROFI_24_INSIDE 51642368
 #define SCENE_PROFI_25_INSIDE 47710208
-#define SCENE_PROFI_26_INSIDE	/* NO TRAIN INSIDE */
+#define SCENE_PROFI_26_INSIDE   /* NO TRAIN INSIDE */
 #define SCENE_PROFI_27_INSIDE 49807360
 #define SCENE_PROFI_28_INSIDE 50331648
 

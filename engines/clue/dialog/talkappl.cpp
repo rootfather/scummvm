@@ -1,13 +1,13 @@
 /*
-**	$Filename: dialog/talkAppl.c
-**	$Release:  0
-**	$Revision: 0.1
-**	$Date:     07-04-94
+**  $Filename: dialog/talkAppl.c
+**  $Release:  0
+**  $Revision: 0.1
+**  $Date:     07-04-94
 **
-**	dialog functions for "Der Clou!"
+**  dialog functions for "Der Clou!"
 **
 **   (c) 1994 ...and avoid panic by, H. Gaberschek
-**	    All Rights Reserved.
+**      All Rights Reserved.
 **
 */
 /****************************************************************************
@@ -20,89 +20,85 @@
 
 #include "clue/dialog/talkappl.h"
 
-void tcJobOffer(Person p)
-{
-    LIST *bubble;
-    byte choice;
-    int32 part;
-    Player player = (Player)dbGetObject(Player_Player_1);
+void tcJobOffer(Person p) {
+	LIST *bubble;
+	byte choice;
+	int32 part;
+	Player player = (Player)dbGetObject(Player_Player_1);
 
-    if (!(join(Person_Matt_Stuvysunt, dbGetObjectNr(p))))
-	player->JobOfferCount++;
+	if (!(join(Person_Matt_Stuvysunt, dbGetObjectNr(p))))
+		player->JobOfferCount++;
 
-    choice = Say(BUSINESS_TXT, 0, MATT_PICTID, "PERS_ANZ");
+	choice = Say(BUSINESS_TXT, 0, MATT_PICTID, "PERS_ANZ");
 
-    part = tcGetPersOffer(p, (choice + 2));
+	part = tcGetPersOffer(p, (choice + 2));
 
-    bubble = txtGoKeyAndInsert(BUSINESS_TXT, "JOB_ANSWER", (uint32) part, NULL);
+	bubble = txtGoKeyAndInsert(BUSINESS_TXT, "JOB_ANSWER", (uint32) part, NULL);
 
-    SetPictID(p->PictID);
-    Bubble(bubble, 0, 0L, 0L);
-    RemoveList(bubble);
+	SetPictID(p->PictID);
+	Bubble(bubble, 0, 0L, 0L);
+	RemoveList(bubble);
 
-    choice = Say(BUSINESS_TXT, 0, MATT_PICTID, "NEW_THEEF");
+	choice = Say(BUSINESS_TXT, 0, MATT_PICTID, "NEW_THEEF");
 
-    if (choice == 0) {
-	joinSet(Person_Matt_Stuvysunt, dbGetObjectNr(p));
-	hasSet(Person_Matt_Stuvysunt, dbGetObjectNr(p));	/* Matt hat jetzt Daten von ihm */
-	p->TalkBits &= (0xffffffffL - (1 << Const_tcTALK_JOB_OFFER));	/* Joboffer l”schen! */
-    } else {
-	p->Known = CalcValue(p->Known, 0, 255, 0, 20);
-	Say(BUSINESS_TXT, 0, p->PictID, "MY_OFFER");
-    }
+	if (choice == 0) {
+		joinSet(Person_Matt_Stuvysunt, dbGetObjectNr(p));
+		hasSet(Person_Matt_Stuvysunt, dbGetObjectNr(p));    /* Matt hat jetzt Daten von ihm */
+		p->TalkBits &= (0xffffffffL - (1 << Const_tcTALK_JOB_OFFER));   /* Joboffer lÃ¶schen! */
+	} else {
+		p->Known = CalcValue(p->Known, 0, 255, 0, 20);
+		Say(BUSINESS_TXT, 0, p->PictID, "MY_OFFER");
+	}
 }
 
-void tcMyJobAnswer(Person p)
-{
-    LIST *bubble = CreateList();
-    LIST *jobs = txtGoKey(OBJECTS_ENUM_TXT, "enum_JobE");
-    char line[TXT_KEY_LENGTH], job[TXT_KEY_LENGTH], temp[TXT_KEY_LENGTH];
+void tcMyJobAnswer(Person p) {
+	LIST *bubble = CreateList();
+	LIST *jobs = txtGoKey(OBJECTS_ENUM_TXT, "enum_JobE");
+	char line[TXT_KEY_LENGTH], job[TXT_KEY_LENGTH], temp[TXT_KEY_LENGTH];
 
-    strcpy(job, NODE_NAME(GetNthNode(jobs, p->Job)));
+	strcpy(job, NODE_NAME(GetNthNode(jobs, p->Job)));
 
-    if (strcmp(job, NODE_NAME(GetNthNode(jobs, 10)))) {
-	txtGetFirstLine(BUSINESS_TXT, "MY_JOB_IS", temp);
-	sprintf(line, temp, job);
-    } else
-	txtGetFirstLine(BUSINESS_TXT, "NO_JOB", line);
+	if (strcmp(job, NODE_NAME(GetNthNode(jobs, 10)))) {
+		txtGetFirstLine(BUSINESS_TXT, "MY_JOB_IS", temp);
+		sprintf(line, temp, job);
+	} else
+		txtGetFirstLine(BUSINESS_TXT, "NO_JOB", line);
 
-    SetPictID(p->PictID);
-    CreateNode(bubble, 0L, line);
-    Bubble(bubble, 0, 0L, 0L);
+	SetPictID(p->PictID);
+	CreateNode(bubble, 0L, line);
+	Bubble(bubble, 0, 0L, 0L);
 
-    RemoveList(jobs);
-    RemoveList(bubble);
+	RemoveList(jobs);
+	RemoveList(bubble);
 }
 
-void tcPrisonAnswer(Person p)
-{
-    LIST *bubble = CreateList();
-    LIST *source = txtGoKey(BUSINESS_TXT, "IN_PRISON_ANSWER");
-    char line[TXT_KEY_LENGTH];
+void tcPrisonAnswer(Person p) {
+	LIST *bubble = CreateList();
+	LIST *source = txtGoKey(BUSINESS_TXT, "IN_PRISON_ANSWER");
+	char line[TXT_KEY_LENGTH];
 
-    strcpy(line, NODE_NAME(GetNthNode(source, p->KnownToPolice / 52)));
+	strcpy(line, NODE_NAME(GetNthNode(source, p->KnownToPolice / 52)));
 
-    SetPictID(p->PictID);
-    CreateNode(bubble, 0L, line);
-    Bubble(bubble, 0, 0, 0);
+	SetPictID(p->PictID);
+	CreateNode(bubble, 0L, line);
+	Bubble(bubble, 0, 0, 0);
 
-    RemoveList(source);
-    RemoveList(bubble);
+	RemoveList(source);
+	RemoveList(bubble);
 }
 
-void tcAbilityAnswer(uint32 personID)
-{
-    char name[TXT_KEY_LENGTH];
-    LIST *bubble;
-    Person p = (Person)dbGetObject(personID);
+void tcAbilityAnswer(uint32 personID) {
+	char name[TXT_KEY_LENGTH];
+	LIST *bubble;
+	Person p = (Person)dbGetObject(personID);
 
-    dbGetObjectName(personID, name);
+	dbGetObjectName(personID, name);
 
-    bubble = txtGoKey(ABILITY_TXT, name);
+	bubble = txtGoKey(ABILITY_TXT, name);
 
-    SetPictID(p->PictID);
+	SetPictID(p->PictID);
 
-    Bubble(bubble, 0, 0, 0);
+	Bubble(bubble, 0, 0, 0);
 
-    RemoveList(bubble);
+	RemoveList(bubble);
 }

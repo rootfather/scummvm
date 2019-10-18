@@ -1,13 +1,13 @@
 /*
-**	$Filename: scenes/scenes.c
-**	$Release:  0
-**	$Revision: 0.1
-**	$Date:     06-04-94
+**  $Filename: scenes/scenes.c
+**  $Release:  0
+**  $Revision: 0.1
+**  $Date:     06-04-94
 **
-**	some scenes for "Der Clou!"
+**  some scenes for "Der Clou!"
 **
 **   (c) 1994 ...and avoid panic by, K. Kazemi, H. Gaberschek
-**	    All Rights Reserved.
+**      All Rights Reserved.
 **
 */
 /****************************************************************************
@@ -71,7 +71,7 @@ extern uint16 CurrentBackground;
 
 /* standard scene functions - look at scenes.c */
 
-extern uint32 Go(LIST * succ);
+extern uint32 Go(LIST *succ);
 extern uint32 tcTelefon(void);
 
 extern void Look(uint32 locNr);
@@ -135,6 +135,6 @@ uint32 tcGoInsideOfHouse(uint32 buildingID);
 
 void tcShowLootInfo(Loot loot);
 void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc);
-void tcShowObjectData(uint32 areaID, NODE * node, byte perc);
+void tcShowObjectData(uint32 areaID, NODE *node, byte perc);
 
 #endif

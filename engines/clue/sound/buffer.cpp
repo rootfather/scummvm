@@ -10,86 +10,80 @@
 #include "clue/sound/buffer.h"
 
 struct SndBuffer {
-    unsigned char *data;	/* data */
-    unsigned size;		/* size of data buffer */
+	unsigned char *data;    /* data */
+	unsigned size;      /* size of data buffer */
 
-    unsigned insertPos;		/* insert at (insertPos % size) */
-    unsigned removePos;		/* remove from (removePos % size) */
+	unsigned insertPos;     /* insert at (insertPos % size) */
+	unsigned removePos;     /* remove from (removePos % size) */
 };
 
 
-SND_BUFFER *sndCreateBuffer(unsigned size)
-{
-    SND_BUFFER *buffer;
-    unsigned char *data;
-    
-    buffer = (SND_BUFFER *)TCAllocMem(sizeof(*buffer), false);
-    data = (unsigned char *)TCAllocMem(size, true);
+SND_BUFFER *sndCreateBuffer(unsigned size) {
+	SND_BUFFER *buffer;
+	unsigned char *data;
 
-    buffer->data = data;
-    buffer->size = size;
+	buffer = (SND_BUFFER *)TCAllocMem(sizeof(*buffer), false);
+	data = (unsigned char *)TCAllocMem(size, true);
 
-    sndResetBuffer(buffer);
+	buffer->data = data;
+	buffer->size = size;
 
-    return buffer;
+	sndResetBuffer(buffer);
+
+	return buffer;
 }
 
-void sndResetBuffer(SND_BUFFER *buffer)
-{
-    buffer->insertPos = 0;
-    buffer->removePos = 0;
+void sndResetBuffer(SND_BUFFER *buffer) {
+	buffer->insertPos = 0;
+	buffer->removePos = 0;
 }
 
-void sndFreeBuffer(SND_BUFFER *buffer)
-{
-    TCFreeMem(buffer->data, buffer->size);
-    TCFreeMem(buffer, sizeof(*buffer));
+void sndFreeBuffer(SND_BUFFER *buffer) {
+	TCFreeMem(buffer->data, buffer->size);
+	TCFreeMem(buffer, sizeof(*buffer));
 }
 
-unsigned sndLenBuffer(SND_BUFFER *buffer)
-{
-    return buffer->insertPos - buffer->removePos;
+unsigned sndLenBuffer(SND_BUFFER *buffer) {
+	return buffer->insertPos - buffer->removePos;
 }
 
-unsigned sndInsertBuffer(SND_BUFFER *buffer, const void *src, unsigned srcLen)
-{
-    const unsigned char *psrc = (const unsigned char *)src;
-    unsigned len, pos;
+unsigned sndInsertBuffer(SND_BUFFER *buffer, const void *src, unsigned srcLen) {
+	const unsigned char *psrc = (const unsigned char *)src;
+	unsigned len, pos;
 
-    srcLen = MIN(srcLen, buffer->size - sndLenBuffer(buffer));
+	srcLen = MIN(srcLen, buffer->size - sndLenBuffer(buffer));
 
-    pos = buffer->insertPos % buffer->size;
-    len = MIN(srcLen, buffer->size - pos);
+	pos = buffer->insertPos % buffer->size;
+	len = MIN(srcLen, buffer->size - pos);
 
-    /* insert to the end */
-    memcpy(buffer->data + pos, psrc, len);
-  
-    /* insert to the start */
-    memcpy(buffer->data, psrc + len, srcLen - len);
-  
-    buffer->insertPos += srcLen;
+	/* insert to the end */
+	memcpy(buffer->data + pos, psrc, len);
 
-    return srcLen;
+	/* insert to the start */
+	memcpy(buffer->data, psrc + len, srcLen - len);
+
+	buffer->insertPos += srcLen;
+
+	return srcLen;
 }
 
-unsigned sndRemoveBuffer(SND_BUFFER *buffer, void *dst, unsigned dstLen)
-{
-    unsigned char *pdst = (unsigned char *)dst;
-    unsigned len, pos;
-    
-    dstLen = MIN(dstLen, sndLenBuffer(buffer));
-    
-    pos = buffer->removePos % buffer->size;
-    len = MIN(dstLen, buffer->size - pos);
+unsigned sndRemoveBuffer(SND_BUFFER *buffer, void *dst, unsigned dstLen) {
+	unsigned char *pdst = (unsigned char *)dst;
+	unsigned len, pos;
 
-    /* remove from the end */
-    memcpy(pdst, buffer->data + pos, len);
-    
-    /* remove from the start */
-    memcpy(pdst + len, buffer->data, dstLen - len);
+	dstLen = MIN(dstLen, sndLenBuffer(buffer));
 
-    buffer->removePos += dstLen;
+	pos = buffer->removePos % buffer->size;
+	len = MIN(dstLen, buffer->size - pos);
 
-    return dstLen;
+	/* remove from the end */
+	memcpy(pdst, buffer->data + pos, len);
+
+	/* remove from the start */
+	memcpy(pdst + len, buffer->data, dstLen - len);
+
+	buffer->removePos += dstLen;
+
+	return dstLen;
 }
 

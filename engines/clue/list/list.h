@@ -25,15 +25,15 @@
  **************/
 
 typedef struct Node {
-    struct Node *Succ;
-    struct Node *Pred;
-    char *Name;
-    size_t Size;
+	struct Node *Succ;
+	struct Node *Pred;
+	char *Name;
+	size_t Size;
 } NODE;
 
 typedef struct List {
-    NODE Head;
-    NODE Tail;
+	NODE Head;
+	NODE Tail;
 } LIST;
 
 /**********
@@ -74,7 +74,7 @@ void *GetNthNode(LIST *list, uint32 nth);
 uint32 GetNrOfNodes(LIST *list);
 uint32 GetNodeNrByAddr(LIST *list, void *node);
 uint32 GetNodeNr(LIST *list, const char *name);
-void foreach(LIST *list, void (*processNode) (void *));
+void foreach(LIST *list, void (*processNode)(void *));
 void Link(LIST *list, void *node, void *predNode);
 void *UnLinkByAddr(LIST *list, void *node, NODE **predNode);
 void *UnLink(LIST *list, const char *name, NODE **predNode);
@@ -83,4 +83,4 @@ void ReplaceNode(LIST *list, const char *name, NODE *newNode);
 uint32 ReadList(LIST *list, size_t size, char *fileName);
 void WriteList(LIST *list, char *fileName);
 
-#endif				/* MODULE_LIST */
+#endif              /* MODULE_LIST */

@@ -48,7 +48,7 @@ Common::Error ClueEngine::run() {
 	clue_main(ConfMan.get("path").c_str());
 
 	/*
-    // Run a dummy loop
+	// Run a dummy loop
 	Common::Event event;
 
 	while (!shouldQuit()) {

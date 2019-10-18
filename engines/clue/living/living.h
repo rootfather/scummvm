@@ -1,13 +1,13 @@
 /*
-**	$Filename: living/living.h
-**	$Release:  0
-**	$Revision: 0.1
-**	$Date:     13-04-94
+**  $Filename: living/living.h
+**  $Release:  0
+**  $Revision: 0.1
+**  $Date:     13-04-94
 **
-**	"sprite" functions for "Der Clou!"
+**  "sprite" functions for "Der Clou!"
 **
 **   (c) 1994 ...and avoid panic by, H. Gaberschek
-**	    All Rights Reserved.
+**      All Rights Reserved.
 **
 */
 /****************************************************************************
@@ -51,34 +51,34 @@
 #include "clue/living/bob.h"
 #endif
 
-/* defines fÅr AnimPlayMode */
-#define LIV_PM_NORMAL    	1
-#define LIV_PM_REVERSE   	2
+/* defines f√ºr AnimPlayMode */
+#define LIV_PM_NORMAL       1
+#define LIV_PM_REVERSE      2
 
-/* defines fÅr Action */
-#define ANM_MOVE_UP 	   	((byte)0)
-#define ANM_MOVE_DOWN	   ((byte)1)
-#define ANM_MOVE_RIGHT	   ((byte)2)
-#define ANM_MOVE_LEFT	   ((byte)3)
+/* defines f√ºr Action */
+#define ANM_MOVE_UP         ((byte)0)
+#define ANM_MOVE_DOWN      ((byte)1)
+#define ANM_MOVE_RIGHT     ((byte)2)
+#define ANM_MOVE_LEFT      ((byte)3)
 #define ANM_STAND          ((byte)9)
 #define ANM_WORK_UP        ((byte)4)
 #define ANM_WORK_DOWN      ((byte)5)
 #define ANM_WORK_LEFT      ((byte)6)
 #define ANM_WORK_RIGHT     ((byte)7)
-#define ANM_DUSEL          ((byte)8)	/* for burglars */
-#define ANM_ELEKTRO        ((byte)8)	/* for burglars */
-#define ANM_WORK_CONTROL   ((byte)4)	/* for policemen */
-#define ANM_DUSEL_POLICE   ((byte)5)	/* for policemen */
+#define ANM_DUSEL          ((byte)8)    /* for burglars */
+#define ANM_ELEKTRO        ((byte)8)    /* for burglars */
+#define ANM_WORK_CONTROL   ((byte)4)    /* for policemen */
+#define ANM_DUSEL_POLICE   ((byte)5)    /* for policemen */
 
-#define ANM_MAKE_CALL		((byte)9)	/* for burglars :MAKECALL */
+#define ANM_MAKE_CALL       ((byte)9)   /* for burglars :MAKECALL */
 
-#define LIV_ENABLED      	1
-#define LIV_DISABLED     	0
+#define LIV_ENABLED         1
+#define LIV_DISABLED        0
 
 extern void livInit(uint16 us_VisLScapeX, uint16 us_VisLScapeY,
-		    uint16 us_VisLScapeWidth, uint16 us_VisLScapeHeight,
-		    uint16 us_TotalLScapeWidth, uint16 us_TotalLScapeHeight,
-		    byte uch_FrameCount, uint32 ul_StartArea);
+                    uint16 us_VisLScapeWidth, uint16 us_VisLScapeHeight,
+                    uint16 us_TotalLScapeWidth, uint16 us_TotalLScapeHeight,
+                    byte uch_FrameCount, uint32 ul_StartArea);
 
 extern void livDone(void);
 
@@ -98,17 +98,17 @@ extern uint16 livGetYPos(const char *uch_Name);
 extern byte livCanWalk(const char *puch_Name);
 extern byte livGetViewDirection(const char *uch_Name);
 extern byte livIsPositionInViewDirection(uint16 us_GXPos, uint16 us_GYPos,
-					  uint16 us_XPos, uint16 us_YPos,
-					  byte uch_ViewDirection);
+        uint16 us_XPos, uint16 us_YPos,
+        byte uch_ViewDirection);
 
-extern void livTurn(const char *puch_Name, byte uch_Status);	/* enabled or disabled */
+extern void livTurn(const char *puch_Name, byte uch_Status);    /* enabled or disabled */
 
 extern void livSetVisLScape(uint16 us_VisLScapeX, uint16 us_VisLScapeY);
 
 extern void livSetSpeed(const char *uch_Name, int16 s_Speed);
 
 extern void livAnimate(const char *uch_Name, byte uch_Action, int16 s_XSpeed,
-		       int16 s_YSpeed);
+                       int16 s_YSpeed);
 extern void livPrepareAnims(void);
 extern void livDoAnims(byte uch_Play, byte uch_Move);
 extern void livStopAll(void);

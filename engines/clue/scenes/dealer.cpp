@@ -1,13 +1,13 @@
 /*
-**	$Filename: scenes/dealer.c
-**	$Release:
-**	$Revision:
-**	$Date:
+**  $Filename: scenes/dealer.c
+**  $Release:
+**  $Revision:
+**  $Date:
 **
 ** "dealer" functions for "Der Clou!"
 **
-**	(C) 1993, 1994 ...and avoid panic by, H. Gaberschek
-**	    All Rights Reserved
+**  (C) 1993, 1994 ...and avoid panic by, H. Gaberschek
+**      All Rights Reserved
 */
 /****************************************************************************
   Portions copyright (c) 2005 Vasco Alexandre da Silva Costa
@@ -19,278 +19,274 @@
 
 #include "clue/scenes/scenes.h"
 
-void tcDealerDlg(void)
-{
-    uint32 locNr = GetObjNrOfLocation(GetLocation);
-    Person dealer = NULL;
-    byte dealerNr, choice = 0;
+void tcDealerDlg(void) {
+	uint32 locNr = GetObjNrOfLocation(GetLocation);
+	Person dealer = NULL;
+	byte dealerNr, choice = 0;
 
-    if (locNr == Location_Parker) {
-        dealer = (Person)dbGetObject(Person_Helen_Parker);
-        knowsSet(Person_Matt_Stuvysunt, Person_Helen_Parker);
-        dealerNr = 2;
-    } else if (locNr == Location_Maloya) {
-        dealer = (Person)dbGetObject(Person_Frank_Maloya);
-        knowsSet(Person_Matt_Stuvysunt, Person_Frank_Maloya);
-        dealerNr = 0;
-    } else if (locNr == Location_Pooly) {
-        dealer = (Person)dbGetObject(Person_Eric_Pooly);
-        knowsSet(Person_Matt_Stuvysunt, Person_Eric_Pooly);
-        dealerNr = 1;
-    } else {
-        return;
-    }
-
-    while ((choice != 2) && (choice != GET_OUT)) {
-	choice = Say(BUSINESS_TXT, 0, MATT_PICTID, "DEALER_QUEST");
-
-	switch (choice) {
-	case 0:		/* womit ? */
-            if (locNr == Location_Parker) {
-		Say(BUSINESS_TXT, 0, dealer->PictID, "DEALER_PARKER");
-            } else if (locNr == Location_Maloya) {
-		Say(BUSINESS_TXT, 0, dealer->PictID, "DEALER_MALOYA");
-            } else if (locNr == Location_Pooly) {
-		Say(BUSINESS_TXT, 0, dealer->PictID, "DEALER_POOLY");
-            }
-	    break;
-	case 1:		/* offer */
-	    hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Loot);
-
-	    if (LIST_EMPTY(ObjectList)) {
-		Say(BUSINESS_TXT, 0, dealer->PictID, "NO_LOOT");
-		AddVTime(17);
-	    } else
-		tcDealerOffer(dealer, dealerNr);
-	    break;
-	case 2:
-	default:
-	    break;
+	if (locNr == Location_Parker) {
+		dealer = (Person)dbGetObject(Person_Helen_Parker);
+		knowsSet(Person_Matt_Stuvysunt, Person_Helen_Parker);
+		dealerNr = 2;
+	} else if (locNr == Location_Maloya) {
+		dealer = (Person)dbGetObject(Person_Frank_Maloya);
+		knowsSet(Person_Matt_Stuvysunt, Person_Frank_Maloya);
+		dealerNr = 0;
+	} else if (locNr == Location_Pooly) {
+		dealer = (Person)dbGetObject(Person_Eric_Pooly);
+		knowsSet(Person_Matt_Stuvysunt, Person_Eric_Pooly);
+		dealerNr = 1;
+	} else {
+		return;
 	}
-    }
 
-    AddVTime(11);
-    ShowTime(2);
-}
+	while ((choice != 2) && (choice != GET_OUT)) {
+		choice = Say(BUSINESS_TXT, 0, MATT_PICTID, "DEALER_QUEST");
 
-void tcDealerOffer(Person dealer, byte which)
-{
-    byte Price[3][10] = { {70, 150, 220, 90, 210, 110, 200, 0, 190, 80},	/* maloya */
-    {120, 200, 180, 220, 79, 110, 0, 0, 110, 200},	/* pooly */
-    {220, 66, 0, 110, 0, 220, 0, 212, 20, 130}
-    };				/* parker */
-    CompleteLoot comp = (CompleteLoot)dbGetObject(CompleteLoot_LastLoot);
+		switch (choice) {
+		case 0:     /* womit ? */
+			if (locNr == Location_Parker) {
+				Say(BUSINESS_TXT, 0, dealer->PictID, "DEALER_PARKER");
+			} else if (locNr == Location_Maloya) {
+				Say(BUSINESS_TXT, 0, dealer->PictID, "DEALER_MALOYA");
+			} else if (locNr == Location_Pooly) {
+				Say(BUSINESS_TXT, 0, dealer->PictID, "DEALER_POOLY");
+			}
+			break;
+		case 1:     /* offer */
+			hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Loot);
 
-    RemoveList(tcMakeLootList(Person_Matt_Stuvysunt, Relation_has));
-
-    if (comp->Bild)
-	tcDealerSays(dealer, 0, (int32) Price[which][0]);
-    if (comp->Gold)
-	tcDealerSays(dealer, 1, (int32) Price[which][1]);
-    if (comp->Geld)
-	tcDealerSays(dealer, 2, (int32) Price[which][2]);
-    if (comp->Juwelen)
-	tcDealerSays(dealer, 3, (int32) Price[which][3]);
-    if (comp->Delikates)
-	tcDealerSays(dealer, 4, (int32) Price[which][4]);
-    if (comp->Statue)
-	tcDealerSays(dealer, 5, (int32) Price[which][5]);
-    if (comp->Kuriositaet)
-	tcDealerSays(dealer, 6, (int32) Price[which][6]);
-    if (comp->HistKunst)
-	tcDealerSays(dealer, 7, (int32) Price[which][7]);
-    if (comp->GebrauchsArt)
-	tcDealerSays(dealer, 8, (int32) Price[which][8]);
-    if (comp->Vase)
-	tcDealerSays(dealer, 9, (int32) Price[which][9]);
-}
-
-void tcDealerSays(Person dealer, byte textNr, int32 perc)
-{
-    LIST *lootNames = txtGoKey(OBJECTS_ENUM_TXT, "enum_LootE");
-    LIST *specialLoot = txtGoKey(OBJECTS_ENUM_TXT, "enum_LootNameE");
-    LIST *dealerText = txtGoKey(BUSINESS_TXT, "DEALER_OFFER");
-    LIST *dealerOffer = CreateList();
-    char line[TXT_KEY_LENGTH];
-    byte symp, i;
-    struct ObjectNode *n;
-    Person others[3];
-    Player player = (Player)dbGetObject(Player_Player_1);
-
-    others[0] = (Person)dbGetObject(Person_Frank_Maloya);
-    others[1] = (Person)dbGetObject(Person_Eric_Pooly);
-    others[2] = (Person)dbGetObject(Person_Helen_Parker);
-
-    if (perc == 0) {
-	sprintf(line, NODE_NAME(GetNthNode(dealerText, 4)),
-		NODE_NAME(GetNthNode(lootNames, (uint32) textNr)));
-	CreateNode(dealerOffer, 0L, line);
-
-	CreateNode(dealerOffer, 0L, NODE_NAME(GetNthNode(dealerText, 5)));
-
-	SetPictID(dealer->PictID);
-	Bubble(dealerOffer, 0, 0L, 0L);
-    } else {
-	hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Loot);
-	perc = tcGetDealerPerc(dealer, perc);
-
-	for (n = (struct ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n);
-	     n = (struct ObjectNode *) NODE_SUCC(n)) {
-	    Loot loot = (Loot)OL_DATA(n);
-	    uint32 price = hasGet(Person_Matt_Stuvysunt, OL_NR(n)), offer;
-
-	    offer = tcGetDealerOffer(price, perc);
-	    offer = MAX(offer, 1u);
-
-	    RemoveNode(dealerOffer, NULL);
-
-	    if ((loot->Type) == textNr) {
-		if (loot->Name) {
-		    symp = 10;
-
-		    sprintf(line, NODE_NAME(GetNthNode(dealerText, 2)),
-			    NODE_NAME(GetNthNode
-				      (specialLoot, (uint32) loot->Name)));
-		    CreateNode(dealerOffer, 0L, line);
-
-		    sprintf(line, NODE_NAME(GetNthNode(dealerText, 3)), offer);
-		    CreateNode(dealerOffer, 0L, line);
-		} else {
-		    symp = 1;
-
-		    sprintf(line, NODE_NAME(GetNthNode(dealerText, 0)),
-			    NODE_NAME(GetNthNode(lootNames, (uint32) textNr)));
-		    CreateNode(dealerOffer, 0L, line);
-
-		    sprintf(line, NODE_NAME(GetNthNode(dealerText, 1)), price,
-			    offer);
-		    CreateNode(dealerOffer, 0L, line);
+			if (LIST_EMPTY(ObjectList)) {
+				Say(BUSINESS_TXT, 0, dealer->PictID, "NO_LOOT");
+				AddVTime(17);
+			} else
+				tcDealerOffer(dealer, dealerNr);
+			break;
+		case 2:
+		default:
+			break;
 		}
+	}
+
+	AddVTime(11);
+	ShowTime(2);
+}
+
+void tcDealerOffer(Person dealer, byte which) {
+	byte Price[3][10] = { {70, 150, 220, 90, 210, 110, 200, 0, 190, 80},    /* maloya */
+		{120, 200, 180, 220, 79, 110, 0, 0, 110, 200},  /* pooly */
+		{220, 66, 0, 110, 0, 220, 0, 212, 20, 130}
+	};              /* parker */
+	CompleteLoot comp = (CompleteLoot)dbGetObject(CompleteLoot_LastLoot);
+
+	RemoveList(tcMakeLootList(Person_Matt_Stuvysunt, Relation_has));
+
+	if (comp->Bild)
+		tcDealerSays(dealer, 0, (int32) Price[which][0]);
+	if (comp->Gold)
+		tcDealerSays(dealer, 1, (int32) Price[which][1]);
+	if (comp->Geld)
+		tcDealerSays(dealer, 2, (int32) Price[which][2]);
+	if (comp->Juwelen)
+		tcDealerSays(dealer, 3, (int32) Price[which][3]);
+	if (comp->Delikates)
+		tcDealerSays(dealer, 4, (int32) Price[which][4]);
+	if (comp->Statue)
+		tcDealerSays(dealer, 5, (int32) Price[which][5]);
+	if (comp->Kuriositaet)
+		tcDealerSays(dealer, 6, (int32) Price[which][6]);
+	if (comp->HistKunst)
+		tcDealerSays(dealer, 7, (int32) Price[which][7]);
+	if (comp->GebrauchsArt)
+		tcDealerSays(dealer, 8, (int32) Price[which][8]);
+	if (comp->Vase)
+		tcDealerSays(dealer, 9, (int32) Price[which][9]);
+}
+
+void tcDealerSays(Person dealer, byte textNr, int32 perc) {
+	LIST *lootNames = txtGoKey(OBJECTS_ENUM_TXT, "enum_LootE");
+	LIST *specialLoot = txtGoKey(OBJECTS_ENUM_TXT, "enum_LootNameE");
+	LIST *dealerText = txtGoKey(BUSINESS_TXT, "DEALER_OFFER");
+	LIST *dealerOffer = CreateList();
+	char line[TXT_KEY_LENGTH];
+	byte symp, i;
+	struct ObjectNode *n;
+	Person others[3];
+	Player player = (Player)dbGetObject(Player_Player_1);
+
+	others[0] = (Person)dbGetObject(Person_Frank_Maloya);
+	others[1] = (Person)dbGetObject(Person_Eric_Pooly);
+	others[2] = (Person)dbGetObject(Person_Helen_Parker);
+
+	if (perc == 0) {
+		sprintf(line, NODE_NAME(GetNthNode(dealerText, 4)),
+		        NODE_NAME(GetNthNode(lootNames, (uint32) textNr)));
+		CreateNode(dealerOffer, 0L, line);
+
+		CreateNode(dealerOffer, 0L, NODE_NAME(GetNthNode(dealerText, 5)));
 
 		SetPictID(dealer->PictID);
 		Bubble(dealerOffer, 0, 0L, 0L);
+	} else {
+		hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Loot);
+		perc = tcGetDealerPerc(dealer, perc);
 
-		if (!(Say(BUSINESS_TXT, 0, MATT_PICTID, "DEALER_ANSWER"))) {
-		    int32 mattsMoney;
+		for (n = (struct ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n);
+		        n = (struct ObjectNode *) NODE_SUCC(n)) {
+			Loot loot = (Loot)OL_DATA(n);
+			uint32 price = hasGet(Person_Matt_Stuvysunt, OL_NR(n)), offer;
 
-		    hasUnSet(Person_Matt_Stuvysunt, OL_NR(n));
+			offer = tcGetDealerOffer(price, perc);
+			offer = MAX(offer, 1u);
 
-		    mattsMoney = MAX((((int32)offer * (player->MattsPart)) / 100), 1);
+			RemoveNode(dealerOffer, NULL);
 
-		    tcAddDealerSymp(dealer, symp);
-		    tcAddPlayerMoney(mattsMoney);
+			if ((loot->Type) == textNr) {
+				if (loot->Name) {
+					symp = 10;
 
-		    player->StolenMoney += offer;
-		    player->MyStolenMoney += mattsMoney;
+					sprintf(line, NODE_NAME(GetNthNode(dealerText, 2)),
+					        NODE_NAME(GetNthNode
+					                  (specialLoot, (uint32) loot->Name)));
+					CreateNode(dealerOffer, 0L, line);
 
-		    for (i = 0; i < 3; i++)
-			if (dealer != others[i])
-			    tcAddDealerSymp((others[i]), (symp * (-1)));
+					sprintf(line, NODE_NAME(GetNthNode(dealerText, 3)), offer);
+					CreateNode(dealerOffer, 0L, line);
+				} else {
+					symp = 1;
+
+					sprintf(line, NODE_NAME(GetNthNode(dealerText, 0)),
+					        NODE_NAME(GetNthNode(lootNames, (uint32) textNr)));
+					CreateNode(dealerOffer, 0L, line);
+
+					sprintf(line, NODE_NAME(GetNthNode(dealerText, 1)), price,
+					        offer);
+					CreateNode(dealerOffer, 0L, line);
+				}
+
+				SetPictID(dealer->PictID);
+				Bubble(dealerOffer, 0, 0L, 0L);
+
+				if (!(Say(BUSINESS_TXT, 0, MATT_PICTID, "DEALER_ANSWER"))) {
+					int32 mattsMoney;
+
+					hasUnSet(Person_Matt_Stuvysunt, OL_NR(n));
+
+					mattsMoney = MAX((((int32)offer * (player->MattsPart)) / 100), 1);
+
+					tcAddDealerSymp(dealer, symp);
+					tcAddPlayerMoney(mattsMoney);
+
+					player->StolenMoney += offer;
+					player->MyStolenMoney += mattsMoney;
+
+					for (i = 0; i < 3; i++)
+						if (dealer != others[i])
+							tcAddDealerSymp((others[i]), (symp * (-1)));
+				}
+			}
 		}
-	    }
 	}
-    }
 
-    RemoveList(specialLoot);
-    RemoveList(dealerOffer);
-    RemoveList(dealerText);
-    RemoveList(lootNames);
+	RemoveList(specialLoot);
+	RemoveList(dealerOffer);
+	RemoveList(dealerText);
+	RemoveList(lootNames);
 }
 
-LIST *tcMakeLootList(uint32 containerID, uint32 relID)
-{
-    NODE *n;
-    Loot loot;
-    CompleteLoot comp = (CompleteLoot)dbGetObject(CompleteLoot_LastLoot);
-    char data[TXT_KEY_LENGTH];
-    uint32 value;
-    LIST *out = CreateList();
-    LIST *loots;
-    LIST *lootE = txtGoKey(OBJECTS_ENUM_TXT, "enum_LootE");
-    LIST *lootNameE = txtGoKey(OBJECTS_ENUM_TXT, "enum_LootNameE");
+LIST *tcMakeLootList(uint32 containerID, uint32 relID) {
+	NODE *n;
+	Loot loot;
+	CompleteLoot comp = (CompleteLoot)dbGetObject(CompleteLoot_LastLoot);
+	char data[TXT_KEY_LENGTH];
+	uint32 value;
+	LIST *out = CreateList();
+	LIST *loots;
+	LIST *lootE = txtGoKey(OBJECTS_ENUM_TXT, "enum_LootE");
+	LIST *lootNameE = txtGoKey(OBJECTS_ENUM_TXT, "enum_LootNameE");
 
-    /* Listen initialisieren */
+	/* Listen initialisieren */
 
-    SetObjectListAttr(OLF_PRIVATE_LIST, Object_Loot);
-    AskAll(dbGetObject(containerID), relID, BuildObjectList);
-    loots = ObjectListPrivate;
+	SetObjectListAttr(OLF_PRIVATE_LIST, Object_Loot);
+	AskAll(dbGetObject(containerID), relID, BuildObjectList);
+	loots = ObjectListPrivate;
 
-    comp->Bild = comp->Gold = comp->Geld = comp->Juwelen = 0;
-    comp->Delikates = comp->Statue = comp->Kuriositaet = 0;
-    comp->HistKunst = comp->GebrauchsArt = comp->Vase = 0;
+	comp->Bild = comp->Gold = comp->Geld = comp->Juwelen = 0;
+	comp->Delikates = comp->Statue = comp->Kuriositaet = 0;
+	comp->HistKunst = comp->GebrauchsArt = comp->Vase = 0;
 
-    comp->TotalWeight = comp->TotalVolume = 0;
+	comp->TotalWeight = comp->TotalVolume = 0;
 
-    /* Liste durcharbeiten */
+	/* Liste durcharbeiten */
 
-    if (!(LIST_EMPTY(loots))) {
-	for (n = (NODE *) LIST_HEAD(loots); NODE_SUCC(n);
-	     n = (NODE *) NODE_SUCC(n)) {
-	    if (OL_TYPE(n) == Object_Loot) {
-		loot = (Loot)OL_DATA(n);
+	if (!(LIST_EMPTY(loots))) {
+		for (n = (NODE *) LIST_HEAD(loots); NODE_SUCC(n);
+		        n = (NODE *) NODE_SUCC(n)) {
+			if (OL_TYPE(n) == Object_Loot) {
+				loot = (Loot)OL_DATA(n);
 
-		value = GetP(dbGetObject(containerID), relID, loot);
+				value = GetP(dbGetObject(containerID), relID, loot);
 
-		switch (loot->Type) {
-		case Ein_Bild:
-		    comp->Bild += value;
-		    break;
-		case Gold:
-		    comp->Gold += value;
-		    break;
-		case Geld:
-		    comp->Geld += value;
-		    break;
-		case Juwelen:
-		    comp->Juwelen += value;
-		    break;
-		case Delikatessen:
-		    comp->Delikates += value;
-		    break;
-		case Eine_Statue:
-		    comp->Statue += value;
-		    break;
-		case Eine_Kuriositaet:
-		    comp->Kuriositaet += value;
-		    break;
-		case Eine_Vase:
-		    comp->Vase += value;
-		    break;
-		case Ein_historisches_Kunstobjekt:
-		    comp->HistKunst += value;
-		    break;
-		case Gebrauchsartikel:
-		    comp->GebrauchsArt += value;
-		    break;
-		default:
-		    break;
+				switch (loot->Type) {
+				case Ein_Bild:
+					comp->Bild += value;
+					break;
+				case Gold:
+					comp->Gold += value;
+					break;
+				case Geld:
+					comp->Geld += value;
+					break;
+				case Juwelen:
+					comp->Juwelen += value;
+					break;
+				case Delikatessen:
+					comp->Delikates += value;
+					break;
+				case Eine_Statue:
+					comp->Statue += value;
+					break;
+				case Eine_Kuriositaet:
+					comp->Kuriositaet += value;
+					break;
+				case Eine_Vase:
+					comp->Vase += value;
+					break;
+				case Ein_historisches_Kunstobjekt:
+					comp->HistKunst += value;
+					break;
+				case Gebrauchsartikel:
+					comp->GebrauchsArt += value;
+					break;
+				default:
+					break;
+				}
+
+				comp->TotalWeight += loot->Weight;
+				comp->TotalVolume += loot->Volume;
+
+				if (loot->Name)
+					strcpy(data, NODE_NAME(GetNthNode(lootNameE, loot->Name)));
+				else
+					strcpy(data, NODE_NAME(GetNthNode(lootE, loot->Type)));
+
+				CreateNode(out, 0L, data);
+
+				sprintf(data, "%u", value);
+				CreateNode(out, 0L, data);
+
+				sprintf(data, "%u", loot->Volume);
+				CreateNode(out, 0L, data);
+
+				sprintf(data, "%u", loot->Weight);
+				CreateNode(out, 0L, data);
+			}
 		}
-
-		comp->TotalWeight += loot->Weight;
-		comp->TotalVolume += loot->Volume;
-
-		if (loot->Name)
-		    strcpy(data, NODE_NAME(GetNthNode(lootNameE, loot->Name)));
-		else
-		    strcpy(data, NODE_NAME(GetNthNode(lootE, loot->Type)));
-
-		CreateNode(out, 0L, data);
-
-		sprintf(data, "%u", value);
-		CreateNode(out, 0L, data);
-
-		sprintf(data, "%u", loot->Volume);
-		CreateNode(out, 0L, data);
-
-		sprintf(data, "%u", loot->Weight);
-		CreateNode(out, 0L, data);
-	    }
 	}
-    }
 
-    RemoveList(lootE);
-    RemoveList(lootNameE);
-    RemoveList(loots);
+	RemoveList(lootE);
+	RemoveList(lootNameE);
+	RemoveList(loots);
 
-    return (out);
+	return (out);
 }

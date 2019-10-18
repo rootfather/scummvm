@@ -1,13 +1,13 @@
 /*
-**	$Filename: organisa/organisa.c
-**	$Release:  0
-**	$Revision: 0.1
-**	$Date:     07-04-94
+**  $Filename: organisa/organisa.c
+**  $Release:  0
+**  $Revision: 0.1
+**  $Date:     07-04-94
 **
-**	functions for organisation of a burglary for "Der Clou!"
+**  functions for organisation of a burglary for "Der Clou!"
 **
 **   (c) 1994 ...and avoid panic by, H. Gaberschek
-**	    All Rights Reserved.
+**      All Rights Reserved.
 **
 */
 /****************************************************************************
@@ -55,512 +55,500 @@ struct Organisation Organisation;
 
 #include "clue/organisa/display.cpp"
 
-void tcResetOrganisation(void)
-{
-    Organisation.CarID = 0;
-    Organisation.DriverID = 0;
-    Organisation.BuildingID = 0;
-    Organisation.GuyCount = 0;
-    Organisation.PlacesInCar = 0;
+void tcResetOrganisation(void) {
+	Organisation.CarID = 0;
+	Organisation.DriverID = 0;
+	Organisation.BuildingID = 0;
+	Organisation.GuyCount = 0;
+	Organisation.PlacesInCar = 0;
 }
 
-static void tcOrganisationSetBuilding(void)
-{
-    hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Building);
-    Organisation.BuildingID = OL_NR(LIST_HEAD(ObjectList));
-}
-
-static void tcOrganisationSetCar(void)
-{
-    Car car;
-
-    hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Car);
-
-    Organisation.CarID = OL_NR(LIST_HEAD(ObjectList));
-
-    car = (Car)dbGetObject(Organisation.CarID);
-
-    Organisation.PlacesInCar = car->PlacesInCar;
-}
-
-static byte tcMakeCarOk(void)
-{
-    joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_INSERT_STAR,
-		 Object_Person);
-
-    if (GetNrOfNodes(ObjectList) > Organisation.PlacesInCar) {
-	SetBubbleType(THINK_BUBBLE);
-	if (GET_OUT ==
-	    Say(BUSINESS_TXT, 0,
-		((Person) dbGetObject(Person_Matt_Stuvysunt))->PictID,
-		"PLAN_TO_MANY_GUYS"))
-	    return 0;
-
-	while (GetNrOfNodes(ObjectList) > Organisation.PlacesInCar) {
-	    byte choice;
-
-	    dbRemObjectNode(ObjectList, Person_Matt_Stuvysunt);
-
-	    inpTurnESC(0);
-
-	    choice = Bubble(ObjectList, 0, 0L, 0L);
-	    Organisation.GuyCount--;
-	    joined_byUnSet(Person_Matt_Stuvysunt,
-			   OL_NR(GetNthNode(ObjectList, (uint32) choice)));
-
-	    inpTurnESC(1);
-
-	    joined_byAll(Person_Matt_Stuvysunt,
-			 OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Person);
-	}
-    }
-
-    return 1;
-}
-
-uint32 tcOrganisation(void)
-{
-    LIST *menu = txtGoKey(MENU_TXT, "ORGANISATION");
-    byte activ = 0, ende = 0;
-    char line[TXT_KEY_LENGTH];
-
-	/* activate first or memorized building */
-    Organisation.BuildingID = 0;
-    Organisation.CarID = 0;
-    Organisation.DriverID = 0;
-
-    rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Building);
-
-    if (!LIST_EMPTY(ObjectList))
+static void tcOrganisationSetBuilding(void) {
+	hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Building);
 	Organisation.BuildingID = OL_NR(LIST_HEAD(ObjectList));
+}
 
-    if (Organisation.BuildingID) {
-	if (!has(Person_Matt_Stuvysunt, Organisation.BuildingID))
-	    tcOrganisationSetBuilding();
-    } else
-	tcOrganisationSetBuilding();
-
-    /* remember current building */
-    rememberSet(Person_Matt_Stuvysunt, Organisation.BuildingID);
-
-	/* activate first or memorized car */
-    rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Car);
-
-    if (!LIST_EMPTY(ObjectList)) {
+static void tcOrganisationSetCar(void) {
 	Car car;
+
+	hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Car);
 
 	Organisation.CarID = OL_NR(LIST_HEAD(ObjectList));
 
 	car = (Car)dbGetObject(Organisation.CarID);
 
 	Organisation.PlacesInCar = car->PlacesInCar;
-    }
+}
 
-    if (Organisation.CarID) {
-	if (!has(Person_Matt_Stuvysunt, Organisation.CarID))
-	    tcOrganisationSetCar();
-    } else
-	tcOrganisationSetCar();
+static byte tcMakeCarOk(void) {
+	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_INSERT_STAR,
+	             Object_Person);
 
-    /* remember current car */
-    rememberSet(Person_Matt_Stuvysunt, Organisation.CarID);
+	if (GetNrOfNodes(ObjectList) > Organisation.PlacesInCar) {
+		SetBubbleType(THINK_BUBBLE);
+		if (GET_OUT ==
+		        Say(BUSINESS_TXT, 0,
+		            ((Person) dbGetObject(Person_Matt_Stuvysunt))->PictID,
+		            "PLAN_TO_MANY_GUYS"))
+			return 0;
 
-	/* activate first or memorized driver */
-    rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Person);
+		while (GetNrOfNodes(ObjectList) > Organisation.PlacesInCar) {
+			byte choice;
 
-    if (!LIST_EMPTY(ObjectList))
-	Organisation.DriverID = OL_NR(LIST_HEAD(ObjectList));
+			dbRemObjectNode(ObjectList, Person_Matt_Stuvysunt);
 
-    if (!tcMakeCarOk())
-	return 0L;
+			inpTurnESC(0);
 
-    tcInitDisplayOrganisation();
-    tcDisplayOrganisation();
+			choice = Bubble(ObjectList, 0, 0L, 0L);
+			Organisation.GuyCount--;
+			joined_byUnSet(Person_Matt_Stuvysunt,
+			               OL_NR(GetNthNode(ObjectList, (uint32) choice)));
 
-    txtGetFirstLine(THECLOU_TXT, "ORGANISATION", line);
+			inpTurnESC(1);
 
-    while (!ende) {
-	inpTurnESC(0);
-	inpTurnFunctionKey(0);
-
-	PrintStatus(line);
-
-	activ = Menu(menu, (uint32) 255, activ, 0, 0);
-	inpTurnESC(1);
-
-	switch (activ) {
-	case 0:
-	    Organisation.BuildingID =
-		tcChooseDestBuilding(Organisation.BuildingID);
-	    tcDisplayOrganisation();
-	    break;
-	case 1:
-	    tcChooseGuys();
-	    /* tcDisplayOrganisation(); done in tcChooseGuys */
-	    break;
-	case 2:
-	    Organisation.CarID = tcChooseEscapeCar(Organisation.CarID);
-	    tcDisplayOrganisation();
-	    break;
-	case 3:
-	    Organisation.DriverID = tcChooseDriver(Organisation.DriverID);
-	    tcDisplayOrganisation();
-	    break;
-	case 4:
-	    Information();
-	    tcDisplayOrganisation();
-	    break;
-	case 5:
-	    if (!Organisation.BuildingID)
-		Organisation.BuildingID =
-		    tcChooseDestBuilding(Organisation.BuildingID);
-
-	    if (tcCheckOrganisation()) {
-		gfxClearArea(l_gc);
-
-		tcDoneDisplayOrganisation();
-
-		plPlaner(Organisation.BuildingID);
-
-		tcInitDisplayOrganisation();
-		tcDisplayOrganisation();
-	    }
-	    break;
-	case 6:
-	    if (tcCheckOrganisation())
-		ende = 2;
-	    break;
-	case 7:
-	    ende = 1;		/* ende */
-	    break;
-	default:
-	    break;
+			joined_byAll(Person_Matt_Stuvysunt,
+			             OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Person);
+		}
 	}
-    }
 
-    RemoveList(menu);
-
-    tcDoneDisplayOrganisation();
-
-    return ((ende - 1) * Organisation.BuildingID);
+	return 1;
 }
 
-byte tcCheckOrganisation(void)
-{
-    Player player = (Player)dbGetObject(Player_Player_1);
-    byte check = 0;
+uint32 tcOrganisation(void) {
+	LIST *menu = txtGoKey(MENU_TXT, "ORGANISATION");
+	byte activ = 0, ende = 0;
+	char line[TXT_KEY_LENGTH];
 
-    if (Organisation.BuildingID) {
-	if ((((Building) dbGetObject(Organisation.BuildingID))->Exactlyness) >
-	    127) {
-	    if (Organisation.DriverID) {
-		if (player->NrOfBurglaries == 8) {
-		    if (Organisation.CarID == Car_Jaguar_XK_1950)
-			check = 1;
-		    else
-			Say(BUSINESS_TXT, 0, MATT_PICTID, "PLAN_NO_JAGUAR");
-		} else {
-		if (setup.Profidisk) {
-		    if (Organisation.BuildingID == Building_Westminster_Abbey) {
-			if ((Organisation.CarID == Car_Fiat_634_N_1936)
-			    || (Organisation.CarID == Car_Fiat_634_N_1943))
-			    check = 1;
-			else
-			    Say(BUSINESS_TXT, 0, MATT_PICTID, "PLAN_NO_FIAT");
-		    } else
-			check = 1;
-		} else {
-		    check = 1;
-                }
-              }
-	    } else
-		Say(BUSINESS_TXT, 0, MATT_PICTID, "PLAN_NO_DRIVER");
-	} else
-	    Say(BUSINESS_TXT, 0, MATT_PICTID, "PLAN_NO_KNOWL");
-    } else
-	Say(BUSINESS_TXT, 0, MATT_PICTID, "PLAN_NO_BUILDING");
-
-    return (check);
-}
-
-uint32 tcChooseDriver(uint32 persID)
-{
-    LIST *list;
-    byte choice;
-    Person matt = (Person) dbGetObject(Person_Matt_Stuvysunt);
-    uint32 newPersID;
-
-    joined_byAll(Person_Matt_Stuvysunt,
-		 OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
-		 Object_Person);
-    list = ObjectListPrivate;
-
-    if (LIST_EMPTY(list)) {
-	SetBubbleType(THINK_BUBBLE);
-	Say(BUSINESS_TXT, 0, matt->PictID, "PLAN_TO_FEW_GUYS");
-    } else {
-	char exp[TXT_KEY_LENGTH];
-
-	txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
-	ExpandObjectList(list, exp);
-
-	if (ChoiceOk(choice = Bubble(list, 0, 0L, 0L), GET_OUT, list)) {
-	    newPersID = OL_NR(GetNthNode(list, (uint32) choice));
-
-	    if (!has(newPersID, Ability_Autos)) {
-		Person pers = (Person)dbGetObject(newPersID);
-
-		Say(BUSINESS_TXT, 0, pers->PictID, "PLAN_CANT_DRIVE");
-	    } else {
-		persID = newPersID;
-
-		rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Person);
-
-		if (!LIST_EMPTY(ObjectList))
-		    rememberUnSet(Person_Matt_Stuvysunt,
-				  OL_NR(LIST_HEAD(ObjectList)));
-
-		rememberSet(Person_Matt_Stuvysunt, persID);
-	    }
-	}
-    }
-
-    RemoveList(list);
-
-    return (persID);
-}
-
-uint32 tcChooseDestBuilding(uint32 objID)
-{
-    LIST *list;
-    byte choice;
-    char exp[TXT_KEY_LENGTH];
-
-    hasAll(Person_Matt_Stuvysunt,
-	   OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
-	   Object_Building);
-    list = ObjectListPrivate;
-
-    txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
-    ExpandObjectList(list, exp);
-
-    if (ChoiceOk(choice = Bubble(list, 0, 0L, 0L), GET_OUT, list)) {
-	objID = OL_NR(GetNthNode(list, (uint32) choice));
+	/* activate first or memorized building */
+	Organisation.BuildingID = 0;
+	Organisation.CarID = 0;
+	Organisation.DriverID = 0;
 
 	rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Building);
 
 	if (!LIST_EMPTY(ObjectList))
-	    rememberUnSet(Person_Matt_Stuvysunt, OL_NR(LIST_HEAD(ObjectList)));
+		Organisation.BuildingID = OL_NR(LIST_HEAD(ObjectList));
 
-	rememberSet(Person_Matt_Stuvysunt, objID);
-    }
+	if (Organisation.BuildingID) {
+		if (!has(Person_Matt_Stuvysunt, Organisation.BuildingID))
+			tcOrganisationSetBuilding();
+	} else
+		tcOrganisationSetBuilding();
 
-    RemoveList(list);
+	/* remember current building */
+	rememberSet(Person_Matt_Stuvysunt, Organisation.BuildingID);
 
-    return (objID);
-}
+	/* activate first or memorized car */
+	rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Car);
 
-uint32 tcChooseEscapeCar(uint32 objID)
-{
-    LIST *l1, *l2;
-    byte choice;
-    Person matt = (Person) dbGetObject(Person_Matt_Stuvysunt);
-    uint32 newObjID;
+	if (!LIST_EMPTY(ObjectList)) {
+		Car car;
 
-    hasAll(Person_Matt_Stuvysunt,
-	   OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST, Object_Car);
-    l1 = ObjectListPrivate;
+		Organisation.CarID = OL_NR(LIST_HEAD(ObjectList));
 
-    joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST,
-		 Object_Person);
-    l2 = ObjectListPrivate;
+		car = (Car)dbGetObject(Organisation.CarID);
 
-    if (!LIST_EMPTY(l1)) {
-	Car car;
-	char exp[TXT_KEY_LENGTH];
-
-	txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
-	ExpandObjectList(l1, exp);
-
-	if (ChoiceOk(choice = Bubble(l1, 0, 0L, 0L), GET_OUT, l1)) {
-	    newObjID = OL_NR(GetNthNode(l1, (uint32) choice));
-
-	    car = (Car) OL_DATA(GetNthNode(l1, (uint32) choice));
-
-	    if (GetNrOfNodes(l2) <= car->PlacesInCar) {
 		Organisation.PlacesInCar = car->PlacesInCar;
-		objID = newObjID;
-
-		rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Car);
-
-		if (!LIST_EMPTY(ObjectList))
-		    rememberUnSet(Person_Matt_Stuvysunt,
-				  OL_NR(LIST_HEAD(ObjectList)));
-
-		rememberSet(Person_Matt_Stuvysunt, objID);
-	    } else {
-		SetBubbleType(THINK_BUBBLE);
-		Say(BUSINESS_TXT, 0, matt->PictID, "PLAN_NO_PLACE");
-	    }
-	}
-    } else {
-	SetBubbleType(THINK_BUBBLE);
-	Say(BUSINESS_TXT, 0, matt->PictID, "PLAN_WITHOUT_CAR");
-    }
-
-    RemoveList(l2);
-    RemoveList(l1);
-
-    return (objID);
-}
-
-void tcChooseGuys(void)
-{
-    LIST *list;
-    Person matt = (Person) dbGetObject(Person_Matt_Stuvysunt);
-
-    joinAll(Person_Matt_Stuvysunt,
-	    OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
-	    Object_Person);
-    list = ObjectListPrivate;
-
-    dbRemObjectNode(list, Person_Matt_Stuvysunt);
-
-    if (LIST_EMPTY(list)) {
-	SetBubbleType(THINK_BUBBLE);
-	Say(BUSINESS_TXT, 0, matt->PictID, "PLAN_WITHOUT_GUYS");
-    } else {
-	LIST *menu = txtGoKey(MENU_TXT, "ORG_KOMPLIZEN");
-	char line[TXT_KEY_LENGTH];
-	byte activ = 0;
-
-	ShowMenuBackground();
-
-	txtGetFirstLine(THECLOU_TXT, "KOMPLIZEN", line);
-	PrintStatus(line);
-
-	while (activ != 2) {
-	    inpTurnESC(0);
-	    activ = Menu(menu, 7, activ, NULL, 0);
-	    inpTurnESC(1);
-
-	    switch (activ) {
-	    case 0:
-		tcAddGuyToParty();
-		break;
-	    case 1:
-		tcRemGuyFromParty();
-		break;
-	    default:
-		break;
-	    }
 	}
 
-	ShowMenuBackground();
+	if (Organisation.CarID) {
+		if (!has(Person_Matt_Stuvysunt, Organisation.CarID))
+			tcOrganisationSetCar();
+	} else
+		tcOrganisationSetCar();
+
+	/* remember current car */
+	rememberSet(Person_Matt_Stuvysunt, Organisation.CarID);
+
+	/* activate first or memorized driver */
+	rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Person);
+
+	if (!LIST_EMPTY(ObjectList))
+		Organisation.DriverID = OL_NR(LIST_HEAD(ObjectList));
+
+	if (!tcMakeCarOk())
+		return 0L;
+
+	tcInitDisplayOrganisation();
+	tcDisplayOrganisation();
+
+	txtGetFirstLine(THECLOU_TXT, "ORGANISATION", line);
+
+	while (!ende) {
+		inpTurnESC(0);
+		inpTurnFunctionKey(0);
+
+		PrintStatus(line);
+
+		activ = Menu(menu, (uint32) 255, activ, 0, 0);
+		inpTurnESC(1);
+
+		switch (activ) {
+		case 0:
+			Organisation.BuildingID =
+			    tcChooseDestBuilding(Organisation.BuildingID);
+			tcDisplayOrganisation();
+			break;
+		case 1:
+			tcChooseGuys();
+			/* tcDisplayOrganisation(); done in tcChooseGuys */
+			break;
+		case 2:
+			Organisation.CarID = tcChooseEscapeCar(Organisation.CarID);
+			tcDisplayOrganisation();
+			break;
+		case 3:
+			Organisation.DriverID = tcChooseDriver(Organisation.DriverID);
+			tcDisplayOrganisation();
+			break;
+		case 4:
+			Information();
+			tcDisplayOrganisation();
+			break;
+		case 5:
+			if (!Organisation.BuildingID)
+				Organisation.BuildingID =
+				    tcChooseDestBuilding(Organisation.BuildingID);
+
+			if (tcCheckOrganisation()) {
+				gfxClearArea(l_gc);
+
+				tcDoneDisplayOrganisation();
+
+				plPlaner(Organisation.BuildingID);
+
+				tcInitDisplayOrganisation();
+				tcDisplayOrganisation();
+			}
+			break;
+		case 6:
+			if (tcCheckOrganisation())
+				ende = 2;
+			break;
+		case 7:
+			ende = 1;       /* ende */
+			break;
+		default:
+			break;
+		}
+	}
+
 	RemoveList(menu);
-    }
 
-    RemoveList(list);
+	tcDoneDisplayOrganisation();
+
+	return ((ende - 1) * Organisation.BuildingID);
 }
 
-void tcAddGuyToParty(void)
-{
-    LIST *l1, *l2;
-    struct ObjectNode *n;
-    uint32 persID;
-    byte choice;
+byte tcCheckOrganisation(void) {
+	Player player = (Player)dbGetObject(Player_Player_1);
+	byte check = 0;
 
-    joinAll(Person_Matt_Stuvysunt,
-	    OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
-	    Object_Person);
-    l1 = ObjectListPrivate;
+	if (Organisation.BuildingID) {
+		if ((((Building) dbGetObject(Organisation.BuildingID))->Exactlyness) >
+		        127) {
+			if (Organisation.DriverID) {
+				if (player->NrOfBurglaries == 8) {
+					if (Organisation.CarID == Car_Jaguar_XK_1950)
+						check = 1;
+					else
+						Say(BUSINESS_TXT, 0, MATT_PICTID, "PLAN_NO_JAGUAR");
+				} else {
+					if (setup.Profidisk) {
+						if (Organisation.BuildingID == Building_Westminster_Abbey) {
+							if ((Organisation.CarID == Car_Fiat_634_N_1936)
+							        || (Organisation.CarID == Car_Fiat_634_N_1943))
+								check = 1;
+							else
+								Say(BUSINESS_TXT, 0, MATT_PICTID, "PLAN_NO_FIAT");
+						} else
+							check = 1;
+					} else {
+						check = 1;
+					}
+				}
+			} else
+				Say(BUSINESS_TXT, 0, MATT_PICTID, "PLAN_NO_DRIVER");
+		} else
+			Say(BUSINESS_TXT, 0, MATT_PICTID, "PLAN_NO_KNOWL");
+	} else
+		Say(BUSINESS_TXT, 0, MATT_PICTID, "PLAN_NO_BUILDING");
 
-    joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST,
-		 Object_Person);
-    l2 = ObjectListPrivate;
-
-    if (GetNrOfNodes(l2) < Organisation.PlacesInCar) {
-	for (n = (struct ObjectNode *) LIST_HEAD(l2); NODE_SUCC(n);
-	     n = (struct ObjectNode *) NODE_SUCC(n))
-	    dbRemObjectNode(l1, OL_NR(n));
-
-	if (!LIST_EMPTY(l1)) {
-	    char exp[TXT_KEY_LENGTH];
-
-	    txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
-	    ExpandObjectList(l1, exp);
-
-	    if (ChoiceOk(choice = Bubble(l1, 0, 0L, 0L), GET_OUT, l1)) {
-		persID =
-		    (uint32) (((struct ObjectNode *)
-			    GetNthNode(l1, (uint32) choice))->nr);
-
-		Organisation.GuyCount++;
-		joined_bySet(Person_Matt_Stuvysunt, persID);
-
-		tcDisplayOrganisation();
-	    }
-	} else {
-	    SetBubbleType(THINK_BUBBLE);
-	    Say(BUSINESS_TXT, 0,
-		((Person) dbGetObject(Person_Matt_Stuvysunt))->PictID,
-		"PLAN_DO_NOT_KNOW_ANYBODY");
-	}
-    } else {
-	SetBubbleType(THINK_BUBBLE);
-	Say(BUSINESS_TXT, 0,
-	    ((Person) dbGetObject(Person_Matt_Stuvysunt))->PictID,
-	    "PLAN_CAR_FULL");
-    }
-
-    RemoveList(l2);
-    RemoveList(l1);
+	return (check);
 }
 
-void tcRemGuyFromParty(void)
-{
-    LIST *list;
-    Person matt = (Person) dbGetObject(Person_Matt_Stuvysunt);
-
-    joined_byAll(Person_Matt_Stuvysunt,
-		 OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
-		 Object_Person);
-    list = ObjectListPrivate;
-
-    dbRemObjectNode(list, Person_Matt_Stuvysunt);
-
-    if (LIST_EMPTY(list)) {
-	SetBubbleType(THINK_BUBBLE);
-	Say(BUSINESS_TXT, 0, matt->PictID, "PLAN_TO_FEW_GUYS");
-    } else {
+uint32 tcChooseDriver(uint32 persID) {
+	LIST *list;
 	byte choice;
-	uint32 persID;
+	Person matt = (Person) dbGetObject(Person_Matt_Stuvysunt);
+	uint32 newPersID;
+
+	joined_byAll(Person_Matt_Stuvysunt,
+	             OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
+	             Object_Person);
+	list = ObjectListPrivate;
+
+	if (LIST_EMPTY(list)) {
+		SetBubbleType(THINK_BUBBLE);
+		Say(BUSINESS_TXT, 0, matt->PictID, "PLAN_TO_FEW_GUYS");
+	} else {
+		char exp[TXT_KEY_LENGTH];
+
+		txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
+		ExpandObjectList(list, exp);
+
+		if (ChoiceOk(choice = Bubble(list, 0, 0L, 0L), GET_OUT, list)) {
+			newPersID = OL_NR(GetNthNode(list, (uint32) choice));
+
+			if (!has(newPersID, Ability_Autos)) {
+				Person pers = (Person)dbGetObject(newPersID);
+
+				Say(BUSINESS_TXT, 0, pers->PictID, "PLAN_CANT_DRIVE");
+			} else {
+				persID = newPersID;
+
+				rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Person);
+
+				if (!LIST_EMPTY(ObjectList))
+					rememberUnSet(Person_Matt_Stuvysunt,
+					              OL_NR(LIST_HEAD(ObjectList)));
+
+				rememberSet(Person_Matt_Stuvysunt, persID);
+			}
+		}
+	}
+
+	RemoveList(list);
+
+	return (persID);
+}
+
+uint32 tcChooseDestBuilding(uint32 objID) {
+	LIST *list;
+	byte choice;
 	char exp[TXT_KEY_LENGTH];
+
+	hasAll(Person_Matt_Stuvysunt,
+	       OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
+	       Object_Building);
+	list = ObjectListPrivate;
 
 	txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
 	ExpandObjectList(list, exp);
 
 	if (ChoiceOk(choice = Bubble(list, 0, 0L, 0L), GET_OUT, list)) {
-	    persID =
-		(uint32) (((struct ObjectNode *) GetNthNode(list, (uint32) choice))->
-		       nr);
+		objID = OL_NR(GetNthNode(list, (uint32) choice));
 
-	    Organisation.GuyCount--;
-	    joined_byUnSet(Person_Matt_Stuvysunt, persID);
-
-	    if (persID == Organisation.DriverID) {
-		rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Person);
+		rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Building);
 
 		if (!LIST_EMPTY(ObjectList))
-		    rememberUnSet(Person_Matt_Stuvysunt,
-				  OL_NR(LIST_HEAD(ObjectList)));
+			rememberUnSet(Person_Matt_Stuvysunt, OL_NR(LIST_HEAD(ObjectList)));
 
-		Organisation.DriverID = 0L;
-	    }
-
-	    tcDisplayOrganisation();
+		rememberSet(Person_Matt_Stuvysunt, objID);
 	}
-    }
 
-    RemoveList(list);
+	RemoveList(list);
+
+	return (objID);
+}
+
+uint32 tcChooseEscapeCar(uint32 objID) {
+	LIST *l1, *l2;
+	byte choice;
+	Person matt = (Person) dbGetObject(Person_Matt_Stuvysunt);
+	uint32 newObjID;
+
+	hasAll(Person_Matt_Stuvysunt,
+	       OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST, Object_Car);
+	l1 = ObjectListPrivate;
+
+	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST,
+	             Object_Person);
+	l2 = ObjectListPrivate;
+
+	if (!LIST_EMPTY(l1)) {
+		Car car;
+		char exp[TXT_KEY_LENGTH];
+
+		txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
+		ExpandObjectList(l1, exp);
+
+		if (ChoiceOk(choice = Bubble(l1, 0, 0L, 0L), GET_OUT, l1)) {
+			newObjID = OL_NR(GetNthNode(l1, (uint32) choice));
+
+			car = (Car) OL_DATA(GetNthNode(l1, (uint32) choice));
+
+			if (GetNrOfNodes(l2) <= car->PlacesInCar) {
+				Organisation.PlacesInCar = car->PlacesInCar;
+				objID = newObjID;
+
+				rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Car);
+
+				if (!LIST_EMPTY(ObjectList))
+					rememberUnSet(Person_Matt_Stuvysunt,
+					              OL_NR(LIST_HEAD(ObjectList)));
+
+				rememberSet(Person_Matt_Stuvysunt, objID);
+			} else {
+				SetBubbleType(THINK_BUBBLE);
+				Say(BUSINESS_TXT, 0, matt->PictID, "PLAN_NO_PLACE");
+			}
+		}
+	} else {
+		SetBubbleType(THINK_BUBBLE);
+		Say(BUSINESS_TXT, 0, matt->PictID, "PLAN_WITHOUT_CAR");
+	}
+
+	RemoveList(l2);
+	RemoveList(l1);
+
+	return (objID);
+}
+
+void tcChooseGuys(void) {
+	LIST *list;
+	Person matt = (Person) dbGetObject(Person_Matt_Stuvysunt);
+
+	joinAll(Person_Matt_Stuvysunt,
+	        OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
+	        Object_Person);
+	list = ObjectListPrivate;
+
+	dbRemObjectNode(list, Person_Matt_Stuvysunt);
+
+	if (LIST_EMPTY(list)) {
+		SetBubbleType(THINK_BUBBLE);
+		Say(BUSINESS_TXT, 0, matt->PictID, "PLAN_WITHOUT_GUYS");
+	} else {
+		LIST *menu = txtGoKey(MENU_TXT, "ORG_KOMPLIZEN");
+		char line[TXT_KEY_LENGTH];
+		byte activ = 0;
+
+		ShowMenuBackground();
+
+		txtGetFirstLine(THECLOU_TXT, "KOMPLIZEN", line);
+		PrintStatus(line);
+
+		while (activ != 2) {
+			inpTurnESC(0);
+			activ = Menu(menu, 7, activ, NULL, 0);
+			inpTurnESC(1);
+
+			switch (activ) {
+			case 0:
+				tcAddGuyToParty();
+				break;
+			case 1:
+				tcRemGuyFromParty();
+				break;
+			default:
+				break;
+			}
+		}
+
+		ShowMenuBackground();
+		RemoveList(menu);
+	}
+
+	RemoveList(list);
+}
+
+void tcAddGuyToParty(void) {
+	LIST *l1, *l2;
+	struct ObjectNode *n;
+	uint32 persID;
+	byte choice;
+
+	joinAll(Person_Matt_Stuvysunt,
+	        OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
+	        Object_Person);
+	l1 = ObjectListPrivate;
+
+	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST,
+	             Object_Person);
+	l2 = ObjectListPrivate;
+
+	if (GetNrOfNodes(l2) < Organisation.PlacesInCar) {
+		for (n = (struct ObjectNode *) LIST_HEAD(l2); NODE_SUCC(n);
+		        n = (struct ObjectNode *) NODE_SUCC(n))
+			dbRemObjectNode(l1, OL_NR(n));
+
+		if (!LIST_EMPTY(l1)) {
+			char exp[TXT_KEY_LENGTH];
+
+			txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
+			ExpandObjectList(l1, exp);
+
+			if (ChoiceOk(choice = Bubble(l1, 0, 0L, 0L), GET_OUT, l1)) {
+				persID =
+				    (uint32)(((struct ObjectNode *)
+				              GetNthNode(l1, (uint32) choice))->nr);
+
+				Organisation.GuyCount++;
+				joined_bySet(Person_Matt_Stuvysunt, persID);
+
+				tcDisplayOrganisation();
+			}
+		} else {
+			SetBubbleType(THINK_BUBBLE);
+			Say(BUSINESS_TXT, 0,
+			    ((Person) dbGetObject(Person_Matt_Stuvysunt))->PictID,
+			    "PLAN_DO_NOT_KNOW_ANYBODY");
+		}
+	} else {
+		SetBubbleType(THINK_BUBBLE);
+		Say(BUSINESS_TXT, 0,
+		    ((Person) dbGetObject(Person_Matt_Stuvysunt))->PictID,
+		    "PLAN_CAR_FULL");
+	}
+
+	RemoveList(l2);
+	RemoveList(l1);
+}
+
+void tcRemGuyFromParty(void) {
+	LIST *list;
+	Person matt = (Person) dbGetObject(Person_Matt_Stuvysunt);
+
+	joined_byAll(Person_Matt_Stuvysunt,
+	             OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
+	             Object_Person);
+	list = ObjectListPrivate;
+
+	dbRemObjectNode(list, Person_Matt_Stuvysunt);
+
+	if (LIST_EMPTY(list)) {
+		SetBubbleType(THINK_BUBBLE);
+		Say(BUSINESS_TXT, 0, matt->PictID, "PLAN_TO_FEW_GUYS");
+	} else {
+		byte choice;
+		uint32 persID;
+		char exp[TXT_KEY_LENGTH];
+
+		txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
+		ExpandObjectList(list, exp);
+
+		if (ChoiceOk(choice = Bubble(list, 0, 0L, 0L), GET_OUT, list)) {
+			persID =
+			    (uint32)(((struct ObjectNode *) GetNthNode(list, (uint32) choice))->
+			             nr);
+
+			Organisation.GuyCount--;
+			joined_byUnSet(Person_Matt_Stuvysunt, persID);
+
+			if (persID == Organisation.DriverID) {
+				rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Person);
+
+				if (!LIST_EMPTY(ObjectList))
+					rememberUnSet(Person_Matt_Stuvysunt,
+					              OL_NR(LIST_HEAD(ObjectList)));
+
+				Organisation.DriverID = 0L;
+			}
+
+			tcDisplayOrganisation();
+		}
+	}
+
+	RemoveList(list);
 }

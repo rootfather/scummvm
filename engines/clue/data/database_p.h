@@ -1,13 +1,13 @@
 /*
-**	$Filename: data\database.ph
-**	$Release:  1
-**	$Revision: 0
-**	$Date:     09-03-94
+**  $Filename: data\database.ph
+**  $Release:  1
+**  $Revision: 0
+**  $Date:     09-03-94
 **
-**	database private definitions for "Der Clou!"
+**  database private definitions for "Der Clou!"
 **
 ** (c) 1994 ...and avoid panic by, Kaweh Kazemi
-**	All Rights Reserved.
+**  All Rights Reserved.
 **
 */
 /****************************************************************************

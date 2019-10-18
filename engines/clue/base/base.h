@@ -1,13 +1,13 @@
 /*
-**	$Filename: Base/Base.h
-**	$Release:
-**	$Revision:
-**	$Date:
+**  $Filename: Base/Base.h
+**  $Release:
+**  $Revision:
+**  $Date:
 **
 **
 **
-**	(C) 1993, 1994 ...and avoid panic by, H. Gaberschek
-**	    All Rights Reserved
+**  (C) 1993, 1994 ...and avoid panic by, H. Gaberschek
+**      All Rights Reserved
 */
 /****************************************************************************
   Portions copyright (c) 2005 Vasco Alexandre da Silva Costa
@@ -89,14 +89,14 @@
  *
  */
 struct Setup {
-    bool FullScreen;
-    bool Profidisk;
-    bool CDRom;
-    int32 SfxVolume;
-    int32 MusicVolume;
-    unsigned Debug;
-    bool CDAudio;
-    unsigned Scale;
+	bool FullScreen;
+	bool Profidisk;
+	bool CDRom;
+	int32 SfxVolume;
+	int32 MusicVolume;
+	unsigned Debug;
+	bool CDAudio;
+	unsigned Scale;
 };
 
 extern struct Setup setup;
@@ -110,7 +110,7 @@ extern struct Setup setup;
  */
 
 #define STD_BUFFER0_SIZE  (320 * 140)
-#define STD_BUFFER1_SIZE  (61 * 1024)	/* weniger geht nicht! (Bild + CMAP) */
+#define STD_BUFFER1_SIZE  (61 * 1024)   /* weniger geht nicht! (Bild + CMAP) */
 
 extern char prgname[255];
 
@@ -124,8 +124,8 @@ int clue_main(const char *path);
 
 uint32 tcGetProcessorType(void);
 
-#define PROC_80286		1L
-#define PROC_80386		2L
-#define PROC_80486		3L
+#define PROC_80286      1L
+#define PROC_80386      2L
+#define PROC_80486      3L
 
 #endif

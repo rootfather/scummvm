@@ -13,37 +13,37 @@
 /*
  * Solve database key conflicts.
  */
- 
+
 typedef enum {
-    _Environment_TheClou,
-    _Player_Player_1,
-    _London_London_1,
-    _London_Jail,
-    _London_Escape,
-    _Evidence_Evidence_1,
-    _CompleteLoot_LastLoot,
-    _Person_Old_Matt,
+	_Environment_TheClou,
+	_Player_Player_1,
+	_London_London_1,
+	_London_Jail,
+	_London_Escape,
+	_Evidence_Evidence_1,
+	_CompleteLoot_LastLoot,
+	_Person_Old_Matt,
 
-    _Location_Holland_Street,
-    _Location_Fat_Mans_Pub,
-    _Location_Cars_Vans_Office,
-    _Location_Tools_Shop,
-    _Location_Policestation,
-    _Location_Highgate_Out,
-    _Location_Hotel,
-    _Location_Walrus,
-    _Location_Parker,
-    _Location_Maloya,
-    _Location_Pooly,
-    _Location_Nirvana,
+	_Location_Holland_Street,
+	_Location_Fat_Mans_Pub,
+	_Location_Cars_Vans_Office,
+	_Location_Tools_Shop,
+	_Location_Policestation,
+	_Location_Highgate_Out,
+	_Location_Hotel,
+	_Location_Walrus,
+	_Location_Parker,
+	_Location_Maloya,
+	_Location_Pooly,
+	_Location_Nirvana,
 
-    _Ability_Autos,
-    _Ability_Schloesser,
-    _Ability_Sprengstoff,
-    _Ability_Safes,
-    _Ability_Elektronik,
-    _Ability_Aufpassen,
-    _Ability_Kampf
+	_Ability_Autos,
+	_Ability_Schloesser,
+	_Ability_Sprengstoff,
+	_Ability_Safes,
+	_Ability_Elektronik,
+	_Ability_Aufpassen,
+	_Ability_Kampf
 } KeyConflictE;
 
 /* implemented in data/database.c */

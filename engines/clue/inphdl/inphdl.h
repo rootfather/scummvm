@@ -1,13 +1,13 @@
 /*
-**	$Filename: inphdl/inphdl.h
-**	$Release:
-**	$Revision:
-**	$Date:
+**  $Filename: inphdl/inphdl.h
+**  $Release:
+**  $Revision:
+**  $Date:
 **
-**	include file for input handling
+**  include file for input handling
 **
-**	(C) 1993 ...and avoid panic by
-**	    All Rights Reserved
+**  (C) 1993 ...and avoid panic by
+**      All Rights Reserved
 */
 /****************************************************************************
   Portions copyright (c) 2005 Vasco Alexandre da Silva Costa
@@ -17,7 +17,7 @@
   distribution.
  ****************************************************************************/
 
-/* defines fÅr  WaitFor */
+/* defines f√ºr  WaitFor */
 
 #ifndef INPHDL_MODULE
 #define INPHDL_MODULE
@@ -32,17 +32,17 @@
 #include "clue/anim/sysanim.h"
 #endif
 
-#define INP_AS_FAST_AS_POSSIBLE		1
+#define INP_AS_FAST_AS_POSSIBLE     1
 
 #define INP_UP                (1)
 #define INP_DOWN              (1<<1)
 #define INP_LEFT              (1<<2)
 #define INP_RIGHT             (1<<3)
-#define INP_ESC               (1<<4)   /* wird standardmÑ·ig gesetzt */
+#define INP_ESC               (1<<4)   /* wird standardm√§√üig gesetzt */
 
 /* these two defines have been exchanged by kaweh */
-#define INP_LBUTTONP          (1<<5)	/* left button pressed */
-#define INP_LBUTTONR          (1<<6)	/* left button released */
+#define INP_LBUTTONP          (1<<5)    /* left button pressed */
+#define INP_LBUTTONR          (1<<6)    /* left button released */
 
 #define INP_RBUTTONP          (1<<7)   /* right button pressed */
 #define INP_RBUTTONR          (1<<8)   /* right button released */
@@ -65,13 +65,13 @@ extern void inpCloseAllInputDevs(void);
 extern void inpMousePtrOn(void);
 extern void inpMousePtrOff(void);
 
-extern int32 inpWaitFor(int32 l_Mask);	/* retourniert was passiert ist
-					 * (siehe defines) */
+extern int32 inpWaitFor(int32 l_Mask);  /* retourniert was passiert ist
+                     * (siehe defines) */
 extern void inpSetWaitTicks(uint32 l_Ticks);
 
-void inpTurnESC(bool us_NewStatus);	    /* 0 means off, 1 means on */
+void inpTurnESC(bool us_NewStatus);     /* 0 means off, 1 means on */
 void inpTurnFunctionKey(bool us_NewStatus); /* 0 means off, 1 means on */
-void inpTurnMouse(bool us_NewStatus);	    /* 0 means off, 1 means on */
+void inpTurnMouse(bool us_NewStatus);       /* 0 means off, 1 means on */
 
 extern void inpDelay(int32 l_Ticks);
 extern void inpSetKeyRepeat(unsigned char rate);

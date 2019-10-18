@@ -1,13 +1,13 @@
 /*
-**	$Filename: landscap/spot.h
-**	$Release:  0
-**	$Revision: 0.1
-**	$Date:     19-02-94
+**  $Filename: landscap/spot.h
+**  $Release:  0
+**  $Revision: 0.1
+**  $Date:     19-02-94
 **
-**	spot functions for "Der Clou!"
+**  spot functions for "Der Clou!"
 **
 **   (c) 1994 ...and avoid panic by, H. Gaberschek
-**	    All Rights Reserved.
+**      All Rights Reserved.
 **
 */
 /****************************************************************************
@@ -43,7 +43,7 @@
 #include "clue/disk/disk.h"
 #endif
 
-#define LS_SPOT_NAME					("s")
+#define LS_SPOT_NAME                    ("s")
 
 #define LS_SPOT_SMALL_SIZE         16
 #define LS_SPOT_MEDIUM_SIZE        32
@@ -56,32 +56,32 @@
 #define LS_ALL_INVISIBLE_SPOTS      2
 
 struct SpotPosition {
-    NODE Link;
+	NODE Link;
 
-    uint16 us_XPos;
-    uint16 us_YPos;
+	uint16 us_XPos;
+	uint16 us_YPos;
 };
 
 struct Spot {
-    NODE Link;
+	NODE Link;
 
-    uint16 us_Size;
-    uint16 us_Speed;		/* secconds per move */
+	uint16 us_Size;
+	uint16 us_Speed;        /* secconds per move */
 
-    uint32 ul_CtrlObjId;		/* data : objId */
+	uint32 ul_CtrlObjId;        /* data : objId */
 
-    uint32 ul_AreaId;
+	uint32 ul_AreaId;
 
-    byte uch_Status;
+	byte uch_Status;
 
-    uint16 us_OldXPos;
-    uint16 us_OldYPos;
+	uint16 us_OldXPos;
+	uint16 us_OldYPos;
 
-    uint16 us_PosCount;
+	uint16 us_PosCount;
 
-    LIST *p_positions;
+	LIST *p_positions;
 
-    struct SpotPosition *p_CurrPos;	/* for fast access */
+	struct SpotPosition *p_CurrPos; /* for fast access */
 };
 
 extern void lsInitSpots(void);
@@ -93,7 +93,7 @@ extern void lsShowSpot(struct Spot *s, uint32 time);
 extern void lsHideSpot(struct Spot *s);
 
 extern void lsBlitSpot(uint16 us_Size, uint16 us_XPos, uint16 us_YPos,
-		       byte visible);
+                       byte visible);
 
 extern void lsSetSpotStatus(uint32 CtrlObjId, byte uch_Status);
 

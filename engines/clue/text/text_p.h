@@ -1,13 +1,13 @@
 /*
-**	$Filename: text/text.ph
-**	$Release:  1
-**	$Revision: 0
-**	$Date:     10-03-94
+**  $Filename: text/text.ph
+**  $Release:  1
+**  $Revision: 0
+**  $Date:     10-03-94
 **
-**	text private definitions for "Der Clou!"
+**  text private definitions for "Der Clou!"
 **
 ** (c) 1994 ...and avoid panic by, Kaweh Kazemi
-**	All Rights Reserved.
+**  All Rights Reserved.
 **
 */
 /****************************************************************************
@@ -43,23 +43,23 @@
 #define TXT_CHAR_KEY_SEPERATOR   ','
 #define TXT_CHAR_EOF             '^'
 
-#define TXT_XOR_VALUE				0x75
+#define TXT_XOR_VALUE               0x75
 
 
 /* private structures */
 struct TextControl {
-    LIST *tc_Texts;
+	LIST *tc_Texts;
 
-    char tc_Language;
+	char tc_Language;
 };
 
 struct Text {
-    NODE txt_Link;
+	NODE txt_Link;
 
-    char *txt_Handle;
-    char *txt_LastMark;
+	char *txt_Handle;
+	char *txt_LastMark;
 
-    size_t length;
+	size_t length;
 };
 
 

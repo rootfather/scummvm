@@ -96,11 +96,11 @@
 #define PLANING_PLAN_LIST_EXTENSION  ".pll"
 
 /* Disks */
-#define PLANING_PLAN_DISK         	  0
+#define PLANING_PLAN_DISK             0
 
 /* Tool sequences in file */
-#define PLANING_PLAN_TOOL_BEGIN_ID  "TOOB"	/* TOOl Begin */
-#define PLANING_PLAN_TOOL_END_ID    "TOOE"	/* TOOl End */
+#define PLANING_PLAN_TOOL_BEGIN_ID  "TOOB"  /* TOOl Begin */
+#define PLANING_PLAN_TOOL_END_ID    "TOOE"  /* TOOl End */
 
 /* open cmd */
 #define PLANING_OPEN_READ_PLAN        0
@@ -113,11 +113,11 @@
 #define PLANING_OPEN_ERR_NO_PLAN      2
 
 
-byte plOpen(uint32 objId, byte mode, FILE ** fh);
+byte plOpen(uint32 objId, byte mode, FILE **fh);
 void plLoad(uint32 objId);
 void plSave(uint32 objId);
 void plSaveChanged(uint32 objId);
 
-LIST *plLoadTools(FILE * fh);
-void plSaveTools(FILE * fh);
+LIST *plLoadTools(FILE *fh);
+void plSaveTools(FILE *fh);
 #endif
