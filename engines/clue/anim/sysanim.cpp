@@ -34,16 +34,16 @@
 #define Y_DEST_OFFSET_POS   10
 #define PLAY_MODE_POS       11
 
-/* Defines für Playmode */
-#define PM_NORMAL                1
-#define PM_PING_PONG             2
-#define PM_SYNCHRON              4
+/* Defines for play mode */
+#define PM_NORMAL            1
+#define PM_PING_PONG         2
+#define PM_SYNCHRON          4
 
-/* Defines für AnimPic Aufbau */
-#define     Y_OFFSET                   0    /* 1 Pixel zwischen 2 Reihen */
+/* Defines for AnimPic */
+#define Y_OFFSET             0 /* 1 pixel between 2 rows/lines */
 
 struct AnimHandler {
-	char *RunningAnimID;    /* Anim, die gerade läuft */
+	char *RunningAnimID;       /* currently running animation */
 
 	uint16 destX;
 	uint16 destY;
@@ -57,12 +57,12 @@ struct AnimHandler {
 	uint16 totalWidth;
 
 	uint16 NrOfAnims;
-	uint16 PictureRate;     /* Rate mit der Anim gespielt wird */
-	uint16 Repeatation;     /* wie oft wiederholen */
+	uint16 PictureRate;        /* playback rate of the animation */
+	uint16 Repeatation;        /* total number of repetitions */
 
-	uint16 RepeatationCount;    /* wie oft schon wiederholt */
+	uint16 RepeatationCount;   /* how many repetitions already passed */
 
-	uint16 AnimCollection;  /* einzelnen Animphasen */
+	uint16 AnimCollection;     /* single animation phases */
 
 	uint32 WaitCounter;
 
@@ -186,11 +186,11 @@ void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode) {
 			/* ZZZZZZXXXZZZZZ NOTE: UHHHHHHHHHHHHHHH? WTF???
 			   LOOK AT 'texts/animd.txt! WTF?'
 			   PLAY_MODE_POS is allegedly field 11, with possible values of
-			     PlayMode (1=Normal, 2=PingPong, 4=Syncron)
-			     but no stinking entry in 'texts/animd.txt' has that field!
-			     dismiss as programmer error? maybe this was for amiga version and
-			     they 'dropped' it for the PC version? too hard to do pingpong?
-			     who knows!
+			   PlayMode (1=Normal, 2=PingPong, 4=Syncron)
+			   but no stinking entry in 'texts/animd.txt' has that field!
+			   dismiss as programmer error? maybe this was for amiga version and
+			   they 'dropped' it for the PC version? too hard to do pingpong?
+			   who knows!
 
 			Handler.PlayMode = (uint8) txtGetKeyAsULONG((uint16)PLAY_MODE_POS, pict_list);
 			*/

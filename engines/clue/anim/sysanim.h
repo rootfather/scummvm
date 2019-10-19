@@ -18,11 +18,11 @@
  ****************************************************************************/
 
 /*
- * Aufbau der Anim.List Datei (Aufbau einer Zeile)
+ * Structure of the Anim.List file (structure of one line/row)
  *
- *  PictureMode,PictsPerSecc,Pic1,AnimPic,PicAnzahl,Animphase
- *  Breite, Animphase Höhe, Animphase offset, PlayMode
- *  XDest, YDest (als Offset zum 1. Bild)
+ *  PictureMode,PictsPerSecc,Pic1,AnimPic,PicCount,Animphase
+ *  width, Animphase height, Animphase offset, PlayMode
+ *  XDest, YDest (as offset to 1st picture)
  */
 
 #ifndef MODULE_ANIM
@@ -44,7 +44,7 @@
 extern void InitAnimHandler(void);
 extern void CloseAnimHandler(void);
 
-extern void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode);    /* -> docs vom 16.08.92 ! */
+extern void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode);    /* -> docs from 16.08.92 ! */
 extern void StopAnim(void);
 
 extern void GetAnim(const char *AnimID, char *Dest);
