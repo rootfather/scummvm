@@ -40,7 +40,7 @@ void tcDone(void) {
 		inprogress = true;
 
 		plDone();
-		sndDoneFX();        /* achtung */
+		sndDoneFX();        /* attention! */
 		sndDone();
 		RemoveAudio();
 		dbDone();

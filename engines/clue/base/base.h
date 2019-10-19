@@ -103,14 +103,14 @@ extern struct Setup setup;
 
 
 /*
- * Verwendungszweck:
- * StdBuffer0: geladenes Bild
+ * Usage:
+ * StdBuffer0: loaded picture
  *
- * StdBuffer1: entpacktes Bild
+ * StdBuffer1: uncompressed picture
  */
 
 #define STD_BUFFER0_SIZE  (320 * 140)
-#define STD_BUFFER1_SIZE  (61 * 1024)   /* weniger geht nicht! (Bild + CMAP) */
+#define STD_BUFFER1_SIZE  (61 * 1024)   /* smaller buffer size is impossible! (picture + CMAP (color map? - felsqualle)) */
 
 extern char prgname[255];
 
