@@ -146,13 +146,16 @@ static const char *directoryGlobs[] = {
 class ClueMetaEngine : public AdvancedMetaEngine {
 public:
 	ClueMetaEngine() : AdvancedMetaEngine(Clue::gameDescriptions, sizeof(ADGameDescription), clueGames) {
-		_singleId = "clue";
 		_maxScanDepth = 2;
 		_directoryGlobs = directoryGlobs;
 	}
 
+	virtual const char *getEngineId() const {
+		return "clue";
+	}
+
 	virtual const char *getName() const {
-		return "Clue Engine";
+		return "Clue";
 	}
 
 	virtual const char *getOriginalCopyright() const {
