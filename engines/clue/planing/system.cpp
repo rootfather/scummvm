@@ -18,6 +18,8 @@
   distribution.
  ****************************************************************************/
 
+#include "clue/planing/system.h"
+
 #define FILE_SYSTEM_ID      "SYS "  /* SYStem plan start */
 #define FILE_HANDLER_ID     "HAND"  /* HANDler x needed  */
 #define FILE_ACTION_LIST_ID "ACLI"  /* ACtionLIst for handler x started */
@@ -25,7 +27,7 @@
 
 #define SYS_MAX_MEMORY_SIZE   1024L*25L
 
-#include "clue/planing/system.h"
+namespace Clue {
 
 size_t sysUsedMem = 0;
 
@@ -669,3 +671,5 @@ void CorrectMem(LIST *l) {
 	for (n = LIST_HEAD(l); NODE_SUCC(n); n = NODE_SUCC(n))
 		sysUsedMem -= NODE_SIZE(n);
 }
+
+} // End of namespace Clue

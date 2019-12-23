@@ -57,6 +57,8 @@
 #include "clue/landscap/landscap.h"
 #endif
 
+namespace Clue {
+
 #define PRESENT_AS_TEXT       1
 #define PRESENT_AS_BAR        2
 #define PRESENT_AS_NUMBER     3
@@ -87,5 +89,7 @@ void AddPresentTextLine(LIST *l, const char *data, uint32 max, LIST *texts,
                         uint16 textNr);
 void AddPresentLine(LIST *l, uint8 presentHow, uint32 data, uint32 max,
                     LIST *texts, uint16 textNr);
+
+} // End of namespace Clue
 
 #endif

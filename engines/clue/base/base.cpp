@@ -19,9 +19,8 @@
  ****************************************************************************/
 
 #include "clue/base/base.h"
-#ifdef XXX
-extern unsigned _stklen = 16 * 1024;
-#endif
+
+namespace Clue {
 
 void *StdBuffer0 = NULL;
 void *StdBuffer1 = NULL;
@@ -683,3 +682,5 @@ int clue_main(const char *path) {
 	tcDone();
 	return 0;
 }
+
+} // End of namespace Clue

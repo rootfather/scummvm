@@ -91,9 +91,14 @@
 #include "clue/planing/guards.h"
 #endif
 
+namespace Clue {
+
 extern byte AnimCounter;
 extern byte PlanChanged;
 
 
 void plPlaner(uint32 objId);
+
+} // End of namespace Clue
+
 #endif

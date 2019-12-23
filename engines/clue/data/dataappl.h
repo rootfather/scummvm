@@ -59,6 +59,7 @@
 #include "clue/landscap/landscap.h"
 #endif
 
+namespace Clue {
 
 extern bool tcSpendMoney(uint32 money, uint8 breakAnim);
 
@@ -191,5 +192,6 @@ uint32 tcGetBuildValues(Building bui);
 /* Plan */
 #define   tcEscapeTime(building)        (16400 / building->EscapeRouteLength)
 
+} // End of namespace Clue
 
 #endif

@@ -22,6 +22,8 @@
   distribution.
  ****************************************************************************/
 
+namespace Clue {
+
 #define SCENE_NODE              100
 #define EVENT_NODE              101
 #define MAX_SCENES_AMOUNT   (1<<14) /* 14 + 18 = 32 Bits !!! */
@@ -123,3 +125,5 @@ char *GetName(uint32 EventNr);
 
 
 extern struct NewStory *story;
+
+} // End of namespace Clue

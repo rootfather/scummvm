@@ -20,6 +20,8 @@
 
 #include "clue/scenes/evidence.h"
 
+namespace Clue {
+
 uint32 tcPersonWanted(uint32 persId);
 uint32 tcPersonQuestioning(Person person);
 
@@ -746,3 +748,5 @@ int32 tcCalcCarEscape(int32 timeLeft) {
 
 	return result;
 }
+
+} // End of namespace Clue

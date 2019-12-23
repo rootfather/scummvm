@@ -7,6 +7,8 @@
  ****************************************************************************/
 #include "clue/cdrom/cdrom.h"
 
+namespace Clue {
+
 unsigned int CDRomInstalled = 0;
 
 /*
@@ -61,3 +63,5 @@ void CDROM_StopAudioTrack(void) {
 	       SDL_CDStop(cdrom);
 	   }*/
 }
+
+} // End of namespace Clue

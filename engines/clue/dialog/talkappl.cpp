@@ -20,6 +20,8 @@
 
 #include "clue/dialog/talkappl.h"
 
+namespace Clue {
+
 void tcJobOffer(Person p) {
 	LIST *bubble;
 	byte choice;
@@ -102,3 +104,5 @@ void tcAbilityAnswer(uint32 personID) {
 
 	RemoveList(bubble);
 }
+
+} // End of namespace Clue

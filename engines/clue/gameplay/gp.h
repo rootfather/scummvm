@@ -34,6 +34,7 @@
 #include "clue/random/random.h"
 #include "clue/present/interac.h"
 
+namespace Clue {
 
 #define GO                      (1)
 #define WAIT                    (1<<1)
@@ -188,5 +189,7 @@ extern struct SceneArgs SceneArgs;
 extern struct Film *film;
 extern uint32 GamePlayMode;
 extern byte RefreshMode;
+
+} // End of namespace Clue
 
 #endif

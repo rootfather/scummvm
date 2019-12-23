@@ -23,6 +23,8 @@
 
 #include "clue/gfx/gfx.h"
 
+namespace Clue {
+
 #define GFX_NCH4_SCROLLOFFSET   (160 * 72)  /* memory used by the fixed display */
 
 #define ScrLEFT 0
@@ -49,4 +51,7 @@ void gfxLSPutSet(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, ui
 
 void gfxLSRectFill(uint16 sx, uint16 sy, uint16 ex, uint16 ey, uint8 color);
 uint8 gfxLSReadPixel(uint16 x, uint16 y);
+
+} // End of namespace Clue
+
 #endif

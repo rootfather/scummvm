@@ -75,6 +75,8 @@
 #include "clue/scenes/scenes.h"
 #endif
 
+namespace Clue {
+
 struct Scene;
 
 extern void TCGamePause(byte activ);
@@ -110,5 +112,7 @@ extern byte tcLoadIt(char activ);
 extern void tcRefreshAfterLoad(byte loaded);
 
 extern void ShowMenuBackground(void);
+
+} // End of namespace Clue
 
 #endif

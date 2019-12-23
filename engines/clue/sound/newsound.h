@@ -10,6 +10,8 @@
 
 #include "clue/theclou.h"
 
+namespace Clue {
+
 void sndInit(void);
 void sndDone(void);
 
@@ -18,6 +20,8 @@ void sndStopSound(uint8 dummy);
 void sndFading(short int targetVol);
 
 char *sndGetCurrSoundName(void);
+
+} // End of namespace Clue
 
 #endif
 

@@ -27,6 +27,7 @@
 #include "clue/list/list.h"
 #include "clue/base/base.h"
 
+namespace Clue {
 
 /* private defines */
 #define TXT_DISK_ID     0
@@ -71,5 +72,7 @@ extern char keyBuffer[];
 
 /* private prototypes - LINE */
 static char *txtGetLine(struct Text *txt, uint8 lineNr);
+
+} // End of namespace Clue
 
 #endif

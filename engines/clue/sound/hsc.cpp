@@ -13,6 +13,7 @@
 #include "audio/fmopl.h"
 #include "clue/sound/hsc.h"
 
+namespace Clue {
 
 #define OPL_INTERNAL_FREQ   3579545 /* 3.6 MHz... */
 #define OPL_NUM_CHIPS           1
@@ -524,3 +525,5 @@ void hscDone(void) {
 	delete opl;
 	OPL_Ok = 0;
 }
+
+} // End of namespace Clue

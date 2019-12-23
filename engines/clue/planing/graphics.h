@@ -91,7 +91,7 @@
 #include "clue/planing/guards.h"
 #endif
 
-
+namespace Clue {
 
 /* Messages modes */
 #define PLANING_MSG_REFRESH   1
@@ -111,4 +111,7 @@ void plDisplayInfo(void);
 void plRefresh(uint32 ItemId);
 void plDrawWait(uint32 sec);
 byte plSay(const char *msg, uint32 persId);
+
+} // End of namespace Clue
+
 #endif

@@ -9,6 +9,8 @@
 #ifndef TC__BOB_H
 #define TC__BOB_H
 
+namespace Clue {
+
 struct RastPort;
 
 void BobInitLists(void);
@@ -23,5 +25,7 @@ void BobInVis(uint16 BobID);
 
 void BobSetDarkness(byte darkness);
 void BobDisplayLists(GC *gc);
+
+} // End of namespace Clue
 
 #endif

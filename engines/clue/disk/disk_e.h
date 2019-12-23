@@ -17,6 +17,10 @@
   distribution.
  ****************************************************************************/
 
+namespace Clue {
+
 #define ERR_DISK_OPEN_FAILED        1
-#define ERR_DISK_WRITE_FAILED   2
+#define ERR_DISK_WRITE_FAILED       2
 #define ERR_DISK_READ_FAILED        3
+
+} // End of namespace Clue

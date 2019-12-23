@@ -23,6 +23,8 @@
 #include "clue/landscap/landscap.h"
 #include "clue/landscap/landscap_p.h"
 
+namespace Clue {
+
 bool lsIsLSObjectInActivArea(LSObject lso) {
 	if (AskP
 	        (dbGetObject(ls->ul_AreaID), ConsistOfRelationID, lso, NO_PARAMETER,
@@ -294,3 +296,5 @@ LIST *lsGetRoomsOfArea(uint32 ul_AreaId) {
 
 	return ObjectListPrivate;
 }
+
+} // End of namespace Clue

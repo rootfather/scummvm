@@ -8,9 +8,11 @@
 #ifndef MODULE_CDROM
 #define MODULE_CDROM
 
-extern unsigned int CDRomInstalled;
-
 #include "clue/theclou.h"
+
+namespace Clue {
+
+extern unsigned int CDRomInstalled;
 
 int CDROM_Install(void);
 void CDROM_UnInstall(void);
@@ -19,5 +21,7 @@ void CDROM_WaitForMedia(void);
 
 void CDROM_PlayAudioSequence(uint8 TrackNum, uint32 StartOffset, uint32 EndOffset);
 void CDROM_StopAudioTrack(void);
+
+} // End of namespace Clue
 
 #endif

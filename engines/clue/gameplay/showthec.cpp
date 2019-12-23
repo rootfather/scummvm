@@ -6,6 +6,8 @@
   distribution.
  ****************************************************************************/
 
+namespace Clue {
+
 uint32 ShowTheClouRequester(int32 error_class) {
 	LIST *menu, *games;
 	uint32 answer;
@@ -125,3 +127,5 @@ uint32 ShowTheClouRequester(int32 error_class) {
 
 	return (answer);
 }
+
+} // End of namespace Clue

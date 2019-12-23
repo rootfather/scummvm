@@ -19,6 +19,8 @@
 
 #include "clue/scenes/scenes.h"
 
+namespace Clue {
+
 void DoneTaxi(void) {
 	static byte i = 0;
 	byte j;
@@ -376,3 +378,5 @@ void DoneHotelRoom(void) {
 
 	StdDone();
 }
+
+} // End of namespace Clue

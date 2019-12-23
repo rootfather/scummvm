@@ -19,6 +19,8 @@
 #include "clue/list/list.h"
 #include "clue/memory/memory.h"
 
+namespace Clue {
+
 LIST *CreateList(void) {
 	LIST *list = NULL;
 
@@ -266,3 +268,5 @@ void WriteList(LIST *list, char *fileName) {
 		fclose(fh);
 	}
 }
+
+} // End of namespace Clue

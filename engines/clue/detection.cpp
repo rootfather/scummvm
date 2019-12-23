@@ -29,7 +29,6 @@
 
 #include "clue/clue.h"
 
-
 namespace Clue {
 
 uint32 ClueEngine::getFeatures() const {
@@ -40,15 +39,10 @@ Common::Language ClueEngine::getLanguage() const {
 	return _gameDescription->language;
 }
 
-}
-
 static const PlainGameDescriptor clueGames[] = {
 	{"clue", "The Clue!"},
 	{0, 0}
 };
-
-
-namespace Clue {
 
 static const ADGameDescription gameDescriptions[] = {
 
@@ -135,8 +129,6 @@ static const ADGameDescription gameDescriptions[] = {
 	AD_TABLE_END_MARKER
 };
 
-} // End of namespace Clue
-
 static const char *directoryGlobs[] = {
 	"TEXTS",
 	"SOUNDS",
@@ -211,10 +203,12 @@ void ClueMetaEngine::removeSaveState(const char *target, int slot) const {
 SaveStateDescriptor ClueMetaEngine::querySaveMetaInfos(const char *target, int slot) const {
 
 	return SaveStateDescriptor();
+}
+
 } // End of namespace Clue
 
 #if PLUGIN_ENABLED_DYNAMIC(CLUE)
-REGISTER_PLUGIN_DYNAMIC(CLUE, PLUGIN_TYPE_ENGINE, ClueMetaEngine);
+REGISTER_PLUGIN_DYNAMIC(CLUE, PLUGIN_TYPE_ENGINE, Clue::ClueMetaEngine);
 #else
-REGISTER_PLUGIN_STATIC(CLUE, PLUGIN_TYPE_ENGINE, ClueMetaEngine);
+REGISTER_PLUGIN_STATIC(CLUE, PLUGIN_TYPE_ENGINE, Clue::ClueMetaEngine);
 #endif

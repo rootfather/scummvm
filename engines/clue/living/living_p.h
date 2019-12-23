@@ -18,6 +18,8 @@
   distribution.
  ****************************************************************************/
 
+namespace Clue {
+
 #define LIV_LOAD_BUFFER         StdBuffer0  /* muß ein StdBuffer sein -> sonst ClearBuffer in .c ändern */
 #define LIV_DECR_BUFFER         StdBuffer1
 
@@ -107,3 +109,5 @@ static void livAdd(const char *uch_Name, char *uch_TemplateName, byte uch_XSize,
                    byte uch_YSize, int16 s_XSpeed, int16 s_YSpeed);
 
 static byte livIsVisible(struct Living *liv);
+
+} // End of namespace Clue

@@ -23,6 +23,7 @@
 
 /* includes */
 
+namespace Clue {
 
 /* private defines */
 #define dbGetObjectReal(key)  (((struct dbObject *)key)-1)
@@ -47,4 +48,7 @@ KEY dbEncode(const char *key);
 
 /* private prototypes - OBJECT */
 struct dbObject *dbFindRealObject(uint32 realNr, uint32 offset, uint32 size);
+
+} // End of namespace Clue
+
 #endif

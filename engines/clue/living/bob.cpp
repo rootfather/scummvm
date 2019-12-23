@@ -10,6 +10,8 @@
 
 #include "clue/living/living.h"
 
+namespace Clue {
+
 #define BOB_USED            1
 #define BOB_VISIBLE     2
 #define BOB_UPDATED     4
@@ -119,3 +121,5 @@ void BobDisplayLists(GC *gc) {
 		}
 	}
 }
+
+} // End of namespace Clue

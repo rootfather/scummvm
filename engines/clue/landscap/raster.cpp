@@ -20,6 +20,8 @@
 
 #include "clue/landscap/raster.h"
 
+namespace Clue {
+
 void lsShowRaster(uint32 areaID, byte perc) {
 	LSArea area = (LSArea)dbGetObject(areaID);
 	struct ObjectNode *node;
@@ -229,3 +231,5 @@ uint16 lsGetRasterYSize(uint32 areaID) {
 	return (uint16)(LS_RASTER_DISP_HEIGHT /
 	                ((area->us_Height) / LS_RASTER_Y_SIZE));
 }
+
+} // End of namespace Clue

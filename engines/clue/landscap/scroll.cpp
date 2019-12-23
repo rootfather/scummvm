@@ -23,6 +23,8 @@
 #include "clue/landscap/landscap.h"
 #include "clue/landscap/landscap_p.h"
 
+namespace Clue {
+
 uint16 DX, DY, PX, PY;
 
 byte lsScrollLandScape(byte direction) {
@@ -352,3 +354,5 @@ byte lsIsCollision(int32 x, int32 y, byte direction) {
 		collis = 0;
 	return collis;
 }
+
+} // End of namespace Clue

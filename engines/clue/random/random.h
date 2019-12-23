@@ -23,9 +23,13 @@
 
 #include "clue/theclou.h"
 
+namespace Clue {
+
 extern void rndInit(void);
 extern void rndDone(void);
 
 extern uint32 CalcRandomNr(uint32 l_limit, uint32 u_limit);
+
+} // End of namespace Clue
 
 #endif

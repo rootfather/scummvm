@@ -18,6 +18,8 @@
 
 #include "clue/data/datacalc.h"
 
+namespace Clue {
+
 int32 Round(int32 v, int32 p) {
 	/* p...Stellen ! */
 	register int32 i, z;
@@ -43,3 +45,5 @@ int32 ChangeAbs(int32 item, int32 value, int32 min, int32 max) {
 
 	return CLIP(item, min, max);
 }
+
+} // End of namespace Clue

@@ -36,6 +36,8 @@
 #include "clue/data/datacalc.h"
 #include "clue/data/dataappl.h"
 
+namespace Clue {
+
 #define FAHN_NOT_ESCAPED      1
 #define FAHN_ESCAPED          2
 
@@ -87,5 +89,7 @@ extern int32 tcCalcCarEscape(int32 timeLeft);
 extern void tcForgetGuys(void);
 
 extern struct Search Search;
+
+} // End of namespace Clue
 
 #endif

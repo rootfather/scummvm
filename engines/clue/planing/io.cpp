@@ -22,6 +22,7 @@
 
 #include "clue/planing/io.h"
 
+namespace Clue {
 
 struct IOData {
 	NODE io_Link;
@@ -304,3 +305,5 @@ void plLoad(uint32 objId) {
 			plMessage("NO_PLAN", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
 	}
 }
+
+} // End of namespace Clue

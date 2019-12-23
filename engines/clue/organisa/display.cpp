@@ -18,6 +18,8 @@
   distribution.
  ****************************************************************************/
 
+namespace Clue {
+
 #define   ORG_DISP_GUY_Y           60
 #define   ORG_DISP_ABILITIES_Y     75
 #define   ORG_DISP_GUY_WIDTH       80
@@ -256,3 +258,5 @@ void tcDisplayAbilities(uint32 personNr, uint32 displayData) {
 
 	RemoveList(abilities);
 }
+
+} // End of namespace Clue

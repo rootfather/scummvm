@@ -22,6 +22,7 @@
 
 #include "clue/planing/planer.h"
 
+namespace Clue {
 
 /* Menu ids - planning */
 #define PLANING_START      0
@@ -1853,3 +1854,5 @@ void plPlaner(uint32 objId) {
 
 	RemoveList(menu);
 }
+
+} // End of namespace Clue

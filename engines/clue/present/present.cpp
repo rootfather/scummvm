@@ -21,9 +21,11 @@
 #include "clue/present/present.h"
 #include "clue/present/present_p.h"
 
-struct PresentControl PresentControl = { NULL, 0, 0 };
-
 #include "clue/present/presenta.cpp"
+
+namespace Clue {
+
+struct PresentControl PresentControl = { NULL, 0, 0 };
 
 void DrawPresent(LIST *present, uint8 firstLine, GC *gc, uint8 max) {
 	unsigned i, j, k;
@@ -286,3 +288,5 @@ void prDrawTextBar(const char *puch_Text, uint32 ul_Value, uint32 ul_Max,
 		}
 	}
 }
+
+} // End of namespace Clue

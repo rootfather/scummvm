@@ -73,6 +73,8 @@
 #include "clue/landscap/spot.h"
 #endif
 
+namespace Clue {
+
 #define   REL_CONSIST_OFFSET       3
 #define   REL_HAS_LOCK_OFFSET      4
 #define   REL_HAS_ALARM_OFFSET     5
@@ -241,5 +243,7 @@ extern uint32 hasAlarmRelationID;
 extern uint32 hasPowerRelationID;
 extern uint32 hasLootRelationID;
 extern uint32 hasRoomRelationID;
+
+} // End of namespace Clue
 
 #endif

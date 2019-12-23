@@ -22,6 +22,8 @@
 
 #include "clue/organisa/organisa.h"
 
+namespace Clue {
+
 uint32 tcChooseDestBuilding(uint32);
 uint32 tcChooseEscapeCar(uint32);
 uint32 tcChooseDriver(uint32);
@@ -53,7 +55,11 @@ void tcDisplayTools(uint32 personNr, uint32 displayData);
 
 struct Organisation Organisation;
 
+}
+
 #include "clue/organisa/display.cpp"
+
+namespace Clue {
 
 void tcResetOrganisation(void) {
 	Organisation.CarID = 0;
@@ -552,3 +558,5 @@ void tcRemGuyFromParty(void) {
 
 	RemoveList(list);
 }
+
+} // End of namespace Clue

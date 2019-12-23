@@ -23,6 +23,8 @@
 #include <string.h>
 #include <limits.h>
 
+namespace Clue {
+
 #define EOS                     ((char)'\0')
 
 #define DIR_SEP                 "/"
@@ -193,5 +195,7 @@ void ShowInsertDiskReq(uint16 disk_id);
 #define THINK_BUBBLE             13
 
 #define GFX_COLL_PARKING         27
+
+} // End of namespace Clue
 
 #endif

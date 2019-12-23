@@ -12,6 +12,8 @@
 
 #include "clue/sound/buffer.h"
 
+namespace Clue {
+
 #define SND_FREQUENCY               22050
 #define SND_MAX_VOLUME                          255
 
@@ -35,6 +37,8 @@ extern void sndPlayFX(void);
 
 extern void InitAudio(void);
 extern void RemoveAudio(void);
+
+} // End of namespace Clue
 
 #endif
 

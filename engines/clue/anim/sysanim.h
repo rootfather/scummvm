@@ -40,6 +40,8 @@
 #include "clue/random/random.h"
 #endif
 
+namespace Clue {
+
 /* global functions */
 extern void InitAnimHandler(void);
 extern void CloseAnimHandler(void);
@@ -52,5 +54,7 @@ extern void animator(void);
 
 extern void SuspendAnim(void);
 extern void ContinueAnim(void);
+
+} // End of namespace Clue
 
 #endif

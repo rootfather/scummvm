@@ -20,6 +20,7 @@
 
 #include "clue/planing/sync.h"
 
+namespace Clue {
 
 /* Sync functions */
 static uint16 plXMoveSync(uint32 id, uint16 xpos, byte animate, byte direction,
@@ -1221,3 +1222,5 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 		livRefreshAll();
 	}
 }
+
+} // End of namespace Clue

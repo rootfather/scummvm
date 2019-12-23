@@ -12,6 +12,8 @@
 
 #include "clue/sound/hsc.h"
 
+namespace Clue {
+
 char currSoundName[DSK_PATH_MAX];
 
 
@@ -54,3 +56,5 @@ void sndStopSound(uint8 dummy) {
 		hscReset();
 	}
 }
+
+} // End of namespace Clue

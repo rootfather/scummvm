@@ -41,6 +41,7 @@
 #include "clue/memory/memory.h"
 #endif
 
+namespace Clue {
 
 /* public defines */
 typedef enum {
@@ -86,5 +87,7 @@ uint32 txtCountKey(const char *key);
 char *txtGetString(uint32 textId, const char *key, char *dest);
 char *txtGetNthString(uint32 textId, const char *key, uint32 nth, char *dest);
 void txtPutCharacter(LIST *list, uint16 pos, uint8 c);
+
+} // End of namespace Clue
 
 #endif

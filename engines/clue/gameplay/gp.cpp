@@ -21,6 +21,8 @@
 #include "clue/gameplay/gp.h"
 #include "clue/gameplay/gamefunc.h"
 
+namespace Clue {
+
 void InitLocations(void);
 void FreeLocations(void);
 
@@ -706,3 +708,5 @@ char *GetCurrLocName(void) {
 
 	return (NODE_NAME(GetNthNode(film->loc_names, index)));
 }
+
+} // End of namespace Clue

@@ -25,6 +25,8 @@
 #include "common/textconsole.h"
 #include "clue/error/error.h"
 
+namespace Clue {
+
 static const char *moduleNames[ERROR_MODULE_LAST] = {
 	"",
 	"",
@@ -114,3 +116,5 @@ void DebugMsg(DebugE type, ErrorModuleE moduleId, const char *format, ...) {
 
 	ErrDebugMsg(type, moduleNames[moduleId], txt);
 }
+
+} // End of namespace Clue

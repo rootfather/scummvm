@@ -90,6 +90,7 @@
 #include "clue/planing/guards.h"
 #endif
 
+namespace Clue {
 
 /* Extensions */
 #define PLANING_PLAN_EXTENSION       ".pln"
@@ -120,4 +121,7 @@ void plSaveChanged(uint32 objId);
 
 LIST *plLoadTools(FILE *fh);
 void plSaveTools(FILE *fh);
+
+} // End of namespace Clue
+
 #endif

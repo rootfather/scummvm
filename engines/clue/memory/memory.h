@@ -24,9 +24,13 @@
 
 #include "clue/error/error.h"
 
+namespace Clue {
+
 void *TCAllocMem(size_t size, bool clear);
 void TCFreeMem(void *ptr, size_t size);
 
 ptrdiff_t memGetAllocatedMem(void);
+
+} // End of namespace Clue
 
 #endif

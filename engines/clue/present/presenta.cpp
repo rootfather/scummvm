@@ -14,6 +14,8 @@
 
 #include "clue/present/present.h"
 
+namespace Clue {
+
 void InitEvidencePresent(uint32 nr, LIST *presentationData, LIST *texts) {
 	Evidence e = (Evidence)dbGetObject(nr);
 	char data[TXT_KEY_LENGTH];
@@ -347,3 +349,5 @@ void InitCarPresent(uint32 nr, LIST *presentationData, LIST *texts) {
 	AddPresentLine(presentationData, PRESENT_AS_BAR, tcGetCarStrike(obj),
 	               255, texts, 12);
 }
+
+} // End of namespace Clue

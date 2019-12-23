@@ -22,6 +22,8 @@
 #include "clue/gameplay/gp_app.h"
 #include "clue/organisa/organisa.h"
 
+namespace Clue {
+
 void tcSaveTheClou(void) {
 	char line[TXT_KEY_LENGTH];
 	char location[TXT_KEY_LENGTH];
@@ -280,3 +282,5 @@ byte tcLoadChangesInScenes(const char *fileName) {
 
 	return (back);
 }
+
+} // End of namespace Clue

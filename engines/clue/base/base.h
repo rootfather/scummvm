@@ -84,6 +84,8 @@
 
 #include "clue/cdrom/cdrom.h"
 
+namespace Clue {
+
 /*
  *
  *
@@ -127,5 +129,7 @@ uint32 tcGetProcessorType(void);
 #define PROC_80286      1L
 #define PROC_80386      2L
 #define PROC_80486      3L
+
+} // End of namespace Clue
 
 #endif

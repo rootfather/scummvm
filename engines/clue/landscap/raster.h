@@ -31,6 +31,8 @@
 #include "clue/landscap/landscap.h"
 #endif
 
+namespace Clue {
+
 #define LS_RASTER_DISP_WIDTH       320
 #define LS_RASTER_DISP_HEIGHT      140
 
@@ -46,5 +48,7 @@ void lsShowRaster(uint32 areaID, byte perc);
 
 uint16 lsGetRasterXSize(uint32 areaID);
 uint16 lsGetRasterYSize(uint32 areaID);
+
+} // End of namespace Clue
 
 #endif

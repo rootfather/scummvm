@@ -11,6 +11,7 @@
  *
  */
 
+namespace Clue {
 
 #define BAR_WIDTH            255
 
@@ -34,3 +35,5 @@ struct presentationInfo {
 
 	byte presentHow;
 };
+
+} // End of namespace Clue

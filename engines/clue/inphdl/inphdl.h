@@ -32,6 +32,8 @@
 #include "clue/anim/sysanim.h"
 #endif
 
+namespace Clue {
+
 #define INP_AS_FAST_AS_POSSIBLE     1
 
 #define INP_UP                (1)
@@ -77,5 +79,7 @@ extern void inpDelay(int32 l_Ticks);
 extern void inpSetKeyRepeat(unsigned char rate);
 
 extern void inpClearKbBuffer(void);
+
+} // End of namespace Clue
 
 #endif

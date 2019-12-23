@@ -90,6 +90,8 @@
 #include "clue/planing/guards.h"
 #endif
 
+namespace Clue {
+
 /* method definition */
 #define GUARDS_DO_SAVE     1
 #define GUARDS_DO_LOAD     2
@@ -115,4 +117,7 @@ byte grdDraw(struct _GC *gc, uint32 bldId, uint32 areaId);
 /* con- & destructor */
 byte grdInit(FILE **fh, const char *mode, uint32 bldId, uint32 areaId);
 void grdDone(FILE *fh);
+
+} // End of namespace Clue
+
 #endif

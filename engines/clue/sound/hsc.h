@@ -11,11 +11,15 @@
 
 #include "clue/theclou.h"
 
+namespace Clue {
+
 void hscInit(void);
 void hscReset(void);
 void hscDone(void);
 int hscLoad(const char *fileName);
 
 void hscMusicPlayer(void);
+
+} // End of namespace Clue
 
 #endif

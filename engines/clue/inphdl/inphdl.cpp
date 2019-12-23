@@ -14,6 +14,8 @@
 #include "common/events.h"
 #include "graphics/cursorman.h"
 
+namespace Clue {
+
 struct IHandler {
 	int32 ul_XSensitivity;
 	int32 ul_YSensitivity;
@@ -294,3 +296,5 @@ void inpSetKeyRepeat(unsigned char rate) {
 
 void inpClearKbBuffer(void) {
 }
+
+} // End of namespace Clue

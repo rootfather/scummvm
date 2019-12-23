@@ -22,6 +22,8 @@
 
 #include "clue/anim/sysanim.h"
 
+namespace Clue {
+
 #define PIC_MODE_POS         1
 #define PIC_P_SEC_POS        2
 #define PIC_1_ID_POS         3
@@ -322,3 +324,5 @@ void animator(void) {
 		}
 	}
 }
+
+} // End of namespace Clue

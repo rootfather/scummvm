@@ -20,6 +20,7 @@
 
 #include "clue/planing/guards.h"
 
+namespace Clue {
 
 void grdDo(FILE *fh, struct System *sys, LIST *PersonsList, uint32 BurglarsNr,
            uint32 PersonsNr, byte grdAction) {
@@ -175,3 +176,5 @@ byte grdDraw(GC *gc, uint32 bldId, uint32 areaId) {
 
 	return ret;
 }
+
+} // End of namespace Clue

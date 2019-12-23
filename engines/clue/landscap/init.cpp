@@ -21,6 +21,7 @@
 #include "clue/landscap/landscap.h"
 #include "clue/landscap/landscap_p.h"
 
+namespace Clue {
 
 static void lsInitFloorSquares(void);
 static void lsLoadAllSpots(void);
@@ -382,3 +383,5 @@ void lsDoneLandScape(void) {
 void lsDoneActivArea(uint32 newAreaID) {
 	livSetAllInvisible();   /* MOD 14-01-94 */
 }
+
+} // End of namespace Clue

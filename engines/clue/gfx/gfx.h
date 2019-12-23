@@ -26,6 +26,8 @@
 
 #include "clue/list/list.h"
 
+namespace Clue {
+
 #define GFX_NO_MEM_HANDLE   ((uint16) -1)
 
 /* defines for gfxPrint */
@@ -247,6 +249,8 @@ void gfxScreenUnFreeze(void);
 void gfxGetMouseXY(GC *gc, uint16 *pMouseX, uint16 *pMouseY);
 
 void ShowIntro(void);
+
+} // End of namespace Clue
 
 #include "clue/gfx/gfxnch4.h"
 #endif

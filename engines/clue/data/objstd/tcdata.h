@@ -13,6 +13,8 @@
 
 #include "clue/data/objstd/tckeys.h"
 
+namespace Clue {
+
 /*
  * Data header file created with dc
  * (c) 1993 by ...and avoid panic by
@@ -599,5 +601,7 @@ struct _LSRoom {
 	uint16 us_Height;
 };
 typedef struct _LSRoom *LSRoom;
+
+} // End of namespace Clue
 
 #endif                              /* MODULE_TCDATA */

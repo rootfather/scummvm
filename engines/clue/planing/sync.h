@@ -90,6 +90,8 @@
 #include "clue/planing/guards.h"
 #endif
 
+namespace Clue {
+
 /* Sync modes */
 #define PLANING_ANIMATE_NO     (1)
 #define PLANING_ANIMATE_STD    (1<<1)
@@ -97,4 +99,7 @@
 
 
 void plSync(byte animate, uint32 targetTime, uint32 times, byte direction);
+
+} // End of namespace Clue
+
 #endif

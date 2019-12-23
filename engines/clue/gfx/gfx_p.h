@@ -18,7 +18,9 @@
   distribution.
  ****************************************************************************/
 
-#define GFX_SEG_ADDR                        (0xA0000000L)
+namespace Clue {
+
+#define GFX_SEG_ADDR                    (0xA0000000L)
 #define GFX_PAGE_SIZE                   (64000L)    /* 320*200 = 64000 Bytes groß */
 
 #define GFX_LOAD_BUFFER                 StdBuffer0
@@ -122,3 +124,5 @@ static Font *gfxOpenFont(const char *fileName, uint16 w, uint16 h,
                          unsigned char first, unsigned char last,
                          uint16 sw, uint16 sh);
 static void gfxCloseFont(Font *font);
+
+} // End of namespace Clue

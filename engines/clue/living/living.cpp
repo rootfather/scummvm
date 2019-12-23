@@ -21,6 +21,8 @@
 #include "clue/living/living.h"
 #include "clue/living/living_p.h"
 
+namespace Clue {
+
 void livInit(uint16 us_VisLScapeX, uint16 us_VisLScapeY,
              uint16 us_VisLScapeWidth, uint16 us_VisLScapeHeight,
              uint16 us_TotalLScapeWidth, uint16 us_TotalLScapeHeight,
@@ -482,3 +484,5 @@ static byte livIsVisible(struct Living *liv) {
 
 	return (visible);
 }
+
+} // End of namespace Clue

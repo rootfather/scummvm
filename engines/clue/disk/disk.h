@@ -13,6 +13,8 @@
 
 #include "clue/theclou.h"
 
+namespace Clue {
+
 #define DSK_PATH_MAX 512
 
 typedef enum {
@@ -52,5 +54,7 @@ size_t dskFileLength(const char *Pathname);
 FILE *dskOpen(const char *Pathname, const char *Mode);
 
 extern bool dskGetLine(char *s, int size, FILE *fp);
+
+} // End of namespace Clue
 
 #endif

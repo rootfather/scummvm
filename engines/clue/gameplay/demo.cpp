@@ -1,3 +1,5 @@
+namespace Clue {
+
 void DemoDialog(void) {
 	static first_time = 1;
 	byte choice = 0;
@@ -55,3 +57,5 @@ void DemoDialog(void) {
 		joinSet(Person_Matt_Stuvysunt, Person_Tony_Allen);
 	}
 }
+
+} // End of namespace Clue

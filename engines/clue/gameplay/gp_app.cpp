@@ -22,6 +22,8 @@
 
 #include <assert.h>
 
+namespace Clue {
+
 void tcAsTimeGoesBy(uint32 untilMinute) {
 	untilMinute = untilMinute % 1440;
 
@@ -799,3 +801,5 @@ void ShowMenuBackground(void) {
 	else
 		gfxClearArea(m_gc);
 }
+
+} // End of namespace Clue

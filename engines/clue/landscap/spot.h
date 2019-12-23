@@ -43,6 +43,8 @@
 #include "clue/disk/disk.h"
 #endif
 
+namespace Clue {
+
 #define LS_SPOT_NAME                    ("s")
 
 #define LS_SPOT_SMALL_SIZE         16
@@ -107,5 +109,7 @@ extern LIST *lsGetSpotList(void);
 
 extern struct Spot *lsAddSpot(uint16 us_Size, uint16 us_Speed, uint32 ul_CtrlObjId);
 extern struct Spot *lsGetSpot(const char *uch_Name);
+
+} // End of namespace Clue
 
 #endif

@@ -17,6 +17,8 @@
 #include "clue/data/dataappl.h"
 #include <assert.h>
 
+namespace Clue {
+
 static int32 tcGetWeightOfNerves(int32 teamMood);
 static bool tcIsConnectedWithEnabledAlarm(uint32 lsoId);
 
@@ -1063,3 +1065,5 @@ void tcInsertGuard(LIST *list, LIST *roomsList, uint16 x, uint16 y, uint16 width
 				dbAddObjectNode(list, guardId,
 				                OLF_INCLUDE_NAME | OLF_INSERT_STAR);
 }
+
+} // End of namespace Clue

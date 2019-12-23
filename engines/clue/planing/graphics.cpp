@@ -22,6 +22,7 @@
 
 #include "clue/planing/graphics.h"
 
+namespace Clue {
 
 void plPrintInfo(const char *person) {
 	char info[80];
@@ -149,3 +150,5 @@ void plRefresh(uint32 ItemId) {
 
 	lsRefreshAllLootBags(); /* repaint all LootBags */
 }
+
+} // End of namespace Clue

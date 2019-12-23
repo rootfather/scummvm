@@ -40,10 +40,14 @@
 #include "clue/random/random.h"
 #endif
 
+namespace Clue {
+
 #define   tcDerivation(min,max)          (CalcRandomNr(min,max))
 
 int32 Round(int32 v, int32 p);
 int32 CalcValue(int32 value, int32 min, int32 max, int32 fact, int32 perc);
 int32 ChangeAbs(int32 item, int32 value, int32 min, int32 max);
+
+} // End of namespace Clue
 
 #endif

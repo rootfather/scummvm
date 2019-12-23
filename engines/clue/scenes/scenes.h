@@ -67,6 +67,8 @@
 #include "clue/landscap/raster.h"
 #endif
 
+namespace Clue {
+
 extern uint16 CurrentBackground;
 
 /* standard scene functions - look at scenes.c */
@@ -136,5 +138,7 @@ uint32 tcGoInsideOfHouse(uint32 buildingID);
 void tcShowLootInfo(Loot loot);
 void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc);
 void tcShowObjectData(uint32 areaID, NODE *node, byte perc);
+
+} // End of namespace Clue
 
 #endif

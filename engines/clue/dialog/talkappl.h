@@ -51,9 +51,13 @@
 #include "clue/data/dataappl.h"
 #endif
 
+namespace Clue {
+
 extern void tcJobOffer(Person p);
 extern void tcMyJobAnswer(Person p);
 extern void tcPrisonAnswer(Person p);
 extern void tcAbilityAnswer(uint32 personID);
+
+} // End of namespace Clue
 
 #endif

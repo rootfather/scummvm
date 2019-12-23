@@ -22,6 +22,7 @@
 
 #include "clue/planing/support.h"
 
+namespace Clue {
 
 /* loot support */
 uint32 plGetNextLoot(void) {
@@ -295,3 +296,5 @@ byte plObjectInReach(uint32 current, uint32 objId) {
 
 	return ret;
 }
+
+} // End of namespace Clue

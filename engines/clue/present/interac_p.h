@@ -18,6 +18,8 @@
   distribution.
  ****************************************************************************/
 
+namespace Clue {
+
 #define ACTIV_POSS   3L
 #define INACTIV_POSS 2L
 #define GHOSTED      1L
@@ -47,3 +49,5 @@ void (*MenuTimeOutFunc)(void);
 LIST *refreshMenu = NULL;
 byte refreshActiv = 0;
 uint32 refreshPoss = 0;
+
+} // End of namespace Clue

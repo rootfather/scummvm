@@ -11,6 +11,8 @@
 
 #include "clue/gfx/gfxnch4.h"
 
+namespace Clue {
+
 int ScrX, ScrY;
 
 static uint8 ScrDark;
@@ -183,3 +185,5 @@ uint8 gfxLSReadPixel(uint16 x, uint16 y) {
 
 	return LSRPInMem.pixels[y * LS_MAX_AREA_WIDTH + x];
 }
+
+} // End of namespace Clue

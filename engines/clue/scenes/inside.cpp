@@ -20,6 +20,8 @@
 
 #include "clue/scenes/scenes.h"
 
+namespace Clue {
+
 uint32 CurrAreaId;
 LSObject CurrLSO;       /* for FadeObjectInside */
 
@@ -208,3 +210,5 @@ void tcShowObjectData(uint32 areaID, NODE *node, byte perc) {
 	/* Vebindungen zeigen! */
 	lsShowAllConnections(areaID, node, perc);
 }
+
+} // End of namespace Clue

@@ -13,6 +13,8 @@
 #include "clue/disk/disk.h"
 #include "clue/disk/disk_e.h"
 
+namespace Clue {
+
 char RootPathName[DSK_PATH_MAX];
 
 
@@ -272,3 +274,5 @@ bool dskGetLine(char *s, int size, FILE *fp) {
 	}
 	return false;
 }
+
+} // End of namespace Clue

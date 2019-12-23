@@ -20,6 +20,8 @@
 
 #include "clue/story/story.h"
 
+namespace Clue {
+
 byte tcDoLastBurglarySpot(uint32 ul_Time, uint32 ul_BuildingId);
 
 static void tcSomebodyIsComing(void) {
@@ -1912,3 +1914,5 @@ int32 tcIsLastBurglaryOk(void) {
 
 	return madeIt;
 }
+
+} // End of namespace Clue

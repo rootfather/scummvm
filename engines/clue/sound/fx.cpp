@@ -19,6 +19,8 @@
 #include "clue/sound/fx.h"
 #include "clue/sound/hsc.h"
 
+namespace Clue {
+
 struct FXBase FXBase;
 
 static bool SfxChannelOn = false;
@@ -83,3 +85,4 @@ void sndPlayFX(void) {
 	}
 }
 
+} // End of namespace Clue

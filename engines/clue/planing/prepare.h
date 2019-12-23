@@ -90,6 +90,7 @@
 #include "clue/planing/guards.h"
 #endif
 
+namespace Clue {
 
 /* Gfx prepare modes */
 #define PLANING_GFX_LANDSCAPE  (1)
@@ -151,4 +152,7 @@ void plPrepareSys(uint32 currPer, uint32 objId, byte sysMode);
 void plUnprepareGfx(void);
 void plUnprepareRel(void);
 void plUnprepareSys(void);
+
+} // End of namespace Clue
+
 #endif

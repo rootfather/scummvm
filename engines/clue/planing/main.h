@@ -90,6 +90,7 @@
 #include "clue/planing/guards.h"
 #endif
 
+namespace Clue {
 
 /* Database offset & relations */
 #define PLANING_DB_OFFSET              1300000
@@ -107,4 +108,7 @@ extern char txtSeconds[20];
 
 void plInit(void);
 void plDone(void);
+
+} // End of namespace Clue
+
 #endif

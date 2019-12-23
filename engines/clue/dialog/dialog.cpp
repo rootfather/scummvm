@@ -21,6 +21,8 @@
 #include "clue/dialog/dialog.h"
 #include "clue/dialog/talkappl.h"
 
+namespace Clue {
+
 #define DLG_NO_SPEECH   ((uint32) -1)
 uint32 StartFrame = DLG_NO_SPEECH;
 uint32 EndFrame = DLG_NO_SPEECH;
@@ -360,3 +362,5 @@ uint32 Talk(void) {
 
 	return (succ_event_nr);
 }
+
+} // End of namespace Clue

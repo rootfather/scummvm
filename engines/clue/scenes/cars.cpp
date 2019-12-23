@@ -20,6 +20,8 @@
 
 #include "clue/scenes/scenes.h"
 
+namespace Clue {
+
 void SetCarColors(byte index) {
 	uint8 Col[10][4][3] = {
 		{{8, 8, 8}, {7, 7, 7}, {6, 6, 6}, {5, 5, 5}},
@@ -437,3 +439,5 @@ void tcCarGeneralOverhoul(Car car) {
 	if (choice == 0)
 		tcRepairCar(car, "TotalRepair");
 }
+
+} // End of namespace Clue

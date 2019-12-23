@@ -20,6 +20,7 @@
 
 #include "clue/planing/main.h"
 
+namespace Clue {
 
 struct System *plSys = NULL;
 
@@ -56,3 +57,5 @@ void plInit(void) {
 void plDone(void) {
 	CloseSystem(plSys);
 }
+
+} // End of namespace Clue

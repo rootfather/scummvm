@@ -39,6 +39,8 @@
 #include "clue/text/text.h"
 #endif
 
+namespace Clue {
+
 #define X_OFFSET    112
 #define NRBLINES    5U
 
@@ -67,5 +69,7 @@ extern void SetPictID(uint16 PictID);
 void SetMenuTimeOutFunc(void (*func)(void));
 
 extern byte GetExtBubbleActionInfo(void);
+
+} // End of namespace Clue
 
 #endif

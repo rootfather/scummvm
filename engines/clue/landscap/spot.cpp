@@ -22,6 +22,8 @@
 
 #include "clue/landscap/spot.h"
 
+namespace Clue {
+
 #define LS_SPOT_BITMAP_WIDTH        (96)
 #define LS_SPOT_BITMAP_HEIGHT       (LS_SPOT_LARGE_SIZE)
 
@@ -402,3 +404,5 @@ void lsBlitSpot(uint16 us_Size, uint16 us_XPos, uint16 us_YPos, byte visible) {
 	else
 		gfxLSPutClr(&sc->RP, sourceX, 0, us_XPos, us_YPos, us_Size, us_Size);
 }
+
+} // End of namespace Clue

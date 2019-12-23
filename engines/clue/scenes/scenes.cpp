@@ -19,6 +19,8 @@
  ****************************************************************************/
 #include "clue/scenes/scenes.h"
 
+namespace Clue {
+
 uint16 CurrentBackground = BGD_LONDON;
 
 
@@ -447,3 +449,5 @@ void tcWait(void) {
 	inpTurnESC(1);
 	ShowTime(0);
 }
+
+} // End of namespace Clue

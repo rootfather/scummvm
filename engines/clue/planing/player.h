@@ -94,5 +94,10 @@
 #include "clue/planing/guards.h"
 #endif
 
+namespace Clue {
+
 int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32));
+
+} // End of namespace Clue
+
 #endif

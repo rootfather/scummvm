@@ -24,6 +24,7 @@
 #include "clue/data/database.h"
 #include "clue/data/database_p.h"
 
+namespace Clue {
 
 /* public declarations */
 LIST *ObjectList = NULL;
@@ -1748,3 +1749,5 @@ uint32 getKey(KeyConflictE key) {
 		return getKeyStd(key);
 	}
 }
+
+} // End of namespace Clue

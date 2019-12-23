@@ -20,6 +20,8 @@
 
 #include "clue/theclou.h"
 
+namespace Clue {
+
 /**************
  * Structures *
  **************/
@@ -82,5 +84,7 @@ void ReplaceNodeByAddr(LIST *list, void *node, NODE *newNode);
 void ReplaceNode(LIST *list, const char *name, NODE *newNode);
 uint32 ReadList(LIST *list, size_t size, char *fileName);
 void WriteList(LIST *list, char *fileName);
+
+} // End of namespace Clue
 
 #endif              /* MODULE_LIST */

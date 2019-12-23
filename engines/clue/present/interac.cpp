@@ -23,6 +23,8 @@
 #include "clue/present/interac.h"
 #include "clue/present/interac_p.h"
 
+namespace Clue {
+
 void SetBubbleType(uint16 type) {
 	CurrentBubbleType = type;
 }
@@ -577,3 +579,5 @@ byte Bubble(LIST *bubble, byte activ, void (*func)(byte), uint32 waitTime) {
 
 	return activ;
 }
+
+} // End of namespace Clue

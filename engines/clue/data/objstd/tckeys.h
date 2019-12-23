@@ -10,6 +10,8 @@
 #ifndef MODULE_TCKEYS
 #define MODULE_TCKEYS
 
+namespace Clue {
+
 /*
  * Solve database key conflicts.
  */
@@ -391,5 +393,7 @@ uint32 getKey(KeyConflictE key);
 #define Building_Tate_Gallery               509106
 #define Building_Buckingham_Palace          509107
 #define Building_Bulstrode_Chemestry_Ltd    509108
+
+} // End of namespace Clue
 
 #endif

@@ -51,6 +51,8 @@
 #include "clue/living/bob.h"
 #endif
 
+namespace Clue {
+
 /* defines für AnimPlayMode */
 #define LIV_PM_NORMAL       1
 #define LIV_PM_REVERSE      2
@@ -118,5 +120,7 @@ extern byte livGetOldAction(const char *uch_Name);
 /* uint16 spotInit(bitmap, uint16 1 = 48, 2 = 32, 3 = 16 ); */
 /* uint16 spotDone */
 /* uint16 spotSetPos(uint16, uint16, uint16); */
+
+} // End of namespace Clue
 
 #endif

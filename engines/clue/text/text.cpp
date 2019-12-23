@@ -28,6 +28,8 @@
 #include "clue/text/text_e.h"
 #include "clue/text/text_p.h"
 
+namespace Clue {
+
 /* private globals declaration */
 const char *txtLanguageMark[TXT_LANG_LAST] = {
 	"d", "e", "f", "s", "d"
@@ -402,5 +404,7 @@ void txtPutCharacter(LIST *list, uint16 pos, uint8 c) {
 	for (node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node))
 		NODE_NAME(node)[pos] = c;
 }
+
+} // End of namespace Clue
 
 #endif

@@ -90,6 +90,7 @@
 #include "clue/planing/guards.h"
 #endif
 
+namespace Clue {
 
 /* Area defines */
 #define PLANING_AREA_PERSON  3
@@ -124,4 +125,7 @@ void plWork(uint32 current);
 LIST *plGetObjectsList(uint32 current, byte addLootBags);
 void plInsertGuard(LIST *list, uint32 current, uint32 guard);
 byte plObjectInReach(uint32 current, uint32 objId);
+
+} // End of namespace Clue
+
 #endif

@@ -13,6 +13,8 @@
 
 #include "clue/data/relation.h"
 
+namespace Clue {
+
 static RELATION nrOfRelations = 1;
 static struct relationDef *relationsDefBase = NULL;
 
@@ -373,3 +375,5 @@ void RemRelations(uint32 offset, uint32 size) {
 		}
 	}
 }
+
+} // End of namespace Clue

@@ -20,6 +20,8 @@
 
 #include "clue/scenes/scenes.h"
 
+namespace Clue {
+
 static uint32 tcShowPatrol(LIST *bubble_l, char *c_time, char *patr, byte first,
                            Building bui, uint32 raise) {
 	char patrolie[TXT_KEY_LENGTH];
@@ -224,3 +226,5 @@ void Investigate(const char *location) {
 
 	inpTurnESC(1);
 }
+
+} // End of namespace Clue

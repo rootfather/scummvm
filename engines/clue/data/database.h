@@ -31,6 +31,7 @@
 
 #include "clue/data/objstd/tcdata.h"
 
+namespace Clue {
 
 #define GET_OUT                 ((uint8)-1)
 
@@ -130,5 +131,7 @@ void dbRemObjectNode(LIST *objectList, uint32 nr);
 /* public prototypes */
 void dbInit(void);
 void dbDone(void);
+
+} // End of namespace Clue
 
 #endif

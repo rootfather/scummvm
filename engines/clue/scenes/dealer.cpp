@@ -19,6 +19,8 @@
 
 #include "clue/scenes/scenes.h"
 
+namespace Clue {
+
 void tcDealerDlg(void) {
 	uint32 locNr = GetObjNrOfLocation(GetLocation);
 	Person dealer = NULL;
@@ -290,3 +292,5 @@ LIST *tcMakeLootList(uint32 containerID, uint32 relID) {
 
 	return (out);
 }
+
+} // End of namespace Clue

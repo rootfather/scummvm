@@ -23,7 +23,6 @@
 #ifndef CLUE_H
 #define CLUE_H
 
-
 #include "common/scummsys.h"
 
 #include "engines/engine.h"

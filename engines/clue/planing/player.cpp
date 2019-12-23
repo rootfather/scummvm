@@ -22,6 +22,7 @@
 
 #include "clue/planing/player.h"
 
+namespace Clue {
 
 /* Menu ids - player */
 #define PLANING_PLAYER_PERSON_CHANGE   0
@@ -1966,3 +1967,5 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 
 	return 0;
 }
+
+} // End of namespace Clue

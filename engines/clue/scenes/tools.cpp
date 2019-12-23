@@ -20,6 +20,8 @@
 
 #include "clue/scenes/scenes.h"
 
+namespace Clue {
+
 char *tcShowPriceOfTool(uint32 nr, uint32 type, void *data) {
 	static char line[TXT_KEY_LENGTH];
 	char line1[TXT_KEY_LENGTH];
@@ -278,3 +280,5 @@ void tcToolsShop(void) {
 			choice1 = 0;
 	}
 }
+
+} // End of namespace Clue

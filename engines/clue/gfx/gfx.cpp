@@ -31,6 +31,8 @@
 #include "graphics/palette.h"
 #include "graphics/surface.h"
 
+namespace Clue {
+
 struct _GC {
 	Rect clip;
 
@@ -49,8 +51,12 @@ struct _GC {
 	Font *font;
 };
 
+}
+
 #include "clue/gfx/gfx.h"
 #include "clue/gfx/gfx_p.h"
+
+namespace Clue {
 
 void gfxILBMToRAW(const uint8 *src, uint8 *dst, size_t size);
 
@@ -1870,4 +1876,6 @@ void gfxGetMouseXY(GC *gc, uint16 *pMouseX, uint16 *pMouseY) {
 		*pMouseY = mouse.y;
 	}
 }
+
+} // End of namespace Clue
 

@@ -25,6 +25,8 @@
 #include "clue/landscap/landscap.h"
 #include "clue/landscap/landscap_p.h"
 
+namespace Clue {
+
 static MemRastPort *lsPrepareFromMemBySize(byte uch_Size);
 static MemRastPort *lsPrepareFromMem(LSObject lso);
 void lsBlitOneObject(MemRastPort *rp, uint16 offsetFact, uint16 dx, uint16 dy, uint16 size);
@@ -353,3 +355,5 @@ void lsDoScroll(void) {
 	ls->us_RasInfoScrollX = 0;
 	ls->us_RasInfoScrollY = 0;
 }
+
+} // End of namespace Clue

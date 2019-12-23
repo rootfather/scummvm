@@ -6,6 +6,8 @@
   distribution.
  ****************************************************************************/
 
+namespace Clue {
+
 struct DynDlgNode {
 	NODE Link;
 
@@ -289,3 +291,5 @@ LIST *ParseTalkText(LIST *origin, LIST *bubble, byte known) {
 
 	return (keyWords);
 }
+
+} // End of namespace Clue

@@ -22,6 +22,7 @@
 
 #include "clue/planing/prepare.h"
 
+namespace Clue {
 
 LIST *PersonsList = NULL;
 LIST *BurglarsList = NULL;
@@ -305,3 +306,5 @@ void plUnprepareSys(void) {
 	PersonsList = NULL;
 	BurglarsList = NULL;
 }
+
+} // End of namespace Clue

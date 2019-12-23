@@ -19,6 +19,8 @@
 
 #include "clue/memory/memory.h"
 
+namespace Clue {
+
 #define ERR_MEMORY_NO_MEM       1
 
 struct MemControl {
@@ -56,3 +58,5 @@ void TCFreeMem(void *ptr, size_t size) {
 		MemControl.allocated -= size;
 	}
 }
+
+} // End of namespace Clue

@@ -10,6 +10,8 @@
 
 #include "clue/theclou.h"
 
+namespace Clue {
+
 struct SndBuffer;
 typedef struct SndBuffer SND_BUFFER;
 
@@ -21,6 +23,8 @@ unsigned sndLenBuffer(SND_BUFFER *buffer);
 
 unsigned sndInsertBuffer(SND_BUFFER *buffer, const void *src, unsigned srcLen);
 unsigned sndRemoveBuffer(SND_BUFFER *buffer, void *dst, unsigned dstLen);
+
+} // End of namespace Clue
 
 #endif
 

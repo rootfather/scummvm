@@ -24,6 +24,8 @@
 #include "clue/memory/memory.h"
 #include "clue/disk/disk.h"
 
+namespace Clue {
+
 #define RELATION           uint32
 #define KEY                void *
 #define PARAMETER          uint32
@@ -80,5 +82,7 @@ void UnSetAll(KEY, void (*)(KEY));
 int SaveRelations(const char *, uint32, uint32, uint16 disk_id);
 int LoadRelations(const char *, uint16 disk_id);
 void RemRelations(uint32, uint32);
+
+} // End of namespace Clue
 
 #endif

@@ -9,6 +9,8 @@
 
 #include "clue/sound/buffer.h"
 
+namespace Clue {
+
 struct SndBuffer {
 	unsigned char *data;    /* data */
 	unsigned size;      /* size of data buffer */
@@ -86,4 +88,6 @@ unsigned sndRemoveBuffer(SND_BUFFER *buffer, void *dst, unsigned dstLen) {
 
 	return dstLen;
 }
+
+} // End of namespace Clue
 

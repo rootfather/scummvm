@@ -28,6 +28,8 @@
 #include "clue/text/text.h"
 #include "clue/gfx/gfx.h"
 
+namespace Clue {
+
 /* Display Areas */
 
 #define   ORG_DISP_ABILITIES   (1)
@@ -48,5 +50,7 @@ extern struct Organisation Organisation;
 
 extern uint32 tcOrganisation(void);
 extern void tcResetOrganisation(void);
+
+} // End of namespace Clue
 
 #endif

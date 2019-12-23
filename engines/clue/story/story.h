@@ -97,6 +97,8 @@
 #include "clue/sound/fx.h"
 #endif
 
+namespace Clue {
+
 #define tcLAST_BURGLARY_LEFT_CTRL_OBJ   440221L
 #define tcLAST_BURGLARY_RIGHT_CTRL_OBJ  440228L
 
@@ -307,5 +309,7 @@ void tcCheckForBones(void);
 uint32 tcLastBurglary(void);
 
 void tcCheckForDowning(void);
+
+} // End of namespace Clue
 
 #endif

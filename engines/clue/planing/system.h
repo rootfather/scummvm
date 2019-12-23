@@ -38,6 +38,7 @@
 #include "clue/landscap/landscap.h"
 #include "clue/planing/main.h"
 
+namespace Clue {
 
 /* System main structure - like the kernel in an OS */
 struct System {
@@ -209,4 +210,7 @@ uint32 GetMaxTimer(struct System *sys);
 
 void ResetMem(void);
 void CorrectMem(LIST *l);
+
+} // End of namespace Clue
+
 #endif

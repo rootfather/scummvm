@@ -23,6 +23,8 @@
 #include "clue/landscap/landscap.h"
 #include "clue/landscap/landscap_p.h"
 
+namespace Clue {
+
 uint32 ConsistOfRelationID = 0;
 uint32 hasLockRelationID = 0;
 uint32 hasAlarmRelationID = 0;
@@ -617,3 +619,5 @@ void lsDoDoorRefresh(LSObject lso)
 	gfxLSPut(&LS_DOOR_REFRESH_MEM_RP, drn->us_XOffset, drn->us_YOffset,
 	         lso->us_DestX, lso->us_DestY, width, height);
 }
+
+} // End of namespace Clue

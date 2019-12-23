@@ -21,6 +21,8 @@
 #include "clue/gameplay/gp.h"
 #include "clue/gameplay/gp_app.h"
 
+namespace Clue {
+
 void PrintStatus(const char *text) {
 	gfxSetDrMd(m_gc, GFX_JAM_1);
 	gfxSetRect(0, 320);
@@ -104,3 +106,5 @@ uint32 ShowTheClouRequester(int32 error_class) {
 
 	return (answer);
 }
+
+} // End of namespace Clue

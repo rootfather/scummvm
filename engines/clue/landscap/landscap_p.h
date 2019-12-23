@@ -18,6 +18,8 @@
   distribution.
  ****************************************************************************/
 
+namespace Clue {
+
 #define  LS_COLL16_MEM_RP       AnimRPInMem
 #define  LS_COLL32_MEM_RP       AddRPInMem
 #define  LS_COLL48_MEM_RP       LSObjectRPInMem
@@ -161,3 +163,5 @@ struct LSDoorRefreshNode {  /* für jede Tür existiert eine Node */
 extern struct LandScape *ls;
 
 void lsRefreshStatue(LSObject lso);
+
+} // End of namespace Clue
