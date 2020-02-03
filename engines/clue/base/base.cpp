@@ -26,13 +26,14 @@ namespace Clue {
 void *StdBuffer0 = NULL;
 void *StdBuffer1 = NULL;
 
+#if 0
 void tcClearStdBuffer(void *p) {
 	if (p == StdBuffer0)
 		memset(p, 0, STD_BUFFER0_SIZE);
 	else if (p == StdBuffer1)
 		memset(p, 0, STD_BUFFER1_SIZE);
 }
-
+#endif
 void tcDone(void) {
 	static bool inprogress;
 
@@ -98,16 +99,15 @@ static void AutoDetectVersion(void) {
 	         setup.CDRom ? "CD-ROM" : "");
 }
 
+#if 0
+// TODO : Check and eventually remove
 static char AutoDetectLanguage(void) {
-	size_t i;
-	const char langs[] = {
-		'd', 'e', 'f', 's'
-	};
+	const char langs[] = { 'd', 'e', 'f', 's' };
 	char lang = ' ';
 
 	DebugMsg(ERR_DEBUG, ERROR_MODULE_BASE, "Detecting Language...");
 
-	for (i = 0; i < ARRAYSIZE(langs); i++) {
+	for (int i = 0; i < ARRAYSIZE(langs); i++) {
 		char File[DSK_PATH_MAX], Path[DSK_PATH_MAX];
 
 		sprintf(File, "tcmaine%c.txt", langs[i]);
@@ -124,6 +124,7 @@ static char AutoDetectLanguage(void) {
 	}
 	return lang;
 }
+#endif
 
 static bool tcInit(void) {
 	if (setup.Debug >= ERR_DEBUG) {
@@ -583,9 +584,6 @@ static const char syntaxString[] =
 
 /**********************************************************/
 static void parseOptions(int argc, char *argv[]) {
-	int i;
-	const char *s;
-
 	/* default values. */
 	setup.FullScreen    = false;
 	setup.SfxVolume     = SND_MAX_VOLUME;
@@ -596,8 +594,8 @@ static void parseOptions(int argc, char *argv[]) {
 	setup.CDAudio       = false;
 	setup.Scale         = 1;
 
-	for (i = 1; i < argc; i++) {
-		s = argv[i];
+	for (int i = 1; i < argc; i++) {
+		const char *s = argv[i];
 
 		if (s[0] == '-') {
 			switch (s[1]) {
@@ -665,8 +663,6 @@ static void parseOptions(int argc, char *argv[]) {
 
 /**********************************************************/
 int clue_main(const char *path) {
-	bool res;
-
 	parseOptions(0, NULL);
 
 	rndInit();
@@ -677,7 +673,7 @@ int clue_main(const char *path) {
 	/* set path for BuildPathName! */
 	dskSetRootPath(path);
 
-	if ((res = tcInit()))
+	if (tcInit())
 		tcDo();
 
 	tcDone();

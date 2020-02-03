@@ -217,26 +217,19 @@ void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode) {
 }
 
 void StopAnim(void) {
-	char pict_list[TXT_KEY_LENGTH];
-	struct Picture *pict;
-
 	if (Handler.RunningAnimID) {    /* anim currently playing */
 		if (Handler.RunningAnimID[0] != '\0') {
+			char pict_list[TXT_KEY_LENGTH];
 			GetAnim(Handler.RunningAnimID, pict_list);
 
 			/* "unprepare" pictures for the sake of completeness */
-			pict =
-			    gfxGetPicture((uint16)
-			                  txtGetKeyAsULONG((uint16) PIC_1_ID_POS,
-			                                   pict_list));
+			struct Picture *pict = gfxGetPicture((uint16) txtGetKeyAsULONG((uint16) PIC_1_ID_POS, pict_list));
 
 			if (pict)
 				gfxUnPrepareColl((uint16) pict->us_CollId);
 
 			if (txtCountKey(pict_list) > PIC_1_ID_POS)
-				gfxUnPrepareColl((uint16)
-				                 txtGetKeyAsULONG((uint16) ANIM_COLL_ID_POS,
-				                                  pict_list));
+				gfxUnPrepareColl((uint16) txtGetKeyAsULONG((uint16) ANIM_COLL_ID_POS, pict_list));
 
 			Handler.RunningAnimID[0] = '\0';
 		}

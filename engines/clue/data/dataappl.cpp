@@ -184,6 +184,8 @@ int32 tcGetCarTraderOffer(Car car) {
 	return offer;
 }
 
+#if 0
+// TODO: Check and remove if unused
 uint32 tcGetItemID(uint32 itemType) {
 	struct dbObject *obj;
 	Item item;
@@ -203,17 +205,14 @@ uint32 tcGetItemID(uint32 itemType) {
 
 	return (0L);
 }
+#endif
 
 uint32 GetObjNrOfLocation(uint32 LocNr) {
-	struct dbObject *obj;
-	Location loc;
-	short objHashValue;
-
-	for (objHashValue = 0; objHashValue < OBJ_HASH_SIZE; objHashValue++) {
-		for (obj = (struct dbObject *) LIST_HEAD(objHash[objHashValue]);
+	for (short objHashValue = 0; objHashValue < OBJ_HASH_SIZE; objHashValue++) {
+		for (struct dbObject *obj = (struct dbObject *) LIST_HEAD(objHash[objHashValue]);
 		        NODE_SUCC(obj); obj = (struct dbObject *) NODE_SUCC(obj)) {
 			if (obj->type == Object_Location) {
-				loc = (Location)((void *)(obj + 1));
+				Location loc = (Location)((void *)(obj + 1));
 
 				if (loc->LocationNr == LocNr)
 					return (obj->nr);
@@ -298,19 +297,17 @@ uint32 tcGetPersOffer(Person person, uint8 persCount) {
 }
 
 void tcPersonLearns(uint32 pId) {
-	struct ObjectNode *n;
 	Person pers = (Person)dbGetObject(pId);
-	int32 ability, count, growth;
+	int32 growth;
 
 	/* Abilites */
 	hasAll(pId, OLF_NORMAL, Object_Ability);
 
-	for (n = (struct ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n);
-	        n = (struct ObjectNode *) NODE_SUCC(n)) {
-		ability = hasGet(pId, OL_NR(n));    /* Jetztzustand der Fähigkeit */
+	for (struct ObjectNode *n = (struct ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n); n = (struct ObjectNode *) NODE_SUCC(n)) {
+		int32 ability = hasGet(pId, OL_NR(n));    /* Jetztzustand der Fähigkeit */
 
 		if (learned(pId, OL_NR(n))) {   /* er hat dazugelernt ! */
-			count = learnedGet(pId, OL_NR(n));  /* wie oft er gelernt hat ! */
+			int32 count = learnedGet(pId, OL_NR(n));  /* wie oft er gelernt hat ! */
 
 			growth = 7 + count * 4;
 			learnedUnSet(pId, OL_NR(n));    /* Gelerntes nicht nocheinmal lernen! */
@@ -339,12 +336,10 @@ void tcPersonLearns(uint32 pId) {
 }
 
 uint32 tcGetBuildValues(Building bui) {
-	uint32 v, x;
-
-	x = (255 - bui->Exactlyness) / 3;
+	uint32 x = (255 - bui->Exactlyness) / 3;
 
 	/* XXX: reordered some stuff just in case... */
-	v = CalcValue(bui->Values, 0, 500000L + bui->Values, CalcRandomNr(0, 255),
+	uint32 v = CalcValue(bui->Values, 0, 500000L + bui->Values, CalcRandomNr(0, 255),
 	              x);
 
 	return ((uint32)(Round(v, 3)));
@@ -358,12 +353,11 @@ uint32 tcGetBuildValues(Building bui) {
 
 int32 tcGetTeamMood(uint32 *guyId, uint32 timer) {
 	/* ptr auf 4 U32s */
-	int32 team = 0, mood = 0, i;
-
+	int32 team = 0;
+	int8 i;
 	/* Summe aus Einzelstimmungen */
 	for (i = 0; (i < 4) && (guyId[i]); i++) {
-		mood = tcGetPersMood((dbGetObject(guyId[i])));  /* Stimmung eines
-                               Einzelnen   */
+		int32 mood = tcGetPersMood((dbGetObject(guyId[i])));  /* Stimmung eines Einzelnen */
 		team += mood;
 	}
 

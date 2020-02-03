@@ -69,7 +69,10 @@ extern uint32 GetObjNrOfBuilding(uint32 LocNr);
 extern void tcCalcCallValue(uint32 callNr, uint32 timer, uint32 persId);
 extern void tcPersonLearns(uint32 pId);
 extern void tcRefreshTimeClock(uint32 buildId, uint32 timerId);
+#if 0
+// TODO: Check and remove if unused
 extern uint32 tcGetItemID(uint32 itemType);
+#endif
 extern uint32 tcGetPersOffer(Person person, uint8 persCount);
 
 extern int32 tcCalcEscapeTime(void);

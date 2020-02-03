@@ -118,7 +118,10 @@ extern char prgname[255];
 
 extern void *StdBuffer0, *StdBuffer1;
 
+#if 0
+// TODO : Remove later when it's 100% sure it's unused
 extern void tcClearStdBuffer(void *p_Buffer);
+#endif
 
 extern void tcSetPermanentColors(void);
 void tcDone(void);
