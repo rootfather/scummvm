@@ -39,9 +39,17 @@ Common::Language ClueEngine::getLanguage() const {
 	return _gameDescription->language;
 }
 
+Common::Platform ClueEngine::getPlatform() const {
+	return _gameDescription->platform;
+}
+
 static const PlainGameDescriptor clueGames[] = {
 	{"clue", "The Clue!"},
 	{0, 0}
+};
+
+enum {
+	GF_PROFIDISK = (1 << 0) // Expansion pack
 };
 
 static const ADGameDescription gameDescriptions[] = {
@@ -109,7 +117,7 @@ static const ADGameDescription gameDescriptions[] = {
 		},
 		Common::DE_DEU,
 		Common::kPlatformDOS,
-		ADGF_NO_FLAGS,
+		GF_PROFIDISK,
 		GUIO0()
 	},
 	{
@@ -122,7 +130,7 @@ static const ADGameDescription gameDescriptions[] = {
 		},
 		Common::DE_DEU,
 		Common::kPlatformDOS,
-		ADGF_CD,
+		GF_PROFIDISK | ADGF_CD,
 		GUIO0()
 	},
 
@@ -156,28 +164,14 @@ public:
 
 	virtual bool hasFeature(MetaEngineFeature f) const;
 	virtual bool createInstance(OSystem *syst, Engine **engine, const ADGameDescription *desc) const;
-	SaveStateList listSaves(const char *target) const;
-	virtual int getMaximumSaveSlot() const;
-	void removeSaveState(const char *target, int slot) const;
-	SaveStateDescriptor querySaveMetaInfos(const char *target, int slot) const;
 };
 
 bool ClueMetaEngine::hasFeature(MetaEngineFeature f) const {
-	return
-	    (f == kSupportsListSaves) ||
-	    (f == kSupportsLoadingDuringStartup) ||
-	    (f == kSupportsDeleteSave) ||
-	    (f == kSavesSupportMetaInfo) ||
-	    (f == kSavesSupportThumbnail) ||
-	    (f == kSavesSupportCreationDate) ||
-	    (f == kSavesSupportPlayTime);
+	return false;
 }
 
 bool Clue::ClueEngine::hasFeature(EngineFeature f) const {
-	return
-	    (f == kSupportsRTL) ||
-	    (f == kSupportsLoadingDuringRuntime) ||
-	    (f == kSupportsSavingDuringRuntime);
+	return false;
 }
 
 bool ClueMetaEngine::createInstance(OSystem *syst, Engine **engine, const ADGameDescription *desc) const {
@@ -185,24 +179,6 @@ bool ClueMetaEngine::createInstance(OSystem *syst, Engine **engine, const ADGame
 		*engine = new Clue::ClueEngine(syst, desc);
 	}
 	return desc != 0;
-}
-
-SaveStateList ClueMetaEngine::listSaves(const char *target) const {
-	SaveStateList saveList;
-
-	return saveList;
-}
-
-int ClueMetaEngine::getMaximumSaveSlot() const {
-	return 999;
-}
-
-void ClueMetaEngine::removeSaveState(const char *target, int slot) const {
-}
-
-SaveStateDescriptor ClueMetaEngine::querySaveMetaInfos(const char *target, int slot) const {
-
-	return SaveStateDescriptor();
 }
 
 } // End of namespace Clue
