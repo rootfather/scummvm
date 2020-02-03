@@ -16,6 +16,7 @@
 
 #include "clue/data/dataappl.h"
 #include <assert.h>
+#include "clue/clue.h"
 
 namespace Clue {
 
@@ -763,7 +764,7 @@ bool tcGuardChecksObject(LSObject lso) {
 			break;
 		}
 
-		if (setup.Profidisk) {
+		if (g_clue->getFeatures() & GF_PROFIDISK) {
 			switch (lso->Type) {
 			case Item_Heiligenstatue:
 			case Item_Kerzenstaender:

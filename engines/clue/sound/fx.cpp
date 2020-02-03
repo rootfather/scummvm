@@ -7,9 +7,9 @@
   distribution.
  ****************************************************************************/
 #include "clue/base/base.h"
+#include "clue/clue.h"
 
 #include "common/file.h"
-#include "engines/engine.h"
 #include "audio/mixer.h"
 #include "audio/audiostream.h"
 #include "audio/decoders/raw.h"
@@ -29,7 +29,7 @@ static bool MusicChannelOn = true;
 
 void InitAudio(void) {
 	FXBase.us_AudioOk = 1;
-	if (!g_engine->_mixer->isReady()) {
+	if (!g_clue->_mixer->isReady()) {
 		DebugMsg(ERR_WARNING, ERROR_MODULE_SOUND, "Mixer error");
 		FXBase.us_AudioOk = 0;
 		return;
@@ -40,7 +40,7 @@ void InitAudio(void) {
 }
 
 void RemoveAudio(void) {
-	g_engine->_mixer->stopAll();
+	g_clue->_mixer->stopAll();
 	FXBase.us_AudioOk = 0;
 }
 
@@ -49,13 +49,13 @@ Audio::AudioStream *sfxFile;
 
 void sndInitFX(void) {
 	SfxChannelOn = false;
-	g_engine->_mixer->stopHandle(sfx);
+	g_clue->_mixer->stopHandle(sfx);
 	sfxFile = NULL;
 }
 
 void sndDoneFX(void) {
 	SfxChannelOn = false;
-	g_engine->_mixer->stopHandle(sfx);
+	g_clue->_mixer->stopHandle(sfx);
 	sfxFile = NULL;
 }
 
@@ -81,7 +81,7 @@ void sndPrepareFX(const char *name) {
 void sndPlayFX(void) {
 	SfxChannelOn = true;
 	if (sfxFile) {
-		g_engine->_mixer->playStream(Audio::Mixer::kSFXSoundType, &sfx, sfxFile);
+		g_clue->_mixer->playStream(Audio::Mixer::kSFXSoundType, &sfx, sfxFile);
 	}
 }
 

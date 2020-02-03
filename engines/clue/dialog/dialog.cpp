@@ -20,6 +20,7 @@
 
 #include "clue/dialog/dialog.h"
 #include "clue/dialog/talkappl.h"
+#include "clue/clue.h"
 
 namespace Clue {
 
@@ -263,7 +264,7 @@ byte Say(uint32 TextID, byte activ, uint16 Person, const char *text) {
 	LIST *bubble;
 	byte choice;
 
-	if (setup.CDRom) {
+	if (g_clue->getFeatures() & ADGF_CD) {
 		bubble = txtGoKey(TextID, text);
 
 		if (Person != (uint16) - 1)

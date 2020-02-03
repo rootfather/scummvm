@@ -21,6 +21,7 @@
 #include "clue/base/base.h"
 
 #include "clue/landscap/spot.h"
+#include "clue/clue.h"
 
 namespace Clue {
 
@@ -192,7 +193,7 @@ static void lsGetAreaForSpot(struct Spot *spot) {
 		break;
 	}
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		switch (area) {
 		case 520000:
 			spot->ul_AreaId = 508101;

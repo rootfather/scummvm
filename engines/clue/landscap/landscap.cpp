@@ -22,6 +22,7 @@
 
 #include "clue/landscap/landscap.h"
 #include "clue/landscap/landscap_p.h"
+#include "clue/clue.h"
 
 namespace Clue {
 
@@ -489,7 +490,7 @@ void lsPatchObjects(void)
 			break;
 		}
 
-		if (setup.Profidisk) {
+		if (g_clue->getFeatures() & GF_PROFIDISK) {
 			switch (lso->Type) {
 			case Item_Beichtstuhl:
 			case Item_Postsack:

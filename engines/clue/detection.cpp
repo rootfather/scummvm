@@ -39,6 +39,19 @@ Common::Language ClueEngine::getLanguage() const {
 	return _gameDescription->language;
 }
 
+char ClueEngine::getTxtLanguage() const {
+	switch (_gameDescription->language)
+	{
+	case Common::EN_ANY:
+		return 'e';
+	case Common::FR_FRA:
+		return 'f';
+	case Common::ES_ESP:
+		return 's';
+	}
+	return 'd'; // default to 'deutsche'
+}
+
 Common::Platform ClueEngine::getPlatform() const {
 	return _gameDescription->platform;
 }
@@ -46,10 +59,6 @@ Common::Platform ClueEngine::getPlatform() const {
 static const PlainGameDescriptor clueGames[] = {
 	{"clue", "The Clue!"},
 	{0, 0}
-};
-
-enum {
-	GF_PROFIDISK = (1 << 0) // Expansion pack
 };
 
 static const ADGameDescription gameDescriptions[] = {

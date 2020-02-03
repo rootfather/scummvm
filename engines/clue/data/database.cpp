@@ -23,6 +23,7 @@
 
 #include "clue/data/database.h"
 #include "clue/data/database_p.h"
+#include "clue/clue.h"
 
 namespace Clue {
 
@@ -199,7 +200,7 @@ static uint32 dbGetProfiDskSize(uint32 type) {
 }
 
 static uint32 dbGetDskSize(uint32 type) {
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		return dbGetProfiDskSize(type);
 	} else {
 		return dbGetStdDskSize(type);
@@ -1139,7 +1140,7 @@ dbRWObject(void *obj, int RW, uint32 type, uint32 size, uint32 localSize, FILE *
 
 	start = ftell(fp);
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		dbRWProfiObject(obj, RW, type, size, localSize, fp);
 	} else {
 		dbRWStdObject(obj, RW, type, size, localSize, fp);
@@ -1743,7 +1744,7 @@ static uint32 getKeyProfi(KeyConflictE key) {
 }
 
 uint32 getKey(KeyConflictE key) {
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		return getKeyProfi(key);
 	} else {
 		return getKeyStd(key);

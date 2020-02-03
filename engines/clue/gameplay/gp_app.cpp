@@ -19,6 +19,7 @@
  ****************************************************************************/
 
 #include "clue/gameplay/gp_app.h"
+#include "clue/clue.h"
 
 #include <assert.h>
 
@@ -73,7 +74,7 @@ void tcMovePersons(uint32 personCount, uint32 time) {
 
 	for (i = 0; i < personCount; i++) {
 
-		if (setup.Profidisk) {
+		if (g_clue->getFeatures() & GF_PROFIDISK) {
 			persID = CalcRandomNr(Person_Paul_O_Conner, Person_Pere_Ubu + 1);
 		} else {
 			persID = CalcRandomNr(Person_Paul_O_Conner, Person_Red_Stanson + 1);
@@ -279,7 +280,7 @@ void tcPlaySound() {
 
 void tcPlayStreetSound() {
 	if (!(GamePlayMode & GP_MUSIC_OFF)) {
-		if (setup.Profidisk) {
+		if (g_clue->getFeatures() & GF_PROFIDISK) {
 			switch (GetCurrentScene()->EventNr) {
 			case SCENE_PROFI_21:
 				sndPlaySound("snd21.bk", 0);
@@ -500,7 +501,7 @@ void StdDone(void) {
 				SceneArgs.Moeglichkeiten |=
 				    (BUSINESS_TALK & film->EnabledChoices);
 
-		if (setup.Profidisk) {
+		if (g_clue->getFeatures() & GF_PROFIDISK) {
 			if (GetCurrentScene()->EventNr == SCENE_PROFI_26) {
 				Environment env = (Environment)dbGetObject(Environment_TheClou);
 
@@ -577,7 +578,7 @@ void InitTaxiLocations(void) {
 			AddTaxiLocation(47);    /* tower */
 			AddTaxiLocation(58);    /* vict */
 
-			if (setup.Profidisk) {
+			if (g_clue->getFeatures() & GF_PROFIDISK) {
 				AddTaxiLocation(81);    /* bulstrode */
 				AddTaxiLocation(79);    /* buck */
 				AddTaxiLocation(77);    /* tate */
@@ -689,7 +690,7 @@ void LinkScenes(void) {
 	SetFunc(GetScene(SCENE_TOWER_INSIDE), StdInit, DoneInsideHouse);
 	SetFunc(GetScene(SCENE_KASERNE_INSIDE), StdInit, DoneInsideHouse);
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		SetFunc(GetScene(SCENE_PROFI_21_INSIDE), StdInit, DoneInsideHouse);
 		SetFunc(GetScene(SCENE_PROFI_22_INSIDE), StdInit, DoneInsideHouse);
 		SetFunc(GetScene(SCENE_PROFI_23_INSIDE), StdInit, DoneInsideHouse);

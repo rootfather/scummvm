@@ -19,6 +19,7 @@
  ****************************************************************************/
 
 #include "clue/base/base.h"
+#include "clue/clue.h"
 
 namespace Clue {
 
@@ -164,7 +165,7 @@ static bool tcInit(void) {
 	/* Start game. */
 	inpOpenAllInputDevs();
 
-	txtInit(AutoDetectLanguage());
+	txtInit(g_clue->getTxtLanguage());
 
 	AutoDetectVersion();
 
@@ -402,7 +403,7 @@ static void SetFullEnviroment(void) {
 	hasSet(Person_Matt_Stuvysunt, Building_Starford_Kaserne);
 	((Building) dbGetObject(Building_Starford_Kaserne))->Exactlyness = 255;
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		hasSet(Person_Matt_Stuvysunt, Car_Rover_75_1949);
 		hasSet(Person_Matt_Stuvysunt, Car_Rover_75_1950);
 		hasSet(Person_Matt_Stuvysunt, Car_Rover_75_1952);
@@ -451,8 +452,8 @@ static byte StartupMenu(void) {
 
 	ShowMenuBackground();
 
-	if (setup.Profidisk) {
-		if (setup.CDRom) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
+		if (g_clue->getFeatures() & ADGF_CD) {
 			PrintStatus(txtGetFirstLine(THECLOU_TXT,
 			                            "BITTE_WARTEN_PC_CD_ROM_PROFI", line));
 		} else {
@@ -460,7 +461,7 @@ static byte StartupMenu(void) {
 			                            "BITTE_WARTEN_PC_PROFI", line));
 		}
 	} else {
-		if (setup.CDRom) {
+		if (g_clue->getFeatures() & ADGF_CD) {
 			PrintStatus(txtGetFirstLine(THECLOU_TXT,
 			                            "BITTE_WARTEN_PC_CD_ROM", line));
 		} else {

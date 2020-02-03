@@ -24,6 +24,7 @@
 
 #include "clue/landscap/landscap.h"
 #include "clue/landscap/landscap_p.h"
+#include "clue/clue.h"
 
 namespace Clue {
 
@@ -165,7 +166,7 @@ void lsFastRefresh(LSObject lso) {
 			lsRefreshStatue(lso);
 		break;
 	default:
-		if (setup.Profidisk) {
+		if (g_clue->getFeatures() & GF_PROFIDISK) {
 			switch (lso->Type) {
 			case Item_Heiligenstatue:
 			case Item_Hottentotten_Figur:

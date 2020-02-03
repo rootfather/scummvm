@@ -35,17 +35,21 @@
 
 namespace Clue {
 
+ClueEngine *g_clue = NULL;
+
 ClueEngine::ClueEngine(OSystem *syst, const ADGameDescription *gameDesc)
 	: Engine(syst),
 	_gameDescription(gameDesc) {
+	g_clue = this;
 }
 
 ClueEngine::~ClueEngine() {
+	g_clue = NULL;
 }
 
 Common::Error ClueEngine::run() {
 	// Game entry point
-	clue_main(ConfMan.get("path").c_str());
+	clue_main(ConfMan.get("path").c_str()); quitGame();
 
 	/*
 	// Run a dummy loop
@@ -54,7 +58,7 @@ Common::Error ClueEngine::run() {
 	while (!shouldQuit()) {
 		while (g_system->getEventManager()->pollEvent(event)) {
 			if (event.type == Common::EVENT_KEYDOWN && event.kbd.keycode == Common::KEYCODE_ESCAPE)
-				g_engine->quitGame();
+				quitGame();
 		}
 
 		g_system->delayMillis(10);

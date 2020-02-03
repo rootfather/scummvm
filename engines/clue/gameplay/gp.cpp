@@ -20,6 +20,7 @@
 
 #include "clue/gameplay/gp.h"
 #include "clue/gameplay/gamefunc.h"
+#include "clue/clue.h"
 
 namespace Clue {
 
@@ -128,7 +129,7 @@ void PatchStory(void) {
 
 		GetScene(SCENE_STATION)->Moeglichkeiten |= WAIT;
 
-		if (setup.Profidisk) {
+		if (g_clue->getFeatures() & GF_PROFIDISK) {
 			GetScene(SCENE_PROFI_26)->LocationNr = 75;
 		}
 

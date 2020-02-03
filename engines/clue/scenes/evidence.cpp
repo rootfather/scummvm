@@ -19,6 +19,7 @@
  ****************************************************************************/
 
 #include "clue/scenes/evidence.h"
+#include "clue/clue.h"
 
 namespace Clue {
 
@@ -332,7 +333,7 @@ uint32 tcStartEvidence(void) {
 				if (p[i] == dbGetObject(Person_Marc_Smith))
 					caught |= tcATraitor(Person_Marc_Smith);
 
-			if (setup.Profidisk) {
+			if (g_clue->getFeatures() & GF_PROFIDISK) {
 				if (!caught)
 					if (p[i] == dbGetObject(Person_Phil_Ciggy))
 						caught |= tcATraitor(Person_Phil_Ciggy);

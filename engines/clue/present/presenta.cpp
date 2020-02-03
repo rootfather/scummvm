@@ -13,6 +13,7 @@
  */
 
 #include "clue/present/present.h"
+#include "clue/clue.h"
 
 namespace Clue {
 
@@ -338,7 +339,7 @@ void InitCarPresent(uint32 nr, LIST *presentationData, LIST *texts) {
 	AddPresentLine(presentationData, PRESENT_AS_BAR, obj->MotorState, 255,
 	               texts, 10);
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		AddPresentLine(presentationData, PRESENT_AS_BAR, obj->Capacity,
 		               9000000, texts, 11);
 	} else {

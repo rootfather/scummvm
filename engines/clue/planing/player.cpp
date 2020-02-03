@@ -21,6 +21,7 @@
 #include "clue/base/base.h"
 
 #include "clue/planing/player.h"
+#include "clue/clue.h"
 
 namespace Clue {
 
@@ -1689,7 +1690,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 				else
 					sndPlaySound(PLANING_MUSIC_PLAYER_BEGIN_STD, 0L);
 
-				if (setup.Profidisk) {
+				if (g_clue->getFeatures() & GF_PROFIDISK) {
 					if (objId == Building_Postzug) {
 						Environment env =
 						    (Environment) dbGetObject(Environment_TheClou);

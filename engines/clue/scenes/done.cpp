@@ -18,6 +18,7 @@
  ****************************************************************************/
 
 #include "clue/scenes/scenes.h"
+#include "clue/clue.h"
 
 namespace Clue {
 
@@ -372,7 +373,7 @@ void tcDoneFahndung(void) {
 void DoneHotelRoom(void) {
 	tcCheckForBones();
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		tcCheckForDowning();
 	}
 

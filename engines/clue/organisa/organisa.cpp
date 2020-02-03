@@ -21,6 +21,7 @@
 #include "clue/base/base.h"
 
 #include "clue/organisa/organisa.h"
+#include "clue/clue.h"
 
 namespace Clue {
 
@@ -260,7 +261,7 @@ byte tcCheckOrganisation(void) {
 					else
 						Say(BUSINESS_TXT, 0, MATT_PICTID, "PLAN_NO_JAGUAR");
 				} else {
-					if (setup.Profidisk) {
+					if (g_clue->getFeatures() & GF_PROFIDISK) {
 						if (Organisation.BuildingID == Building_Westminster_Abbey) {
 							if ((Organisation.CarID == Car_Fiat_634_N_1936)
 							        || (Organisation.CarID == Car_Fiat_634_N_1943))

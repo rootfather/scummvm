@@ -19,6 +19,7 @@
  ****************************************************************************/
 
 #include "clue/scenes/scenes.h"
+#include "clue/clue.h"
 
 namespace Clue {
 
@@ -55,7 +56,7 @@ void Investigate(const char *location) {
 	buiID = GetObjNrOfBuilding(GetLocation);
 	bui = (Building) dbGetObject(buiID);
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		if (buiID == Building_Buckingham_Palace) {
 			bubble_l = txtGoKey(INVESTIGATIONS_TXT, "BuckinghamBeobachtet");
 			SetBubbleType(THINK_BUBBLE);

@@ -30,6 +30,10 @@
 
 namespace Clue {
 
+enum ClueGameFeatures {
+	GF_PROFIDISK = (1 << 0) // Expansion pack
+};
+
 class ClueEngine : public Engine {
 
 protected:
@@ -43,10 +47,13 @@ public:
 
 	uint32 getFeatures() const;
 	Common::Language getLanguage() const;
+	char getTxtLanguage() const;
 	Common::Platform getPlatform() const;
 
 	const ADGameDescription *_gameDescription;
 };
+
+extern ClueEngine *g_clue;
 
 } // End of namespace Clue
 

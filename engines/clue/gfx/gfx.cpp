@@ -22,11 +22,11 @@
 #include <assert.h>
 
 #include "clue/base/base.h"
+#include "clue/clue.h"
 
 #include "common/events.h"
 #include "common/rect.h"
 #include "common/system.h"
-#include "engines/engine.h"
 #include "engines/util.h"
 #include "graphics/palette.h"
 #include "graphics/surface.h"
@@ -1858,7 +1858,7 @@ void MemBlit(MemRastPort *src, Rect *src_rect,
 }
 
 void gfxGetMouseXY(GC *gc, uint16 *pMouseX, uint16 *pMouseY) {
-	Common::Point mouse = g_engine->getEventManager()->getMousePos();
+	Common::Point mouse = g_clue->getEventManager()->getMousePos();
 
 	if (pMouseX) {
 		if (mouse.x < gc->clip.x)

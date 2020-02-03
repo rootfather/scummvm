@@ -21,6 +21,7 @@
 #include "clue/base/base.h"
 
 #include "clue/planing/planer.h"
+#include "clue/clue.h"
 
 namespace Clue {
 
@@ -1157,7 +1158,7 @@ static void plActionUse(void) {
 								} else if ((((LSObject) dbGetObject(choice1))->
 								            Type == Item_Fenster)) {
 
-									if (setup.Profidisk && Planing_BldId == Building_Postzug)
+									if (g_clue->getFeatures() & GF_PROFIDISK && Planing_BldId == Building_Postzug)
 										plSay("PLANING_TRAIN", CurrentPerson);
 									else if (CHECK_STATE
 									         (lsGetObjectState(choice1),

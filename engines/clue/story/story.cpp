@@ -19,6 +19,7 @@
  ****************************************************************************/
 
 #include "clue/story/story.h"
+#include "clue/clue.h"
 
 namespace Clue {
 
@@ -353,7 +354,7 @@ void tcDoneMeetBriggs(void) {
 	AddTaxiLocation(20);    /* senioren */
 	AddTaxiLocation(12);    /* aunt */
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		AddTaxiLocation(68);    /* baker street */
 	}
 }
@@ -493,7 +494,7 @@ void tcDone1stBurglary(void) {
 	AddTaxiLocation(22);    /* highgate */
 	AddTaxiLocation(16);    /* anti */
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		AddTaxiLocation(75);    /* train */
 	}
 
@@ -502,7 +503,7 @@ void tcDone1stBurglary(void) {
 	hasSet(Person_Marc_Smith, Car_Jeep_1945);
 	hasSet(Person_Marc_Smith, Car_Pontiac_Streamliner_1946);
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		hasSet(Person_Marc_Smith, Car_Ford_Model_T__1926);
 	}
 
@@ -520,7 +521,7 @@ void tcDone1stBurglary(void) {
 	livesInSet(London_London_1, Person_Peter_Brook);
 	livesInSet(London_London_1, Person_Luthmilla_Nervesaw);
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		livesInSet(London_London_1, Person_Tom_Cooler);
 		livesInSet(London_London_1, Person_Tina_Olavson);
 	}
@@ -576,7 +577,7 @@ void tcDoneCallFromBriggs(void) {
 void tcDone2ndBurglary(void) {
 	AddTaxiLocation(14);    /* jewels */
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		AddTaxiLocation(72);    /* abbey */
 	}
 
@@ -585,7 +586,7 @@ void tcDone2ndBurglary(void) {
 	hasSet(Person_Marc_Smith, Car_Pontiac_Streamliner_1944);
 	hasSet(Person_Marc_Smith, Car_Standard_Vanguard_1953);
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		hasSet(Person_Marc_Smith, Car_Rover_75_1950);
 		hasSet(Person_Marc_Smith, Car_Bentley_Continental_Typ_R_1952);
 	}
@@ -640,7 +641,7 @@ void tcDone3rdBurglary(void) {
 	AddTaxiLocation(35);    /* sotherbys */
 	AddTaxiLocation(33);    /* chiswick */
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		AddTaxiLocation(74);    /* downing */
 	}
 
@@ -703,7 +704,7 @@ void tcDone4thBurglary(void) {
 	AddTaxiLocation(31);    /* osterly */
 	AddTaxiLocation(29);    /* ham */
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		AddTaxiLocation(70);    /* madame */
 	}
 
@@ -719,7 +720,7 @@ void tcDone4thBurglary(void) {
 	hasSet(Person_Marc_Smith, Car_Standard_Vanguard_1950);
 	hasSet(Person_Marc_Smith, Car_Cadillac_Club_1952);
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		hasSet(Person_Marc_Smith, Car_Fiat_634_N_1943);
 	}
 
@@ -732,7 +733,7 @@ void tcDone4thBurglary(void) {
 	livesInSet(London_London_1, Person_Jiri_Poulin);
 	livesInSet(London_London_1, Person_Prof_Emil_Schmitt);
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		livesInSet(London_London_1, Person_Melanie_Morgan);
 		livesInSet(London_London_1, Person_Sid_Palmer);
 	}
@@ -766,7 +767,7 @@ void tcDone5thBurglary(void) {
 	AddTaxiLocation(27);    /* kenw */
 	AddTaxiLocation(39);    /* natural museum */
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		AddTaxiLocation(77);    /* tate */
 	}
 
@@ -774,7 +775,7 @@ void tcDone5thBurglary(void) {
 
 	hasSet(Person_Marc_Smith, Car_Standard_Vanguard_1951);
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		hasSet(Person_Marc_Smith, Car_Rover_75_1952);
 		hasSet(Person_Marc_Smith, Car_Bentley_Continental_Typ_R_1953);
 	}
@@ -793,7 +794,7 @@ void tcDone5thBurglary(void) {
 	livesInSet(London_London_1, Person_Mike_Seeger);
 	livesInSet(London_London_1, Person_Mathew_Black);
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		livesInSet(London_London_1, Person_Prof_Marcus_Green);
 		livesInSet(London_London_1, Person_Pere_Ubu);
 	}
@@ -1096,7 +1097,7 @@ void tcDone6thBurglary(void) {
 	AddTaxiLocation(43);    /* vict & alb */
 	AddTaxiLocation(37);    /* brit */
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		AddTaxiLocation(79);    /* buckingham */
 	}
 
@@ -1106,7 +1107,7 @@ void tcDone6thBurglary(void) {
 	livesInSet(London_London_1, Person_Kevin_Smith);
 	livesInSet(London_London_1, Person_Al_Mel);
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		livesInSet(London_London_1, Person_Phil_Ciggy);
 		livesInSet(London_London_1, Person_Rod_Masterson);
 	}
@@ -1173,7 +1174,7 @@ void tcDone7thBurglary(void) {
 	AddTaxiLocation(41);    /* national */
 	AddTaxiLocation(45);    /* bank */
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		AddTaxiLocation(81);    /* bulstrode  */
 	}
 

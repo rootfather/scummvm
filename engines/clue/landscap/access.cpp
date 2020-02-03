@@ -22,6 +22,7 @@
 
 #include "clue/landscap/landscap.h"
 #include "clue/landscap/landscap_p.h"
+#include "clue/clue.h"
 
 namespace Clue {
 
@@ -89,7 +90,7 @@ bool lsIsObjectAWall(LSObject lso) {
 		return true;
 	}
 
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		switch (lso->Type) {
 		case Item_verzierte_Saeule:
 		case Item_Gelaender:
@@ -110,7 +111,7 @@ bool lsIsObjectAWall(LSObject lso) {
 
 /* objects which need the same refresh as doors */
 bool lsIsObjectSpecial(LSObject lso) {
-	if (setup.Profidisk) {
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		switch (lso->Type) {
 		case Item_Heiligenstatue:
 		case Item_Hottentotten_Figur:
