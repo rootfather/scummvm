@@ -153,24 +153,19 @@ void gfxLSPutSet(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, ui
 }
 
 void gfxLSRectFill(uint16 sx, uint16 sy, uint16 ex, uint16 ey, uint8 color) {
-	uint16 tmp, w, h;
-	uint8 *dp;
-
-	if (sx > ex) {
+	if (sx > ex)
 		SWAP(sx, ex);
-	}
 
-	if (sy > ey) {
+	if (sy > ey)
 		SWAP(sy, ey);
-	}
 
 	ex = MIN(ex, uint16(LS_MAX_AREA_WIDTH - 1));
 	ey = MIN(ey, uint16(LS_MAX_AREA_HEIGHT - 1));
 
-	w = ex - sx + 1;
-	h = ey - sy + 1;
+	uint16 w = ex - sx + 1;
+	uint16 h = ey - sy + 1;
 
-	dp = LSRPInMem.pixels;
+	uint8 *dp = LSRPInMem.pixels;
 	dp += sy * LS_MAX_AREA_WIDTH + sx;
 
 	do {

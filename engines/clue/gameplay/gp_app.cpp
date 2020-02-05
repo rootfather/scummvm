@@ -194,7 +194,7 @@ void StdInit(void) {
 	if (sc->LocationNr == GetLocation)
 		sameLocation = 1;
 
-	if ((sc->LocationNr != -1UL) && (GetLocation != sc->LocationNr))
+	if ((sc->LocationNr != (uint32) -1) && (GetLocation != sc->LocationNr))
 		SetLocation(sc->LocationNr);
 
 	tcRefreshLocationInTitle(sc->LocationNr);

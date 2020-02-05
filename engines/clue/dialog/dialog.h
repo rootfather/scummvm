@@ -64,7 +64,7 @@ void PlayFromCDROM(void);
 
 extern void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode);
 
-extern byte Say(uint32 TextID, byte activ, uint16 Person, const char *text);
+extern byte Say(uint32 TextID, byte activ, uint16 person, const char *text);
 
 extern uint32 Talk(void);
 

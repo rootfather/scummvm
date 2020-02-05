@@ -54,7 +54,7 @@ void plMessage(const char *msg, byte flags) {
 
 void plDisplayTimer(uint32 time, byte doSpotsImmediatly) {
 	char info[80];
-	uint32 oldTimer = -1;
+	uint32 oldTimer = (uint32) -1;
 
 	if (!time)
 		time = CurrentTimer(plSys) / PLANING_CORRECT_TIME;

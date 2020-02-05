@@ -260,15 +260,15 @@ void PlayFromCDROM(void) {
 	}
 }
 
-byte Say(uint32 TextID, byte activ, uint16 Person, const char *text) {
+byte Say(uint32 TextID, byte activ, uint16 person, const char *text) {
 	LIST *bubble;
 	byte choice;
 
 	if (g_clue->getFeatures() & ADGF_CD) {
 		bubble = txtGoKey(TextID, text);
 
-		if (Person != (uint16) - 1)
-			SetPictID(Person);
+		if (person != (uint16) - 1)
+			SetPictID(person);
 
 		/* speech output must be started out of the bubble because
 		   after starting it there must be no access to the CDROM
@@ -307,8 +307,8 @@ byte Say(uint32 TextID, byte activ, uint16 Person, const char *text) {
 	} else {
 		bubble = txtGoKey(TextID, text);
 
-		if (Person != (uint16) - 1)
-			SetPictID(Person);
+		if (person != (uint16) - 1)
+			SetPictID(person);
 
 		choice = Bubble(bubble, activ, NULL, 0L);
 		RemoveList(bubble);
