@@ -37,25 +37,18 @@ struct DynDlgNode {
 
 
 static LIST *PrepareQuestions(LIST *keyWords, uint32 talkBits, byte textID) {
-	LIST *questionList = 0L, *preparedList = CreateList();
+	LIST *preparedList = CreateList();
 	LIST *stdQuestionList = txtGoKey(BUSINESS_TXT, "STD_QUEST");
-	NODE *n;
+	LIST *questionList = txtGoKey((uint32) textID, "QUESTIONS");
+
 	char question[TXT_KEY_LENGTH];
-	byte r, i;
-
-	questionList = txtGoKey((uint32) textID, "QUESTIONS");
-
-	for (n = (NODE *) LIST_HEAD(keyWords); NODE_SUCC((NODE *) n);
-	        n = (NODE *) NODE_SUCC(n)) {
-		r = (byte) CalcRandomNr(0L, 6L);
-
-		sprintf(question, NODE_NAME(GetNthNode(questionList, r)),
-		        NODE_NAME((NODE *) n));
-
+	for (NODE *n = (NODE *) LIST_HEAD(keyWords); NODE_SUCC((NODE *) n); n = (NODE *) NODE_SUCC(n)) {
+		byte r = (byte) CalcRandomNr(0L, 6L);
+		sprintf(question, NODE_NAME(GetNthNode(questionList, r)), NODE_NAME((NODE *) n));
 		CreateNode(preparedList, 0L, question);
 	}
 
-	for (i = 0; i < 32; i++) {
+	for (byte i = 0; i < 32; i++) {
 		if (talkBits & (1 << i)) {
 			strcpy(question, NODE_NAME(GetNthNode(stdQuestionList, i)));
 			CreateNode(preparedList, 0L, question);
@@ -72,23 +65,15 @@ static LIST *PrepareQuestions(LIST *keyWords, uint32 talkBits, byte textID) {
 }
 
 static LIST *ParseTalkText(LIST *origin, LIST *bubble, byte known) {
-	LIST *keyWords;
-	NODE *n, *keyNode;
-	char line[TXT_KEY_LENGTH], key[TXT_KEY_LENGTH], keyWord[TXT_KEY_LENGTH];
-	char *mem, *start;
-	byte line_pos = 0, key_pos;
-	char snr[10], snr1[10];
-	byte nr, nr1;
-	uint32 i;
+	LIST *keyWords = CreateList();
 
-	keyWords = CreateList();
+	for (NODE *n = (NODE *) LIST_HEAD(origin); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n)) {
+		char line[TXT_KEY_LENGTH], key[TXT_KEY_LENGTH], keyWord[TXT_KEY_LENGTH];
+		byte line_pos = 0;
+		byte key_pos = 0;
 
-	for (n = (NODE *) LIST_HEAD(origin); NODE_SUCC(n);
-	        n = (NODE *) NODE_SUCC(n)) {
-		line_pos = key_pos = 0;
-
-		start = NODE_NAME(n);
-		mem = start;
+		char *start = NODE_NAME(n);
+		char *mem = start;
 
 		while (mem < start + strlen(start)) {
 			if (*mem != '[')
@@ -104,12 +89,13 @@ static LIST *ParseTalkText(LIST *origin, LIST *bubble, byte known) {
 
 				mem++;      /* Klammer überspringen ! */
 
-				for (i = 0; i < 3; i++) {   /* Zahlen entfernen */
+				char snr[10], snr1[10];
+				for (uint32 i = 0; i < 3; i++) {   /* Zahlen entfernen */
 					snr[i] = key[i];
 					snr1[i] = key[key_pos - 4 + i];
 				}
 
-				for (i = 3; i < (strlen(key) - 3); i++) /* keyWord */
+				for (uint32 i = 3; i < (strlen(key) - 3); i++) /* keyWord */
 					keyWord[i - 3] = key[i];
 
 				/* umwandeln ! */
@@ -117,18 +103,15 @@ static LIST *ParseTalkText(LIST *origin, LIST *bubble, byte known) {
 				snr1[3] = EOS;
 				keyWord[strlen(key) - 6] = EOS;
 
-				nr = (byte) atol(snr);
-				nr1 = (byte) atol(snr1);
+				byte nr = (byte) atol(snr);
+				byte nr1 = (byte) atol(snr1);
 
 				/* keyword einfügen */
-				for (i = 0; i < strlen(keyWord); i++)
+				for (uint32 i = 0; i < strlen(keyWord); i++)
 					line[line_pos++] = keyWord[i];
 
 				if (known >= nr) {
-					keyNode =
-					    (NODE *)CreateNode(keyWords, sizeof(struct DynDlgNode),
-					                       keyWord);
-
+					NODE *keyNode = (NODE *)CreateNode(keyWords, sizeof(struct DynDlgNode), keyWord);
 					((struct DynDlgNode *) keyNode)->KnownBefore = nr;
 					((struct DynDlgNode *) keyNode)->KnownAfter = nr1;
 				}
@@ -146,13 +129,13 @@ static LIST *ParseTalkText(LIST *origin, LIST *bubble, byte known) {
 void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode) {
 	const char *Extension[4] = { "_UNKNOWN", "_KNOWN", "_FRIENDLY", "_BUSINESS" };
 	const char *Standard = "STANDARD";
-	uint8 known = 0;
 	Person p1 = (Person) dbGetObject(Person1ID);
 	Person p2 = (Person) dbGetObject(Person2ID);
+
+	uint8 known = 0;
 	char key[TXT_KEY_LENGTH], name[TXT_KEY_LENGTH];
-	uint8 choice = 0, max = 1, i, quit, stdcount = 0, j, gencount = 0, textID;
-	LIST *origin = 0L, *questions = 0L, *bubble = CreateList(), *keyWords;
-	struct DynDlgNode *n;
+	uint8 choice = 0, max = 1, stdcount = 0, gencount = 0;
+	LIST *origin = 0L, *questions = 0L, *bubble = CreateList();
 
 	tcChgPersPopularity(p1, 5); /* Bekanntheit steigt sehr gering */
 
@@ -163,16 +146,15 @@ void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode) {
 	if (TalkMode & DLG_TALKMODE_BUSINESS) {
 		knowsSet(Person1ID, Person2ID);
 		known = 3;      /* Business */
-	} else {
-		if (!(knows(Person1ID, Person2ID))) {
-			known = 0;
-			knowsSet(Person1ID, Person2ID);
-		} else
-			known = 1;      /* MOD - kein "FRIENDLY mehr möglich!" */
-	}
+	} else if (!(knows(Person1ID, Person2ID))) {
+		known = 0;
+		knowsSet(Person1ID, Person2ID);
+	} else
+		known = 1;      /* MOD - kein "FRIENDLY mehr möglich!" */
 
 	strcat(key, Extension[known]);
 
+	uint8 textID;
 	if (p2->TalkFileID)
 		textID = TALK_1_TXT;
 	else
@@ -180,13 +162,13 @@ void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode) {
 
 	if (!(txtKeyExists(textID, key))) {
 		strcpy(key, Standard);
-
 		strcat(key, Extension[known]);
 	}
 
+	uint8 quit;
 	do {
 		origin = txtGoKey(textID, key);
-		keyWords = ParseTalkText(origin, bubble, p2->Known);
+		LIST *keyWords = ParseTalkText(origin, bubble, p2->Known);
 		questions = PrepareQuestions(keyWords, p2->TalkBits, textID);
 
 		if (choice < (max - stdcount)) {
@@ -196,17 +178,17 @@ void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode) {
 
 		SetPictID(MATT_PICTID);
 		choice = Bubble(questions, 0, 0L, 0L);
-
 		quit = max = GetNrOfNodes(questions) - 1;
 
-		for (i = 0, stdcount = 0; i < 32; i++)  /* Std Fragen zählen */
+		for (uint8 i = 0, stdcount = 0; i < 32; i++) {  /* Std Fragen zählen */
 			if (p2->TalkBits & (1 << i))
 				stdcount++;
+		}
 
 		gencount = max - stdcount;
 
 		if (choice < gencount) {
-			n = (struct DynDlgNode *) GetNthNode(keyWords, (uint32) choice);
+			struct DynDlgNode *n = (struct DynDlgNode *) GetNthNode(keyWords, (uint32) choice);
 
 			strcpy(key, name);
 			strcat(key, "_");
@@ -217,13 +199,16 @@ void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode) {
 		}
 
 		if (choice >= gencount && choice < quit) {
-			for (i = 0; i < 32; i++)    /* beim 1. gesetzten Bit anfangen ! */
+			uint8 i;
+			for (i = 0; i < 32; i++) {    /* beim 1. gesetzten Bit anfangen ! */
 				if (1 << i & p2->TalkBits)
 					break;
+			}
 
-			for (j = 0; (i < 32) && (j != (choice - gencount)); i++)
+			for (uint8 j = 0; (i < 32) && (j != (choice - gencount)); i++) {
 				if (1 << i & p2->TalkBits)
 					j++;
+			}
 
 			switch (i) {
 			case 0:
@@ -261,11 +246,9 @@ void PlayFromCDROM(void) {
 }
 
 byte Say(uint32 TextID, byte activ, uint16 person, const char *text) {
-	LIST *bubble;
 	byte choice;
-
 	if (g_clue->getFeatures() & ADGF_CD) {
-		bubble = txtGoKey(TextID, text);
+		LIST *bubble = txtGoKey(TextID, text);
 
 		if (person != (uint16) - 1)
 			SetPictID(person);
@@ -305,7 +288,7 @@ byte Say(uint32 TextID, byte activ, uint16 person, const char *text) {
 
 		RemoveList(bubble);
 	} else {
-		bubble = txtGoKey(TextID, text);
+		LIST *bubble = txtGoKey(TextID, text);
 
 		if (person != (uint16) - 1)
 			SetPictID(person);
@@ -319,19 +302,16 @@ byte Say(uint32 TextID, byte activ, uint16 person, const char *text) {
 
 
 uint32 Talk(void) {
-	uint32 succ_event_nr = 0L, locNr, personID;
-	LIST *bubble;
-	byte choice;
+	uint32 succ_event_nr = 0L, personID;
 	char helloFriends[TXT_KEY_LENGTH];
 
 	inpTurnESC(0);
 
-	locNr = GetObjNrOfLocation(GetLocation);
+	uint32 locNr = GetObjNrOfLocation(GetLocation);
 
 	if (locNr) {
-		hasAll(locNr, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
-		       Object_Person);
-		bubble = ObjectListPrivate;
+		hasAll(locNr, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Person);
+		LIST *bubble = ObjectListPrivate;
 
 		if (!(LIST_EMPTY(bubble))) {
 			inpTurnESC(1);
@@ -339,19 +319,15 @@ uint32 Talk(void) {
 			txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", helloFriends);
 			ExpandObjectList(bubble, helloFriends);
 
-			if (ChoiceOk((choice = Bubble(bubble, 0, 0L, 0L)), GET_OUT, bubble)) {
-				personID =
-				    ((struct ObjectNode *) GetNthNode(bubble, (uint32) choice))->
-				    nr;
-
+			byte choice = Bubble(bubble, 0, 0L, 0L);
+			if (ChoiceOk(choice, GET_OUT, bubble)) {
+				personID = ((struct ObjectNode *) GetNthNode(bubble, (uint32) choice))->nr;
 				inpTurnESC(0);
 
 				if (PersonWorksHere(personID, locNr))
-					DynamicTalk(Person_Matt_Stuvysunt, personID,
-					            DLG_TALKMODE_BUSINESS);
+					DynamicTalk(Person_Matt_Stuvysunt, personID, DLG_TALKMODE_BUSINESS);
 				else
-					DynamicTalk(Person_Matt_Stuvysunt, personID,
-					            DLG_TALKMODE_STANDARD);
+					DynamicTalk(Person_Matt_Stuvysunt, personID, DLG_TALKMODE_STANDARD);
 			}
 		} else
 			Say(BUSINESS_TXT, 0, MATT_PICTID, "NOBODY HERE");
