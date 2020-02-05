@@ -80,7 +80,7 @@ void AskAll(KEY, RELATION, void (*)(void *));
 void UnSetAll(KEY, void (*)(KEY));
 
 int SaveRelations(const char *, uint32, uint32, uint16 disk_id);
-int LoadRelations(const char *, uint16 disk_id);
+bool LoadRelations(const char *, uint16 disk_id);
 void RemRelations(uint32, uint32);
 
 } // End of namespace Clue

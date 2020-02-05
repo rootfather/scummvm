@@ -93,8 +93,7 @@ void tcSaveTheClou(void) {
 
 			sprintf(line, "%s%d%s", BUILD_DATA_NAME, activ, GAME_REL_EXT);
 			dskBuildPathName(DISK_CHECK_DIR, DATADISK, line, pathname);
-			SaveRelations(pathname, (uint32) DB_tcBuild_OFFSET, (uint32) DB_tcBuild_SIZE,
-			              0);
+			SaveRelations(pathname, (uint32) DB_tcBuild_OFFSET, (uint32) DB_tcBuild_SIZE, 0);
 
 			/* Speichern der Story */
 			sprintf(line, "%s%d%s", STORY_DATA_NAME, activ, GAME_DATA_EXT);

@@ -1454,9 +1454,9 @@ void SetObjectListAttr(uint32 flags, uint32 type) {
 
 void BuildObjectList(void *key) {
 	register struct dbObject *obj = dbGetObjectReal(key);
-	register LIST *list;
 
 	if (!ObjectListType || (obj->type == ObjectListType)) {
+		register LIST *list;
 		if (ObjectListFlags & OLF_PRIVATE_LIST)
 			list = ObjectListPrivate;
 		else
@@ -1536,7 +1536,7 @@ int32 dbSortObjectList(LIST **objectList,
                        int16(*processNode)(struct ObjectNode *,
                                struct ObjectNode *)) {
 	register LIST *newList;
-	register struct ObjectNode *n1, *n2, *pred, *newNode;
+	register struct ObjectNode *n1, *n2;
 	int32 i = 0;
 
 	if (!LIST_EMPTY(*objectList)) {
@@ -1544,7 +1544,7 @@ int32 dbSortObjectList(LIST **objectList,
 
 		for (n1 = (struct ObjectNode *) LIST_HEAD(*objectList); NODE_SUCC(n1);
 		        n1 = (struct ObjectNode *) NODE_SUCC(n1), i++) {
-			pred = 0;
+			register struct ObjectNode *pred = 0;
 
 			if (!LIST_EMPTY(newList)) {
 				for (n2 = (struct ObjectNode *) LIST_HEAD(newList);
@@ -1555,7 +1555,7 @@ int32 dbSortObjectList(LIST **objectList,
 				}
 			}
 
-			newNode =
+			register struct ObjectNode *newNode =
 			    (struct ObjectNode *) CreateNode(NULL, sizeof(*newNode),
 			                                     NODE_NAME(n1));
 			newNode->nr = n1->nr;
@@ -1600,9 +1600,7 @@ void dbInit(void) {
 }
 
 void dbDone(void) {
-	register uint8 objHashValue;
-
-	for (objHashValue = 0; objHashValue < OBJ_HASH_SIZE; objHashValue++) {
+	for (register uint8 objHashValue = 0; objHashValue < OBJ_HASH_SIZE; objHashValue++) {
 		if (objHash[objHashValue])
 			RemoveList(objHash[objHashValue]);
 	}
