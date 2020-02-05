@@ -131,18 +131,16 @@ void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode) {
 	const char *Standard = "STANDARD";
 	Person p1 = (Person) dbGetObject(Person1ID);
 	Person p2 = (Person) dbGetObject(Person2ID);
-
-	uint8 known = 0;
-	char key[TXT_KEY_LENGTH], name[TXT_KEY_LENGTH];
-	uint8 choice = 0, max = 1, stdcount = 0, gencount = 0;
-	LIST *origin = 0L, *questions = 0L, *bubble = CreateList();
+	LIST *bubble = CreateList();
 
 	tcChgPersPopularity(p1, 5); /* Bekanntheit steigt sehr gering */
 
 	/* je nach Bekanntheitsgrad wird Matt begrüßt ! */
+	char key[TXT_KEY_LENGTH], name[TXT_KEY_LENGTH];
 	dbGetObjectName(Person2ID, name);
 	strcpy(key, name);
 
+	uint8 known;
 	if (TalkMode & DLG_TALKMODE_BUSINESS) {
 		knowsSet(Person1ID, Person2ID);
 		known = 3;      /* Business */
@@ -165,11 +163,12 @@ void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode) {
 		strcat(key, Extension[known]);
 	}
 
-	uint8 quit;
+	uint8 quit, gencount;
+	uint8 choice = 0, max = 1, stdcount = 0;
 	do {
-		origin = txtGoKey(textID, key);
+		LIST *origin = txtGoKey(textID, key);
 		LIST *keyWords = ParseTalkText(origin, bubble, p2->Known);
-		questions = PrepareQuestions(keyWords, p2->TalkBits, textID);
+		LIST *questions = PrepareQuestions(keyWords, p2->TalkBits, textID);
 
 		if (choice < (max - stdcount)) {
 			SetPictID(p2->PictID);
@@ -302,9 +301,6 @@ byte Say(uint32 TextID, byte activ, uint16 person, const char *text) {
 
 
 uint32 Talk(void) {
-	uint32 succ_event_nr = 0L, personID;
-	char helloFriends[TXT_KEY_LENGTH];
-
 	inpTurnESC(0);
 
 	uint32 locNr = GetObjNrOfLocation(GetLocation);
@@ -316,12 +312,13 @@ uint32 Talk(void) {
 		if (!(LIST_EMPTY(bubble))) {
 			inpTurnESC(1);
 
+			char helloFriends[TXT_KEY_LENGTH];
 			txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", helloFriends);
 			ExpandObjectList(bubble, helloFriends);
 
 			byte choice = Bubble(bubble, 0, 0L, 0L);
 			if (ChoiceOk(choice, GET_OUT, bubble)) {
-				personID = ((struct ObjectNode *) GetNthNode(bubble, (uint32) choice))->nr;
+				uint32 personID = ((struct ObjectNode *) GetNthNode(bubble, (uint32) choice))->nr;
 				inpTurnESC(0);
 
 				if (PersonWorksHere(personID, locNr))
@@ -337,6 +334,8 @@ uint32 Talk(void) {
 
 	inpTurnESC(1);
 
+	// CHECKME: Is there a reason to return something?
+	uint32 succ_event_nr = 0L;
 	return (succ_event_nr);
 }
 

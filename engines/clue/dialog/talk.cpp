@@ -16,13 +16,13 @@ struct DynDlgNode {
 };
 
 uint32 Talk(void) {
-	uint32 succ_event_nr = 0L, locNr, personID;
+	uint32 succ_event_nr = 0L, personID;
 	LIST *bubble;
 	byte choice, helloFriends[KEY_LENGTH];
 
 	TurnESC(0);
 
-	locNr = GetObjNrOfLocation(GetLocation);
+	uint32 locNr = GetObjNrOfLocation(GetLocation);
 
 	if (locNr) {
 		hasAll(locNr, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
