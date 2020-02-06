@@ -81,7 +81,7 @@ struct Scene;
 
 extern void TCGamePause(byte activ);
 
-extern byte tcPersonIsHere(void);
+extern bool tcPersonIsHere(void);
 
 extern void tcPlaySound(void);
 extern void tcPlayStreetSound(void);
@@ -97,19 +97,19 @@ extern void LinkScenes(void);
 extern void tcGetLastName(const char *Name, char *dest, uint32 maxLength);
 extern void tcCutName(char *Name, byte Sign, uint32 maxLength);
 
-extern byte tcLoadTheClou(void);
+extern bool tcLoadTheClou(void);
 extern void tcSaveTheClou(void);
 extern uint32 tcBurglary(uint32 buildingID);
 
-extern byte tcLoadChangesInScenes(const char *fileName);
-extern byte tcSaveChangesInScenes(const char *fileName);
+extern bool tcLoadChangesInScenes(const char *fileName);
+extern bool tcSaveChangesInScenes(const char *fileName);
 
 extern void tcRefreshLocationInTitle(uint32 locNr);
 extern void ShowTime(uint32 delay);
 extern void RefreshAfterDiskRequester(void);
 
-extern byte tcLoadIt(char activ);
-extern void tcRefreshAfterLoad(byte loaded);
+extern bool tcLoadIt(char activ);
+extern void tcRefreshAfterLoad(bool loaded);
 
 extern void ShowMenuBackground(void);
 

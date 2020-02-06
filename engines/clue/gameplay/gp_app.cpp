@@ -337,8 +337,6 @@ void ShowTime(uint32 delay) {
 uint32 StdHandle(uint32 choice) {
 	uint32 succ_eventnr = 0, locNr, objNr;
 	struct Scene *scene = GetCurrentScene();
-	char line[TXT_KEY_LENGTH];
-	Location loc;
 
 	switch ((uint32)(choice)) {
 	case GO:
@@ -351,12 +349,12 @@ uint32 StdHandle(uint32 choice) {
 				objNr = GetObjNrOfLocation(locNr);
 
 				if (objNr) {
-					loc = (Location)dbGetObject(objNr);
-
+					Location loc = (Location)dbGetObject(objNr);
 					if ((GetMinute < loc->OpenFromMinute)
 					        || (GetMinute > loc->OpenToMinute)) {
 						ShowMenuBackground();
 
+						char line[TXT_KEY_LENGTH];
 						txtGetFirstLine(THECLOU_TXT, "No_Entry", line);
 
 						PrintStatus(line);
@@ -468,8 +466,6 @@ uint32 StdHandle(uint32 choice) {
 }
 
 void StdDone(void) {
-	uint32 choice;
-	byte activ = 0;
 	LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
 
 	SceneArgs.ReturnValue = 0L;
@@ -493,21 +489,19 @@ void StdDone(void) {
 			inpTurnESC(0);
 			inpTurnFunctionKey(1);
 
-			activ =
-			    Menu(menu, SceneArgs.Moeglichkeiten, (byte)(activ), NULL, 0L);
+			byte activ = 0;
+			activ = Menu(menu, SceneArgs.Moeglichkeiten, (byte)(activ), NULL, 0L);
 
 			if (activ == (byte) - 1) {
 				ShowTheClouRequester(No_Error);
-				SceneArgs.ReturnValue =
-				    ((Player) dbGetObject(Player_Player_1))->CurrScene;
+				SceneArgs.ReturnValue = ((Player) dbGetObject(Player_Player_1))->CurrScene;
 
 				activ = 0;
 			} else {
 				if (activ == ((byte)(TXT_MENU_TIMEOUT)))
 					activ = 0;
 				else {
-					choice = (uint32) 1L << (activ);
-
+					uint32 choice = (uint32) 1L << (activ);
 					SceneArgs.ReturnValue = StdHandle(choice);
 				}
 			}
@@ -686,9 +680,10 @@ void SetFunc(struct Scene *sc, void (*init)(void), void (*done)(void)) {
 	sc->Done = done;
 }
 
-byte tcPersonIsHere(void) {
+bool tcPersonIsHere(void) {
 	uint32 locNr = GetObjNrOfLocation(GetLocation);
 
+// TODO: invert the check to return directly
 	if (locNr) {
 		if (locNr == Location_Fat_Mans_Pub) {
 			tcMoveAPerson(Person_Richard_Doil, locNr);
@@ -708,22 +703,21 @@ byte tcPersonIsHere(void) {
 		hasAll(locNr, 0, Object_Person);
 
 		if (LIST_EMPTY(ObjectList))
-			return (0);
-		else
-			return (1);
+			return false;
+
+		return true;
 	}
-	return (0);
+	return false;
 }
 
 void tcPersonGreetsMatt(void) {
 	static uint32 upper = 4L;
-	uint32 locNr;
 
 	if (CalcRandomNr(0L, upper) == 1) { /* alle upper mal wird Matt gegrüßt ! */
 		if (CalcRandomNr(0L, 4L) == 1)  /* alle 4 mal */
 			upper += 2;     /* wahrscheinlichkeit wird kleiner ! */
 
-		locNr = GetObjNrOfLocation(GetLocation);
+		uint32 locNr = GetObjNrOfLocation(GetLocation);
 
 		if (locNr) {
 			hasAll(locNr, 0, Object_Person);
@@ -746,9 +740,10 @@ void tcGetLastName(const char *Name, char *dest, uint32 maxLength) {
 	const char *s;
 	char lastName[TXT_KEY_LENGTH];
 
-	for (s = Name; *s != '\0'; s++)
+	for (s = Name; *s != '\0'; s++) {
 		if (*s == ' ')
 			break;
+	}
 
 	strcpy(lastName, s + 1);
 
@@ -759,18 +754,17 @@ void tcGetLastName(const char *Name, char *dest, uint32 maxLength) {
 }
 
 void tcCutName(char *Name, byte Sign, uint32 maxLength) {
-	int32 i;
-	uint32 j;
 	char Source[TXT_KEY_LENGTH];
-
 	strcpy(Source, Name);
 
-	if ((j = strlen(Source)) > maxLength)
+	uint32 j = strlen(Source);
+	if (j > maxLength)
 		j = maxLength;
 
-	for (i = j - 1; i >= 0; i--)
+	for (int32 i = j - 1; i >= 0; i--) {
 		if (Source[i] == Sign)
 			Source[i] = '\0';
+	}
 
 	strcpy(Name, Source);
 }
