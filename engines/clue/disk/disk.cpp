@@ -22,33 +22,30 @@ void dskSetRootPath(const char *newRootPath) {
 	strcpy(RootPathName, newRootPath);
 }
 
+#if 0
 char *dskGetRootPath(char *result) {
 	return strcpy(result, RootPathName);
 }
+#endif
 
 FILE *dskOpen(const char *Pathname, const char *Mode) {
-	FILE *fp;
-
 	DebugMsg(ERR_DEBUG, ERROR_MODULE_DISK, "Opening :%s (%s)", Pathname, Mode);
 
-	if (!(fp = fopen(Pathname, Mode))) {
+	FILE *fp = fopen(Pathname, Mode);
+	if (!fp)
 		DebugMsg(ERR_ERROR, ERROR_MODULE_DISK, "Open :%s", Pathname);
-	}
 
 	return fp;
 }
 
 void *dskLoad(const char *Pathname) {
-	FILE *fp;
-	uint8 *ptr;
-	size_t size, pos;
 
-	pos  = 0;
-	size = BUFSIZ;
-	ptr  = (uint8 *)malloc(size);
-
-	if ((fp = dskOpen(Pathname, "rb"))) {
+	FILE *fp = dskOpen(Pathname, "rb");
+	if (fp) {
 		size_t nread;
+		size_t pos = 0;
+		size_t size = BUFSIZ;
+		uint8 *ptr = (uint8 *)malloc(size);
 
 		while ((nread = fread(ptr + pos, 1, BUFSIZ, fp)) == BUFSIZ) {
 			pos  += nread;
@@ -65,14 +62,15 @@ void *dskLoad(const char *Pathname) {
 	return NULL;
 }
 
+#if 0
 void dskSave(const char *Pathname, void *src, size_t size) {
-	FILE *fp;
-
-	if ((fp = dskOpen(Pathname, "wb"))) {
+	FILE *fp = dskOpen(Pathname, "wb");
+	if (fp) {
 		dskWrite(fp, src, size);
 		dskClose(fp);
 	}
 }
+#endif
 
 static void strUpper(char *s) {
 	while (*s != '\0') {
@@ -88,13 +86,12 @@ static void strLower(char *s) {
 	}
 }
 
-bool dskBuildPathName(DiskCheckE check,
-                      const char *Directory, const char *Filename, char *Result) {
+bool dskBuildPathName(DiskCheckE check, const char *Directory, const char *Filename, char *Result) {
+	int step = 0;
+
 	char Dir [DSK_PATH_MAX];
 	char File[DSK_PATH_MAX];
 	struct stat status;
-
-	int step = 0;
 
 	do {
 		switch (step++) {
@@ -142,11 +139,10 @@ bool dskBuildPathName(DiskCheckE check,
 size_t dskFileLength(const char *Pathname) {
 	struct stat status;
 
-	if (stat(Pathname, &status) == -1) {
+	if (stat(Pathname, &status) == -1)
 		return 0;
-	} else {
-		return status.st_size;
-	}
+
+	return status.st_size;
 }
 
 void dskClose(FILE *fp) {
@@ -162,16 +158,12 @@ void dskWrite(FILE *fp, void *src, size_t size) {
 }
 
 void dskWrite_U8(FILE *fp, uint8 *x) {
-	uint8 tmp;
-
-	tmp = *x;
+	uint8 tmp = *x;
 	dskWrite(fp, &tmp, sizeof(tmp));
 }
 
 void dskWrite_S8(FILE *fp, int8 *x) {
-	int8 tmp;
-
-	tmp = *x;
+	int8 tmp = *x;
 	dskWrite(fp, &tmp, sizeof(tmp));
 }
 
@@ -262,14 +254,14 @@ void dskRead_S32LE(FILE *fp, int32 *x) {
 }
 
 bool dskGetLine(char *s, int size, FILE *fp) {
-	char *p;
 	if (fgets(s, size, fp)) {
-		if (p = strrchr(s, '\n')) {
+		char *p;
+		if (p = strrchr(s, '\n'))
 			*p = '\0';
-		}
-		if (p = strrchr(s, '\r')) {
+
+		if (p = strrchr(s, '\r'))
 			*p = '\0';
-		}
+
 		return true;
 	}
 	return false;

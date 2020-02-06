@@ -26,7 +26,7 @@
 namespace Clue {
 
 void tcAsTimeGoesBy(uint32 untilMinute) {
-	untilMinute = untilMinute % 1440;
+	untilMinute %= 1440;
 
 	while (GetMinute != untilMinute) {
 		inpDelay(1);
@@ -39,12 +39,10 @@ void tcAsTimeGoesBy(uint32 untilMinute) {
 }
 
 void tcAsDaysGoBy(uint32 day, uint32 stepSize) {
-	uint32 add;
-
 	while (GetDay < day) {
 		inpDelay(3);
 
-		add = CalcRandomNr(stepSize - stepSize / 30, stepSize + stepSize / 30);
+		uint32 add = CalcRandomNr(stepSize - stepSize / 30, stepSize + stepSize / 30);
 
 		SetDay(GetDay + add);
 
@@ -69,10 +67,8 @@ void tcTheAlmighty(uint32 time) {
 }
 
 void tcMovePersons(uint32 personCount, uint32 time) {
-	uint32 i, count;
-	uint32 persID, locID;
-
-	for (i = 0; i < personCount; i++) {
+	for (uint32 i = 0; i < personCount; i++) {
+		uint32 persID;
 
 		if (g_clue->getFeatures() & GF_PROFIDISK) {
 			persID = CalcRandomNr(Person_Paul_O_Conner, Person_Pere_Ubu + 1);
@@ -84,10 +80,10 @@ void tcMovePersons(uint32 personCount, uint32 time) {
 			likes_to_beAll(persID, 0, Object_Location);
 
 			if (!(LIST_EMPTY(ObjectList))) {
-				count = GetNrOfNodes(ObjectList);
+				uint32 count = GetNrOfNodes(ObjectList);
 				time = time * count / 1441;
 
-				locID = OL_NR(GetNthNode(ObjectList, time));
+				uint32 locID = OL_NR(GetNthNode(ObjectList, time));
 
 				tcMoveAPerson(persID, locID);
 			}
@@ -96,17 +92,13 @@ void tcMovePersons(uint32 personCount, uint32 time) {
 }
 
 void tcMoveAPerson(uint32 persID, uint32 newLocID) {
-	uint32 oldLocID;
-
 	hasAll(persID, 0, Object_Location); /* wo is er denn ? */
 
 	if (!(LIST_EMPTY(ObjectList))) {
 		NODE *n;
 
-		for (n = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(n);
-		        n = (NODE *) NODE_SUCC(n)) {
-			oldLocID = OL_NR(n);
-
+		for (n = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n)) {
+			uint32 oldLocID = OL_NR(n);
 			hasUnSet(persID, oldLocID);
 			hasUnSet(oldLocID, persID);
 		}
@@ -116,9 +108,8 @@ void tcMoveAPerson(uint32 persID, uint32 newLocID) {
 	hasSet(newLocID, persID);
 }
 
-uint32 tcBurglary(uint32 buildingID)
+uint32 tcBurglary(uint32 buildingID) {
 /* wird von 2 Stellen aufgerufen! (story_9)! */
-{
 	int32 ret;
 	Building b = (Building)dbGetObject(buildingID);
 
@@ -172,12 +163,11 @@ uint32 tcBurglary(uint32 buildingID)
 
 void tcRefreshLocationInTitle(uint32 locNr) {
 	char date[TXT_KEY_LENGTH], line[TXT_KEY_LENGTH];
-	NODE *node;
 
 	gfxSetPens(m_gc, 3, GFX_SAME_PEN, GFX_SAME_PEN);
 
 	BuildDate(GetDay, date);
-	node = (NODE *)GetNthNode(film->loc_names, locNr);
+	NODE *node = (NODE *)GetNthNode(film->loc_names, locNr);
 
 	sprintf(line, "%s %s", NODE_NAME(node), date);
 	ShowMenuBackground();
@@ -185,25 +175,18 @@ void tcRefreshLocationInTitle(uint32 locNr) {
 }
 
 void StdInit(void) {
-	struct Scene *sc;
-	byte sameLocation = 0;
-	NODE *node;
+	struct Scene *sc = GetCurrentScene();
+	bool sameLocation = (sc->LocationNr == GetLocation);
 
-	sc = GetCurrentScene();
-
-	if (sc->LocationNr == GetLocation)
-		sameLocation = 1;
-
-	if ((sc->LocationNr != (uint32) -1) && (GetLocation != sc->LocationNr))
+	if ((sc->LocationNr != (uint32) -1) && !sameLocation)
 		SetLocation(sc->LocationNr);
 
 	tcRefreshLocationInTitle(sc->LocationNr);
 
-	node = (NODE *)GetNthNode(film->loc_names, sc->LocationNr);
+	NODE *node = (NODE *)GetNthNode(film->loc_names, sc->LocationNr);
 
 	if (((RefreshMode) || (!sameLocation)))
-		PlayAnim(NODE_NAME(node), (int16) 30000,
-		         GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
+		PlayAnim(NODE_NAME(node), (int16) 30000, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
 
 	ShowTime(0);        /* Zeit sollte nach der Anim gezeigt werden, sonst Probleme mit Diskversion */
 
@@ -311,32 +294,28 @@ void tcPlayStreetSound() {
 			}
 		}
 
-		{
-			static byte counter = 0;
-			bool noStreetMusic = false;
+		static byte counter = 0;
+		bool noStreetMusic = false;
 
-			if (strcmp(sndGetCurrSoundName(), "street1.bk") &&
-			        strcmp(sndGetCurrSoundName(), "street2.bk") &&
-			        strcmp(sndGetCurrSoundName(), "street3.bk"))
-				noStreetMusic = true;
+		if (strcmp(sndGetCurrSoundName(), "street1.bk") && strcmp(sndGetCurrSoundName(), "street2.bk") && strcmp(sndGetCurrSoundName(), "street3.bk"))
+			noStreetMusic = true;
 
-			if (!counter || noStreetMusic) {
-				counter = CalcRandomNr(7, 13);
+		if (!counter || noStreetMusic) {
+			counter = CalcRandomNr(7, 13);
 
-				switch (CalcRandomNr(0, 3)) {
-				case 0:
-					sndPlaySound("street1.bk", 0);
-					break;
-				case 1:
-					sndPlaySound("street2.bk", 0);
-					break;
-				default:
-					sndPlaySound("street3.bk", 0);
-					break;
-				}
-			} else
-				counter--;
-		}
+			switch (CalcRandomNr(0, 3)) {
+			case 0:
+				sndPlaySound("street1.bk", 0);
+				break;
+			case 1:
+				sndPlaySound("street2.bk", 0);
+				break;
+			default:
+				sndPlaySound("street3.bk", 0);
+				break;
+			}
+		} else
+			counter--;
 	}
 }
 

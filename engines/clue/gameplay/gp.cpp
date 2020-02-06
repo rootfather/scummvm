@@ -112,8 +112,6 @@ void InitLocations(void) {
 }
 
 void PatchStory(void) {
-	struct TCEventNode *node;
-
 	if (!(GamePlayMode & GP_DEMO)) {
 		GetScene(26214400L)->bed->Ort = 3;  /* 4th Burglary, Hotelzimmer */
 		GetScene(26738688L)->bed->Ort = 7;  /* Arrest, Polizei!          */
@@ -137,15 +135,11 @@ void PatchStory(void) {
 
 		/* für die Kaserne hier einen Successor eingetragen! */
 		GetLocScene(65)->std_succ = CreateList();
-		node =
-		    (struct TCEventNode *) CreateNode(GetLocScene(65)->std_succ,
-		                                      sizeof(*node), NULL);
+		struct TCEventNode *node = (struct TCEventNode *) CreateNode(GetLocScene(65)->std_succ, sizeof(*node), NULL);
 		node->EventNr = SCENE_KASERNE_OUTSIDE;  /* wurscht... */
 
 		GetLocScene(66)->std_succ = CreateList();
-		node =
-		    (struct TCEventNode *) CreateNode(GetLocScene(66)->std_succ,
-		                                      sizeof(*node), NULL);
+		node = (struct TCEventNode *) CreateNode(GetLocScene(66)->std_succ, sizeof(*node), NULL);
 		node->EventNr = SCENE_KASERNE_INSIDE;   /* wurscht... */
 
 		film->StartScene = SCENE_STATION;
@@ -268,14 +262,12 @@ uint32 PlayStory(void) {
 }
 
 struct Scene *GetStoryScene(struct Scene *curr) {
-	uint32 i, j;
-
-	for (i = 0; i < film->AmountOfScenes; i++) {
+	for (uint32 i = 0; i < film->AmountOfScenes; i++) {
 		if (film->gameplay[i].LocationNr == (uint32) - 1) {
 			struct Scene *sc = &film->gameplay[i];
 
 			if (sc != curr) {
-				j = CalcRandomNr(0L, 255L);
+				uint32 j = CalcRandomNr(0L, 255L);
 
 				if (j <= (uint32)(sc->Probability))
 					if (CheckConditions(sc))
@@ -288,10 +280,9 @@ struct Scene *GetStoryScene(struct Scene *curr) {
 }
 
 struct Scene *GetScene(uint32 EventNr) {
-	uint32 i;
 	struct Scene *sc = NULL;
 
-	for (i = 0; i < film->AmountOfScenes; i++)
+	for (uint32 i = 0; i < film->AmountOfScenes; i++)
 		if (EventNr == film->gameplay[i].EventNr)
 			sc = &(film->gameplay[i]);
 
@@ -299,27 +290,25 @@ struct Scene *GetScene(uint32 EventNr) {
 }
 
 int32 GetEventCount(uint32 EventNr) {
-	struct Scene *sc;
+	struct Scene *sc = GetScene(EventNr);
 
-	if ((sc = GetScene(EventNr)))
+	if (sc)
 		return ((int32)(sc->Geschehen));
-	else
-		return 0;
+
+	return 0;
 }
 
 void EventDidHappen(uint32 EventNr) {
-	struct Scene *sc;
 	uint32 max = CAN_ALWAYS_HAPPEN;
+	struct Scene *sc = GetScene(EventNr);
 
-	if ((sc = GetScene(EventNr)))
+	if (sc) {
 		if (sc->Geschehen < max)
 			sc->Geschehen += 1;
+	}
 }
 
 int32 CheckConditions(struct Scene *scene) {
-	struct Bedingungen *bed;
-	NODE *node;
-
 	/* wenn Std Szene, dann muß nichts überprüft werden ! */
 
 	if (scene->LocationNr != (uint32) - 1)
@@ -332,7 +321,8 @@ int32 CheckConditions(struct Scene *scene) {
 		return (0L);
 
 	/* Jetzt die einzelnen Bedingungen überprüfen */
-	if (!(bed = (scene->bed)))
+	struct Bedingungen *bed = scene->bed;
+	if (!bed)
 		return (1L);
 
 	if (bed->Ort != (uint32) - 1)       /* spielt der Ort eine Rolle ? */
@@ -345,8 +335,7 @@ int32 CheckConditions(struct Scene *scene) {
 	 */
 
 	if (bed->n_events) {
-		for (node = LIST_HEAD(bed->n_events); NODE_SUCC(node);
-		        node = NODE_SUCC(node)) {
+		for (NODE *node = LIST_HEAD(bed->n_events); NODE_SUCC(node); node = NODE_SUCC(node)) {
 			if (GetEventCount(((struct TCEventNode *) node)->EventNr))
 				return (0L);
 		}
@@ -358,8 +347,7 @@ int32 CheckConditions(struct Scene *scene) {
 	 */
 
 	if (bed->events) {
-		for (node = LIST_HEAD(bed->events); NODE_SUCC(node);
-		        node = NODE_SUCC(node)) {
+		for (NODE *node = LIST_HEAD(bed->events); NODE_SUCC(node); node = NODE_SUCC(node)) {
 			if (!GetEventCount(((struct TCEventNode *) node)->EventNr))
 				return (0L);
 		}
@@ -368,28 +356,19 @@ int32 CheckConditions(struct Scene *scene) {
 	return (1L);
 }
 
-void PrepareStory(const char *filename)
+void PrepareStory(const char *filename) {
 /*
  * completely revised 02-02-93
  * tested : 26-03-93
  */
-{
-	uint32 i, j;
-	struct Scene *scene;
-	struct StoryHeader SH;
-	struct NewScene NS;
-	struct TCEventNode *node;
-	FILE *file;
 	char pathname[DSK_PATH_MAX];
-
 	dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, filename, pathname);
 
 	/* StoryHeader laden ! */
+	FILE *file = dskOpen(pathname, "rb");
 
-	file = dskOpen(pathname, "rb");
-
+	struct StoryHeader SH;
 	dskRead(file, SH.StoryName, sizeof(SH.StoryName));
-
 	dskRead_U32LE(file, &SH.EventCount);
 	dskRead_U32LE(file, &SH.SceneCount);
 
@@ -417,10 +396,11 @@ void PrepareStory(const char *filename)
 	} else
 		ErrorMsg(Disk_Defect, ERROR_MODULE_GAMEPLAY, 7);
 
-	for (i = 0; i < film->AmountOfScenes; i++) {
+	for (uint32 i = 0; i < film->AmountOfScenes; i++) {
+		struct NewScene NS;
 		LoadSceneforStory(&NS, file);
 
-		scene = &(film->gameplay[i]);
+		struct Scene *scene = &(film->gameplay[i]);
 
 		scene->EventNr = NS.EventNr;
 
@@ -445,12 +425,8 @@ void PrepareStory(const char *filename)
 		if (NS.AnzahlderNachfolger) {
 			scene->std_succ = CreateList();
 
-			for (j = 0; j < NS.AnzahlderNachfolger; j++) {
-				node =
-				    (struct TCEventNode *) CreateNode(scene->std_succ,
-				                                      sizeof(*node),
-				                                      NULL);
-
+			for (uint32 j = 0; j < NS.AnzahlderNachfolger; j++) {
+				struct TCEventNode *node = (struct TCEventNode *) CreateNode(scene->std_succ, sizeof(*node), NULL);
 				node->EventNr = NS.nachfolger[j];
 			}
 
@@ -465,19 +441,15 @@ void PrepareStory(const char *filename)
 }
 
 void InitConditions(struct Scene *scene, struct NewScene *ns) {
-	struct Bedingungen *bed;
-	struct TCEventNode *node;
-	uint32 i;
-
-	bed = (struct Bedingungen *) TCAllocMem(sizeof(*bed), 0);
+	struct Bedingungen *bed = (struct Bedingungen *) TCAllocMem(sizeof(*bed), 0);
 
 	bed->Ort = ns->Ort;
 
 	if (ns->AnzahlderEvents) {
 		bed->events = CreateList();
 
-		for (i = 0; i < ns->AnzahlderEvents; i++) {
-			node =
+		for (uint32 i = 0; i < ns->AnzahlderEvents; i++) {
+			struct TCEventNode *node =
 			    (struct TCEventNode *) CreateNode(bed->events, sizeof(*node),
 			                                      NULL);
 
@@ -492,8 +464,8 @@ void InitConditions(struct Scene *scene, struct NewScene *ns) {
 	if (ns->AnzahlderN_Events) {
 		bed->n_events = CreateList();
 
-		for (i = 0; i < ns->AnzahlderN_Events; i++) {
-			node =
+		for (uint32 i = 0; i < ns->AnzahlderN_Events; i++) {
+			struct TCEventNode *node =
 			    (struct TCEventNode *) CreateNode(bed->n_events,
 			                                      sizeof(*node), NULL);
 
@@ -522,9 +494,6 @@ void FreeConditions(struct Scene *scene) {
 }
 
 void LoadSceneforStory(struct NewScene *dest, FILE *file) {
-	uint32 *event_nrs = NULL;
-	uint32 dummy;
-
 	dskRead_U32LE(file, &dest->EventNr);
 
 	dskRead(file, dest->SceneName, sizeof(dest->SceneName));
@@ -537,6 +506,7 @@ void LoadSceneforStory(struct NewScene *dest, FILE *file) {
 	dskRead_U32LE(file, &dest->AnzahlderEvents);
 	dskRead_U32LE(file, &dest->AnzahlderN_Events);
 
+	uint32 dummy;
 	dskRead_U32LE(file, &dummy);
 	dskRead_U32LE(file, &dummy);
 
@@ -557,15 +527,13 @@ void LoadSceneforStory(struct NewScene *dest, FILE *file) {
 	dskRead_U32LE(file, &dest->NewOrt);
 
 	/* allocate mem for events and read them */
+	uint32 *event_nrs;
 	if (dest->AnzahlderEvents) {
-		uint32 i;
-
-		if (!
-		        (event_nrs =
-		             (uint32 *) TCAllocMem(sizeof(uint32) * (dest->AnzahlderEvents), 0)))
+		event_nrs = (uint32 *) TCAllocMem(sizeof(uint32) * (dest->AnzahlderEvents), 0);
+		if (!event_nrs)
 			ErrorMsg(No_Mem, ERROR_MODULE_GAMEPLAY, 8);
 
-		for (i = 0; i < dest->AnzahlderEvents; i++)
+		for (uint32 i = 0; i < dest->AnzahlderEvents; i++)
 			dskRead_U32LE(file, &event_nrs[i]);
 	} else
 		event_nrs = NULL;
@@ -574,14 +542,11 @@ void LoadSceneforStory(struct NewScene *dest, FILE *file) {
 
 	/* allocate mem for n_events and read them */
 	if (dest->AnzahlderN_Events) {
-		uint32 i;
-
-		if (!
-		        (event_nrs =
-		             (uint32 *) TCAllocMem(sizeof(uint32) * (dest->AnzahlderN_Events), 0)))
+		event_nrs = (uint32 *) TCAllocMem(sizeof(uint32) * (dest->AnzahlderN_Events), 0);
+		if (!event_nrs)
 			ErrorMsg(No_Mem, ERROR_MODULE_GAMEPLAY, 9);
 
-		for (i = 0; i < dest->AnzahlderN_Events; i++)
+		for (uint32 i = 0; i < dest->AnzahlderN_Events; i++)
 			dskRead_U32LE(file, &event_nrs[i]);
 	} else
 		event_nrs = NULL;
@@ -590,14 +555,11 @@ void LoadSceneforStory(struct NewScene *dest, FILE *file) {
 
 	/* allocate mem for successors and read them */
 	if (dest->AnzahlderNachfolger) {
-		uint32 i;
-
-		if (!
-		        (event_nrs =
-		             (uint32 *) TCAllocMem(sizeof(uint32) * (dest->AnzahlderNachfolger), 0)))
+		event_nrs = (uint32 *) TCAllocMem(sizeof(uint32) * (dest->AnzahlderNachfolger), 0);
+		if (!event_nrs)
 			ErrorMsg(No_Mem, ERROR_MODULE_GAMEPLAY, 10);
 
-		for (i = 0; i < dest->AnzahlderNachfolger; i++)
+		for (uint32 i = 0; i < dest->AnzahlderNachfolger; i++)
 			dskRead_U32LE(file, &event_nrs[i]);
 	} else
 		event_nrs = NULL;
@@ -606,13 +568,11 @@ void LoadSceneforStory(struct NewScene *dest, FILE *file) {
 }
 
 void AddVTime(uint32 add) {
-	uint32 time;
-	uint32 tag;
 
-	time = GetMinute + add;
+	uint32 time = GetMinute + add;
 
 	if (time >= MINUTES_PER_DAY) {
-		tag = GetDay + time / MINUTES_PER_DAY;
+		uint32 tag = GetDay + time / MINUTES_PER_DAY;
 
 		SetDay(tag);
 		time = time % MINUTES_PER_DAY;
@@ -636,13 +596,12 @@ struct Scene *GetCurrentScene(void) {
 }
 
 struct Scene *GetLocScene(uint32 locNr) {
-	uint32 i;
-	struct Scene *sc;
 
-	for (i = 0; i < film->AmountOfScenes; i++)
-		if (((sc = &film->gameplay[i])->LocationNr) == locNr)
+	for (uint32 i = 0; i < film->AmountOfScenes; i++) {
+		struct Scene *sc = &film->gameplay[i];
+		if (sc->LocationNr == locNr)
 			return (sc);
-
+	}
 	ErrorMsg(Internal_Error, ERROR_MODULE_GAMEPLAY, 12);
 	return NULL;
 }
@@ -658,7 +617,7 @@ char *BuildTime(uint32 min, char *time) {
 	uint32 h = (min / 60) % 24;
 	char s[TXT_KEY_LENGTH];
 
-	min = min % 60;
+	min %= 60;
 
 	FormatDigit(h, s);
 	sprintf(time, "%s:", s);
@@ -669,15 +628,16 @@ char *BuildTime(uint32 min, char *time) {
 }
 
 char *BuildDate(uint32 days, char *date) {
-	uint8 days_per_month[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-	uint32 i, p_year, year, month = 0, day;
-	char s[TXT_KEY_LENGTH];
+	const uint8 days_per_month[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
+	uint32 p_year, i;
 	for (i = 0, p_year = 0; i < 12; i++)
 		p_year += days_per_month[i];
 
-	year = days / p_year;   /* which daywelches Jahr ? */
+	uint32 year = days / p_year;   /* which daywelches Jahr ? */
 	days = days % p_year;   /* wieviele Tage noch in diesem Jahr */
+
+	uint32 month = 0;
 
 	for (i = 0, p_year = 0; i < 12; i++) {
 		p_year += days_per_month[i];
@@ -688,8 +648,9 @@ char *BuildDate(uint32 days, char *date) {
 		}
 	}
 
-	day = days - (p_year - days_per_month[month]);
+	uint32 day = days - (p_year - days_per_month[month]);
 
+	char s[TXT_KEY_LENGTH];
 	FormatDigit(day + 1, s);
 	strcpy(date, s);
 	strcat(date, ".");
@@ -703,10 +664,7 @@ char *BuildDate(uint32 days, char *date) {
 }
 
 char *GetCurrLocName(void) {
-	uint32 index;
-
-	index = GetCurrentScene()->LocationNr;
-
+	uint32 index = GetCurrentScene()->LocationNr;
 	return (NODE_NAME(GetNthNode(film->loc_names, index)));
 }
 

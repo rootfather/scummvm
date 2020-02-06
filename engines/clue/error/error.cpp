@@ -47,15 +47,6 @@ static const char *moduleNames[ERROR_MODULE_LAST] = {
 	"Input"
 };
 
-struct ErrorHandler {
-	char Filename[DSK_PATH_MAX];
-	bool uch_OutputToFile;
-};
-
-/* implementation */
-
-struct ErrorHandler ErrorHandler;
-
 bool pcErrOpen(int32 l_Mode, const char *ErrorFilename) {
 	return true;
 }

@@ -22,13 +22,16 @@ typedef enum {
 	DISK_CHECK_DIR
 } DiskCheckE;
 
-extern void dskSetRootPath(const char *newRootPath);
+#if 0
+// CHECKME: Remove this when it's confirmed to be unused
 extern char *dskGetRootPath(char *result);
+void dskSave(const char *Pathname, void *src, size_t size);
+#endif
+
+extern void dskSetRootPath(const char *newRootPath);
 
 void *dskLoad(const char *Pathname);
-void dskSave(const char *Pathname, void *src, size_t size);
-bool dskBuildPathName(DiskCheckE check,
-                      const char *Directory, const char *Filename, char *Result);
+bool dskBuildPathName(DiskCheckE check, const char *Directory, const char *Filename, char *Result);
 void dskClose(FILE *fp);
 void dskWrite(FILE *fp, void *src, size_t size);
 
