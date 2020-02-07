@@ -464,7 +464,7 @@ static byte StartupMenu(void) {
 	} else {
 		if (g_clue->getFeatures() & ADGF_CD) {
 			PrintStatus(txtGetFirstLine(THECLOU_TXT,
-			                            "BITTE_WARTEN_PC_CD_ROM", line));
+			                            "BITTE_WARTEM_PC_CD_ROM", line));
 		} else {
 			PrintStatus(txtGetFirstLine(THECLOU_TXT,
 			                            "BITTE_WARTEN_PC", line));
