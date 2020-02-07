@@ -43,6 +43,7 @@ char ClueEngine::getTxtLanguage() const {
 	switch (_gameDescription->language)
 	{
 	case Common::EN_ANY:
+	case Common::CZ_CZE:
 		return 'e';
 	case Common::FR_FRA:
 		return 'f';
