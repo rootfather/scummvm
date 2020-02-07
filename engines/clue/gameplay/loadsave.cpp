@@ -216,14 +216,12 @@ void tcRefreshAfterLoad(bool loaded) {
 		if (player)
 			player->CurrScene = 0L;
 		ErrorMsg(Disk_Defect, ERROR_MODULE_LOADSAVE, 2);
-	} else {
-		if (player) {
-			SetDay(player->CurrDay);
-			SetTime(player->CurrMinute);
-			SetLocation(-1);    /* auf alle Fälle ein Refresh! */
+	} else if (player) {
+		SetDay(player->CurrDay);
+		SetTime(player->CurrMinute);
+		SetLocation(-1);    /* auf alle Fälle ein Refresh! */
 
-			SceneArgs.ReturnValue = GetLocScene(player->CurrLocation)->EventNr;
-		}
+		SceneArgs.ReturnValue = GetLocScene(player->CurrLocation)->EventNr;
 	}
 }
 

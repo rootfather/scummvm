@@ -206,21 +206,15 @@ void gfxCorrectUpperRPBitmap(void)
  */
 
 static void gfxInitCollList(void) {
-	char pathname[DSK_PATH_MAX];
 	LIST *tempList = CreateList();
-	NODE *n;
-
 	CollectionList = CreateList();
 
+	char pathname[DSK_PATH_MAX];
 	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, COLL_LIST_TXT, pathname);
 	ReadList(tempList, 0, pathname);
 
-	for (n = (NODE *) LIST_HEAD(tempList); NODE_SUCC(n);
-	        n = (NODE *) NODE_SUCC(n)) {
-		struct Collection *coll;
-
-		coll =
-		    (Collection *)CreateNode(CollectionList, sizeof(struct Collection),
+	for (NODE *n = (NODE *) LIST_HEAD(tempList); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n)) {
+		struct Collection *coll = (Collection *)CreateNode(CollectionList, sizeof(struct Collection),
 		                             txtGetKey(2, NODE_NAME(n)));
 
 		coll->us_CollId = (uint16) txtGetKeyAsULONG(1, NODE_NAME(n));
@@ -239,19 +233,15 @@ static void gfxInitCollList(void) {
 }
 
 static void gfxInitPictList(void) {
-	char pathname[DSK_PATH_MAX];
 	LIST *tempList = CreateList();
-	NODE *n;
-
 	PictureList = CreateList();
 
+	char pathname[DSK_PATH_MAX];
 	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, PICT_LIST_TXT, pathname);
 	ReadList(tempList, 0, pathname);
 
-	for (n = LIST_HEAD(tempList); NODE_SUCC(n); n = NODE_SUCC(n)) {
-		struct Picture *pict;
-
-		pict = (Picture *)CreateNode(PictureList, sizeof(*pict), NULL);
+	for (NODE *n = LIST_HEAD(tempList); NODE_SUCC(n); n = NODE_SUCC(n)) {
+		struct Picture *pict = (Picture *)CreateNode(PictureList, sizeof(*pict), NULL);
 
 		pict->us_PictId = (uint16) txtGetKeyAsULONG(1, NODE_NAME(n));
 		pict->us_CollId = (uint16) txtGetKeyAsULONG(2, NODE_NAME(n));
@@ -280,40 +270,37 @@ typedef struct {
  * Clips the rectangle B against rectangle A.
  */
 static Rectangle Clip(Rectangle A, Rectangle B) {
-	int dist;
 	Rectangle C = { 0, 0, -1, -1 };
 
-	if (B.x >= A.x + A.w) {
+	if (B.x >= A.x + A.w)
 		return C;
-	}
-	if (B.x + B.w <= A.x) {
-		return C;
-	}
-	if (B.y >= A.y + A.h) {
-		return C;
-	}
-	if (B.y + B.h <= A.y) {
-		return C;
-	}
 
-	dist = A.x - B.x;
+	if (B.x + B.w <= A.x)
+		return C;
+
+	if (B.y >= A.y + A.h)
+		return C;
+
+	if (B.y + B.h <= A.y)
+		return C;
+
+	int dist = A.x - B.x;
 	if (dist > 0) {
 		B.x += dist;
 		B.w -= dist;
 	}
 	dist = (B.x + B.w) - (A.x + A.w);
-	if (dist > 0) {
+	if (dist > 0)
 		B.w -= dist;
-	}
+
 	dist = A.y - B.y;
 	if (dist > 0) {
 		B.y += dist;
 		B.h -= dist;
 	}
 	dist = (B.y + B.h) - (A.y + A.h);
-	if (dist > 0) {
+	if (dist > 0)
 		B.h -= dist;
-	}
 
 	return B;
 }
@@ -324,22 +311,21 @@ static Rectangle Clip(Rectangle A, Rectangle B) {
 
 static void gfxInitGC(GC *gc, uint16 x, uint16 y, uint16 w, uint16 h,
                       uint8 colorStart, uint8 End, Font *font) {
-	Rectangle dstR, dstR2;
-
+	Rectangle dstR;
 	dstR.x = 0;
 	dstR.y = 0;
 	dstR.w = SCREEN_WIDTH;
 	dstR.h = SCREEN_HEIGHT;
 
+	Rectangle dstR2;
 	dstR2.x = x;
 	dstR2.y = y;
 	dstR2.w = w;
 	dstR2.h = h;
 	dstR = Clip(dstR, dstR2);
 
-	if (dstR.w <= 0 || dstR.h <= 0) {
+	if (dstR.w <= 0 || dstR.h <= 0)
 		DebugMsg(ERR_ERROR, ERROR_MODULE_GFX, "gfxInitGC");
-	}
 
 	gc->clip.x      = dstR.x;
 	gc->clip.y      = dstR.y;
@@ -371,17 +357,8 @@ static void gfxInitGC(GC *gc, uint16 x, uint16 y, uint16 w, uint16 h,
 static Font *gfxOpenFont(const char *fileName, uint16 w, uint16 h,
                          unsigned char first, unsigned char last,
                          uint16 sw, uint16 sh) {
-	Font *font;
-
-	char path[DSK_PATH_MAX];
-	uint8 *lbm;
-
-	Graphics::Surface *bmp;
-	uint32 size;
-
-
 	/* create font structure. */
-	font = (Font *)TCAllocMem(sizeof(*font), true);
+	Font *font = (Font *)TCAllocMem(sizeof(*font), true);
 
 	font->w     = w;
 	font->h     = h;
@@ -389,21 +366,20 @@ static Font *gfxOpenFont(const char *fileName, uint16 w, uint16 h,
 	font->first = first;
 	font->last  = last;
 
-
+	char path[DSK_PATH_MAX];
 	dskBuildPathName(DISK_CHECK_FILE, PICTURE_DIRECTORY, fileName, path);
-	lbm = (uint8 *)dskLoad(path);
 
+	uint8 *lbm = (uint8 *)dskLoad(path);
 
-	bmp = new Graphics::Surface();
+	Graphics::Surface *bmp = new Graphics::Surface();
 	bmp->create(sw, sh, ScreenFormat);
-	size = sw * sh;
+	uint32 size = sw * sh;
 
 	gfxILBMToRAW(lbm, (uint8 *)bmp->getPixels(), size);
 
 	free(lbm);
 
 	font->bmp = bmp;
-
 	return font;
 }
 
@@ -431,16 +407,13 @@ void gfxDraw(GC *gc, uint16 x, uint16 y) {
 	y += gc->clip.y;
 
 	if (x < gc->clip.w && y < gc->clip.h) {
-		uint16 rx, ry, rx1, ry1, dx, dy, sx, sy, dw, i;
-		Graphics::Surface *dst;
-		uint8 color, *dp;
+		uint16 rx = x;
+		uint16 ry = y;
 
-		rx = x;
-		ry = y;
+		uint16 rx1 = gc->cursorX;
+		uint16 ry1 = gc->cursorY;
 
-		rx1 = gc->cursorX;
-		ry1 = gc->cursorY;
-
+		uint16 dx, sx;
 		if (rx < rx1) {
 			sx = rx;
 			dx = rx1 - rx + 1;
@@ -449,6 +422,7 @@ void gfxDraw(GC *gc, uint16 x, uint16 y) {
 			dx = rx - rx1 + 1;
 		}
 
+		uint16 dy, sy;
 		if (ry < ry1) {
 			sy = ry;
 			dy = ry1 - ry + 1;
@@ -457,16 +431,16 @@ void gfxDraw(GC *gc, uint16 x, uint16 y) {
 			dy = ry - ry1 + 1;
 		}
 
-		color = gc->foreground;
-		dst = Screen;
+		uint8 color = gc->foreground;
+		Graphics::Surface *dst = Screen;
 
-		dw = dst->w;
+		uint16 dw = dst->w;
 
-		dp = (uint8 *)dst->getPixels();
+		uint8 *dp = (uint8 *)dst->getPixels();
 		dp += sy * dw + sx;
 
 		if (rx == rx1) {
-			for (i = 0; i < dy; i++) {
+			for (uint16 i = 0; i < dy; i++) {
 				*dp = color;
 				dp += dw;
 			}
@@ -506,19 +480,15 @@ void gfxSetPens(GC *gc, uint8 foreground, uint8 background, uint8 outline) {
 		gc->outline = outline;
 }
 
-void gfxRectFill(GC *gc, uint16 sx, uint16 sy, uint16 ex, uint16 ey)
+void gfxRectFill(GC *gc, uint16 sx, uint16 sy, uint16 ex, uint16 ey) {
 /* minimum size: 3 * 3 pixels ! */
-{
-	Common::Rect dst, dst2;
-
-	if (sx > ex) {
+	if (sx > ex)
 		SWAP(sx, ex);
-	}
 
-	if (sy > ey) {
+	if (sy > ey)
 		SWAP(sy, ey);
-	}
 
+	Common::Rect dst;
 	dst.left = gc->clip.x + sx;
 	dst.top = gc->clip.y + sy;
 	dst.right = gc->clip.x + ex + 1;
@@ -540,15 +510,12 @@ void gfxSetFont(GC *gc, Font *font) {
 
 /* berechnet die Länge eines Textes in Pixel */
 uint16 gfxTextWidth(GC *gc, const char *txt, size_t len) {
-	size_t w;
+	size_t w = len * gc->font->w;
 
-	w = len * gc->font->w;
-
-	if (w > USHRT_MAX) {
+	if (w > USHRT_MAX)
 		return 0;
-	} else {
-		return w;
-	}
+
+	return w;
 }
 
 /*******************************************************************
@@ -580,9 +547,8 @@ static int32 gfxGetRealDestY(GC *gc, int32 destY) {
 
 /* nach dieser Funktion befindet sich im ScratchRP die entpackte Collection */
 void gfxPrepareColl(uint16 collId) {
-	struct Collection *coll;
-
-	if (!(coll = gfxGetCollection(collId))) {
+	struct Collection *coll = gfxGetCollection(collId);
+	if (!coll) {
 		DebugMsg(ERR_DEBUG, ERROR_MODULE_GFX, "gfxPrepareColl");
 		return;
 	}
@@ -608,10 +574,8 @@ void gfxPrepareColl(uint16 collId) {
 }
 
 void gfxLoadILBM(const char *fileName) {
-	uint8 *lbm;
-
 	/* Collection laden */
-	lbm = (uint8 *)dskLoad(fileName);
+	uint8 *lbm = (uint8 *)dskLoad(fileName);
 
 	gfxSetCMAP(lbm);
 	gfxILBMToRAW(lbm, ScratchRP.pixels, SCREEN_SIZE);
@@ -632,27 +596,24 @@ void gfxCollFromMem(uint16 collId) {
 }
 
 void gfxCollToMem(uint16 collId, MemRastPort *rp) {
-	struct Collection *coll;
-
 	/*
 	 * wenn sich in diesem MemRastPort ein anderes Bild befindet so wird dieses
 	 * nun aus dem MemRastPort "entfernt"
 	 */
 	if (rp->collId != GFX_NO_COLL_IN_MEM && collId != rp->collId) {
-		struct Collection *oldColl;
-
-		if ((oldColl = gfxGetCollection(rp->collId))) {
+		struct Collection *oldColl = gfxGetCollection(rp->collId);
+		if (oldColl)
 			oldColl->prepared = NULL;
-		}
 	}
 
 	gfxPrepareColl(collId);
 	gfxScratchToMem(rp);
 
 	/* enter the MemRastPort in the new collection */
-	if ((coll = gfxGetCollection(collId))) {
+	struct Collection *coll = gfxGetCollection(collId);
+	if (coll)
 		coll->prepared = rp;
-	}
+
 	rp->collId = collId;
 }
 
@@ -668,49 +629,46 @@ void gfxSetRect(uint16 us_X, uint16 us_Width) {
 static void
 ScreenBlitChar(GC *gc, Graphics::Surface *src, Rect *src_rect,
                Graphics::Surface *dst, Rect *dst_rect, uint8 color) {
-	Rectangle srcR, dstR, dstR2, areaR;
-
-	uint8 *dp, *sp;
-	uint16 h;
-
 	/* clip. */
+	Rectangle srcR;
 	srcR.x = src_rect->x;
 	srcR.y = src_rect->y;
 	srcR.w = src_rect->w;
 	srcR.h = src_rect->h;
 
+	Rectangle dstR;
 	dstR.x = 0;
 	dstR.y = 0;
 	dstR.w = dst->w;
 	dstR.h = dst->h;
 
+	Rectangle dstR2;
 	dstR2.x = dst_rect->x + gc->clip.x;
 	dstR2.y = dst_rect->y + gc->clip.y;
 	dstR2.w = gc->clip.w;
 	dstR2.h = gc->clip.h;
 	dstR = Clip(dstR, dstR2);
 
-	if (dstR.w <= 0 || dstR.h <= 0) {
+	if (dstR.w <= 0 || dstR.h <= 0)
 		return;
-	}
 
 	/* blit. */
+	Rectangle areaR;
 	areaR.x = dstR.x;
 	areaR.y = dstR.y;
 	areaR.w = MIN(dstR.w, srcR.w);
 	areaR.h = MIN(dstR.h, srcR.h);
 
-	dp = (uint8 *)dst->getPixels();
-	sp = (uint8 *)src->getPixels();
+	uint8 *dp = (uint8 *)dst->getPixels();
+	uint8 *sp = (uint8 *)src->getPixels();
 
-	dp += dstR.y * dst->w + dstR.x;
+	dp += areaR.y * dst->w + areaR.x;
 	sp += srcR.y * src->w + srcR.x;
 
-	h = areaR.h;
+	uint16 h = areaR.h;
 
 	while (h--) {
-		uint16 x;
-		for (x = 0; x < areaR.w; x++) {
+		for (uint16 x = 0; x < areaR.w; x++) {
 			if (sp[x] != 0) {
 				dp[x] = color;
 			}
@@ -730,12 +688,9 @@ void gfxPrintExact(GC *gc, const char *txt, uint16 x, uint16 y) {
 	             base = font->first;
 	const uint16 chars_per_line = SCREEN_WIDTH / w;
 	const uint8 fg = gc->foreground;
-	size_t len = strlen(txt), t;
+	size_t len = strlen(txt);
 
 	Common::Rect area;
-	Rect srcR, dstR;
-	Graphics::Surface *src, *dst;
-
 	area.left = gc->clip.x;
 	area.top = gc->clip.y;
 	area.setWidth(gc->clip.w);
@@ -749,19 +704,19 @@ void gfxPrintExact(GC *gc, const char *txt, uint16 x, uint16 y) {
 	if (gc->mode == GFX_JAM_2)
 		Screen->fillRect(area, gc->background);
 
+	Rect srcR;
 	srcR.w = w;
 	srcR.h = h;
 
+	Rect dstR;
 	dstR.x = x;
 	dstR.y = y;
 
-	src = font->bmp;
-	dst = Screen;
+	Graphics::Surface *src = font->bmp;
+	Graphics::Surface *dst = Screen;
 
-	for (t = 0; t < len; t++) {
-		uint16 ch;
-
-		ch  = (uint8)txt[t];
+	for (size_t t = 0; t < len; t++) {
+		uint16 ch = (uint8)txt[t];
 		ch -= base;
 
 		srcR.y = (ch / chars_per_line) * h;
@@ -828,13 +783,12 @@ void gfxRAWBlit(uint8 *sp, uint8 *dp, const int x1, const int y1, const int x2,
                 const int y2, const int w, const int h, const int sw,
                 const int dw) {
 	const int ds = sw - w, dd = dw - w;
-	int x, y;
 
 	sp += (y1 * sw) + x1;
 	dp += (y2 * dw) + x2;
 
-	for (y = 0; y < h; y++) {
-		for (x = 0; x < w; x++) {
+	for (int y = 0; y < h; y++) {
+		for (int x = 0; x < w; x++) {
 			*dp++ = *sp++;
 		}
 		sp += ds;
@@ -875,9 +829,7 @@ static GC *gfxGetGC(int32 l_DestY) {
 
 static uint32 timeLeft(uint32 interval) {
 	static uint32 next_time = 0;
-	uint32 now;
-
-	now = g_system->getMillis();
+	uint32 now = g_system->getMillis();
 	if (next_time <= now) {
 		next_time = now + interval;
 		return (0);
@@ -895,12 +847,10 @@ void gfxWaitTOR(void) {
 }
 
 void gfxWaitTOS(void) {
-	Common::Event ev;
-	uint32 next_time;
 	const uint32 interval = 250;
 	uint32 now = g_system->getMillis();
 
-	next_time = now + interval;
+	uint32 next_time = now + interval;
 	while (now < next_time) {
 		inpWaitFor(INP_ALL_MODES);
 		g_system->updateScreen();
@@ -951,15 +901,9 @@ void gfxGetPaletteFromReg(uint8 *palette, uint32 start, uint32 num) {
 	g_system->getPaletteManager()->grabPalette(palette, start, num);
 }
 
-void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
+void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette) {
 /* l_Delay is min 1 */
-{
-	uint16 t, st, en;
-	byte rgb[GFX_PALETTE_SIZE];
-	uint8 cols[GFX_PALETTE_SIZE];
-	int32 time, fakt, s;
-	byte back[3];
-
+	uint16 st, en;
 	if (gc) {
 		st = gc->colorStart;
 		en = gc->End;
@@ -968,24 +912,23 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
 		en = GlobalColorRange.uch_End;
 	}
 	gfxRealRefreshArea(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-
 	delay = MAX(delay, 1u); /* delay must not be zero! */
-
-	time = delay;
-
+	int32 time = delay;
+	byte back[3];
 	gfxGetPaletteFromReg(back, 0, 1);
 
+	byte rgb[GFX_PALETTE_SIZE];
+	uint8 cols[GFX_PALETTE_SIZE];
+	int32 fakt;
 	switch (mode) {
 	case GFX_FADE_OUT:
-
 		gfxGetPaletteFromReg(cols, 0, 256);
-
 		fakt = 128 / time;
 
-		for (s = time; s >= 0; s--) {
+		for (int32 s = time; s >= 0; s--) {
 			gfxWaitTOR();
 
-			for (t = st; t <= en; t++) {
+			for (uint16 t = st; t <= en; t++) {
 				rgb[t * 3 + 0] = back[0] + (((int32)cols[t * 3 + 0] - back[0]) * (fakt * s)) / 128;
 				rgb[t * 3 + 1] = back[1] + (((int32)cols[t * 3 + 1] - back[1]) * (fakt * s)) / 128;
 				rgb[t * 3 + 2] = back[2] + (((int32)cols[t * 3 + 2] - back[2]) * (fakt * s)) / 128;
@@ -993,7 +936,7 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
 			gfxSetRGBRange(&rgb[st * 3], st, en - st + 1);
 		}
 
-		for (t = st; t <= en; t++) {
+		for (uint16 t = st; t <= en; t++) {
 			rgb[t * 3 + 0] = back[0];
 			rgb[t * 3 + 1] = back[1];
 			rgb[t * 3 + 2] = back[2];
@@ -1004,12 +947,10 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
 	case GFX_BLEND_UP:
 
 		fakt = 128 / time;
-
-
-		for (s = 0; s <= time; s++) {
+		for (int32 s = 0; s <= time; s++) {
 			gfxWaitTOR();
 
-			for (t = st; t <= en; t++) {
+			for (uint16 t = st; t <= en; t++) {
 				rgb[t * 3 + 0] = back[0] + (((int32)palette[t * 3 + 0] - back[0]) * (fakt * s)) / 128;
 				rgb[t * 3 + 1] = back[1] + (((int32)palette[t * 3 + 1] - back[1]) * (fakt * s)) / 128;
 				rgb[t * 3 + 2] = back[2] + (((int32)palette[t * 3 + 2] - back[2]) * (fakt * s)) / 128;
@@ -1019,7 +960,7 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
 
 		gfxWaitTOR();
 
-		for (t = st; t <= en; t++) {
+		for (uint16 t = st; t <= en; t++) {
 			rgb[t * 3 + 0] = palette[t * 3 + 0];
 			rgb[t * 3 + 1] = palette[t * 3 + 1];
 			rgb[t * 3 + 2] = palette[t * 3 + 2];
@@ -1031,19 +972,16 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette)
 
 
 void gfxShow(uint16 us_PictId, uint32 ul_Mode, int32 l_Delay, int32 l_XPos, int32 l_YPos) {
-	struct Picture *pict;
-	struct Collection *coll;
-	GC *gc;
-	uint16 destX;
-	uint16 destY;
-
-	if (!(pict = gfxGetPicture(us_PictId)))
-		return;
-	if (!(coll = gfxGetCollection(pict->us_CollId)))
+	struct Picture *pict = gfxGetPicture(us_PictId);
+	if (!pict)
 		return;
 
-	destX = pict->us_DestX;
-	destY = pict->us_DestY;
+	struct Collection *coll = gfxGetCollection(pict->us_CollId);
+	if (!coll)
+		return;
+
+	uint16 destX = pict->us_DestX;
+	uint16 destY = pict->us_DestY;
 
 	if (l_XPos != -1)
 		destX = l_XPos;
@@ -1051,6 +989,7 @@ void gfxShow(uint16 us_PictId, uint32 ul_Mode, int32 l_Delay, int32 l_XPos, int3
 	if (l_YPos != -1)
 		destY = l_YPos;
 
+	GC *gc;
 	if (GfxBase.gc)
 		gc = GfxBase.gc;
 	else
@@ -1072,10 +1011,8 @@ void gfxShow(uint16 us_PictId, uint32 ul_Mode, int32 l_Delay, int32 l_XPos, int3
 	}
 
 	if (!l_Delay && (ul_Mode & GFX_BLEND_UP)) {
-		gfxSetColorRange(coll->uch_ColorRangeStart,
-		                 coll->uch_ColorRangeEnd);
+		gfxSetColorRange(coll->uch_ColorRangeStart, coll->uch_ColorRangeEnd);
 		gfxChangeColors(NULL, l_Delay, GFX_BLEND_UP, ScratchRP.palette);
-
 	}
 
 	gfxScreenFreeze();
@@ -1087,8 +1024,7 @@ void gfxShow(uint16 us_PictId, uint32 ul_Mode, int32 l_Delay, int32 l_XPos, int3
 		        destX, destY, pict->us_Width, pict->us_Height, false);
 
 	if (l_Delay && (ul_Mode & GFX_BLEND_UP)) {
-		gfxSetColorRange(coll->uch_ColorRangeStart,
-		                 coll->uch_ColorRangeEnd);
+		gfxSetColorRange(coll->uch_ColorRangeStart, coll->uch_ColorRangeEnd);
 		gfxChangeColors(NULL, l_Delay, GFX_BLEND_UP, ScratchRP.palette);
 	}
 	gfxScreenThaw(gc, destX, destY, pict->us_Width, pict->us_Height);
@@ -1104,11 +1040,10 @@ void gfxShow(uint16 us_PictId, uint32 ul_Mode, int32 l_Delay, int32 l_XPos, int3
 int32 gfxGetILBMSize(struct Collection *coll) {
 	uint16 w = coll->us_TotalWidth;
 	uint16 h = coll->us_TotalHeight;
-	int32 size;
 
 	w = ((w + 15) & 0xfff0);    /* round up to a int16 */
 
-	size = w * h;
+	int32 size = w * h;
 
 	return size;
 }
@@ -1125,11 +1060,8 @@ static void gfxSetCMAP(const uint8 *src) {
 }
 
 static void MakeMCGA(uint16 b, uint8 *pic, uint16 PlSt, int16 c) {
-	uint16 bit;
-	int16 i;
-
-	bit = 0x80;
-	for (i = 0; i < 8; i++) {
+	uint16 bit = 0x80;
+	for (int16 i = 0; i < 8; i++) {
 		if ((b & bit) && (c > i)) {
 			pic[i] |= PlSt;
 		}
@@ -1143,20 +1075,14 @@ static uint16 MemRead_U16BE(const uint8 *p) {
 
 void gfxILBMToRAW(const uint8 *src, uint8 *dst, size_t size) {
 	uint16 bpp = 0, w = 0, h = 0;
-	const uint8 *sp;
-	uint8 *pic, *pic1;
-	int s, t, b, x;
-	uint16 a, y;
-	uint16 flag;
 
-	sp = src;
-	pic = dst;
+	const uint8 *sp = src;
+	uint8 *pic = dst;
 
 	sp += 8;
 
-	if (memcmp(sp, "ILBM", 4) != 0) {
+	if (memcmp(sp, "ILBM", 4) != 0)
 		return;
-	}
 
 	sp += 12;
 
@@ -1166,7 +1092,8 @@ void gfxILBMToRAW(const uint8 *src, uint8 *dst, size_t size) {
 	sp += 6;
 	bpp = *sp;
 	sp += 2;
-	flag = *sp;
+
+	uint16 flag = *sp;
 
 	h = MIN(h, (uint16)192);
 
@@ -1179,29 +1106,28 @@ void gfxILBMToRAW(const uint8 *src, uint8 *dst, size_t size) {
 	memset(pic, 0, size);
 
 	if (flag) {
-		pic1 = pic;
-		for (t = 0; t < h; t++) {
-			for (s = 0; s < bpp; s++) {
+		uint8 *pic1 = pic;
+		for (int t = 0; t < h; t++) {
+			for (int s = 0; s < bpp; s++) {
 				pic = pic1; /* Anfang der aktuellen Zeile */
-				b = ((w + 15) & 0xfff0);
+				int b = ((w + 15) & 0xfff0);
 				do {
-					a = *sp;    /* Kommando (wiederholen oder übernehmen */
+					uint16 a = *sp;    /* Kommando (wiederholen oder übernehmen */
 					sp++;   /* nächstes Zeichen */
 					if (a > 128) {  /* Zeichen wiederholen */
 
 						a = 257 - a;
 
-						y = *sp;
+						uint16 y = *sp;
 						sp++;
-						for (x = 1; x <= a; x++) {
+						for (int x = 1; x <= a; x++) {
 							MakeMCGA(y, pic, (1 << s), b);
 							pic += 8;
 							b -= 8;
 						}
 					} else {    /* Zeichen übernehmen */
-
-						for (x = 0; x <= a; x++) {
-							y = *sp;
+						for (int x = 0; x <= a; x++) {
+							uint16 y = *sp;
 							sp++;
 							MakeMCGA(y, pic, (1 << s), b);
 							pic += 8;
@@ -1213,13 +1139,13 @@ void gfxILBMToRAW(const uint8 *src, uint8 *dst, size_t size) {
 			pic1 += SCREEN_WIDTH;
 		}
 	} else {
-		pic1 = pic;
-		for (t = 0; t < h; t++) {
-			for (s = 0; s < bpp; s++) {
+		uint8 *pic1 = pic;
+		for (int t = 0; t < h; t++) {
+			for (int s = 0; s < bpp; s++) {
 				pic = pic1; /* Anfang der aktuellen Zeile */
-				b = ((w + 15) & 0xfff0);
+				int b = ((w + 15) & 0xfff0);
 				do {
-					y = *sp;
+					uint16 y = *sp;
 					sp++;
 					MakeMCGA(y, pic, (1 << s), b);
 					pic += 8;
@@ -1234,7 +1160,6 @@ void gfxILBMToRAW(const uint8 *src, uint8 *dst, size_t size) {
 size_t XMSOffset = 0;
 uint8 *XMSHandle;
 
-
 static const char *names[5] = {
 	"an1_1.anm",
 	"an2_4.anm",
@@ -1246,9 +1171,7 @@ static const char *names[5] = {
 int frames[5] = { 9, 67, 196, 500, 180 };
 int rate[5] = { 60, 17, 7, 7, 7 };
 
-
 #define MaxAnm 6
-
 int sync[MaxAnm * 2] = {
 	0, 1,
 	0, 5,
@@ -1327,50 +1250,45 @@ static void orbyte(uint8 *ptr, uint8 data, uint8 dmask) {
 
 
 static void ProcessAnimation(uint8 *dp, uint8 *sp) {
-	uint32 size, rsize, *lp;
-	uint8 *me, *me1, *me2, *st;
-	uint32 offs[8];
-	uint8 plane, planeMask;
-	int i, j, col;
-
 	/* skip header */
 	XMSOffset += 4;
 	/* get size */
+	uint32 size;
 	memcpy(&size, XMSHandle + XMSOffset, 4);
 	XMSOffset += 4;
 
-	rsize = Amg2Pc(size);
-
-	me = dp;
+	uint32 rsize = Amg2Pc(size);
+	uint8 *me = dp;
 
 	sp = XMSHandle + XMSOffset;
 	XMSOffset += rsize;
 
-	while (memcmp(sp, "DLTA", 4) != 0) {
+	while (memcmp(sp, "DLTA", 4) != 0)
 		sp++;
-	}
 
 	sp += 8;
-	lp = (uint32 *)sp;
-	st = sp;            /* start of DLTA block */
+	uint32 *lp = (uint32 *)sp;
+	uint8 *st = sp;            /* start of DLTA block */
 
-	for (i = 0; i < 8; i++)
+	uint32 offs[8];
+	for (int i = 0; i < 8; i++)
 		offs[i] = Amg2Pc(lp[i]);
 
-	me2 = me;
+	uint8 *me2 = me;
 
+	uint8 plane, planeMask;
 	for (plane = 0, planeMask = 1; plane < 8; plane++, planeMask <<= 1) {
 		if (offs[plane] != 0) {
 			sp = st + offs[plane];
-			me1 = me2;
+			uint8 *me1 = me2;
 
-			for (col = 0; col < 40; col++) {
+			for (int col = 0; col < 40; col++) {
 				uint8 op_cnt;
 
 				me = me1;
 				op_cnt = *sp++;
 
-				for (i = 0; i < op_cnt; i++) {
+				for (int i = 0; i < op_cnt; i++) {
 					uint8 op;
 
 					op = *sp++;
@@ -1383,7 +1301,7 @@ static void ProcessAnimation(uint8 *dp, uint8 *sp) {
 						cnt = *sp++;
 						val = *sp++;
 
-						for (j = 0; j < cnt; j++) {
+						for (int j = 0; j < cnt; j++) {
 							orbyte(me, val, planeMask);
 							me += SCREEN_WIDTH;
 						}
@@ -1393,7 +1311,7 @@ static void ProcessAnimation(uint8 *dp, uint8 *sp) {
 							uint8 cnt;
 
 							cnt = op & 0x7f;
-							for (j = 0; j < cnt; j++) {
+							for (int j = 0; j < cnt; j++) {
 								uint8 val;
 
 								val = *sp++;
@@ -1414,51 +1332,40 @@ static void ProcessAnimation(uint8 *dp, uint8 *sp) {
 }
 
 void ShowIntro(void) {
-	uint8 *cp;
-	char head[4];
-	int t, s, anims;
-	size_t size, rsize;
-	uint8 colorTABLE[GFX_PALETTE_SIZE];
-	bool endi = false;
-	GC ScreenGC;
-	MemRastPort A, B;
-
 	XMSHandle = (uint8 *)malloc(818 * 1024);
 
 	/******************************** Init Gfx ********************************/
+	MemRastPort A, B;
 	gfxInitMemRastPort(&A, SCREEN_WIDTH, SCREEN_HEIGHT);
 	gfxInitMemRastPort(&B, SCREEN_WIDTH, SCREEN_HEIGHT);
 
+	GC ScreenGC;
 	gfxInitGC(&ScreenGC,
 	          0, 0, 320, 200,
 	          0, 255,
 	          NULL);
 	gfxSetColorRange(0, 255);
 
+	uint8 colorTABLE[GFX_PALETTE_SIZE];
 	memset(colorTABLE, 0, sizeof(colorTABLE));
 	gfxSetRGBRange(colorTABLE, 0, 256);
 
-	for (anims = 0; anims < 5; anims++) {
-		FILE *fp;
+	for (int anims = 0; anims < 5; anims++) {
 		char pathName[DSK_PATH_MAX];
-		bool showA;
 
-		if (setup.CDAudio) {
+		if (setup.CDAudio)
 			CDROM_StopAudioTrack();
-		}
 
-		if (!dskBuildPathName(DISK_CHECK_FILE, "intropix", names[anims], pathName)) {
+		if (!dskBuildPathName(DISK_CHECK_FILE, "intropix", names[anims], pathName))
 			continue;
-		}
 
-		fp = dskOpen(pathName, "rb");
-
+		FILE *fp = dskOpen(pathName, "rb");
 		if (fp) {
 			XMSOffset = 0;
 
-			fread(&head[0], 1, 4, fp);
+			size_t size;
 			fread(&size, 1, 4, fp);
-			rsize = Amg2Pc(size);
+			size_t rsize = Amg2Pc(size);
 
 			dskRead(fp, XMSHandle, rsize);
 			dskClose(fp);
@@ -1466,7 +1373,7 @@ void ShowIntro(void) {
 			/* skip header */
 			XMSOffset += 4;
 
-			cp = XMSHandle + XMSOffset;
+			uint8 *cp = XMSHandle + XMSOffset;
 
 			/* skip header */
 			XMSOffset += 4;
@@ -1487,6 +1394,9 @@ void ShowIntro(void) {
 			gfxScratchToMem(&A);
 			gfxScratchToMem(&B);
 
+			bool endi = false;
+			bool showA;
+			int t;
 			for (t = 0, showA = true; t < frames[anims]; t++, showA = !showA) {
 				Common::Event ev;
 
@@ -1524,11 +1434,9 @@ void ShowIntro(void) {
 
 				gfxScreenThaw(&ScreenGC, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-
-				for (s = 0; s < rate[anims]; s++) {
+				for (int s = 0; s < rate[anims]; s++) {
 					gfxWaitTOF();
 				}
-
 
 				if (showA) {
 					ProcessAnimation(B.pixels, cp);
@@ -1536,7 +1444,7 @@ void ShowIntro(void) {
 					ProcessAnimation(A.pixels, cp);
 				}
 
-				for (s = 0; s < MaxAnm; s++) {
+				for (int s = 0; s < MaxAnm; s++) {
 					if (sync[s * 2] == anims && sync[s * 2 + 1] - 1 == t) {
 						sndPrepareFX(fname[s]);
 						sndPlayFX();
@@ -1623,17 +1531,14 @@ void gfxScratchToMem(MemRastPort *dst) {
 
 void gfxBlit(GC *gc, MemRastPort *src, uint16 sx, uint16 sy, uint16 dx, uint16 dy,
              uint16 w, uint16 h, bool has_mask) {
-	Rectangle srcR, srcR2, dstR, dstR2, areaR;
-	Graphics::Surface *dst;
-	uint8 *dp, *sp;
-	uint16 x, y;
-
 	/* clip. */
+	Rectangle srcR;
 	srcR.x = 0;
 	srcR.y = 0;
 	srcR.w = src->w;
 	srcR.h = src->h;
 
+	Rectangle srcR2;
 	srcR2.x = sx;
 	srcR2.y = sy;
 	srcR2.w = w;
@@ -1643,11 +1548,13 @@ void gfxBlit(GC *gc, MemRastPort *src, uint16 sx, uint16 sy, uint16 dx, uint16 d
 	if (srcR.w <= 0 || srcR.h <= 0)
 		return;
 
+	Rectangle dstR;
 	dstR.x = gc->clip.x;
 	dstR.y = gc->clip.y;
 	dstR.w = gc->clip.w;
 	dstR.h = gc->clip.h;
 
+	Rectangle dstR2;
 	dstR2.x = gc->clip.x + dx;
 	dstR2.y = gc->clip.y + dy;
 	dstR2.w = w;
@@ -1658,15 +1565,16 @@ void gfxBlit(GC *gc, MemRastPort *src, uint16 sx, uint16 sy, uint16 dx, uint16 d
 		return;
 
 	/* blit. */
+	Rectangle areaR;
 	areaR.x = dstR.x;
 	areaR.y = dstR.y;
 	areaR.w = MIN(dstR.w, srcR.w);
 	areaR.h = MIN(dstR.h, srcR.h);
 
-	dst = Screen;
+	Graphics::Surface *dst = Screen;
 
-	dp = (uint8 *)dst->getPixels();
-	sp = src->pixels;
+	uint8 *dp = (uint8 *)dst->getPixels();
+	uint8 *sp = src->pixels;
 
 	dp += dstR.y * SCREEN_WIDTH + dstR.x;
 	sp += srcR.y * src->w + srcR.x;
@@ -1675,8 +1583,8 @@ void gfxBlit(GC *gc, MemRastPort *src, uint16 sx, uint16 sy, uint16 dx, uint16 d
 	h = areaR.h;
 
 	if (has_mask) {
-		for (y = 0; y < h; y++) {
-			for (x = 0; x < w; x++) {
+		for (uint16 y = 0; y < h; y++) {
+			for (uint16 x = 0; x < w; x++) {
 				if (sp[x] != 0) {
 					dp[x] = sp[x];
 				}
@@ -1685,7 +1593,7 @@ void gfxBlit(GC *gc, MemRastPort *src, uint16 sx, uint16 sy, uint16 dx, uint16 d
 			sp += src->w;
 		}
 	} else {
-		for (y = 0; y < h; y++) {
+		for (uint16 y = 0; y < h; y++) {
 			memcpy(dp, sp, w);
 			dp += SCREEN_WIDTH;
 			sp += src->w;
@@ -1699,14 +1607,13 @@ static int screen_freeze_count = 0;
 
 /* ZZZ */
 void gfxRealRefreshArea(uint16 x, uint16 y, uint16 w, uint16 h) {
-	Common::Rect dst;
-	Rectangle areaR, areaR2;
-
+	Rectangle areaR;
 	areaR.x = 0;
 	areaR.y = 0;
 	areaR.w = SCREEN_WIDTH;
 	areaR.h = SCREEN_HEIGHT;
 
+	Rectangle areaR2;
 	areaR2.x = x;
 	areaR2.y = y;
 	areaR2.w = w;
@@ -1718,6 +1625,7 @@ void gfxRealRefreshArea(uint16 x, uint16 y, uint16 w, uint16 h) {
 	w = areaR.w;
 	h = areaR.h;
 
+	Common::Rect dst;
 	dst.left = x;
 	dst.top = y;
 	dst.setWidth(w);
@@ -1743,39 +1651,36 @@ void gfxScreenFreeze(void) {
 
 void gfxScreenThaw(GC *gc, uint16 x, uint16 y, uint16 w, uint16 h) {
 	if (screen_freeze_count > 0) {
-		Rectangle dstR, dstR2;
-
 		screen_freeze_count--;
 
+		Rectangle dstR;
 		dstR.x = gc->clip.x;
 		dstR.y = gc->clip.y;
 		dstR.w = gc->clip.w;
 		dstR.h = gc->clip.h;
 
+		Rectangle dstR2;
 		dstR2.x = gc->clip.x + x;
 		dstR2.y = gc->clip.y + y;
 		dstR2.w = w;
 		dstR2.h = h;
 		dstR = Clip(dstR, dstR2);
 
-		if (dstR.w > 0 && dstR.h > 0) {
+		if (dstR.w > 0 && dstR.h > 0)
 			gfxRefreshArea(dstR.x, dstR.y, dstR.w, dstR.h);
-		}
 	}
 }
 
 void MemBlit(MemRastPort *src, Rect *src_rect,
-             MemRastPort *dst, Rect *dst_rect, ROpE op) {
-	Rectangle srcR, srcR2, dstR, dstR2, areaR;
-	uint16 sw, dw, x, y;
-	register uint8 *dp, *sp;
-
+			 MemRastPort *dst, Rect *dst_rect, ROpE op) {
 	/* clip. */
+	Rectangle srcR;
 	srcR.x = 0;
 	srcR.y = 0;
 	srcR.w = src->w;
 	srcR.h = src->h;
 
+	Rectangle srcR2;
 	srcR2.x = src_rect->x;
 	srcR2.y = src_rect->y;
 	srcR2.w = src_rect->w;
@@ -1785,11 +1690,13 @@ void MemBlit(MemRastPort *src, Rect *src_rect,
 	if (srcR.w <= 0 || srcR.h <= 0)
 		return;
 
+	Rectangle dstR;
 	dstR.x = 0;
 	dstR.y = 0;
 	dstR.w = dst->w;
 	dstR.h = dst->h;
 
+	Rectangle dstR2;
 	dstR2.x = dst_rect->x;
 	dstR2.y = dst_rect->y;
 	dstR2.w = dst_rect->w;
@@ -1799,24 +1706,25 @@ void MemBlit(MemRastPort *src, Rect *src_rect,
 	if (dstR.w <= 0 || dstR.h <= 0)
 		return;
 
+	Rectangle areaR;
 	areaR.x = dstR.x;
 	areaR.y = dstR.y;
 	areaR.w = MIN(dstR.w, srcR.w);
 	areaR.h = MIN(dstR.h, srcR.h);
 
 	/* blit. */
-	sw = src->w;
-	dw = dst->w;
+	uint16 sw = src->w;
+	uint16 dw = dst->w;
 
-	dp = dst->pixels;
-	sp = src->pixels;
+	register uint8 *dp = dst->pixels;
+	register uint8 *sp = src->pixels;
 
 	dp += dstR.y * dw + dstR.x;
 	sp += srcR.y * sw + srcR.x;
 
 	switch (op) {
 	case GFX_ROP_BLIT:
-		for (y = 0; y < areaR.h; y++) {
+		for (uint16 y = 0; y < areaR.h; y++) {
 			memcpy(dp, sp, areaR.w);
 			dp += dw;
 			sp += sw;
@@ -1824,8 +1732,8 @@ void MemBlit(MemRastPort *src, Rect *src_rect,
 		break;
 
 	case GFX_ROP_MASK_BLIT:
-		for (y = 0; y < areaR.h; y++) {
-			for (x = 0; x < areaR.w; x++) {
+		for (uint16 y = 0; y < areaR.h; y++) {
+			for (uint16 x = 0; x < areaR.w; x++) {
 				if (sp[x] != 0) {
 					dp[x] = sp[x];
 				}
@@ -1836,8 +1744,8 @@ void MemBlit(MemRastPort *src, Rect *src_rect,
 		break;
 
 	case GFX_ROP_CLR:
-		for (y = 0; y < areaR.h; y++) {
-			for (x = 0; x < areaR.w; x++) {
+		for (uint16 y = 0; y < areaR.h; y++) {
+			for (uint16 x = 0; x < areaR.w; x++) {
 				dp[x] &= ~sp[x];
 			}
 			dp += dw;
@@ -1846,8 +1754,8 @@ void MemBlit(MemRastPort *src, Rect *src_rect,
 		break;
 
 	case GFX_ROP_SET:
-		for (y = 0; y < areaR.h; y++) {
-			for (x = 0; x < areaR.w; x++) {
+		for (uint16 y = 0; y < areaR.h; y++) {
+			for (uint16 x = 0; x < areaR.w; x++) {
 				dp[x] |= sp[x];
 			}
 			dp += dw;
