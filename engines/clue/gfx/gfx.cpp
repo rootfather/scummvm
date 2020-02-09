@@ -1362,6 +1362,8 @@ void ShowIntro(void) {
 		if (fp) {
 			XMSOffset = 0;
 
+			char head[4];
+			fread(&head[0], 1, 4, fp);
 			size_t size;
 			fread(&size, 1, 4, fp);
 			size_t rsize = Amg2Pc(size);
