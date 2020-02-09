@@ -40,7 +40,7 @@ void tcRemGuyFromParty(void);
 void tcAddToolToGuy(void);
 void tcRemToolFromGuy(void);
 
-byte tcCheckOrganisation(void);
+bool tcCheckOrganisation(void);
 
 /* display functions */
 
@@ -76,13 +76,11 @@ static void tcOrganisationSetBuilding(void) {
 }
 
 static void tcOrganisationSetCar(void) {
-	Car car;
-
 	hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Car);
 
 	Organisation.CarID = OL_NR(LIST_HEAD(ObjectList));
 
-	car = (Car)dbGetObject(Organisation.CarID);
+	Car car = (Car)dbGetObject(Organisation.CarID);
 
 	Organisation.PlacesInCar = car->PlacesInCar;
 }
@@ -149,11 +147,9 @@ uint32 tcOrganisation(void) {
 	rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Car);
 
 	if (!LIST_EMPTY(ObjectList)) {
-		Car car;
-
 		Organisation.CarID = OL_NR(LIST_HEAD(ObjectList));
 
-		car = (Car)dbGetObject(Organisation.CarID);
+		Car car = (Car)dbGetObject(Organisation.CarID);
 
 		Organisation.PlacesInCar = car->PlacesInCar;
 	}
@@ -247,17 +243,16 @@ uint32 tcOrganisation(void) {
 	return ((ende - 1) * Organisation.BuildingID);
 }
 
-byte tcCheckOrganisation(void) {
+bool tcCheckOrganisation(void) {
 	Player player = (Player)dbGetObject(Player_Player_1);
-	byte check = 0;
+	bool check = false;
 
 	if (Organisation.BuildingID) {
-		if ((((Building) dbGetObject(Organisation.BuildingID))->Exactlyness) >
-		        127) {
+		if ((((Building) dbGetObject(Organisation.BuildingID))->Exactlyness) > 127) {
 			if (Organisation.DriverID) {
 				if (player->NrOfBurglaries == 8) {
 					if (Organisation.CarID == Car_Jaguar_XK_1950)
-						check = 1;
+						check = true;
 					else
 						Say(BUSINESS_TXT, 0, MATT_PICTID, "PLAN_NO_JAGUAR");
 				} else {
@@ -265,13 +260,13 @@ byte tcCheckOrganisation(void) {
 						if (Organisation.BuildingID == Building_Westminster_Abbey) {
 							if ((Organisation.CarID == Car_Fiat_634_N_1936)
 							        || (Organisation.CarID == Car_Fiat_634_N_1943))
-								check = 1;
+								check = true;
 							else
 								Say(BUSINESS_TXT, 0, MATT_PICTID, "PLAN_NO_FIAT");
 						} else
-							check = 1;
+							check = true;
 					} else {
-						check = 1;
+						check = true;
 					}
 				}
 			} else
@@ -281,19 +276,16 @@ byte tcCheckOrganisation(void) {
 	} else
 		Say(BUSINESS_TXT, 0, MATT_PICTID, "PLAN_NO_BUILDING");
 
-	return (check);
+	return check;
 }
 
 uint32 tcChooseDriver(uint32 persID) {
-	LIST *list;
-	byte choice;
 	Person matt = (Person) dbGetObject(Person_Matt_Stuvysunt);
-	uint32 newPersID;
 
 	joined_byAll(Person_Matt_Stuvysunt,
 	             OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
 	             Object_Person);
-	list = ObjectListPrivate;
+	LIST *list = ObjectListPrivate;
 
 	if (LIST_EMPTY(list)) {
 		SetBubbleType(THINK_BUBBLE);
@@ -304,8 +296,9 @@ uint32 tcChooseDriver(uint32 persID) {
 		txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
 		ExpandObjectList(list, exp);
 
-		if (ChoiceOk(choice = Bubble(list, 0, 0L, 0L), GET_OUT, list)) {
-			newPersID = OL_NR(GetNthNode(list, (uint32) choice));
+		byte choice = Bubble(list, 0, 0L, 0L);
+		if (ChoiceOk(choice, GET_OUT, list)) {
+			uint32 newPersID = OL_NR(GetNthNode(list, (uint32) choice));
 
 			if (!has(newPersID, Ability_Autos)) {
 				Person pers = (Person)dbGetObject(newPersID);
@@ -331,19 +324,17 @@ uint32 tcChooseDriver(uint32 persID) {
 }
 
 uint32 tcChooseDestBuilding(uint32 objID) {
-	LIST *list;
-	byte choice;
-	char exp[TXT_KEY_LENGTH];
-
 	hasAll(Person_Matt_Stuvysunt,
 	       OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
 	       Object_Building);
-	list = ObjectListPrivate;
 
+	LIST *list = ObjectListPrivate;
+	char exp[TXT_KEY_LENGTH];
 	txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
 	ExpandObjectList(list, exp);
 
-	if (ChoiceOk(choice = Bubble(list, 0, 0L, 0L), GET_OUT, list)) {
+	byte choice = Bubble(list, 0, 0L, 0L);
+	if (ChoiceOk(choice, GET_OUT, list)) {
 		objID = OL_NR(GetNthNode(list, (uint32) choice));
 
 		rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Building);
@@ -360,30 +351,25 @@ uint32 tcChooseDestBuilding(uint32 objID) {
 }
 
 uint32 tcChooseEscapeCar(uint32 objID) {
-	LIST *l1, *l2;
-	byte choice;
 	Person matt = (Person) dbGetObject(Person_Matt_Stuvysunt);
-	uint32 newObjID;
-
 	hasAll(Person_Matt_Stuvysunt,
 	       OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST, Object_Car);
-	l1 = ObjectListPrivate;
 
-	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST,
-	             Object_Person);
-	l2 = ObjectListPrivate;
+	LIST *l1 = ObjectListPrivate;
+
+	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST, Object_Person);
+	LIST *l2 = ObjectListPrivate;
 
 	if (!LIST_EMPTY(l1)) {
-		Car car;
 		char exp[TXT_KEY_LENGTH];
-
 		txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
 		ExpandObjectList(l1, exp);
 
-		if (ChoiceOk(choice = Bubble(l1, 0, 0L, 0L), GET_OUT, l1)) {
-			newObjID = OL_NR(GetNthNode(l1, (uint32) choice));
+		byte choice = Bubble(l1, 0, 0L, 0L);
+		if (ChoiceOk(choice, GET_OUT, l1)) {
+			uint32 newObjID = OL_NR(GetNthNode(l1, (uint32) choice));
 
-			car = (Car) OL_DATA(GetNthNode(l1, (uint32) choice));
+			Car car = (Car) OL_DATA(GetNthNode(l1, (uint32) choice));
 
 			if (GetNrOfNodes(l2) <= car->PlacesInCar) {
 				Organisation.PlacesInCar = car->PlacesInCar;
@@ -413,13 +399,12 @@ uint32 tcChooseEscapeCar(uint32 objID) {
 }
 
 void tcChooseGuys(void) {
-	LIST *list;
 	Person matt = (Person) dbGetObject(Person_Matt_Stuvysunt);
 
 	joinAll(Person_Matt_Stuvysunt,
 	        OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
 	        Object_Person);
-	list = ObjectListPrivate;
+	LIST *list = ObjectListPrivate;
 
 	dbRemObjectNode(list, Person_Matt_Stuvysunt);
 
@@ -461,22 +446,16 @@ void tcChooseGuys(void) {
 }
 
 void tcAddGuyToParty(void) {
-	LIST *l1, *l2;
-	struct ObjectNode *n;
-	uint32 persID;
-	byte choice;
-
 	joinAll(Person_Matt_Stuvysunt,
 	        OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
 	        Object_Person);
-	l1 = ObjectListPrivate;
 
-	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST,
-	             Object_Person);
-	l2 = ObjectListPrivate;
+	LIST *l1 = ObjectListPrivate;
+	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST, Object_Person);
 
+	LIST *l2 = ObjectListPrivate;
 	if (GetNrOfNodes(l2) < Organisation.PlacesInCar) {
-		for (n = (struct ObjectNode *) LIST_HEAD(l2); NODE_SUCC(n);
+		for (struct ObjectNode *n = (struct ObjectNode *) LIST_HEAD(l2); NODE_SUCC(n);
 		        n = (struct ObjectNode *) NODE_SUCC(n))
 			dbRemObjectNode(l1, OL_NR(n));
 
@@ -486,9 +465,9 @@ void tcAddGuyToParty(void) {
 			txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
 			ExpandObjectList(l1, exp);
 
-			if (ChoiceOk(choice = Bubble(l1, 0, 0L, 0L), GET_OUT, l1)) {
-				persID =
-				    (uint32)(((struct ObjectNode *)
+			byte choice = Bubble(l1, 0, 0L, 0L);
+			if (ChoiceOk(choice, GET_OUT, l1)) {
+				uint32 persID = (uint32)(((struct ObjectNode *)
 				              GetNthNode(l1, (uint32) choice))->nr);
 
 				Organisation.GuyCount++;
@@ -514,13 +493,12 @@ void tcAddGuyToParty(void) {
 }
 
 void tcRemGuyFromParty(void) {
-	LIST *list;
 	Person matt = (Person) dbGetObject(Person_Matt_Stuvysunt);
 
 	joined_byAll(Person_Matt_Stuvysunt,
 	             OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
 	             Object_Person);
-	list = ObjectListPrivate;
+	LIST *list = ObjectListPrivate;
 
 	dbRemObjectNode(list, Person_Matt_Stuvysunt);
 
@@ -528,17 +506,13 @@ void tcRemGuyFromParty(void) {
 		SetBubbleType(THINK_BUBBLE);
 		Say(BUSINESS_TXT, 0, matt->PictID, "PLAN_TO_FEW_GUYS");
 	} else {
-		byte choice;
-		uint32 persID;
 		char exp[TXT_KEY_LENGTH];
-
 		txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
 		ExpandObjectList(list, exp);
 
-		if (ChoiceOk(choice = Bubble(list, 0, 0L, 0L), GET_OUT, list)) {
-			persID =
-			    (uint32)(((struct ObjectNode *) GetNthNode(list, (uint32) choice))->
-			             nr);
+		byte choice = Bubble(list, 0, 0L, 0L);
+		if (ChoiceOk(choice, GET_OUT, list)) {
+			uint32 persID = (uint32)(((struct ObjectNode *) GetNthNode(list, (uint32) choice))->nr);
 
 			Organisation.GuyCount--;
 			joined_byUnSet(Person_Matt_Stuvysunt, persID);

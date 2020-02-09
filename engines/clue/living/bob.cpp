@@ -7,12 +7,11 @@
  ****************************************************************************/
 
 #include "clue/gfx/gfx.h"
-
 #include "clue/living/living.h"
 
 namespace Clue {
 
-#define BOB_USED            1
+#define BOB_USED        1
 #define BOB_VISIBLE     2
 #define BOB_UPDATED     4
 
@@ -48,18 +47,16 @@ void BobInitLists(void) {
 static struct Bob *GetNthBob(uint16 BobID) {
 	if (BobID < BOB_MAX)
 		return &list[BobID];
-	else
-		return NULL;
+
+	return NULL;
 }
 
 uint16 BobInit(uint16 width, uint16 height) {
-	struct Bob *bob;
 	uint16 BobID;
-
 	for (BobID = 0; BobID < BOB_MAX && list[BobID].flags != 0; BobID++);
 
 	if (BobID < BOB_MAX) {
-		bob = &list[BobID];
+		struct Bob *bob = &list[BobID];
 
 		*bob = bob_zero;
 		bob->w = width;
@@ -108,11 +105,9 @@ void BobSetDarkness(byte darkness) {
 }
 
 void BobDisplayLists(GC *gc) {
-	int16 i;
-
 	gfxPrepareColl(137);
 
-	for (i = 0; i < BOB_MAX; i++) {
+	for (uint16 i = 0; i < BOB_MAX; i++) {
 		struct Bob *bob = &list[i];
 
 		if ((bob->flags & BOB_VISIBLE)) {

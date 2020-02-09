@@ -308,42 +308,35 @@ void lsLoadSpotBitMap(MemRastPort *rp) {
 }
 
 void lsLoadSpots(uint32 bldId, char *uch_FileName) {
-	FILE *file;
-	char filename[DSK_PATH_MAX], buffer[TXT_KEY_LENGTH];
-	uint16 SpotCount, i, j;
-	uint32 CtrlObjId;
-	struct Spot *spot;
-
+	char filename[DSK_PATH_MAX];
 	dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, uch_FileName, filename);
+	FILE *file = dskOpen(filename, "r");
 
-	file = dskOpen(filename, "r");
-
+	char buffer[TXT_KEY_LENGTH];
 	fgets(buffer, TXT_KEY_LENGTH - 1, file);
-	SpotCount = (uint16) atol(buffer);
+	uint16 SpotCount = (uint16) atol(buffer);
 
-	for (i = 0; i < SpotCount; i++) {
-		uint16 Size, Speed, Count, XPos, YPos;
+	for (uint16 i = 0; i < SpotCount; i++) {
+		fgets(buffer, TXT_KEY_LENGTH - 1, file);
+		uint16 Size = (uint16) atol(buffer);
 
 		fgets(buffer, TXT_KEY_LENGTH - 1, file);
-		Size = (uint16) atol(buffer);
+		uint16 Speed = (uint16) atol(buffer);
 
 		fgets(buffer, TXT_KEY_LENGTH - 1, file);
-		Speed = (uint16) atol(buffer);
+		uint32 CtrlObjId = atol(buffer);
 
 		fgets(buffer, TXT_KEY_LENGTH - 1, file);
-		CtrlObjId = atol(buffer);
+		uint16 Count = (uint16) atol(buffer);
 
-		fgets(buffer, TXT_KEY_LENGTH - 1, file);
-		Count = (uint16) atol(buffer);
+		struct Spot *spot = lsAddSpot(Size, Speed, CtrlObjId);
 
-		spot = lsAddSpot(Size, Speed, CtrlObjId);
-
-		for (j = 0; j < Count; j++) {
+		for (uint16 j = 0; j < Count; j++) {
 			fgets(buffer, TXT_KEY_LENGTH - 1, file);
-			XPos = (uint16) atol(buffer);
+			uint16 XPos = (uint16) atol(buffer);
 
 			fgets(buffer, TXT_KEY_LENGTH - 1, file);
-			YPos = (uint16) atol(buffer);
+			uint16 YPos = (uint16) atol(buffer);
 
 			lsAddSpotPosition(spot, XPos, YPos);
 		}
@@ -356,9 +349,7 @@ void lsLoadSpots(uint32 bldId, char *uch_FileName) {
 }
 
 void lsFreeAllSpots(void) {
-	struct Spot *spot;
-
-	for (spot = (struct Spot *) LIST_HEAD(sc->p_spots); NODE_SUCC(spot);
+	for (struct Spot *spot = (struct Spot *) LIST_HEAD(sc->p_spots); NODE_SUCC(spot);
 	        spot = (struct Spot *) NODE_SUCC(spot))
 		RemoveList(spot->p_positions);
 }
@@ -368,7 +359,7 @@ struct Spot *lsGetSpot(const char *uch_Name) {
 }
 
 LIST *lsGetSpotList(void) {
-	return (sc->p_spots);
+	return sc->p_spots;
 }
 
 void lsBlitSpot(uint16 us_Size, uint16 us_XPos, uint16 us_YPos, byte visible) {
