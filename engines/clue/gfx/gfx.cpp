@@ -453,11 +453,11 @@ void gfxDraw(GC *gc, uint16 x, uint16 y) {
 		gc->cursorX = x;
 		gc->cursorY = y;
 
-		if (rx == rx1) {
+		if (rx == rx1)
 			gfxRefreshArea(sx, 1, sy, dy);
-		} else if (ry == ry1) {
+		else if (ry == ry1)
 			gfxRefreshArea(sx, dx, sy, 1);
-		} else {
+		else {
 			/* the line is slanted. oops. */
 			DebugMsg(ERR_DEBUG, ERROR_MODULE_GFX, "gfxDraw");
 		}
@@ -587,10 +587,10 @@ void gfxUnPrepareColl(uint16 collId) {
 }
 
 void gfxCollFromMem(uint16 collId) {
-	struct Collection *coll;
 	MemRastPort *rp;
 
-	if ((coll = gfxGetCollection(collId)) && (rp = coll->prepared)) {
+	struct Collection *coll = gfxGetCollection(collId);
+	if (coll && (rp = coll->prepared)) {
 		gfxScratchFromMem(rp);
 	}
 }
@@ -626,9 +626,8 @@ void gfxSetRect(uint16 us_X, uint16 us_Width) {
 	GlobalPrintRect.us_Width = us_Width;
 }
 
-static void
-ScreenBlitChar(GC *gc, Graphics::Surface *src, Rect *src_rect,
-               Graphics::Surface *dst, Rect *dst_rect, uint8 color) {
+static void ScreenBlitChar(GC *gc, Graphics::Surface *src, Rect *src_rect,
+						Graphics::Surface *dst, Rect *dst_rect, uint8 color) {
 	/* clip. */
 	Rectangle srcR;
 	srcR.x = src_rect->x;

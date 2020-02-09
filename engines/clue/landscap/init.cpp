@@ -33,8 +33,6 @@ static void lsSetCurrFloorSquares(uint32 areaId);
 
 void lsInitLandScape(uint32 bID, byte mode) {
 	/* initialisiert das Landschaftsmodul */
-	int32 i;
-
 	if (!ls)
 		ls = (LandScape *)TCAllocMem(sizeof(*ls), 0);
 
@@ -67,7 +65,7 @@ void lsInitLandScape(uint32 bID, byte mode) {
 
 	/* lootbags must be initialized prior to Livings because they
 	   have a lower priority (appear below maxis) */
-	for (i = 9701; i <= 9708; i++) {
+	for (int32 i = 9701; i <= 9708; i++) {
 		LSObject lso = (LSObject)dbGetObject(i);
 
 		/* OffsetFact on the PC is not used as offset in the plane,
@@ -148,20 +146,19 @@ void lsSetRelations(uint32 areaID) {
 }
 
 void lsInitObjects(void) {
-	uint32 areaCount = 0, i;
-	LIST *areas;
-	NODE *n;
+	uint32 areaCount = 0;
 
 	/* alle Relationen erzeugen */
 	consistsOfAll(ls->ul_BuildingID, OLF_PRIVATE_LIST, Object_LSArea);
-	areas = ObjectListPrivate;
+	LIST *areas = ObjectListPrivate;
 
 	/* jetzt alle Stockwerke durchgehen! */
-	for (i = 0; i < 3; i++) {
+	for (uint32 i = 0; i < 3; i++) {
 		ls->ul_ObjectRetrievalAreaId[i] = 0;
 		ls->p_ObjectRetrievalLists[i] = NULL;
 	}
 
+	NODE *n;
 	for (n = (NODE *) LIST_HEAD(areas); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n)) {
 		lsInitRelations(OL_NR(n));
 
@@ -223,36 +220,33 @@ void lsInitObjectDB(uint32 bld, uint32 areaID) {
 
 /* contrary to the Amiga version this loads all floor data into memory at once */
 static void lsInitFloorSquares(void) {
-	uint32 count;
-	unsigned i;
-	char fileName[DSK_PATH_MAX], areaName[TXT_KEY_LENGTH];
-	NODE *n;
-	LIST *areas;
-
-	for (i = 0; i < 3; i++)
+	for (uint8 i = 0; i < 3; i++)
 		ls->p_AllFloors[i] = NULL;
 
-	count = LS_FLOORS_PER_LINE * LS_FLOORS_PER_COLUMN;
+	uint32 count = LS_FLOORS_PER_LINE * LS_FLOORS_PER_COLUMN;
 
 	consistsOfAll(ls->ul_BuildingID, OLF_PRIVATE_LIST, Object_LSArea);
-	areas = ObjectListPrivate;
+	LIST *areas = ObjectListPrivate;
 
 	/* jetzt alle Stockwerke durchgehen! */
+	NODE *n;
+	int i;
 	for (n = LIST_HEAD(areas), i = 0; NODE_SUCC(n); n = NODE_SUCC(n), i++) {
 		size_t size = sizeof(struct LSFloorSquare) * count;
-		unsigned j;
-		FILE *fh;
 
 		ls->p_AllFloors[i] = (LSFloorSquare *)TCAllocMem(size, 0);
 		ls->ul_FloorAreaId[i] = OL_NR(n);
 
+		char areaName[TXT_KEY_LENGTH];
 		dbGetObjectName(ls->ul_FloorAreaId[i], areaName);
 		strcat(areaName, FLOOR_DATA_EXTENSION);
 
+		char fileName[TXT_KEY_LENGTH];
 		dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, areaName, fileName);
 
-		if ((fh = dskOpen(fileName, "rb"))) {
-			for (j = 0; j < count; j++)
+		FILE *fh = dskOpen(fileName, "rb");
+		if (fh) {
+			for (uint32 j = 0; j < count; j++)
 				dskRead(fh, &ls->p_AllFloors[i][j].uch_FloorType, sizeof(uint8));
 
 			dskClose(fh);
@@ -263,36 +257,26 @@ static void lsInitFloorSquares(void) {
 }
 
 static void lsLoadAllSpots(void) {
+	consistsOfAll(ls->ul_BuildingID, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME, Object_LSArea);
+	LIST *areas = ObjectListPrivate;
+
+	NODE *n = (NODE *) LIST_HEAD(areas);
+
 	char fileName[TXT_KEY_LENGTH];
-	LIST *areas;
-	NODE *n;
-
-	consistsOfAll(ls->ul_BuildingID, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME,
-	              Object_LSArea);
-	areas = ObjectListPrivate;
-
-	n = (NODE *) LIST_HEAD(areas);
-
 	strcpy(fileName, NODE_NAME(n));
-
 	fileName[strlen(fileName) - 1] = '\0';
-
 	strcat(fileName, SPOT_DATA_EXTENSION);
-
 	lsLoadSpots(ls->ul_BuildingID, fileName);
 
 	RemoveList(areas);
 }
 
 static void lsSetCurrFloorSquares(uint32 areaId) {
-	int32 i;
-
-	for (i = 0; i < 3; i++)
+	for (int i = 0; i < 3; i++) {
 		if (areaId == ls->ul_FloorAreaId[i])
 			ls->p_CurrFloor = ls->p_AllFloors[i];
+	}
 }
-
-
 
 /*------------------------------------------------------------------------------
  *   done functions for landscape
@@ -300,20 +284,16 @@ static void lsSetCurrFloorSquares(uint32 areaId) {
 
 /* release all floor data */
 static void lsDoneFloorSquares(void) {
-	size_t count, i, size;
-
-	for (i = 0; i < 3; i++) {
+	for (int i = 0; i < 3; i++) {
 		if (ls->p_AllFloors[i]) {
-			count = LS_FLOORS_PER_LINE * LS_FLOORS_PER_COLUMN;
-
-			size = sizeof(struct LSFloorSquare) * count;
+			int32 count = LS_FLOORS_PER_LINE * LS_FLOORS_PER_COLUMN;
+			size_t size = sizeof(struct LSFloorSquare) * count;
 
 			TCFreeMem(ls->p_AllFloors[i], size);
 
 			ls->p_AllFloors[i] = NULL;
 		}
 	}
-
 }
 
 void lsDoneObjectDB(uint32 areaID) {
@@ -332,17 +312,14 @@ void lsDoneObjectDB(uint32 areaID) {
 }
 
 void lsDoneLandScape(void) {
-	NODE *n;
-	int32 areaCount = 0, i;
-
 	if (ls) {
 		LIST *areas;
 
 		consistsOfAll(ls->ul_BuildingID, OLF_PRIVATE_LIST, Object_LSArea);
 		areas = ObjectListPrivate;
 
-		for (n = (NODE *) LIST_HEAD(areas); NODE_SUCC(n);
-		        n = (NODE *) NODE_SUCC(n), areaCount++) {
+		int32 areaCount = 0;
+		for (NODE *n = (NODE *) LIST_HEAD(areas); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n), areaCount++) {
 			lsDoneObjectDB(OL_NR(n));
 
 			if (ls->p_ObjectRetrievalLists[areaCount]) {
@@ -358,9 +335,8 @@ void lsDoneLandScape(void) {
 
 		livDone();
 
-		for (i = 9701; i <= 9708; i++) {
+		for (int i = 9701; i <= 9708; i++) {
 			LSObject lso = (LSObject)dbGetObject(i);
-
 			BobDone(lso->us_OffsetFact);
 		}
 

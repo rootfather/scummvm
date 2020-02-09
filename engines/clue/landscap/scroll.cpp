@@ -143,7 +143,6 @@ byte lsInitScrollLandScape(byte direction, byte mode) {
 }
 
 byte lsIsCollision(int32 x, int32 y, byte direction) {
-	int32 i;
 	byte collis = 0;
 	byte color[14], collisDir = 0;
 
@@ -164,8 +163,7 @@ byte lsIsCollision(int32 x, int32 y, byte direction) {
 	if (collis)
 		return collis;
 
-
-	for (i = 0; i < 14; i++)
+	for (int32 i = 0; i < 14; i++)
 		color[i] = 255;
 
 	/* check collision
@@ -333,7 +331,7 @@ byte lsIsCollision(int32 x, int32 y, byte direction) {
 	}
 
 	/* from now on color[i] contains a non-zero value when there is a collision */
-	for (i = 0; i < 14; i++) {
+	for (uint32 i = 0; i < 14; i++) {
 		if ((color[i] != LS_COLLIS_COLOR_0) && (color[i] != LS_COLLIS_COLOR_1)
 		        && (color[i] != LS_COLLIS_COLOR_2)
 		        && (color[i] != LS_COLLIS_COLOR_3))
@@ -342,7 +340,7 @@ byte lsIsCollision(int32 x, int32 y, byte direction) {
 			color[i] = 1;
 	}
 
-	for (i = 0; i < 14; i++)
+	for (uint32 i = 0; i < 14; i++)
 		if (color[i])
 			collis = collisDir;
 

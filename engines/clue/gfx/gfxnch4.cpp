@@ -18,14 +18,11 @@ int ScrX, ScrY;
 static uint8 ScrDark;
 
 void gfxSetDarkness(uint8 value) {
-	uint8 *dp;
-	int h, i;
-
-	dp = LSRPInMem.pixels;
+	uint8 *dp = LSRPInMem.pixels;
 
 	if (value == LS_BRIGHTNESS) {
-		h = LS_MAX_AREA_WIDTH;
-
+		int h = LS_MAX_AREA_WIDTH;
+		int i;
 		do {
 			i = LS_MAX_AREA_HEIGHT;
 
@@ -34,8 +31,8 @@ void gfxSetDarkness(uint8 value) {
 			} while (--i);
 		} while (--h);
 	} else {
-		h = LS_MAX_AREA_WIDTH;
-
+		int h = LS_MAX_AREA_WIDTH;
+		int i;
 		do {
 			i = LS_MAX_AREA_HEIGHT;
 
@@ -70,10 +67,8 @@ void gfxNCH4SetViewPort(int x, int y) {
 }
 
 void gfxNCH4Scroll(int x, int y) {
-	int sx, sy;
-
-	sx = CLIP(ScrX + x, ScrLEFT, ScrRIGHT);
-	sy = CLIP(ScrY + y, ScrTOP, ScrBOTTOM);
+	int sx = CLIP(ScrX + x, ScrLEFT, ScrRIGHT);
+	int sy = CLIP(ScrY + y, ScrTOP, ScrBOTTOM);
 
 	gfxNCH4SetViewPort(sx, sy);
 }
@@ -89,13 +84,13 @@ void gfxLSInit(void) {
 }
 
 void gfxLSPut(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, uint16 w, uint16 h) {
-	Rect srcR, dstR;
-
+	Rect srcR;
 	srcR.x = sx;
 	srcR.y = sy;
 	srcR.w = w;
 	srcR.h = h;
 
+	Rect dstR;
 	dstR.x = dx;
 	dstR.y = dy;
 	dstR.w = w;
@@ -105,13 +100,13 @@ void gfxLSPut(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, uint1
 }
 
 void gfxLSPutMsk(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, uint16 w, uint16 h) {
-	Rect srcR, dstR;
-
+	Rect srcR;
 	srcR.x = sx;
 	srcR.y = sy;
 	srcR.w = w;
 	srcR.h = h;
 
+	Rect dstR;
 	dstR.x = dx;
 	dstR.y = dy;
 	dstR.w = w;
@@ -121,13 +116,13 @@ void gfxLSPutMsk(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, ui
 }
 
 void gfxLSPutClr(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, uint16 w, uint16 h) {
-	Rect srcR, dstR;
-
+	Rect srcR;
 	srcR.x = sx;
 	srcR.y = sy;
 	srcR.w = w;
 	srcR.h = h;
 
+	Rect dstR;
 	dstR.x = dx;
 	dstR.y = dy;
 	dstR.w = w;
@@ -137,13 +132,13 @@ void gfxLSPutClr(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, ui
 }
 
 void gfxLSPutSet(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, uint16 w, uint16 h) {
-	Rect srcR, dstR;
-
+	Rect srcR;
 	srcR.x = sx;
 	srcR.y = sy;
 	srcR.w = w;
 	srcR.h = h;
 
+	Rect dstR;
 	dstR.x = dx;
 	dstR.y = dy;
 	dstR.w = w;

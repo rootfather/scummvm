@@ -45,17 +45,14 @@ void lsShowEscapeCar(void) {
 }
 
 static void lsSetAlarmPict(LSObject lso) {
-	uint16 x0, x1, y0, y1, destx, desty;
-
+	uint16 x0, x1, y0, y1;
 	lsCalcExactSize(lso, &x0, &y0, &x1, &y1);
 
 	if (lso->uch_Chained & Const_tcCHAINED_TO_ALARM) {
-		MemRastPort *rp;
+		MemRastPort *rp = lsPrepareFromMemBySize(16);
 
-		rp = lsPrepareFromMemBySize(16);
-
-		destx = ((int16) x1 - (int16) x0 - 6) / 2 + x0 - 1;
-		desty = ((int16) y1 - (int16) y0 - 7) / 2 + y0 + 2;
+		uint16 destx = ((int16) x1 - (int16) x0 - 6) / 2 + x0 - 1;
+		uint16 desty = ((int16) y1 - (int16) y0 - 7) / 2 + y0 + 2;
 
 		lsBlitOneObject(rp, 24, destx, desty, 16);
 	}
@@ -64,25 +61,22 @@ static void lsSetAlarmPict(LSObject lso) {
 /* repaints all visible doors in a certain area */
 static void lsRefreshClosedDoors(uint16 us_X0, uint16 us_Y0,
                                  uint16 us_X1, uint16 us_Y1) {
-	NODE *node;
-
 	ls->uch_ShowObjectMask = 0x40;
 
-	for (node = (NODE *) LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node);
-	        node = (NODE *) NODE_SUCC(node)) {
+	for (NODE *node = (NODE *) LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node); node = (NODE *) NODE_SUCC(node)) {
 		LSObject lso = (LSObject)OL_DATA(node);
 
-		if (lsIsInside(lso, us_X0, us_Y0, us_X1, us_Y1))
-			if (lsIsObjectADoor(lso))
+		if (lsIsInside(lso, us_X0, us_Y0, us_X1, us_Y1)) {
+			if (lsIsObjectADoor(lso)) {
 				if (lso->uch_Visible == LS_OBJECT_VISIBLE)
-					lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS,
-					                LS_SHOW_DOOR);
+					lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_DOOR);
+			}
+		}
 	}
-
 	ls->uch_ShowObjectMask = 0x0;
 }
 
-void lsRefreshStatue(LSObject lso)
+void lsRefreshStatue(LSObject lso) {
 /* dirty, dirty, violates pretty much all conventions for DerClou!
    and, unbelievably, should work nevertheless.
    This lso represents the statue, it is not displayed, we only
@@ -90,24 +84,21 @@ void lsRefreshStatue(LSObject lso)
    The source coordinates are not taken from the data (eek!) but
    directly from the image; to get the correct source image, the
    function lsPrepareFromMem is called with a dummy object */
-{
-	uint16 srcX, srcY, destX, destY, size;
-	struct _LSObject dummy; /* only passed to lsPrepareFromMem */
-	MemRastPort *rp;
 
 	ls->uch_ShowObjectMask = 0x40;
 
-	size = 16;          /* is the size correct ?? */
+	uint16 size = 16;          /* is the size correct ?? */
 
+	struct _LSObject dummy; /* only passed to lsPrepareFromMem */
 	dummy.uch_Size = (byte) size;
 
-	rp = lsPrepareFromMem(&dummy);
+	MemRastPort *rp = lsPrepareFromMem(&dummy);
 
-	srcX = 16;          /* take from the image and put here! */
-	srcY = 0;
+	uint16 srcX = 16;          /* take from the image and put here! */
+	uint16 srcY = 0;
 
-	destX = lso->us_DestX + 7;
-	destY = lso->us_DestY + 10;
+	uint16 destX = lso->us_DestX + 7;
+	uint16 destY = lso->us_DestY + 10;
 
 	gfxLSPutMsk(rp, srcX, srcY, destX, destY, size, size);
 
@@ -115,8 +106,6 @@ void lsRefreshStatue(LSObject lso)
 }
 
 void lsFastRefresh(LSObject lso) {
-	uint16 x0, x1, y0, y1;
-
 	ls->uch_ShowObjectMask = 0x40;  /* ignore bit 6 */
 
 	switch (lso->Type) {
@@ -125,12 +114,10 @@ void lsFastRefresh(LSObject lso) {
 	case Item_Tresorraum:
 	case Item_Mauertor:
 		if (lso->ul_Status & (1 << Const_tcOPEN_CLOSE_BIT)) {
-			int16 x0, y0;
-
 			lsDoDoorRefresh(lso);
 
-			x0 = MAX((int16) lso->us_DestX - 32, 0);
-			y0 = MAX((int16) lso->us_DestY - 32, 0);
+			int16 x0 = MAX((int16) lso->us_DestX - 32, 0);
+			int16 y0 = MAX((int16) lso->us_DestY - 32, 0);
 
 			lsRefreshClosedDoors(x0, y0, lso->us_DestX + 32,
 			                     lso->us_DestY + 32);
@@ -149,6 +136,7 @@ void lsFastRefresh(LSObject lso) {
 			LSArea area = (LSArea)dbGetObject(lsGetActivAreaID());
 			byte color = LS_REFRESH_SHADOW_COLOR1;
 
+			uint16 x0, x1, y0, y1;
 			lsCalcExactSize(lso, &x0, &y0, &x1, &y1);
 
 			if (area->uch_Darkness == LS_DARKNESS)
@@ -234,16 +222,14 @@ static MemRastPort *lsPrepareFromMem(LSObject lso) {
 
 void lsBlitOneObject(MemRastPort *rp, uint16 offsetFact, uint16 dx, uint16 dy, uint16 size) {
 	uint16 srcWidth = 288;  /* source screen is usually 288 wide */
-	uint16 srcX, srcY, perRow;
 
 	/* 32er objects are on a screen that is 320 pixels wide */
 	if (size == 32)
 		srcWidth = 320;
 
-	perRow = srcWidth / size;
-
-	srcY = (offsetFact / perRow) * size;
-	srcX = (offsetFact % perRow) * size;
+	uint16 perRow = srcWidth / size;
+	uint16 srcY = (offsetFact / perRow) * size;
+	uint16 srcX = (offsetFact % perRow) * size;
 
 	if (ls->uch_ShowObjectMask)
 		gfxLSPutMsk(rp, srcX, srcY, dx, dy, size, size);
@@ -252,10 +238,9 @@ void lsBlitOneObject(MemRastPort *rp, uint16 offsetFact, uint16 dx, uint16 dy, u
 
 }
 
-int32 lsShowOneObject(LSObject lso, int16 destx, int16 desty, uint32 ul_Mode) {
+bool lsShowOneObject(LSObject lso, int16 destx, int16 desty, uint32 ul_Mode) {
 	Item item = (Item)dbGetObject(lso->Type);
-	int32 show = 0;
-	uint16 offsetFact;
+	bool show = false;
 
 	switch (lso->Type) {
 	case Item_Sockel:       /* pedestal should not be displayed */
@@ -263,36 +248,34 @@ int32 lsShowOneObject(LSObject lso, int16 destx, int16 desty, uint32 ul_Mode) {
 
 	default:
 		if (ul_Mode & LS_SHOW_ALL)
-			show = 1;
+			show = true;
 
 		if ((!show) && (ul_Mode & LS_SHOW_WALL))
 			if (lsIsObjectAWall(lso))
-				show = 1;
+				show = true;
 
 		/* only display doors if they are visible */
 
 		if ((!show) && (ul_Mode & LS_SHOW_DOOR))
 			if (lsIsObjectADoor(lso) && lso->uch_Visible == LS_OBJECT_VISIBLE)
-				show = 1;
+				show = true;
 
 		if ((!show) && (ul_Mode & LS_SHOW_SPECIAL))
 			if (lsIsObjectSpecial(lso) && lso->uch_Visible == LS_OBJECT_VISIBLE)
-				show = 1;
+				show = true;
 
 		if ((!show) && (ul_Mode & LS_SHOW_OTHER_0))
 			if (lsIsObjectAStdObj(lso) && lso->uch_Visible == LS_OBJECT_VISIBLE)
-				show = 1;
+				show = true;
 
 		if ((!show) && (ul_Mode & LS_SHOW_OTHER_1))
 			if (lsIsObjectAnAddOn(lso) && lso->uch_Visible == LS_OBJECT_VISIBLE)
-				show = 1;
+				show = true;
 
 		if (show) {
-			MemRastPort *rp;
+			MemRastPort *rp = lsPrepareFromMem(lso);
 
-			rp = lsPrepareFromMem(lso);
-
-			offsetFact = item->OffsetFact + (lso->ul_Status & 3);
+			uint16 offsetFact = item->OffsetFact + (lso->ul_Status & 3);
 
 			if (destx == LS_STD_COORDS)
 				destx = lso->us_DestX;
@@ -313,10 +296,7 @@ int32 lsShowOneObject(LSObject lso, int16 destx, int16 desty, uint32 ul_Mode) {
 
 void lsBlitFloor(uint16 floorIndex, uint16 destx, uint16 desty) {
 	MemRastPort *rp = &LS_FLOOR_MEM_RP;
-	uint16 srcX;
-
-	srcX =
-	    ((ls->p_CurrFloor[floorIndex].uch_FloorType) & 0xf) * LS_FLOOR_X_SIZE;
+	uint16 srcX = ((ls->p_CurrFloor[floorIndex].uch_FloorType) & 0xf) * LS_FLOOR_X_SIZE;
 
 	gfxLSPut(rp, srcX, 0, destx, desty, LS_FLOOR_X_SIZE, LS_FLOOR_Y_SIZE);
 }

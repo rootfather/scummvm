@@ -74,43 +74,43 @@ static int32 lsIsSpotVisible(struct Spot *spot) {
 	return 1;
 }
 
-void lsMoveAllSpots(uint32 time)
+void lsMoveAllSpots(uint32 time) {
 /*
  * zeigt alle Spots, die sich bewegen
  */
-{
-	struct Spot *spot;
 
-	for (spot = (struct Spot *) LIST_HEAD(sc->p_spots); NODE_SUCC(spot);
-	        spot = (struct Spot *) NODE_SUCC(spot))
-		if (spot->us_PosCount > 1)
-			if (lsIsSpotVisible(spot))
-				if (lsIsLSObjectInActivArea((LSObject)dbGetObject(spot->ul_CtrlObjId))) /* wenn der Steuerkasten in dieser Area -> */
+	for (struct Spot *spot = (struct Spot *) LIST_HEAD(sc->p_spots); NODE_SUCC(spot)
+		; spot = (struct Spot *) NODE_SUCC(spot)) {
+		if (spot->us_PosCount > 1) {
+			if (lsIsSpotVisible(spot)) {
+				if (lsIsLSObjectInActivArea((LSObject)dbGetObject(spot->ul_CtrlObjId))) { /* wenn der Steuerkasten in dieser Area -> */
 					if (spot->uch_Status & LS_SPOT_ON)
 						lsShowSpot(spot, time); /* Spot darstellen (auch in der aktiven Area */
+				}
+			}
+		}
+	}
 }
 
 void lsShowAllSpots(uint32 time, uint32 mode) {
-	struct Spot *spot;
-
-	for (spot = (struct Spot *) LIST_HEAD(sc->p_spots); NODE_SUCC(spot);
+	for (struct Spot *spot = (struct Spot *) LIST_HEAD(sc->p_spots); NODE_SUCC(spot);
 	        spot = (struct Spot *) NODE_SUCC(spot)) {
 		if (lsIsLSObjectInActivArea((LSObject)dbGetObject(spot->ul_CtrlObjId))) {   /* wenn der Steuerkasten in dieser Area -> */
-			if (mode & LS_ALL_VISIBLE_SPOTS)
+			if (mode & LS_ALL_VISIBLE_SPOTS) {
 				if (spot->uch_Status & LS_SPOT_ON)
 					lsShowSpot(spot, time); /* Spot darstellen */
+			}
 
-			if (mode & LS_ALL_INVISIBLE_SPOTS)
+			if (mode & LS_ALL_INVISIBLE_SPOTS) {
 				if (spot->uch_Status & LS_SPOT_OFF)
 					lsHideSpot(spot);   /* Spot (alte Position) löschen */
+			}
 		}
 	}
 }
 
 void lsShowSpot(struct Spot *s, uint32 time) {
 	/* zum Abspielen! */
-	struct SpotPosition *pos;
-
 	if (!(time % s->us_Speed)) {    /* nur alle x Sekunden Bewegung */
 		uint32 count = (time / s->us_Speed);
 
@@ -125,8 +125,7 @@ void lsShowSpot(struct Spot *s, uint32 time) {
 		} else
 			count = 0;
 
-		s->p_CurrPos = pos =
-		                   (struct SpotPosition *) GetNthNode(s->p_positions, count);
+		struct SpotPosition *pos = s->p_CurrPos = (struct SpotPosition *) GetNthNode(s->p_positions, count);
 
 		/* alte Position löschen */
 		lsHideSpot(s);
@@ -239,29 +238,19 @@ static void lsGetAreaForSpot(struct Spot *spot) {
 }
 
 struct Spot *lsAddSpot(uint16 us_Size, uint16 us_Speed, uint32 ul_CtrlObjId) {
-	struct Spot *spot;
-	uint32 SpotNr;
+	uint32 SpotNr = GetNrOfNodes(sc->p_spots);
 	char line[TXT_KEY_LENGTH];
-
-	SpotNr = GetNrOfNodes(sc->p_spots);
-
 	sprintf(line, "*%s%u", LS_SPOT_NAME, SpotNr);
 
-	spot =
-	    (struct Spot *) CreateNode(sc->p_spots, sizeof(*spot), line);
-
+	struct Spot *spot = (struct Spot *) CreateNode(sc->p_spots, sizeof(*spot), line);
 	spot->us_Size = us_Size;
 	spot->us_Speed = us_Speed;
 	spot->p_positions = CreateList();
-
 	spot->us_OldXPos = (uint16) - 1;
 	spot->us_OldYPos = (uint16) - 1;
-
 	spot->uch_Status = LS_SPOT_ON;
 	spot->us_PosCount = 0;
-
 	spot->p_CurrPos = NULL;
-
 	spot->ul_CtrlObjId = ul_CtrlObjId;
 
 	lsGetAreaForSpot(spot);
@@ -270,20 +259,16 @@ struct Spot *lsAddSpot(uint16 us_Size, uint16 us_Speed, uint32 ul_CtrlObjId) {
 }
 
 void lsSetSpotStatus(uint32 CtrlObjId, byte uch_Status) {
-	struct Spot *s;
-
-	for (s = (struct Spot *) LIST_HEAD(sc->p_spots); NODE_SUCC(s);
-	        s = (struct Spot *) NODE_SUCC(s))
+	for (struct Spot *s = (struct Spot *) LIST_HEAD(sc->p_spots); NODE_SUCC(s)
+		; s = (struct Spot *) NODE_SUCC(s)) {
 		if (s->ul_CtrlObjId == CtrlObjId)
 			s->uch_Status = uch_Status;
+	}
 }
 
 void lsAddSpotPosition(struct Spot *spot, uint16 us_XPos, uint16 us_YPos) {
-	struct SpotPosition *pos;
-
-	pos =
-	    (struct SpotPosition *) CreateNode(spot->p_positions, sizeof(*pos),
-	                                       NULL);
+	struct SpotPosition *pos =
+	    (struct SpotPosition *) CreateNode(spot->p_positions, sizeof(*pos), NULL);
 
 	pos->us_XPos = (int16) us_XPos + (int16) LS_PC_CORRECT_X;
 	pos->us_YPos = (int16) us_YPos + (int16) LS_PC_CORRECT_Y;

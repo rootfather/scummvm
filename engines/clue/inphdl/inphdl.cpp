@@ -101,32 +101,26 @@ void inpMousePtrOff(void) {
 }
 
 int32 inpWaitFor(int32 l_Mask) {
-	Common::Event ev;
-	int32 action;
-	uint32 WaitTime = 0;
-
-	if ((IHandler.EscStatus) && (!(l_Mask & INP_NO_ESC))) {
+	if ((IHandler.EscStatus) && (!(l_Mask & INP_NO_ESC)))
 		l_Mask |= INP_ESC;
-	}
 
-	if ((IHandler.FunctionKeyStatus) && (!(l_Mask & INP_FUNCTION_KEY))) {
+	if ((IHandler.FunctionKeyStatus) && (!(l_Mask & INP_FUNCTION_KEY)))
 		l_Mask |= INP_FUNCTION_KEY;
-	}
 
-	action = 0;
+	int32 action = 0;
 
 	/* Nun wird auf den Event gewartet... */
-	WaitTime = 0;
+	uint32 WaitTime = 0;
 
 	while (action == 0) {
 		gfxWaitTOF();
 
 		WaitTime++;
 		/* Abfrage des Zeit-Flags */
-		if ((l_Mask & INP_TIME) && WaitTime >= IHandler.ul_WaitTicks) {
+		if ((l_Mask & INP_TIME) && WaitTime >= IHandler.ul_WaitTicks)
 			action |= INP_TIME;
-		}
 
+		Common::Event ev;
 		while (g_system->getEventManager()->pollEvent(ev)) {
 			switch (ev.type) {
 			case Common::EVENT_KEYDOWN: {
@@ -270,11 +264,9 @@ void inpDelay(int32 l_Ticks) {
 }
 
 void inpSetKeyRepeat(unsigned char rate) {
-	int delay, interval;
-	Common::Event ev;
-
-	delay = (rate >> 5);
-	interval = (rate & 0x1f);
+#if 0
+	int delay = (rate >> 5);
+	int interval = (rate & 0x1f);
 
 	if (delay == 0)
 		delay = 1000;
@@ -286,11 +278,14 @@ void inpSetKeyRepeat(unsigned char rate) {
 	else
 		interval = 60;
 
-	/*    SDL_EnableKeyRepeat(delay, interval);*/
+	SDL_EnableKeyRepeat(delay, interval);
+#endif
 
 	/* flush event queue */
+	Common::Event ev;
 	while (g_system->getEventManager()->pollEvent(ev)) {
 		/* do nothing. */
+		// TODO: sleep()
 	}
 }
 

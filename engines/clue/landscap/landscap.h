@@ -228,7 +228,7 @@ extern void lsInitObjects(void);
 extern void lsBuildScrollWindow(void);
 extern void lsShowAlarmAndPower(LSObject lso, uint32 x, uint32 y);
 
-extern int32 lsShowOneObject(LSObject lso, int16 destx, int16 desty,
+extern bool lsShowOneObject(LSObject lso, int16 destx, int16 desty,
                              uint32 ObjTypeFilter);
 
 void  lsSafeRectFill(uint16 x0, uint16 y0, uint16 x1, uint16 y1, uint8 color);
