@@ -36,14 +36,12 @@ static const char *Planing_Open[3] = { "rb", "wb", "rb" };
 /* Loading & saving functions */
 void plSaveTools(FILE *fh) {
 	if (fh) {
-		struct ObjectNode *n;
-
 		hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Tool);
 
 		fprintf(fh, PLANING_PLAN_TOOL_BEGIN_ID);
 		fprintf(fh, "\r\n");
 
-		for (n = (struct ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n);
+		for (struct ObjectNode *n = (struct ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n);
 		        n = (struct ObjectNode *) NODE_SUCC(n))
 			fprintf(fh, "%u\r\n", OL_NR(n));
 
@@ -55,14 +53,14 @@ void plSaveTools(FILE *fh) {
 LIST *plLoadTools(FILE *fh) {
 	register LIST *l = txtGoKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_1");
 	register byte foundAll = 1, canGet = 2, toolsNr = 0;
-	char buffer[64];
-	uint32 id;
 
+	char buffer[64];
 	buffer[0] = '\0';
 
 	if (fh) {
 		while (dskGetLine(buffer, sizeof(buffer), fh)
 		        && strcmp(buffer, PLANING_PLAN_TOOL_END_ID) != 0) {
+			uint32 id;
 			if (sscanf(buffer, "%u\r\n", &id) == 1) {
 				toolsNr++;
 
@@ -83,26 +81,21 @@ LIST *plLoadTools(FILE *fh) {
 		l = NULL;
 	} else {
 		LIST *extList = NULL;
-		NODE *n;
 
 		if (canGet == 2)
 			extList = txtGoKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_3");
-		else {
-			if ((toolsNr - canGet) > 1)
-				extList =
-				    txtGoKeyAndInsert(PLAN_TXT, "SYSTEM_TOOLS_MISSING_2",
+		else if ((toolsNr - canGet) > 1)
+			extList = txtGoKeyAndInsert(PLAN_TXT, "SYSTEM_TOOLS_MISSING_2",
 				                      (uint32)(toolsNr - canGet));
-			else if (toolsNr - canGet)
-				extList = txtGoKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_4");
-		}
+		else if (toolsNr - canGet)
+			extList = txtGoKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_4");
 
 		if (extList) {
-			for (n = LIST_HEAD(extList); NODE_SUCC(n); n = NODE_SUCC(n))
+			for (NODE *n = LIST_HEAD(extList); NODE_SUCC(n); n = NODE_SUCC(n))
 				CreateNode(l, 0, NODE_NAME(n));
 
 			RemoveList(extList);
 		}
-
 	}
 
 	return l;
@@ -113,22 +106,20 @@ byte plOpen(uint32 objId, byte mode, FILE **fh) {
 		if (grdInit(fh, Planing_Open[mode], objId, lsGetActivAreaID()))
 			return PLANING_OPEN_OK;
 	} else {
-		register LIST *PlanList;
-		register byte i;
-		FILE *pllFh;
-		uint32 pllData = 0;
-		char pllPath[DSK_PATH_MAX], pllPath2[DSK_PATH_MAX],
-		     name1[TXT_KEY_LENGTH], name2[TXT_KEY_LENGTH], exp[TXT_KEY_LENGTH];
-
+		char name1[TXT_KEY_LENGTH];
 		dbGetObjectName(lsGetActivAreaID(), name1);
 		name1[strlen(name1) - 1] = '\0';
 
+		char name2[TXT_KEY_LENGTH];
 		/* MOD 25-04-94 HG - new paths on pc */
 		sprintf(name2, "%s%s", name1, PLANING_PLAN_LIST_EXTENSION);
 
+		char pllPath[DSK_PATH_MAX];
 		dskBuildPathName(DISK_CHECK_FILE, DATADISK, name2, pllPath);
 
-		if ((pllFh = dskOpen(pllPath, "rb"))) {
+		FILE *pllFh = dskOpen(pllPath, "rb");
+		if (pllFh) {
+			uint32 pllData = 0;
 			fscanf(pllFh, "%u", &pllData);
 			dskClose(pllFh);
 
@@ -136,13 +127,14 @@ byte plOpen(uint32 objId, byte mode, FILE **fh) {
 				sprintf(name2, "MODE_%d", mode);
 				plMessage(name2, PLANING_MSG_REFRESH);
 
-				PlanList = CreateList();
+				register LIST *PlanList = CreateList();
 
 				dbGetObjectName(objId, name1);
 
+				char exp[TXT_KEY_LENGTH];
 				exp[0] = EOS;
 
-				for (i = 0; i < PLANING_NR_PLANS; i++) {
+				for (uint32 i = 0; i < PLANING_NR_PLANS; i++) {
 					if ((mode == PLANING_OPEN_WRITE_PLAN)
 					        || (pllData & (1L << i))) {
 						struct IOData *data;
@@ -167,7 +159,7 @@ byte plOpen(uint32 objId, byte mode, FILE **fh) {
 				txtGetFirstLine(PLAN_TXT, name2, exp);
 				ExpandObjectList(PlanList, exp);
 
-				i = Bubble(PlanList, 0, NULL, 0L);
+				int i = Bubble(PlanList, 0, NULL, 0L);
 
 				if (ChoiceOk(i, GET_OUT, PlanList)) {
 					struct IOData *data;
@@ -178,9 +170,9 @@ byte plOpen(uint32 objId, byte mode, FILE **fh) {
 					dbGetObjectName(lsGetActivAreaID(), name1);
 					name1[strlen(name1) - 1] = '\0';
 
-					sprintf(name2, "%s%d%s", name1, i + 1,
-					        PLANING_PLAN_EXTENSION);
+					sprintf(name2, "%s%d%s", name1, i + 1, PLANING_PLAN_EXTENSION);
 
+					char pllPath2[DSK_PATH_MAX];
 					dskBuildPathName(DISK_CHECK_FILE, DATADISK, name2, pllPath2);
 
 					*fh = dskOpen(pllPath2, Planing_Open[mode]);
@@ -211,7 +203,7 @@ byte plOpen(uint32 objId, byte mode, FILE **fh) {
 	}
 
 	ErrorMsg(Disk_Defect, ERROR_MODULE_PLANING, 0);
-	return 0;
+	return PLANING_OPEN_OK;
 }
 
 void plSave(uint32 objId) {
@@ -219,15 +211,12 @@ void plSave(uint32 objId) {
 
 	if (plOpen(objId, PLANING_OPEN_WRITE_PLAN, &fh) == PLANING_OPEN_OK) {
 		if (GamePlayMode & GP_GUARD_DESIGN) {
-			grdDo(fh, plSys, PersonsList, BurglarsNr, PersonsNr,
-			      GUARDS_DO_SAVE);
+			grdDo(fh, plSys, PersonsList, BurglarsNr, PersonsNr, GUARDS_DO_SAVE);
 		} else {
-			byte i;
-
 			SaveSystem(fh, plSys);
 			plSaveTools(fh);
 
-			for (i = 0; i < BurglarsNr; i++)
+			for (int i = 0; i < BurglarsNr; i++)
 				SaveHandler(fh, plSys, OL_NR(GetNthNode(PersonsList, i)));
 		}
 
@@ -260,8 +249,7 @@ void plLoad(uint32 objId) {
 	byte ret;
 
 	if (objId == Building_Starford_Kaserne)
-		while ((ret =
-		            plOpen(objId, PLANING_OPEN_READ_PLAN, &fh)) != PLANING_OPEN_OK);
+		while ((ret = plOpen(objId, PLANING_OPEN_READ_PLAN, &fh)) != PLANING_OPEN_OK);
 	else
 		ret = plOpen(objId, PLANING_OPEN_READ_PLAN, &fh);
 
@@ -300,10 +288,8 @@ void plLoad(uint32 objId) {
 		}
 
 		dskClose(fh);
-	} else {
-		if (ret == PLANING_OPEN_ERR_NO_PLAN)
-			plMessage("NO_PLAN", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
-	}
+	} else if (ret == PLANING_OPEN_ERR_NO_PLAN)
+		plMessage("NO_PLAN", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
 }
 
 } // End of namespace Clue

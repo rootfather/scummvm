@@ -64,18 +64,16 @@ void plCloseHandler(NODE *n) {
 
 /* Preparation & Unpreparation functions */
 void plPrepareData(void) {
-	register byte i;
-
-	for (i = 0; i < PLANING_NR_LOOTS; i++)
+	for (uint i = 0; i < PLANING_NR_LOOTS; i++)
 		Planing_Loot[i] = 0;
 
-	for (i = 0; i < PLANING_NR_PERSONS; i++)
+	for (uint i = 0; i < PLANING_NR_PERSONS; i++)
 		Planing_Weight[i] = 0;
 
-	for (i = 0; i < PLANING_NR_PERSONS; i++)
+	for (uint i = 0; i < PLANING_NR_PERSONS; i++)
 		Planing_Volume[i] = 0;
 
-	for (i = 0; i < PLANING_NR_GUARDS; i++)
+	for (uint i = 0; i < PLANING_NR_GUARDS; i++)
 		Planing_Guard[i] = 0;
 }
 
@@ -153,9 +151,7 @@ void plPrepareGfx(uint32 objId, byte landscapMode, byte prepareMode) {
 	}
 
 	if (prepareMode & PLANING_GFX_SPRITES) {
-		uint32 i;
-
-		for (i = 0; i < PersonsNr; i++) {
+		for (uint32 i = 0; i < PersonsNr; i++) {
 			if (dbIsObject(OL_NR(GetNthNode(PersonsList, i)), Object_Person))
 				plPrepareSprite(i, lsGetActivAreaID());
 			else {
@@ -173,30 +169,22 @@ void plPrepareGfx(uint32 objId, byte landscapMode, byte prepareMode) {
 }
 
 void plUnprepareGfx(void) {
-	register byte i;
-
 	gfxShow(CurrentBackground, GFX_NO_REFRESH | GFX_FADE_OUT, 5, -1, -1);
-
 	gfxClearArea(u_gc);
 
-	for (i = BurglarsNr; i < PersonsNr; i++)
+	for (int i = BurglarsNr; i < PersonsNr; i++)
 		RemoveList(Planing_GuardRoomList[i - BurglarsNr]);
 
 	lsDoneLandScape();
-
 	gfxShow(CurrentBackground, GFX_NO_REFRESH | GFX_BLEND_UP, 0, -1, -1);
 }
 
 void plPrepareRel(void) {
-	LIST *areas;
-	NODE *n;
-	LSArea area;
-
 	consistsOfAll(Planing_BldId, OLF_PRIVATE_LIST, Object_LSArea);
-	areas = ObjectListPrivate;
+	LIST *areas = ObjectListPrivate;
 
-	for (n = (NODE *) LIST_HEAD(areas); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n)) {
-		area = (LSArea)OL_DATA(n);
+	for (NODE *n = (NODE *) LIST_HEAD(areas); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n)) {
+		LSArea area = (LSArea)OL_DATA(n);
 
 		if (!CloneRelation
 		        (area->ul_ObjectBaseNr + REL_HAS_LOOT_OFFSET, hasLoot_Clone_RelId))
@@ -215,9 +203,7 @@ void plUnprepareRel(void) {
 }
 
 void plPrepareNames(void) {
-	register byte i;
-
-	for (i = 0; i < PersonsNr; i++) {
+	for (int i = 0; i < PersonsNr; i++) {
 		if (dbIsObject(OL_NR(GetNthNode(PersonsList, i)), Object_Person))
 			sprintf(Planing_Name[i], "Person_%d", i + 1);
 		else

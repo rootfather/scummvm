@@ -94,7 +94,7 @@
 namespace Clue {
 
 extern byte AnimCounter;
-extern byte PlanChanged;
+extern bool PlanChanged;
 
 
 void plPlaner(uint32 objId);

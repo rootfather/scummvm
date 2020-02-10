@@ -112,8 +112,8 @@ namespace Clue {
 
 uint32 plGetNextLoot(void);
 
-byte plLivingsPosAtCar(uint32 bldId);
-byte plAllInCar(uint32 bldId);
+bool plLivingsPosAtCar(uint32 bldId);
+bool plAllInCar(uint32 bldId);
 byte plIsStair(uint32 objId);
 
 void plCorrectOpened(LSObject obj, byte open);
@@ -124,7 +124,7 @@ void plWork(uint32 current);
 
 LIST *plGetObjectsList(uint32 current, byte addLootBags);
 void plInsertGuard(LIST *list, uint32 current, uint32 guard);
-byte plObjectInReach(uint32 current, uint32 objId);
+bool plObjectInReach(uint32 current, uint32 objId);
 
 } // End of namespace Clue
 

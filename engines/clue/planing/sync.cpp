@@ -23,8 +23,7 @@
 namespace Clue {
 
 /* Sync functions */
-static uint16 plXMoveSync(uint32 id, uint16 xpos, byte animate, byte direction,
-                          uint16 gowhere) {
+static uint16 plXMoveSync(uint32 id, uint16 xpos, byte animate, byte direction, uint16 gowhere) {
 	if (direction) {
 		if ((animate & PLANING_ANIMATE_FOCUS) && (id == CurrentPerson))
 			lsInitScrollLandScape(gowhere, LS_SCROLL_PREPARE);
@@ -93,8 +92,7 @@ static uint16 plXMoveSync(uint32 id, uint16 xpos, byte animate, byte direction,
 	return xpos;
 }
 
-static uint16 plYMoveSync(uint32 id, uint16 ypos, byte animate, byte direction,
-                          uint16 gowhere) {
+static uint16 plYMoveSync(uint32 id, uint16 ypos, byte animate, byte direction, uint16 gowhere) {
 	if (direction) {
 		if ((animate & PLANING_ANIMATE_FOCUS) && (id == CurrentPerson))
 			lsInitScrollLandScape(gowhere, LS_SCROLL_PREPARE);
@@ -164,12 +162,10 @@ static uint16 plYMoveSync(uint32 id, uint16 ypos, byte animate, byte direction,
 }
 
 void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
-	byte i;
-	uint32 seconds, lastAreaId = 0;
+	uint32 lastAreaId = 0;
 
-	for (seconds = 0; seconds < times; seconds++) {
-		for (i = 0; i < PersonsNr; i++) {
-			struct Action *action;
+	for (uint32 seconds = 0; seconds < times; seconds++) {
+		for (byte i = 0; i < PersonsNr; i++) {
 			uint16 xpos = livGetXPos(Planing_Name[i]);
 			uint16 ypos = livGetYPos(Planing_Name[i]);
 
@@ -197,6 +193,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 					}
 				}
 			} else {
+				struct Action *action;
 				if (direction)
 					action = NextAction(plSys);
 				else
@@ -331,11 +328,9 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 								                 struct ActionUse *)->ItemId);
 
 								if (direction)
-									Planing_Guard[pol->LivingID - BurglarsNr] =
-									    2;
+									Planing_Guard[pol->LivingID - BurglarsNr] = 2;
 								else
-									Planing_Guard[pol->LivingID - BurglarsNr] =
-									    1;
+									Planing_Guard[pol->LivingID - BurglarsNr] = 1;
 							} else {
 								if (direction) {
 									lsSetObjectState(ActionData
@@ -1152,9 +1147,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 			}
 
 			if (animate & PLANING_ANIMATE_NO) {
-				register struct Action *a;
-				register struct Handler *h =
-				    (struct Handler *) plSys->ActivHandler;
+				register struct Handler *h = (struct Handler *) plSys->ActivHandler;
 				register uint16 dir;
 
 				if (i < BurglarsNr)
@@ -1163,7 +1156,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 					dir = ANM_MOVE_DOWN;
 
 				if (CurrentTimer(plSys) != 0) {
-					for (a = (struct Action *) LIST_HEAD(h->Actions);
+					for (register struct Action *a = (struct Action *) LIST_HEAD(h->Actions);
 					        NODE_SUCC(a); a = (struct Action *) NODE_SUCC(a)) {
 						switch (a->Type) {
 						case ACTION_GO:

@@ -172,22 +172,20 @@ static void UnableToWork(uint32 current, uint32 action) {
 
 static byte plGetMood(uint32 time) {
 	uint32 guyId[PLANING_NR_PERSONS];
-	byte i;
 
-	for (i = 0; i < PLANING_NR_PERSONS; i++)
+	for (uint16 i = 0; i < PLANING_NR_PERSONS; i++)
 		guyId[i] = 0L;
 
-	for (i = 0; i < BurglarsNr; i++)
+	for (uint16 i = 0; i < BurglarsNr; i++)
 		guyId[i] = OL_NR(GetNthNode(PersonsList, i));
 
 	return (byte) tcGetTeamMood(guyId, time);
 }
 
 static void plPersonLearns(uint32 persId, uint32 toolId) {
-	uint32 para;
-
 	hasAll(persId, OLF_NORMAL, Object_Ability);
 
+	uint32 para;
 	switch (toolId) {
 	case Tool_Hand:
 	case Tool_Fusz:
@@ -264,7 +262,7 @@ static byte plCarTooFull(void) {
 }
 
 static void plPlayerAction(void) {
-	register byte i, patroCounter = 3;
+	register byte patroCounter = 3;
 	register byte DoScrolling = 0;
 
 	PD.timer++;
@@ -345,7 +343,7 @@ static void plPlayerAction(void) {
 		if (PD.realTime >= (Search.TimeOfAlarm + PD.bldObj->PoliceTime)) {
 			Search.EscapeBits |= FAHN_SURROUNDED;
 
-			for (i = 0; i < PLANING_NR_PERSONS; i++)
+			for (int i = 0; i < PLANING_NR_PERSONS; i++)
 				PD.handlerEnded[i] = 1;
 
 			sndPrepareFX("marthorn.voc");
@@ -362,7 +360,7 @@ static void plPlayerAction(void) {
 
 			Search.EscapeBits |= FAHN_ESCAPE;
 
-			for (i = 0; i < PLANING_NR_PERSONS; i++)
+			for (int i = 0; i < PLANING_NR_PERSONS; i++)
 				PD.handlerEnded[i] = 1;
 		}
 	}
@@ -380,26 +378,25 @@ static void plPlayerAction(void) {
 
 			Search.EscapeBits |= FAHN_ESCAPE;
 
-			for (i = 0; i < PLANING_NR_PERSONS; i++)
+			for (int i = 0; i < PLANING_NR_PERSONS; i++)
 				PD.handlerEnded[i] = 1;
 		}
 	}
 #ifndef PLAN_IS_PERFECT
 	if (!(PD.timer % 3)) {
 		if (PD.isItDark) {
-			register byte j, i;
 			uint16 xpos[PLANING_NR_PERSONS];
 			uint16 ypos[PLANING_NR_PERSONS];
 			uint32 area[PLANING_NR_PERSONS];
 
 			/* there are more efficient solutions, but no safer ones */
-			for (i = 0; i < PLANING_NR_PERSONS; i++) {
+			for (int i = 0; i < PLANING_NR_PERSONS; i++) {
 				xpos[i] = (uint16) - 1;
 				ypos[i] = (uint16) - 1;
 				area[i] = (uint32) - 1;
 			}
 
-			for (j = 0; j < BurglarsNr; j++) {
+			for (int j = 0; j < BurglarsNr; j++) {
 				xpos[j] = livGetXPos(Planing_Name[j]);
 				ypos[j] = livGetYPos(Planing_Name[j]);
 				area[j] = livWhereIs(Planing_Name[j]);
@@ -411,7 +408,7 @@ static void plPlayerAction(void) {
 	}
 #endif
 
-	for (i = 0; i < PersonsNr; i++) {
+	for (uint32 i = 0; i < PersonsNr; i++) {
 		if ((i >= BurglarsNr) || !PD.handlerEnded[i]) {
 			SetActivHandler(plSys, OL_NR(GetNthNode(PersonsList, i)));
 
@@ -1589,7 +1586,7 @@ static void plPlayerAction(void) {
 
 	PD.ende = 1;
 
-	for (i = 0; i < PLANING_NR_PERSONS; i++) {
+	for (int i = 0; i < PLANING_NR_PERSONS; i++) {
 		if (!PD.handlerEnded[i])
 			PD.ende = 0;
 	}
@@ -1600,8 +1597,8 @@ static void plPlayerAction(void) {
 
 int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32)) {
 	FILE *fh = NULL;
-	LIST *menu = txtGoKey(PLAN_TXT, "PLAYER_MENU"), *l;
-	byte activ = 0, i;
+	LIST *menu = txtGoKey(PLAN_TXT, "PLAYER_MENU");
+	byte activ = 0;
 	uint32 timeLeft = 0, bitset, choice1, choice2;
 	int32 ret = 0;
 
@@ -1618,9 +1615,9 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 
 	AnimCounter = 0;
 
-	if ((activ =
-	            plOpen(objId, PLANING_OPEN_READ_BURGLARY, &fh)) == PLANING_OPEN_OK) {
-		if (!(l = LoadSystem(fh, plSys))) {
+	if ((activ = plOpen(objId, PLANING_OPEN_READ_BURGLARY, &fh)) == PLANING_OPEN_OK) {
+		LIST *l = LoadSystem(fh, plSys);
+		if (!l) {
 			if (!(l = plLoadTools(fh))) {
 				PD.ende = 0;
 				PD.timer = 0L;
@@ -1640,7 +1637,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 				PD.actionFunc = actionFunc;
 
 				/* Init data & search structure */
-				for (i = 0; i < PLANING_NR_PERSONS; i++) {
+				for (byte i = 0; i < PLANING_NR_PERSONS; i++) {
 					PD.handlerEnded[i] = 1;
 					PD.currLoudness[i] = 0;
 					PD.unableToWork[i] = 0;
@@ -1656,21 +1653,21 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 				}
 
 				/* Init activ handler & load them */
-				for (i = 0; i < PLANING_NR_PERSONS; i++) {
+				for (byte i = 0; i < PLANING_NR_PERSONS; i++) {
 					Search.GuyXPos[i] = -1;
 					Search.GuyYPos[i] = -1;
 				}
 
 				PD.maxTimer = 0L;
 
-				for (i = 0; i < BurglarsNr; i++) {
+				for (byte i = 0; i < BurglarsNr; i++) {
 					PD.handlerEnded[i] = 0;
 					LoadHandler(fh, plSys, OL_NR(GetNthNode(PersonsList, i)));
 
 					PD.maxTimer = MAX(GetMaxTimer(plSys), PD.maxTimer);
 				}
 
-				for (i = 0; i < PLANING_NR_GUARDS; i++)
+				for (byte i = 0; i < PLANING_NR_GUARDS; i++)
 					PD.guardKO[i] = 0;
 
 				/* Init search structure */
@@ -1851,7 +1848,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 					case PLANING_PLAYER_ESCAPE:
 						Search.EscapeBits |= FAHN_ESCAPE;
 
-						for (i = 0; i < PLANING_NR_PERSONS; i++)
+						for (byte i = 0; i < PLANING_NR_PERSONS; i++)
 							PD.handlerEnded[i] = 1;
 						break;
 
@@ -1875,10 +1872,10 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 					Search.EscapeBits |= FAHN_ESCAPE;
 				}
 
-				for (i = 0; i < PersonsNr; i++)
+				for (byte i = 0; i < PersonsNr; i++)
 					livTurn(Planing_Name[i], LIV_DISABLED); /* alle Sprites ausschalten! */
 
-				for (i = 0; i < BurglarsNr; i++) {
+				for (byte i = 0; i < BurglarsNr; i++) {
 					register struct ObjectNode *n;
 
 					Search.GuyXPos[i] = livGetXPos(Planing_Name[i]);

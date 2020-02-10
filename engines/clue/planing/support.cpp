@@ -26,9 +26,7 @@ namespace Clue {
 
 /* loot support */
 uint32 plGetNextLoot(void) {
-	register byte i;
-
-	for (i = 0; i < PLANING_NR_LOOTS; i++) {
+	for (int i = 0; i < PLANING_NR_LOOTS; i++) {
 		if (!Planing_Loot[i]) {
 			Planing_Loot[i] = 1;
 			return lsAddLootBag(livGetXPos(Planing_Name[CurrentPerson]),
@@ -41,22 +39,21 @@ uint32 plGetNextLoot(void) {
 }
 
 /* check support */
-byte plLivingsPosAtCar(uint32 bldId) {
+bool plLivingsPosAtCar(uint32 bldId) {
 	Building bldObj = (Building) dbGetObject(bldId);
-	uint16 xpos, ypos, carxpos, carypos;
-	byte i, atCar = 1;
 
-	carxpos = bldObj->CarXPos + 8;
-	carypos = bldObj->CarYPos + 8;
+	uint16 carxpos = bldObj->CarXPos + 8;
+	uint16 carypos = bldObj->CarYPos + 8;
 
 	startsWithAll(bldId, OLF_NORMAL, Object_LSArea);
 
-	for (i = 0; i < BurglarsNr; i++) {
-		xpos = livGetXPos(Planing_Name[i]);
-		ypos = livGetYPos(Planing_Name[i]);
+	bool atCar = true;
+	for (byte i = 0; i < BurglarsNr; i++) {
+		uint16 xpos = livGetXPos(Planing_Name[i]);
+		uint16 ypos = livGetYPos(Planing_Name[i]);
 
 		if (livWhereIs(Planing_Name[i]) != OL_NR(LIST_HEAD(ObjectList))) {
-			atCar = 0;
+			atCar = false;
 			break;
 		}
 
@@ -64,7 +61,7 @@ byte plLivingsPosAtCar(uint32 bldId) {
 		        || (xpos > (carxpos + PLANING_AREA_CAR)))
 		        && ((ypos < (carypos - PLANING_AREA_CAR))
 		            || (ypos > (carypos + PLANING_AREA_CAR)))) {
-			atCar = 0;
+			atCar = false;
 			break;
 		}
 	}
@@ -72,12 +69,14 @@ byte plLivingsPosAtCar(uint32 bldId) {
 	return atCar;
 }
 
-byte plAllInCar(uint32 bldId) {
-	byte maxPerson = 0, i, ret = 1;
-	uint32 maxTimer = 0L, oldTimer = CurrentTimer(plSys), realCurrentPerson =
-	                                     CurrentPerson;
+bool plAllInCar(uint32 bldId) {
+	bool ret = true;
+	uint32 realCurrentPerson = CurrentPerson;
+	uint32 oldTimer = CurrentTimer(plSys);
 
-	for (i = 0; i < BurglarsNr; i++) {
+	byte maxPerson = 0;
+	uint32 maxTimer = 0L;
+	for (byte i = 0; i < BurglarsNr; i++) {
 		SetActivHandler(plSys, OL_NR(GetNthNode(PersonsList, i)));
 		if (maxTimer < GetMaxTimer(plSys)) {
 			maxTimer = GetMaxTimer(plSys);
@@ -95,15 +94,14 @@ byte plAllInCar(uint32 bldId) {
 	}
 
 	if (!plLivingsPosAtCar(bldId))
-		ret = 0;
+		ret = false;
 
 	CurrentPerson = realCurrentPerson;
 
 	if (maxPerson != realCurrentPerson) {
 		SetActivHandler(plSys, OL_NR(GetNthNode(PersonsList, CurrentPerson)));
 		plMessage("PERSON_NOTES", PLANING_MSG_REFRESH);
-		plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys),
-		       maxTimer - GetMaxTimer(plSys), 0);
+		plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), maxTimer - GetMaxTimer(plSys), 0);
 	}
 
 	return ret;
@@ -280,16 +278,16 @@ void plInsertGuard(LIST *list, uint32 current, uint32 guard) {
 	}
 }
 
-byte plObjectInReach(uint32 current, uint32 objId) {
+bool plObjectInReach(uint32 current, uint32 objId) {
 	LIST *actionList = plGetObjectsList(current, 1);
-	byte i, ret = 0;
+	bool ret = false;
 
-	for (i = BurglarsNr; i < PersonsNr; i++)
+	for (byte i = BurglarsNr; i < PersonsNr; i++)
 		plInsertGuard(actionList, current, i);
 
 	if (!LIST_EMPTY(actionList)) {
 		if (dbHasObjectNode(actionList, objId))
-			ret = 1;
+			ret = true;
 	}
 
 	RemoveList(actionList);

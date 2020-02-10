@@ -26,7 +26,6 @@ namespace Clue {
 
 void plPrintInfo(const char *person) {
 	char info[80];
-
 	sprintf(info, "%s", &person[1]);
 
 	gfxSetRect(2, 320);
@@ -53,13 +52,11 @@ void plMessage(const char *msg, byte flags) {
 }
 
 void plDisplayTimer(uint32 time, byte doSpotsImmediatly) {
-	char info[80];
-	uint32 oldTimer = (uint32) -1;
-
 	if (!time)
 		time = CurrentTimer(plSys) / PLANING_CORRECT_TIME;
 
 	if (GamePlayMode & GP_GUARD_DESIGN) {
+		char info[80];
 		sprintf(info, "x:%d, y:%d   %s %.2d:%.2d:%.2d %s",
 		        livGetXPos(Planing_Name[CurrentPerson]),
 		        livGetYPos(Planing_Name[CurrentPerson]), txtTimer,
@@ -73,6 +70,7 @@ void plDisplayTimer(uint32 time, byte doSpotsImmediatly) {
 		gfxSetPens(m_gc, 248, GFX_SAME_PEN, GFX_SAME_PEN);
 		gfxPrint(m_gc, info, 2, GFX_PRINT_RIGHT);
 	} else {
+		char info[80];
 		sprintf(info, "%s %.2d:%.2d:%.2d %s", txtTimer, (uint32)(time / 3600),
 		        (uint32)((time / 60) % 60), (uint32)(time % 60), txtSeconds);
 
@@ -84,6 +82,7 @@ void plDisplayTimer(uint32 time, byte doSpotsImmediatly) {
 		gfxPrint(m_gc, info, 2, GFX_PRINT_RIGHT);
 	}
 
+	uint32 oldTimer = (uint32) -1;
 	if (doSpotsImmediatly || (oldTimer != CurrentTimer(plSys))) {
 		oldTimer = CurrentTimer(plSys);
 		lsMoveAllSpots(time);
@@ -92,7 +91,6 @@ void plDisplayTimer(uint32 time, byte doSpotsImmediatly) {
 
 void plDisplayInfo(void) {
 	char info[80];
-
 	dbGetObjectName(OL_NR(GetNthNode(PersonsList, CurrentPerson)), info);
 
 	gfxSetPens(m_gc, 0, 0, 0);
@@ -105,21 +103,18 @@ void plDisplayInfo(void) {
 
 byte plSay(const char *msg, uint32 persId) {
 	register LIST *l = txtGoKey(PLAN_TXT, msg);
-	register byte choice;
 
-	SetPictID(((Person) dbGetObject(OL_NR(GetNthNode(PersonsList, persId))))->
-	          PictID);
+	SetPictID(((Person) dbGetObject(OL_NR(GetNthNode(PersonsList, persId))))->PictID);
 
 	inpTurnESC(0);
 	inpTurnFunctionKey(0);
 
-	choice = Bubble(l, 0, NULL, 200);
+	register byte choice = Bubble(l, 0, NULL, 200);
 
 	inpTurnFunctionKey(1);
 	inpTurnESC(1);
 
 	RemoveList(l);
-
 
 	plDisplayTimer(0, 1);
 	plDisplayInfo();
@@ -129,7 +124,6 @@ byte plSay(const char *msg, uint32 persId) {
 
 void plDrawWait(uint32 sec) {
 	char time[10];
-
 	sprintf(time, "%.2d:%.2d", (uint32)(sec / 60), (uint32)(sec % 60));
 
 	gfxSetDrMd(m_gc, GFX_JAM_2);

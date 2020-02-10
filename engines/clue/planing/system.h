@@ -81,10 +81,10 @@ void CloseHandler(struct System *sys, uint32 id);   /* Close Handler            
 struct Handler *ClearHandler(struct System *sys, uint32 id);    /* Clear Handlers action list */
 struct Handler *FindHandler(struct System *sys, uint32 id);
 
-byte IsHandlerCleared(struct System *sys);
+bool IsHandlerCleared(struct System *sys);
 
 void SaveHandler(FILE *fh, struct System *sys, uint32 id);
-byte LoadHandler(FILE *fh, struct System *sys, uint32 id);
+bool LoadHandler(FILE *fh, struct System *sys, uint32 id);
 
 size_t plGetUsedMem(void);
 
@@ -181,7 +181,7 @@ struct Action *GoFirstAction(struct System *sys);
 struct Action *GoLastAction(struct System *sys);
 struct Action *NextAction(struct System *sys);
 struct Action *PrevAction(struct System *sys);
-byte ActionStarted(struct System *sys);
+bool ActionStarted(struct System *sys);
 byte ActionEnded(struct System *sys);
 void RemLastAction(struct System *sys);
 void IgnoreAction(struct System *sys);

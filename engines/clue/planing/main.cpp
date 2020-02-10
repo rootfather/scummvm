@@ -32,10 +32,8 @@ char txtSeconds[20];
 
 /* System functions */
 void plInit(void) {
-	LIST *l;
-
 	/* Get texts */
-	l = txtGoKey(PLAN_TXT, "TXT_TOO_LOUD");
+	LIST *l = txtGoKey(PLAN_TXT, "TXT_TOO_LOUD");
 	sprintf(txtTooLoud, "%s", NODE_NAME(LIST_HEAD(l)));
 	RemoveList(l);
 
