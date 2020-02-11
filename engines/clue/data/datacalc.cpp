@@ -22,7 +22,7 @@ namespace Clue {
 
 int32 Round(int32 v, int32 p) {
 	/* p...Stellen ! */
-	register int32 i, z;
+	int32 i, z;
 
 	for (i = 0, z = 1; i < p; i++, z *= 10);
 

@@ -102,14 +102,14 @@ void plDisplayInfo(void) {
 }
 
 byte plSay(const char *msg, uint32 persId) {
-	register LIST *l = txtGoKey(PLAN_TXT, msg);
+	LIST *l = txtGoKey(PLAN_TXT, msg);
 
 	SetPictID(((Person) dbGetObject(OL_NR(GetNthNode(PersonsList, persId))))->PictID);
 
 	inpTurnESC(0);
 	inpTurnFunctionKey(0);
 
-	register byte choice = Bubble(l, 0, NULL, 200);
+	byte choice = Bubble(l, 0, NULL, 200);
 
 	inpTurnFunctionKey(1);
 	inpTurnESC(1);
@@ -134,7 +134,7 @@ void plDrawWait(uint32 sec) {
 }
 
 void plRefresh(uint32 ItemId) {
-	register LSObject obj = (LSObject) dbGetObject(ItemId);
+	LSObject obj = (LSObject) dbGetObject(ItemId);
 
 	if (lsIsLSObjectInActivArea(obj))
 		lsFastRefresh(obj);

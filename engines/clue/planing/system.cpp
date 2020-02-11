@@ -47,7 +47,7 @@ size_t sizeofAction[] = {
 
 struct Handler *FindHandler(struct System *sys, uint32 id) {
 	if (sys) {
-		for (register struct Handler *h = (struct Handler *) LIST_HEAD(sys->Handlers); NODE_SUCC(h);
+		for (struct Handler *h = (struct Handler *) LIST_HEAD(sys->Handlers); NODE_SUCC(h);
 		        h = (struct Handler *) NODE_SUCC(h)) {
 			if (h->Id == id)
 				return h;
@@ -58,7 +58,7 @@ struct Handler *FindHandler(struct System *sys, uint32 id) {
 }
 
 struct System *InitSystem(void) {
-	register struct System *sys = (struct System *) TCAllocMem(sizeof(*sys), 0);
+	struct System *sys = (struct System *) TCAllocMem(sizeof(*sys), 0);
 
 	if (sys) {
 		sys->Handlers = CreateList();
@@ -85,7 +85,7 @@ void CloseSystem(struct System *sys) {
 }
 
 void SetActivHandler(struct System *sys, uint32 id) {
-	register struct Handler *h = FindHandler(sys, id);
+	struct Handler *h = FindHandler(sys, id);
 
 	if (h)
 		sys->ActivHandler = (NODE *) h;
@@ -97,16 +97,16 @@ void SaveSystem(FILE *fh, struct System *sys) {
 	if (fh) {
 		fprintf(fh, FILE_SYSTEM_ID "\r\n");
 
-		for (register struct Handler *h = (struct Handler *) LIST_HEAD(sys->Handlers); NODE_SUCC(h);
+		for (struct Handler *h = (struct Handler *) LIST_HEAD(sys->Handlers); NODE_SUCC(h);
 		        h = (struct Handler *) NODE_SUCC(h))
 			fprintf(fh, FILE_HANDLER_ID "\r\n%u\r\n", h->Id);
 	}
 }
 
 LIST *LoadSystem(FILE *fh, struct System *sys) {
-	register LIST *l = txtGoKey(PLAN_TXT, "SYSTEM_GUYS_MISSING_1");
-	register bool foundAll = true;
-	register uint8 knowsSomebody = 1, handlerNr = 0;
+	LIST *l = txtGoKey(PLAN_TXT, "SYSTEM_GUYS_MISSING_1");
+	bool foundAll = true;
+	uint8 knowsSomebody = 1, handlerNr = 0;
 
 	if (fh) {
 		char buffer[64];
@@ -158,7 +158,7 @@ LIST *LoadSystem(FILE *fh, struct System *sys) {
 }
 
 struct Handler *InitHandler(struct System *sys, uint32 id, uint32 flags) {
-	register struct Handler *h = NULL;
+	struct Handler *h = NULL;
 
 	if (sys && !FindHandler(sys, id)) {
 		if ((h = (struct Handler *) CreateNode(sys->Handlers, sizeof(*h), NULL))) {
@@ -181,7 +181,7 @@ struct Handler *InitHandler(struct System *sys, uint32 id, uint32 flags) {
 }
 
 void CloseHandler(struct System *sys, uint32 id) {
-	register struct Handler *h = FindHandler(sys, id);
+	struct Handler *h = FindHandler(sys, id);
 
 	if (h) {
 		CorrectMem(h->Actions);
@@ -195,7 +195,7 @@ void CloseHandler(struct System *sys, uint32 id) {
 }
 
 struct Handler *ClearHandler(struct System *sys, uint32 id) {
-	register struct Handler *h = FindHandler(sys, id);
+	struct Handler *h = FindHandler(sys, id);
 
 	if (h) {
 		CorrectMem(h->Actions);
@@ -217,7 +217,7 @@ struct Handler *ClearHandler(struct System *sys, uint32 id) {
 }
 
 bool IsHandlerCleared(struct System *sys) {
-	register struct Handler *h;
+	struct Handler *h;
 
 	if (sys && (h = (struct Handler *) sys->ActivHandler)) {
 		if (LIST_EMPTY(h->Actions))
@@ -228,12 +228,12 @@ bool IsHandlerCleared(struct System *sys) {
 }
 
 void SaveHandler(FILE *fh, struct System *sys, uint32 id) {
-	register struct Handler *h;
+	struct Handler *h;
 
 	if (fh && sys && (h = FindHandler(sys, id))) {
 		fprintf(fh, FILE_ACTION_LIST_ID "\r\n%u\r\n", id);
 
-		for (register struct Action *a = (struct Action *) LIST_HEAD(h->Actions); NODE_SUCC(a);
+		for (struct Action *a = (struct Action *) LIST_HEAD(h->Actions); NODE_SUCC(a);
 		        a = (struct Action *) NODE_SUCC(a)) {
 			fprintf(fh, FILE_ACTION_ID "\r\n%hu\r\n%hu\r\n",
 			        a->Type, a->TimeNeeded);
@@ -288,7 +288,7 @@ bool LoadHandler(FILE *fh, struct System *sys, uint32 id) {
 						fscanf(fh, "%hu\r\n", &time);
 
 						if (type) {
-							register struct Action *a = InitAction(sys, type, 0L, 0L, time);
+							struct Action *a = InitAction(sys, type, 0L, 0L, time);
 							uint16 value16;
 							uint32 value32;
 
@@ -332,8 +332,8 @@ bool LoadHandler(FILE *fh, struct System *sys, uint32 id) {
 }
 
 struct Action *InitAction(struct System *sys, uint16 type, uint32 data1, uint32 data2, uint32 time) {
-	register struct Handler *h;
-	register struct Action *a = nullptr;
+	struct Handler *h;
+	struct Action *a = nullptr;
 
 	if (sys && (h = (struct Handler *) sys->ActivHandler)) {
 		if ((sysUsedMem + sizeof(struct Action) + sizeofAction[type]) <= SYS_MAX_MEMORY_SIZE) {
@@ -376,7 +376,7 @@ struct Action *InitAction(struct System *sys, uint16 type, uint32 data1, uint32 
 }
 
 struct Action *CurrentAction(struct System *sys) {
-	register struct Handler *h;
+	struct Handler *h;
 
 	if (sys && (h = (struct Handler *) sys->ActivHandler))
 		return (struct Action *) h->CurrentAction;
@@ -385,7 +385,7 @@ struct Action *CurrentAction(struct System *sys) {
 }
 
 struct Action *GoFirstAction(struct System *sys) {
-	register struct Handler *h;
+	struct Handler *h;
 
 	if (sys && (h = (struct Handler *) sys->ActivHandler)) {
 		if (!LIST_EMPTY(h->Actions)) {
@@ -402,7 +402,7 @@ struct Action *GoFirstAction(struct System *sys) {
 }
 
 struct Action *GoLastAction(struct System *sys) {
-	register struct Handler *h;
+	struct Handler *h;
 
 	if (sys && (h = (struct Handler *) sys->ActivHandler)) {
 		if (!LIST_EMPTY(h->Actions)) {
@@ -420,7 +420,7 @@ struct Action *GoLastAction(struct System *sys) {
 }
 
 struct Action *NextAction(struct System *sys) {
-	register struct Handler *h;
+	struct Handler *h;
 
 	if (sys && (h = (struct Handler *) sys->ActivHandler)) {
 		if ((struct Action *) h->CurrentAction) {
@@ -458,7 +458,7 @@ struct Action *NextAction(struct System *sys) {
 }
 
 struct Action *PrevAction(struct System *sys) {
-	register struct Handler *h;
+	struct Handler *h;
 
 	if (sys && (h = (struct Handler *) sys->ActivHandler)) {
 		if ((struct Action *) h->CurrentAction) {
@@ -496,10 +496,10 @@ struct Action *PrevAction(struct System *sys) {
 }
 
 bool ActionStarted(struct System *sys) {
-	register struct Handler *h;
+	struct Handler *h;
 
 	if (sys && (h = (struct Handler *) sys->ActivHandler)) {
-		register struct Action *a = (struct Action *) h->CurrentAction;
+		struct Action *a = (struct Action *) h->CurrentAction;
 		if (a) {
 			if (a->Timer == 1)
 				return true;
@@ -510,10 +510,10 @@ bool ActionStarted(struct System *sys) {
 }
 
 byte ActionEnded(struct System *sys) {
-	register struct Handler *h;
+	struct Handler *h;
 
 	if (sys && (h = (struct Handler *) sys->ActivHandler)) {
-		register struct Action *a = (struct Action *) h->CurrentAction;
+		struct Action *a = (struct Action *) h->CurrentAction;
 		if (a) {
 			if (a->Timer == a->TimeNeeded)
 				return 1;
@@ -524,7 +524,7 @@ byte ActionEnded(struct System *sys) {
 }
 
 void RemLastAction(struct System *sys) {
-	register struct Handler *h;
+	struct Handler *h;
 
 	if (sys && (h = (struct Handler *) sys->ActivHandler)) {
 		if (!LIST_EMPTY(h->Actions)) {
@@ -544,7 +544,7 @@ void RemLastAction(struct System *sys) {
 }
 
 void IgnoreAction(struct System *sys) {
-	register struct Handler *h;
+	struct Handler *h;
 
 	if (sys && (h = (struct Handler *) sys->ActivHandler)) {
 		if ((struct Action *) h->CurrentAction) {
@@ -562,7 +562,7 @@ void IgnoreAction(struct System *sys) {
 }
 
 struct plSignal *InitSignal(struct System *sys, uint32 sender, uint32 receiver) {
-	register struct plSignal *s = NULL;
+	struct plSignal *s = NULL;
 
 	if (sys) {
 		if ((s = (struct plSignal *) CreateNode(sys->Signals, sizeof(*s), NULL))) {
@@ -584,7 +584,7 @@ void CloseSignal(struct plSignal *s) {
 struct plSignal *IsSignal(struct System *sys, uint32 sender, uint32 receiver) {
 
 	if (sys) {
-		for (register struct plSignal *s = (struct plSignal *) LIST_HEAD(sys->Signals); NODE_SUCC(s);
+		for (struct plSignal *s = (struct plSignal *) LIST_HEAD(sys->Signals); NODE_SUCC(s);
 		        s = (struct plSignal *) NODE_SUCC(s)) {
 			if ((s->SenderId == sender) && (s->ReceiverId == receiver))
 				return s;
@@ -595,7 +595,7 @@ struct plSignal *IsSignal(struct System *sys, uint32 sender, uint32 receiver) {
 }
 
 uint32 CurrentTimer(struct System *sys) {
-	register struct Handler *h;
+	struct Handler *h;
 
 	if (sys && (h = (struct Handler *) sys->ActivHandler))
 		return h->Timer;
@@ -604,7 +604,7 @@ uint32 CurrentTimer(struct System *sys) {
 }
 
 void IncCurrentTimer(struct System *sys, uint32 time, byte alsoTime) {
-	register struct Handler *h;
+	struct Handler *h;
 
 	if (sys && (h = (struct Handler *) sys->ActivHandler)) {
 		if (h->CurrentAction) {
@@ -619,11 +619,11 @@ void IncCurrentTimer(struct System *sys, uint32 time, byte alsoTime) {
 }
 
 uint32 GetMaxTimer(struct System *sys) {
-	register struct Handler *h;
-	register uint32 time = 0;
+	struct Handler *h;
+	uint32 time = 0;
 
 	if (sys && (h = (struct Handler *) sys->ActivHandler)) {
-		for (register struct Action *a = (struct Action *) LIST_HEAD(h->Actions); NODE_SUCC(a);
+		for (struct Action *a = (struct Action *) LIST_HEAD(h->Actions); NODE_SUCC(a);
 		        a = (struct Action *) NODE_SUCC(a))
 			time += a->TimeNeeded;
 	}

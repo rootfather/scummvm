@@ -195,7 +195,7 @@ uint32 lsGetStartArea(void) {
 }
 
 uint16 lsGetFloorIndex(uint16 x, uint16 y) {
-	register uint16 fpl, row, line;
+	uint16 fpl, row, line;
 
 	fpl = LS_FLOORS_PER_LINE;
 

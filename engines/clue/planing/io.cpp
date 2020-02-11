@@ -51,8 +51,8 @@ void plSaveTools(FILE *fh) {
 }
 
 LIST *plLoadTools(FILE *fh) {
-	register LIST *l = txtGoKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_1");
-	register byte foundAll = 1, canGet = 2, toolsNr = 0;
+	LIST *l = txtGoKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_1");
+	byte foundAll = 1, canGet = 2, toolsNr = 0;
 
 	char buffer[64];
 	buffer[0] = '\0';
@@ -127,7 +127,7 @@ byte plOpen(uint32 objId, byte mode, FILE **fh) {
 				sprintf(name2, "MODE_%d", mode);
 				plMessage(name2, PLANING_MSG_REFRESH);
 
-				register LIST *PlanList = CreateList();
+				LIST *PlanList = CreateList();
 
 				dbGetObjectName(objId, name1);
 

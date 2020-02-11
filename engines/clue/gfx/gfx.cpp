@@ -1717,8 +1717,8 @@ void MemBlit(MemRastPort *src, Rect *src_rect,
 	uint16 sw = src->w;
 	uint16 dw = dst->w;
 
-	register uint8 *dp = dst->pixels;
-	register uint8 *sp = src->pixels;
+	uint8 *dp = dst->pixels;
+	uint8 *sp = src->pixels;
 
 	dp += dstR.y * dw + dstR.x;
 	sp += srcR.y * sw + srcR.x;

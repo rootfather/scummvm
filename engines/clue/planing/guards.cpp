@@ -76,10 +76,10 @@ bool grdDraw(GC *gc, uint32 bldId, uint32 areaId) {
 	if (grdAddToList(bldId, GuardsList)) {
 		FILE *fh;
 		if (grdInit(&fh, "r", bldId, areaId)) {
-			register uint16 xpos = 0, ypos = 0;
+			uint16 xpos = 0, ypos = 0;
 
-			register uint32 GuardsNr = GetNrOfNodes(GuardsList);
-			register struct System *grdSys = InitSystem();
+			uint32 GuardsNr = GetNrOfNodes(GuardsList);
+			struct System *grdSys = InitSystem();
 
 			for (uint32 i = 0; i < GuardsNr; i++) {
 				InitHandler(grdSys, OL_NR(GetNthNode(GuardsList, i)),

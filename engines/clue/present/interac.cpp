@@ -65,10 +65,10 @@ static void DrawMenu(LIST *menu, byte nr, int32 mode) {
 	else
 		gfxSetPens(m_gc, 248, GFX_SAME_PEN, GFX_SAME_PEN);
 
-	register char *m1 = NULL;
-	register char *m2 = NULL;
-	register int32 x = 8;
-	register int32 lastx = 0;
+	char *m1 = NULL;
+	char *m2 = NULL;
+	int32 x = 8;
+	int32 lastx = 0;
 	byte i;
 
 	for (i = 0; i <= nr; i += 2) {
@@ -145,9 +145,9 @@ static char SearchMouseActiv(uint32 possibility, byte max) {
 
 void RefreshMenu(void) {
 	if (refreshMenu) {
-		register byte max = GetNrOfNodes(refreshMenu);
+		byte max = GetNrOfNodes(refreshMenu);
 
-		for (register byte i = 0; i < max; i++) {
+		for (byte i = 0; i < max; i++) {
 			if (refreshPoss & (1L << i))
 				DrawMenu(refreshMenu, i, INACTIV_POSS);
 		}
@@ -164,7 +164,7 @@ byte Menu(LIST *menu, uint32 possibility, byte activ, void (*func)(byte), uint32
 
 		uint16 x = 8;
 		NODE *n;
-		register byte max;
+		byte max;
 
 		for (max = 0, n = LIST_HEAD(menu); NODE_SUCC(n); n = NODE_SUCC(n), max++) {
 			if ((max % 2) == 0) {
@@ -196,9 +196,9 @@ byte Menu(LIST *menu, uint32 possibility, byte activ, void (*func)(byte), uint32
 		if (waitTime)
 			inpSetWaitTicks(waitTime);
 
-		register bool ende = false;
+		bool ende = false;
 		while (!ende) {
-			register int32 action = INP_LEFT | INP_RIGHT | INP_UP | INP_DOWN | INP_LBUTTONP;
+			int32 action = INP_LEFT | INP_RIGHT | INP_UP | INP_DOWN | INP_LBUTTONP;
 
 			if (waitTime)
 				action |= INP_TIME;
@@ -228,7 +228,7 @@ byte Menu(LIST *menu, uint32 possibility, byte activ, void (*func)(byte), uint32
 				ende = true;
 
 			if (action & INP_MOUSE) {   /* MOD : 14.12.93 hg */
-				register char nextActiv = SearchMouseActiv(possibility, max);
+				char nextActiv = SearchMouseActiv(possibility, max);
 				if (nextActiv != ((char) -1)) {
 					if (nextActiv != activ) {
 						DrawMenu(menu, activ, INACTIV_POSS);
@@ -241,7 +241,7 @@ byte Menu(LIST *menu, uint32 possibility, byte activ, void (*func)(byte), uint32
 				}
 			} else {
 				if ((action & INP_UP) && (activ & 1)) {
-					register char nextActiv = SearchActiv(-1, activ, possibility, max);
+					char nextActiv = SearchActiv(-1, activ, possibility, max);
 					if (nextActiv != (char) -1) {
 						if (!(nextActiv & 1)) {
 							DrawMenu(menu, activ, INACTIV_POSS);
@@ -255,7 +255,7 @@ byte Menu(LIST *menu, uint32 possibility, byte activ, void (*func)(byte), uint32
 				}
 
 				if ((action & INP_DOWN) && !(activ & 1)) {
-					register char nextActiv = SearchActiv(+1, activ, possibility, max);
+					char nextActiv = SearchActiv(+1, activ, possibility, max);
 					if (nextActiv != (char) -1) {
 						if (nextActiv & 1) {
 							DrawMenu(menu, activ, INACTIV_POSS);
@@ -269,7 +269,7 @@ byte Menu(LIST *menu, uint32 possibility, byte activ, void (*func)(byte), uint32
 				}
 
 				if (action & INP_LEFT) {
-					register char nextActiv = SearchActiv(-2, activ, possibility, max);
+					char nextActiv = SearchActiv(-2, activ, possibility, max);
 					if (nextActiv != (char) -1) {
 						DrawMenu(menu, activ, INACTIV_POSS);
 						activ = nextActiv;
@@ -281,7 +281,7 @@ byte Menu(LIST *menu, uint32 possibility, byte activ, void (*func)(byte), uint32
 				}
 
 				if (action & INP_RIGHT) {
-					register char nextActiv = SearchActiv(+2, activ, possibility, max);
+					char nextActiv = SearchActiv(+2, activ, possibility, max);
 					if (nextActiv != (char) -1) {
 						DrawMenu(menu, activ, INACTIV_POSS);
 						activ = nextActiv;
@@ -320,7 +320,7 @@ static void DrawBubble(LIST *bubble, uint8 firstLine, uint8 activ, GC *gc, uint3
 	}
 
 	for (uint i = firstLine, j = 4; (max < firstLine + NRBLINES) ? i < max : i < firstLine + NRBLINES; i++, j += 9) {
-		register char *line = NODE_NAME(GetNthNode(bubble, i));
+		char *line = NODE_NAME(GetNthNode(bubble, i));
 
 		if (!line)
 			break;
@@ -359,7 +359,7 @@ static void DrawBubble(LIST *bubble, uint8 firstLine, uint8 activ, GC *gc, uint3
 
 
 byte Bubble(LIST *bubble, byte activ, void (*func)(byte), uint32 waitTime) {
-	register int32 max = GetNrOfNodes(bubble);
+	int32 max = GetNrOfNodes(bubble);
 
 	SuspendAnim();
 	gfxPrepareRefresh();
@@ -368,7 +368,7 @@ byte Bubble(LIST *bubble, byte activ, void (*func)(byte), uint32 waitTime) {
 	if (activ == GET_OUT)
 		activ = 0;
 
-	register byte firstVis = 0;
+	byte firstVis = 0;
 	if (activ >= NRBLINES)
 		firstVis = activ - NRBLINES + 1;
 
@@ -403,7 +403,7 @@ byte Bubble(LIST *bubble, byte activ, void (*func)(byte), uint32 waitTime) {
 
 	if (waitTime) {
 		inpSetWaitTicks(waitTime);
-		register uint32 action = inpWaitFor(INP_LBUTTONP | INP_TIME | INP_RBUTTONP);
+		uint32 action = inpWaitFor(INP_LBUTTONP | INP_TIME | INP_RBUTTONP);
 
 		if (action & INP_LBUTTONP)
 			activ = 1;
@@ -416,9 +416,9 @@ byte Bubble(LIST *bubble, byte activ, void (*func)(byte), uint32 waitTime) {
 
 		ExtBubbleActionInfo = action;
 	} else {
-		register bool ende = false;
+		bool ende = false;
 		while (!ende) {
-			register uint32 action =
+			uint32 action =
 			    inpWaitFor(INP_UP | INP_DOWN | INP_LBUTTONP | INP_RBUTTONP
 			               | INP_LEFT | INP_RIGHT);
 

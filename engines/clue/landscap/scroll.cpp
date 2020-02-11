@@ -47,7 +47,7 @@ byte lsScrollLandScape(byte direction) {
 }
 
 byte lsInitScrollLandScape(byte direction, byte mode) {
-	register struct LandScape *l = ls;
+	struct LandScape *l = ls;
 	int32 dx = 0, dy = 0, px = 0, py = 0, tx = 0, ty = 0, speed =
 	                                       (int32) l->uch_ScrollSpeed;
 	byte collis = 0;

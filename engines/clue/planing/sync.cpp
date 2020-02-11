@@ -1147,8 +1147,8 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 			}
 
 			if (animate & PLANING_ANIMATE_NO) {
-				register struct Handler *h = (struct Handler *) plSys->ActivHandler;
-				register uint16 dir;
+				struct Handler *h = (struct Handler *) plSys->ActivHandler;
+				uint16 dir;
 
 				if (i < BurglarsNr)
 					dir = ANM_STAND;
@@ -1156,7 +1156,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 					dir = ANM_MOVE_DOWN;
 
 				if (CurrentTimer(plSys) != 0) {
-					for (register struct Action *a = (struct Action *) LIST_HEAD(h->Actions);
+					for (struct Action *a = (struct Action *) LIST_HEAD(h->Actions);
 					        NODE_SUCC(a); a = (struct Action *) NODE_SUCC(a)) {
 						switch (a->Type) {
 						case ACTION_GO:

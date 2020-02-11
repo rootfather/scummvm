@@ -24,7 +24,7 @@ char *(*DecodeKey)(KEY) = NULL;
 
 
 static struct relationDef *FindRelation(RELATION id) {
-	for (register struct relationDef *rd = relationsDefBase; rd; rd = rd->rd_next) {
+	for (struct relationDef *rd = relationsDefBase; rd; rd = rd->rd_next) {
 		if (rd->rd_id == id)
 			return rd;
 	}
@@ -34,7 +34,7 @@ static struct relationDef *FindRelation(RELATION id) {
 
 RELATION AddRelation(RELATION id) {
 	if (!FindRelation(id)) {
-		register struct relationDef *rd = (struct relationDef *) TCAllocMem(sizeof(*rd), 0);
+		struct relationDef *rd = (struct relationDef *) TCAllocMem(sizeof(*rd), 0);
 		if (rd) {
 			rd->rd_next = relationsDefBase;
 			relationsDefBase = rd;
@@ -52,10 +52,10 @@ RELATION AddRelation(RELATION id) {
 }
 
 RELATION CloneRelation(RELATION id, RELATION cloneId) {
-	register struct relationDef *rd = FindRelation(id);
+	struct relationDef *rd = FindRelation(id);
 	if (rd) {
 		if (AddRelation(cloneId) || FindRelation(cloneId)) {
-			for (register struct relation *r = rd->rd_relationsTable; r; r = r->r_next)
+			for (struct relation *r = rd->rd_relationsTable; r; r = r->r_next)
 				SetP(r->r_leftKey, cloneId, r->r_rightKey, r->r_parameter);
 
 			return cloneId;
@@ -66,14 +66,14 @@ RELATION CloneRelation(RELATION id, RELATION cloneId) {
 }
 
 RELATION RemRelation(RELATION id) {
-	register struct relationDef **h = &relationsDefBase;
+	struct relationDef **h = &relationsDefBase;
 
-	for (register struct relationDef *rd = relationsDefBase; rd; rd = rd->rd_next) {
+	for (struct relationDef *rd = relationsDefBase; rd; rd = rd->rd_next) {
 		if (rd->rd_id == id) {
 			*h = rd->rd_next;
 
 			while (rd->rd_relationsTable) {
-				register struct relation *h2 = rd->rd_relationsTable->r_next;
+				struct relation *h2 = rd->rd_relationsTable->r_next;
 
 				TCFreeMem(rd->rd_relationsTable, sizeof(struct relation));
 				rd->rd_relationsTable = h2;
@@ -93,10 +93,10 @@ RELATION RemRelation(RELATION id) {
 }
 
 RELATION SetP(KEY leftKey, RELATION id, KEY rightKey, PARAMETER parameter) {
-	register struct relationDef *rd = FindRelation(id);
+	struct relationDef *rd = FindRelation(id);
 
 	if (rd && CompareKey) {
-		for (register struct relation *rel = rd->rd_relationsTable; rel; rel = rel->r_next) {
+		for (struct relation *rel = rd->rd_relationsTable; rel; rel = rel->r_next) {
 			if (CompareKey(rel->r_leftKey, leftKey) && CompareKey(rel->r_rightKey, rightKey)) {
 				if (parameter != NO_PARAMETER)
 					rel->r_parameter = parameter;
@@ -104,7 +104,7 @@ RELATION SetP(KEY leftKey, RELATION id, KEY rightKey, PARAMETER parameter) {
 			}
 		}
 
-		register struct relation *newRel = (struct relation *) TCAllocMem(sizeof(*newRel), 0);
+		struct relation *newRel = (struct relation *) TCAllocMem(sizeof(*newRel), 0);
 		if (newRel) {
 			newRel->r_next = rd->rd_relationsTable;
 			rd->rd_relationsTable = newRel;
@@ -121,11 +121,11 @@ RELATION SetP(KEY leftKey, RELATION id, KEY rightKey, PARAMETER parameter) {
 }
 
 RELATION UnSet(KEY leftKey, RELATION id, KEY rightKey) {
-	register struct relationDef *rd = FindRelation(id);
+	struct relationDef *rd = FindRelation(id);
 
 	if (rd && CompareKey) {
-		register struct relation **h = &rd->rd_relationsTable;
-		for (register struct relation *r = rd->rd_relationsTable; r; r = r->r_next) {
+		struct relation **h = &rd->rd_relationsTable;
+		for (struct relation *r = rd->rd_relationsTable; r; r = r->r_next) {
 			if (CompareKey(r->r_leftKey, leftKey)
 			        && CompareKey(r->r_rightKey, rightKey)) {
 				*h = r->r_next;
@@ -142,10 +142,10 @@ RELATION UnSet(KEY leftKey, RELATION id, KEY rightKey) {
 }
 
 PARAMETER GetP(KEY leftKey, RELATION id, KEY rightKey) {
-	register struct relationDef *rd = FindRelation(id);
+	struct relationDef *rd = FindRelation(id);
 
 	if (rd && CompareKey) {
-		for (register struct relation *r = rd->rd_relationsTable; r; r = r->r_next) {
+		for (struct relation *r = rd->rd_relationsTable; r; r = r->r_next) {
 			if (CompareKey(r->r_leftKey, leftKey)
 			        && CompareKey(r->r_rightKey, rightKey))
 				return r->r_parameter;
@@ -156,10 +156,10 @@ PARAMETER GetP(KEY leftKey, RELATION id, KEY rightKey) {
 }
 
 RELATION AskP(KEY leftKey, RELATION id, KEY rightKey, PARAMETER parameter, COMPARSION comparsion) {
-	register struct relationDef *rd = FindRelation(id);
+	struct relationDef *rd = FindRelation(id);
 
 	if (rd && CompareKey) {
-		for (register struct relation *r = rd->rd_relationsTable; r; r = r->r_next) {
+		for (struct relation *r = rd->rd_relationsTable; r; r = r->r_next) {
 			if (CompareKey(r->r_leftKey, leftKey)
 			        && CompareKey(r->r_rightKey, rightKey)) {
 				if (comparsion && (parameter != NO_PARAMETER)) {
@@ -189,10 +189,10 @@ RELATION AskP(KEY leftKey, RELATION id, KEY rightKey, PARAMETER parameter, COMPA
 }
 
 void AskAll(KEY leftKey, RELATION id, void (*UseKey)(void *)) {
-	register struct relationDef *rd = FindRelation(id);
+	struct relationDef *rd = FindRelation(id);
 
 	if (rd && CompareKey) {
-		for (register struct relation *r = rd->rd_relationsTable; r; r = r->r_next) {
+		for (struct relation *r = rd->rd_relationsTable; r; r = r->r_next) {
 			if (CompareKey(r->r_leftKey, leftKey)) {
 				if (UseKey)
 					UseKey(r->r_rightKey);
@@ -202,10 +202,10 @@ void AskAll(KEY leftKey, RELATION id, void (*UseKey)(void *)) {
 }
 
 void UnSetAll(KEY key, void (*UseKey)(KEY)) {
-	for (register struct relationDef *rd = relationsDefBase; rd; rd = rd->rd_next) {
-		register struct relation **h = &rd->rd_relationsTable;
+	for (struct relationDef *rd = relationsDefBase; rd; rd = rd->rd_next) {
+		struct relation **h = &rd->rd_relationsTable;
 
-		for (register struct relation *r = rd->rd_relationsTable; r; r = r->r_next) {
+		for (struct relation *r = rd->rd_relationsTable; r; r = r->r_next) {
 			if (CompareKey(r->r_leftKey, key) || CompareKey(r->r_rightKey, key)) {
 				if (UseKey)
 					UseKey(key);
@@ -222,11 +222,11 @@ void UnSetAll(KEY key, void (*UseKey)(KEY)) {
 
 int SaveRelations(const char *file, uint32 offset, uint32 size, uint16 disk_id) {
 	if (relationsDefBase && DecodeKey) {
-		register FILE *fh = dskOpen(file, "wb");
+		FILE *fh = dskOpen(file, "wb");
 		if (fh) {
 			fprintf(fh, "%s\r\n", REL_FILE_MARK);
 
-			for (register struct relationDef *rd = relationsDefBase; rd; rd = rd->rd_next) {
+			for (struct relationDef *rd = relationsDefBase; rd; rd = rd->rd_next) {
 				if (rd->rd_id > offset) {
 					if (size && (rd->rd_id > offset + size))
 						continue;
@@ -234,7 +234,7 @@ int SaveRelations(const char *file, uint32 offset, uint32 size, uint16 disk_id) 
 					fprintf(fh, "%s\r\n", REL_TABLE_MARK);
 					fprintf(fh, "%u\r\n", rd->rd_id);
 
-					for (register struct relation *r = rd->rd_relationsTable; r; r = r->r_next) {
+					for (struct relation *r = rd->rd_relationsTable; r; r = r->r_next) {
 						char left[256];
 						char right[256];
 						strcpy(left, DecodeKey(r->r_leftKey));
@@ -323,8 +323,8 @@ bool LoadRelations(const char *file, uint16 disk_id) {
 }
 
 void RemRelations(uint32 offset, uint32 size) {
-	register struct relationDef *rd_next;
-	for (register struct relationDef *rd = relationsDefBase; rd; rd = rd_next) {
+	struct relationDef *rd_next;
+	for (struct relationDef *rd = relationsDefBase; rd; rd = rd_next) {
 		rd_next = rd->rd_next;
 
 		if (rd->rd_id > offset) {

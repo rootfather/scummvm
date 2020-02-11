@@ -95,11 +95,11 @@ void *CreateNode(LIST *list, size_t size, const char *name) {
 	if (!size)
 		size = sizeof(NODE);
 
-	register size_t len = 0;
+	size_t len = 0;
 	if (name)
 		len = strlen(name) + 1;
 
-	register NODE *node = NULL;
+	NODE *node = NULL;
 	if (size >= sizeof(NODE)) {
 		if ((node = (NODE *) TCAllocMem(size + len, true))) {
 			NODE_SUCC(node) = NULL;
@@ -122,7 +122,7 @@ void *CreateNode(LIST *list, size_t size, const char *name) {
 }
 
 void RemoveNode(LIST *list, const char *name) {
-	register NODE *node;
+	NODE *node;
 	if (name) {
 		if ((node = (NODE *)GetNode(list, name))) {
 			RemNode(node);
@@ -146,7 +146,7 @@ void FreeNode(void *node) {
 }
 
 void *GetNode(LIST *list, const char *name) {
-	for (register NODE *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node)) {
+	for (NODE *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node)) {
 		if (strcmp(NODE_NAME(node), name) == 0)
 			return node;
 	}
@@ -155,7 +155,7 @@ void *GetNode(LIST *list, const char *name) {
 }
 
 void *GetNthNode(LIST *list, uint32 nth) {
-	for (register NODE *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node)) {
+	for (NODE *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node)) {
 		if (nth == 0)
 			return node;
 		nth--;
@@ -165,8 +165,8 @@ void *GetNthNode(LIST *list, uint32 nth) {
 }
 
 uint32 GetNrOfNodes(LIST *list) {
-	register NODE *node = NULL;
-	register uint32 i = 0;
+	NODE *node = NULL;
+	uint32 i = 0;
 
 	for (i = 0, node = LIST_HEAD(list); NODE_SUCC(node);
 	        i++, node = NODE_SUCC(node));
@@ -175,8 +175,8 @@ uint32 GetNrOfNodes(LIST *list) {
 }
 
 uint32 GetNodeNrByAddr(LIST *list, void *node) {
-	register NODE *s;
-	register uint32 i;
+	NODE *s;
+	uint32 i;
 
 	for (s = LIST_HEAD(list), i = 0; NODE_SUCC(s) && (s != node);
 	        s = NODE_SUCC(s), i++);
@@ -189,7 +189,7 @@ uint32 GetNodeNr(LIST *list, const char *name) {
 }
 
 void foreach (LIST *list, void (*processNode)(void *)) {
-	for (register NODE *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node))
+	for (NODE *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node))
 		processNode(node);
 }
 
@@ -247,9 +247,9 @@ uint32 ReadList(LIST *list, size_t size, char *fileName) {
 }
 
 void WriteList(LIST *list, char *fileName) {
-	register FILE *fh = dskOpen(fileName, "wb");
+	FILE *fh = dskOpen(fileName, "wb");
 	if (fh) {
-		for (register NODE *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node))
+		for (NODE *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node))
 			fprintf(fh, "%s\r\n", NODE_NAME(node));
 
 		fclose(fh);

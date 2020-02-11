@@ -100,7 +100,7 @@ static struct {
 static void CheckSurrounding(uint32 current) {
 #ifndef PLAN_IS_PERFECT
 	if (has(OL_NR(GetNthNode(PersonsList, current)), Ability_Aufpassen)) {
-		register int32 watch = 0;
+		int32 watch = 0;
 
 		if (Search.EscapeBits & FAHN_QUIET_ALARM)
 			watch = tcWatchDogWarning(OL_NR(GetNthNode(PersonsList, current)));
@@ -262,8 +262,8 @@ static byte plCarTooFull(void) {
 }
 
 static void plPlayerAction(void) {
-	register byte patroCounter = 3;
-	register byte DoScrolling = 0;
+	byte patroCounter = 3;
+	byte DoScrolling = 0;
 
 	PD.timer++;
 	PD.realTime = PD.timer / PLANING_CORRECT_TIME;
@@ -430,10 +430,10 @@ static void plPlayerAction(void) {
 			} else if ((PD.action = NextAction(plSys))) {
 				if (!(PD.timer % 12) && (i >= BurglarsNr)
 				        && !(Search.EscapeBits & FAHN_ALARM_GUARD)) {
-					register byte j, dir =
+					byte j, dir =
 					    livGetViewDirection(Planing_Name[i]);
-					register uint16 xpos = livGetXPos(Planing_Name[i]);
-					register uint16 ypos = livGetYPos(Planing_Name[i]);
+					uint16 xpos = livGetXPos(Planing_Name[i]);
+					uint16 ypos = livGetYPos(Planing_Name[i]);
 
 #ifndef PLAN_IS_PERFECT
 					for (j = 0; j < BurglarsNr; j++) {
@@ -551,7 +551,7 @@ static void plPlayerAction(void) {
 						}
 
 						if (ActionEnded(plSys)) {
-							register struct plSignal *sig =
+							struct plSignal *sig =
 							    IsSignal(plSys,
 							             OL_NR(GetNthNode(PersonsList, i)),
 							             ActionData(PD.action,
@@ -566,7 +566,7 @@ static void plPlayerAction(void) {
 
 				case ACTION_WAIT_SIGNAL:
 					if (i < BurglarsNr) {
-						register struct plSignal *sig =
+						struct plSignal *sig =
 						    IsSignal(plSys,
 						             ActionData(PD.action,
 						                        struct ActionWaitSignal *)->
@@ -605,8 +605,8 @@ static void plPlayerAction(void) {
 								                                        *)->
 								                                ItemId));
 							else {
-								register uint32 needTime = PD.action->TimeNeeded;
-								register uint32 realTime = 0L;
+								uint32 needTime = PD.action->TimeNeeded;
+								uint32 realTime = 0L;
 
 								if (dbIsObject
 								        (ActionData(PD.action, struct ActionUse *)->
@@ -932,7 +932,7 @@ static void plPlayerAction(void) {
 									}
 								}
 							} else {
-								register uint32 state =
+								uint32 state =
 								    lsGetObjectState(ActionData
 								                     (PD.action,
 								                      struct ActionUse *)->
@@ -1136,7 +1136,7 @@ static void plPlayerAction(void) {
 								                     (PD.action,
 								                      struct ActionTake *)->
 								                     LootId))) {
-									register uint32 oldValue =
+									uint32 oldValue =
 									    GetP(dbGetObject
 									         (OL_NR
 									          (GetNthNode(PersonsList, i))),
@@ -1876,7 +1876,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 					livTurn(Planing_Name[i], LIV_DISABLED); /* alle Sprites ausschalten! */
 
 				for (byte i = 0; i < BurglarsNr; i++) {
-					register struct ObjectNode *n;
+					struct ObjectNode *n;
 
 					Search.GuyXPos[i] = livGetXPos(Planing_Name[i]);
 					Search.GuyYPos[i] = livGetYPos(Planing_Name[i]);
