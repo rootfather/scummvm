@@ -958,13 +958,13 @@ bool tcGuardDetectsGuy(LIST *roomsList, uint16 us_XPos, uint16 us_YPos,
 	uint16 livXPos = livGetXPos(puch_LivingName);
 	uint16 livYPos = livGetYPos(puch_LivingName);
 
-	if (livWhereIs(puch_GuardName) == livWhereIs(puch_LivingName))
-		if (livIsPositionInViewDirection
-		        (us_XPos, us_YPos, livXPos, livYPos, uch_ViewDirection))
-			if (tcInsideSameRoom
-			        (roomsList, us_XPos + tcX_HOTSPOT, us_YPos,
+	if (livWhereIs(puch_GuardName) == livWhereIs(puch_LivingName)) {
+		if (livIsPositionInViewDirection(us_XPos, us_YPos, livXPos, livYPos, uch_ViewDirection)) {
+			if (tcInsideSameRoom(roomsList, us_XPos + tcX_HOTSPOT, us_YPos,
 			         livXPos + tcX_HOTSPOT, livYPos))
 				detected = true;
+		}
+	}
 
 	return detected;
 }

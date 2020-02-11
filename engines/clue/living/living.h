@@ -97,9 +97,9 @@ extern uint32 livWhereIs(const char *uch_Name);
 extern uint16 livGetXPos(const char *uch_Name);
 extern uint16 livGetYPos(const char *uch_Name);
 
-extern byte livCanWalk(const char *puch_Name);
+extern bool livCanWalk(const char *puch_Name);
 extern byte livGetViewDirection(const char *uch_Name);
-extern byte livIsPositionInViewDirection(uint16 us_GXPos, uint16 us_GYPos,
+extern bool livIsPositionInViewDirection(uint16 us_GXPos, uint16 us_GYPos,
         uint16 us_XPos, uint16 us_YPos,
         byte uch_ViewDirection);
 

@@ -108,6 +108,6 @@ static void livShow(struct Living *liv);
 static void livAdd(const char *uch_Name, char *uch_TemplateName, byte uch_XSize,
                    byte uch_YSize, int16 s_XSpeed, int16 s_YSpeed);
 
-static byte livIsVisible(struct Living *liv);
+static bool livIsVisible(struct Living *liv);
 
 } // End of namespace Clue
