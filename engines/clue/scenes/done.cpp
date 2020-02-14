@@ -24,36 +24,34 @@ namespace Clue {
 
 void DoneTaxi(void) {
 	static byte i = 0;
-	byte j;
-	char name[TXT_KEY_LENGTH], exp[TXT_KEY_LENGTH];
 	LIST *locs = CreateList();
-	struct ObjectNode *n, *newNode;
-	uint32 locNr;
-	Location loc;
 
 	knowsSet(Person_Matt_Stuvysunt, Person_Dan_Stanford);
 	taxiAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Location);
 
-	for (n = (struct ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n);
+	for (struct ObjectNode *n = (struct ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n);
 	        n = (struct ObjectNode *) NODE_SUCC(n)) {
-		loc = (Location)OL_DATA(n);
-		locNr = ((Location) loc)->LocationNr;
+		Location loc = (Location)OL_DATA(n);
+		uint32 locNr = ((Location) loc)->LocationNr;
 
+		char name[TXT_KEY_LENGTH];
 		sprintf(name, "*%s", NODE_NAME(GetNthNode(film->loc_names, locNr)));
 
-		newNode = (struct ObjectNode *) CreateNode(locs, sizeof(struct ObjectNode), name);
+		struct ObjectNode *newNode = (struct ObjectNode *) CreateNode(locs, sizeof(struct ObjectNode), name);
 		newNode->nr = locNr + 1;    /* because of ChoiceOk */
 	}
 
 	i = MIN((uint32)i, GetNrOfNodes(locs) - 1);
 
+	char exp[TXT_KEY_LENGTH];
 	txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
 	ExpandObjectList(locs, exp);
 
-	if (ChoiceOk(j = Bubble(locs, i, 0L, 0L), GET_OUT, locs)) {
+	byte j = Bubble(locs, i, 0L, 0L);
+	if (ChoiceOk(j, GET_OUT, locs)) {
 		i = j;
 
-		locNr = OL_NR(GetNthNode(locs, i)) - 1;
+		uint32 locNr = OL_NR(GetNthNode(locs, i)) - 1;
 		SceneArgs.ReturnValue = (uint32)GetLocScene(locNr)->EventNr;
 	} else {
 		Say(BUSINESS_TXT, 0, MATT_PICTID, "LOVELY_TAXI");
@@ -70,20 +68,18 @@ void DoneTaxi(void) {
 
 void DoneInsideHouse(void) {
 	LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
-	uint32 choice, buildingID, areaID;
-	byte activ = 0, perc;
-	NODE *node;
 
 	SceneArgs.ReturnValue = 0;
 	SceneArgs.Ueberschrieben = 1;
 
 	ShowMenuBackground();
 
-	buildingID = GetObjNrOfBuilding(GetLocation + 1);
+	uint32 buildingID = GetObjNrOfBuilding(GetLocation + 1);
 	consistsOfAll(buildingID, OLF_NORMAL, Object_LSArea);
 
 	/* jetzt alle Stockwerke laden */
-	for (node = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(node);
+	uint32 areaID;
+	for (NODE *node = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(node);
 	        node = (NODE *) NODE_SUCC(node)) {
 		areaID = OL_NR(node);
 
@@ -99,22 +95,22 @@ void DoneInsideHouse(void) {
 
 	lsSetRelations(areaID);
 
-	perc = ((Building) dbGetObject(buildingID))->Exactlyness;
+	byte perc = ((Building) dbGetObject(buildingID))->Exactlyness;
 	lsShowRaster(areaID, perc);
 	gfxShow(154, GFX_FADE_OUT | GFX_BLEND_UP, 5, -1, -1);
 
 	tcRefreshLocationInTitle(GetLocation);
 
+	byte activ = 0;
 	while (!SceneArgs.ReturnValue) {
 		if (SceneArgs.Moeglichkeiten) {
 			inpTurnFunctionKey(0);
 			inpTurnESC(0);
-			activ =
-			    Menu(menu, SceneArgs.Moeglichkeiten, (byte)(activ), NULL, 0L);
+			activ = Menu(menu, SceneArgs.Moeglichkeiten, (byte)(activ), NULL, 0L);
 			inpTurnFunctionKey(1);
 			inpTurnESC(1);
 
-			choice = (uint32) 1L << activ;
+			uint32 choice = (uint32) 1L << activ;
 
 			switch (choice) {
 			case LOOK:
@@ -147,7 +143,7 @@ void DoneInsideHouse(void) {
 	consistsOfAll(buildingID, OLF_NORMAL, Object_LSArea);
 
 	/* jetzt alle Stockwerke entfernen */
-	for (node = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(node);
+	for (NODE *node = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(node);
 	        node = (NODE *) NODE_SUCC(node))
 		lsDoneObjectDB(OL_NR(node));
 
@@ -238,7 +234,6 @@ void DoneParking(void) {
 	LIST *bubble = txtGoKey(BUSINESS_TXT, "PARKING");
 	LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
 	byte activ = 0, choice = 0;
-	uint32 carID;
 	Person marc = (Person)dbGetObject(Person_Marc_Smith);
 
 	SceneArgs.Ueberschrieben = 1;
@@ -265,13 +260,15 @@ void DoneParking(void) {
 					AddVTime(9);
 					choice = 2;
 					break;
-				case 1:
+				case 1: {
+					uint32 carID;
 					if ((carID = tcChooseCar(27))) {
 						tcSellCar(carID);
 						AddVTime(11);
 					} else {
 						Say(BUSINESS_TXT, 0, marc->PictID, "SELL_HERE");
 						choice = 2;
+					}
 					}
 					break;
 				default:
@@ -296,7 +293,6 @@ void DoneParking(void) {
 void DoneGarage(void) {
 	LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
 	byte activ = 0;
-	uint32 choice, carID;
 	Person marc = (Person)dbGetObject(Person_Marc_Smith);
 
 	SceneArgs.Ueberschrieben = 1;
@@ -311,9 +307,10 @@ void DoneGarage(void) {
 		inpTurnESC(1);
 		inpTurnFunctionKey(1);
 
-		choice = (uint32) 1L << (activ);
+		uint32 choice = (uint32) 1L << (activ);
 
 		if (choice == BUSINESS_TALK) {
+			uint32 carID;
 			if ((carID = tcChooseCar(26))) {
 				tcCarInGarage(carID);
 				AddVTime(9);
