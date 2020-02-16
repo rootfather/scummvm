@@ -58,7 +58,6 @@ typedef enum {
 #define GFX_NO_COLL_IN_MEM               USHRT_MAX
 
 #define GFX_PALETTE_SIZE            768 /* 256 Farben * 3 Bytes */
-#define GFX_SIZE_OF_COLLECTION(c)   (gfxGetILBMSize(c) + GFX_COLORTABLE_SIZE)
 
 #define  gfxWaitBOF                     wfd
 
@@ -90,7 +89,6 @@ void gfxDoneMemRastPort(MemRastPort *rp);
 void gfxScratchFromMem(MemRastPort *src);
 void gfxScratchToMem(MemRastPort *dst);
 
-void gfxCollFromMem(uint16 collId);
 void gfxCollToMem(uint16 collId, MemRastPort *rp);
 
 struct _Rect {
@@ -176,10 +174,6 @@ extern void gfxSetVideoMode(byte uch_NewMode);
 extern void wfd(void);
 extern void wfr(void);
 
-extern int32 gfxGetILBMSize(struct Collection *coll);
-
-extern void gfxCorrectUpperRPBitmap(void);
-
 void gfxSetRGB(GC *gc, uint8 color, uint8 r, uint8 g, uint8 b);
 
 void gfxMoveCursor(GC *gc, uint16 x, uint16 y);
@@ -250,6 +244,12 @@ void gfxGetMouseXY(GC *gc, uint16 *pMouseX, uint16 *pMouseY);
 
 void ShowIntro(void);
 
+#if 0
+extern int32 gfxGetILBMSize(struct Collection *coll);
+void gfxCollFromMem(uint16 collId);
+#define GFX_SIZE_OF_COLLECTION(c)   (gfxGetILBMSize(c) + GFX_COLORTABLE_SIZE)
+extern void gfxCorrectUpperRPBitmap(void);
+#endif
 } // End of namespace Clue
 
 #include "clue/gfx/gfxnch4.h"

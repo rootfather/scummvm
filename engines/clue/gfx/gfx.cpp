@@ -193,13 +193,6 @@ void gfxSetVideoMode(byte uch_NewMode) {
 	gfxClearArea(NULL);
 }
 
-void gfxCorrectUpperRPBitmap(void) {
-/* should be called after each scrolling (and before displaying a bubble) */
-	/*
-	    NCH4UpperRP.p_BitMap = (void *) ((uint32) GfxBoardBase + gfxNCH4GetCurrScrollOffset());
-	*/
-}
-
 /********************************************************************
  * lists
  */
@@ -585,15 +578,6 @@ void gfxUnPrepareColl(uint16 collId) {
 	/* dummy function */
 }
 
-void gfxCollFromMem(uint16 collId) {
-	MemRastPort *rp;
-
-	struct Collection *coll = gfxGetCollection(collId);
-	if (coll && (rp = coll->prepared)) {
-		gfxScratchFromMem(rp);
-	}
-}
-
 void gfxCollToMem(uint16 collId, MemRastPort *rp) {
 	/*
 	 * wenn sich in diesem MemRastPort ein anderes Bild befindet so wird dieses
@@ -776,24 +760,6 @@ void gfxRefresh(void) {
 /*******************************************************************
  * presentation
  */
-
-void gfxRAWBlit(uint8 *sp, uint8 *dp, const int x1, const int y1, const int x2,
-                const int y2, const int w, const int h, const int sw,
-                const int dw) {
-	const int ds = sw - w, dd = dw - w;
-
-	sp += (y1 * sw) + x1;
-	dp += (y2 * dw) + x2;
-
-	for (int y = 0; y < h; y++) {
-		for (int x = 0; x < w; x++) {
-			*dp++ = *sp++;
-		}
-		sp += ds;
-		dp += dd;
-	}
-}
-
 static GC *gfxGetGC(int32 l_DestY) {
 	GC *gc = NULL;
 
@@ -1033,19 +999,6 @@ void gfxShow(uint16 us_PictId, uint32 ul_Mode, int32 l_Delay, int32 l_XPos, int3
 /*******************************************************************
  * misc
  */
-
-
-int32 gfxGetILBMSize(struct Collection *coll) {
-	uint16 w = coll->us_TotalWidth;
-	uint16 h = coll->us_TotalHeight;
-
-	w = ((w + 15) & 0xfff0);    /* round up to a int16 */
-
-	int32 size = w * h;
-
-	return size;
-}
-
 static void gfxSetCMAP(const uint8 *src) {
 	/* look for CMAP chunk */
 	while (memcmp(src, "CMAP", 4) != 0)
@@ -1784,6 +1737,52 @@ void gfxGetMouseXY(GC *gc, uint16 *pMouseX, uint16 *pMouseY) {
 		*pMouseY = mouse.y;
 	}
 }
+
+#if 0
+void gfxCorrectUpperRPBitmap(void) {
+/* should be called after each scrolling (and before displaying a bubble) */
+	/*
+	    NCH4UpperRP.p_BitMap = (void *) ((uint32) GfxBoardBase + gfxNCH4GetCurrScrollOffset());
+	*/
+}
+
+void gfxCollFromMem(uint16 collId) {
+	MemRastPort *rp;
+
+	struct Collection *coll = gfxGetCollection(collId);
+	if (coll && (rp = coll->prepared)) {
+		gfxScratchFromMem(rp);
+	}
+}
+
+void gfxRAWBlit(uint8 *sp, uint8 *dp, const int x1, const int y1, const int x2,
+	const int y2, const int w, const int h, const int sw,
+	const int dw) {
+		const int ds = sw - w, dd = dw - w;
+
+		sp += (y1 * sw) + x1;
+		dp += (y2 * dw) + x2;
+
+		for (int y = 0; y < h; y++) {
+			for (int x = 0; x < w; x++) {
+				*dp++ = *sp++;
+			}
+			sp += ds;
+			dp += dd;
+		}
+}
+
+int32 gfxGetILBMSize(struct Collection *coll) {
+	uint16 w = coll->us_TotalWidth;
+	uint16 h = coll->us_TotalHeight;
+
+	w = ((w + 15) & 0xfff0);    /* round up to a int16 */
+
+	int32 size = w * h;
+
+	return size;
+}
+#endif
 
 } // End of namespace Clue
 
