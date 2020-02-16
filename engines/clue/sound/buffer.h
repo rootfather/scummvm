@@ -17,13 +17,13 @@ typedef struct SndBuffer SND_BUFFER;
 
 SND_BUFFER *sndCreateBuffer(unsigned size);
 void sndResetBuffer(SND_BUFFER *buffer);
-void sndFreeBuffer(SND_BUFFER *buffer);
-
 unsigned sndLenBuffer(SND_BUFFER *buffer);
 
+#if 0
+void sndFreeBuffer(SND_BUFFER *buffer);
 unsigned sndInsertBuffer(SND_BUFFER *buffer, const void *src, unsigned srcLen);
 unsigned sndRemoveBuffer(SND_BUFFER *buffer, void *dst, unsigned dstLen);
-
+#endif
 } // End of namespace Clue
 
 #endif

@@ -86,8 +86,6 @@ bool IsHandlerCleared(struct System *sys);
 void SaveHandler(FILE *fh, struct System *sys, uint32 id);
 bool LoadHandler(FILE *fh, struct System *sys, uint32 id);
 
-size_t plGetUsedMem(void);
-
 /* here we are at the real part - the actions */
 #define ACTION_GO                1
 #define ACTION_WAIT              2
@@ -208,9 +206,12 @@ uint32 CurrentTimer(struct System *sys);
 void IncCurrentTimer(struct System *sys, uint32 time, byte alsoTime);
 uint32 GetMaxTimer(struct System *sys);
 
-void ResetMem(void);
 void CorrectMem(LIST *l);
 
+#if 0
+void ResetMem(void);
+size_t plGetUsedMem(void);
+#endif
 } // End of namespace Clue
 
 #endif

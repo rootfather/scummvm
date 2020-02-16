@@ -22,9 +22,8 @@ void gfxSetDarkness(uint8 value) {
 
 	if (value == LS_BRIGHTNESS) {
 		int h = LS_MAX_AREA_WIDTH;
-		int i;
 		do {
-			i = LS_MAX_AREA_HEIGHT;
+			int i = LS_MAX_AREA_HEIGHT;
 
 			do {
 				*dp++ |= 64;
@@ -32,9 +31,8 @@ void gfxSetDarkness(uint8 value) {
 		} while (--h);
 	} else {
 		int h = LS_MAX_AREA_WIDTH;
-		int i;
 		do {
-			i = LS_MAX_AREA_HEIGHT;
+			int i = LS_MAX_AREA_HEIGHT;
 
 			do {
 				*dp++ &= ~64;

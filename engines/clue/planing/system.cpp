@@ -209,6 +209,7 @@ struct Handler *ClearHandler(struct System *sys, uint32 id) {
 			h = NULL;
 		}
 
+		// FIXME: This is obviously wrong. I guess those two lines should be in an else statement
 		h->Timer = 0L;
 		h->CurrentAction = NULL;
 	}
@@ -636,7 +637,7 @@ void CorrectMem(LIST *l) {
 		sysUsedMem -= NODE_SIZE(n);
 }
 
-// CHECKME: Two unused functions (?)
+#if 0
 void ResetMem(void) {
 	sysUsedMem = 0;
 }
@@ -644,5 +645,5 @@ void ResetMem(void) {
 size_t plGetUsedMem(void) {
 	return sysUsedMem;
 }
-
+#endif
 } // End of namespace Clue

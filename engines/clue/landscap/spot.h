@@ -106,10 +106,11 @@ extern void lsFreeAllSpots(void);
 extern void lsRemSpot(struct Spot *spot);
 
 extern LIST *lsGetSpotList(void);
-
 extern struct Spot *lsAddSpot(uint16 us_Size, uint16 us_Speed, uint32 ul_CtrlObjId);
-extern struct Spot *lsGetSpot(const char *uch_Name);
 
+#if 0
+extern struct Spot *lsGetSpot(const char *uch_Name);
+#endif
 } // End of namespace Clue
 
 #endif

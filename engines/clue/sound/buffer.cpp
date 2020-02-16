@@ -36,13 +36,14 @@ void sndResetBuffer(SND_BUFFER *buffer) {
 	buffer->removePos = 0;
 }
 
+unsigned sndLenBuffer(SND_BUFFER *buffer) {
+	return buffer->insertPos - buffer->removePos;
+}
+
+#if 0
 void sndFreeBuffer(SND_BUFFER *buffer) {
 	TCFreeMem(buffer->data, buffer->size);
 	TCFreeMem(buffer, sizeof(*buffer));
-}
-
-unsigned sndLenBuffer(SND_BUFFER *buffer) {
-	return buffer->insertPos - buffer->removePos;
 }
 
 unsigned sndInsertBuffer(SND_BUFFER *buffer, const void *src, unsigned srcLen) {
@@ -82,6 +83,6 @@ unsigned sndRemoveBuffer(SND_BUFFER *buffer, void *dst, uint dstLen) {
 
 	return dstLen;
 }
-
+#endif
 } // End of namespace Clue
 

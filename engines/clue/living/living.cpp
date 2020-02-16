@@ -161,14 +161,6 @@ void livTurn(const char *puch_Name, byte uch_Status) {
 		liv->uch_Status = uch_Status;   /* enable or disable */
 }
 
-void livStopAll(void) {
-	for (struct Living *liv = (struct Living *) LIST_HEAD(sc->p_Livings);
-	        NODE_SUCC(liv); liv = (struct Living *) NODE_SUCC(liv)) {
-		if (liv->uch_Status == LIV_ENABLED)
-			livAnimate(NODE_NAME(liv), ANM_STAND, 0, 0);
-	}
-}
-
 static void livCorrectViewDirection(struct Living *liv) {
 	char *name = NODE_NAME(liv->p_OriginTemplate);
 
@@ -246,11 +238,19 @@ byte livGetViewDirection(const char *uch_Name) {
 	return (liv->uch_ViewDirection);
 }
 
+#if 0
+void livStopAll(void) {
+	for (struct Living *liv = (struct Living *) LIST_HEAD(sc->p_Livings); NODE_SUCC(liv); liv = (struct Living *) NODE_SUCC(liv)) {
+		if (liv->uch_Status == LIV_ENABLED)
+			livAnimate(NODE_NAME(liv), ANM_STAND, 0, 0);
+	}
+}
+
 byte livGetOldAction(const char *uch_Name) {
 	struct Living *liv = livGet(uch_Name);
-
 	return (liv->uch_OldAction);
 }
+#endif 
 
 bool livIsPositionInViewDirection(uint16 us_GXPos, uint16 us_GYPos,
                                   uint16 us_XPos, uint16 us_YPos,

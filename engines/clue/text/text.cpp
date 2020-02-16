@@ -41,12 +41,10 @@ char keyBuffer[TXT_KEY_LENGTH];
 
 /* private functions */
 static char *txtGetLine(struct Text *txt, uint8 lineNr) {
-	uint8 i;
-	char *line = NULL;
-
+	char *line = nullptr;
 	if (txt && txt->txt_LastMark && lineNr) {
 		line = txt->txt_LastMark;
-		i = 0;
+		uint8 i = 0;
 
 		while (i < lineNr) {
 			if (*line == TXT_CHAR_EOF)
@@ -83,22 +81,17 @@ static char *txtGetLine(struct Text *txt, uint8 lineNr) {
 
 /*  public functions - TEXT */
 void txtInit(char lang) {
-	char txtListPath[DSK_PATH_MAX];
-
 	if ((txtBase = (TextControl *)TCAllocMem(sizeof(*txtBase), 0))) {
 		txtBase->tc_Texts = CreateList();
 		txtBase->tc_Language = lang;
 
+		char txtListPath[DSK_PATH_MAX];
 		dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, TXT_LIST, txtListPath);
 
 		if (ReadList(txtBase->tc_Texts, sizeof(struct Text), txtListPath)) {
-			uint32 i, nr;
-
-			nr = GetNrOfNodes(txtBase->tc_Texts);
-
-			for (i = 0; i < nr; i++) {
+			uint32 nr = GetNrOfNodes(txtBase->tc_Texts);
+			for (uint32 i = 0; i < nr; i++)
 				txtLoad(i);
-			}
 		} else {
 			ErrorMsg(No_Mem, ERROR_MODULE_TXT, ERR_TXT_READING_LIST);
 		}
@@ -109,16 +102,12 @@ void txtInit(char lang) {
 
 void txtDone(void) {
 	if (txtBase) {
-		uint32 i, nr;
+		uint32 nr = GetNrOfNodes(txtBase->tc_Texts);
 
-		nr = GetNrOfNodes(txtBase->tc_Texts);
-
-		for (i = 0; i < nr; i++) {
+		for (uint32 i = 0; i < nr; i++)
 			txtUnLoad(i);
-		}
 
 		RemoveList(txtBase->tc_Texts);
-
 		TCFreeMem(txtBase, sizeof(*txtBase));
 	}
 }
@@ -217,12 +206,10 @@ void txtReset(uint32 textId) {
 
 /* public functions - KEY */
 char *txtGetKey(uint16 keyNr, const char *key) {
-	uint16 i;
-
 	if (!key)
 		return NULL;
 
-	for (i = 1; i < keyNr; i++) {
+	for (uint16 i = 1; i < keyNr; i++) {
 		while (*key && (*key != TXT_CHAR_KEY_SEPERATOR))
 			key++;
 
@@ -238,8 +225,8 @@ char *txtGetKey(uint16 keyNr, const char *key) {
 	if (!*key)
 		return NULL;
 
-	for (i = 0;
-	        (i < TXT_KEY_LENGTH) && *key && (*key != TXT_CHAR_KEY_SEPERATOR); i++)
+	uint16 i;
+	for (i = 0; (i < TXT_KEY_LENGTH) && *key && (*key != TXT_CHAR_KEY_SEPERATOR); i++)
 		keyBuffer[i] = *key++;
 
 	keyBuffer[i] = TXT_CHAR_EOS;
@@ -257,8 +244,8 @@ uint32 txtGetKeyAsULONG(uint16 keyNr, const char *key) {
 
 LIST *txtGoKey(uint32 textId, const char *key) {
 	LIST *txtList = NULL;
-	struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 
+	struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 	if (txt) {
 		char *LastMark = NULL;
 
@@ -315,22 +302,20 @@ LIST *txtGoKey(uint32 textId, const char *key) {
 }
 
 LIST *txtGoKeyAndInsert(uint32 textId, const char *key, ...) {
-	va_list argument;
-	LIST *txtList = CreateList(), *originList = NULL;
-	NODE *node;
+	LIST *txtList = CreateList();
 
+	va_list argument;
 	va_start(argument, key);
 
-	originList = txtGoKey(textId, key);
+	LIST *originList = txtGoKey(textId, key);
 
-	for (node = LIST_HEAD(originList); NODE_SUCC(node); node = NODE_SUCC(node)) {
-		uint8 i;
+	for (NODE *node = LIST_HEAD(originList); NODE_SUCC(node); node = NODE_SUCC(node)) {
 		char originLine[256], txtLine[256];
 
 		strcpy(originLine, NODE_NAME(node));
 		strcpy(txtLine, NODE_NAME(node));
 
-		for (i = 2; i < strlen(originLine); i++) {
+		for (size_t i = 2; i < strlen(originLine); i++) {
 			if (originLine[i - 2] == '%') {
 				sprintf(txtLine, originLine, va_arg(argument, uint32));
 				i = strlen(originLine) + 1;
@@ -371,7 +356,8 @@ bool txtKeyExists(uint32 textId, const char *key) {
 }
 
 uint32 txtCountKey(const char *key) {
-	uint32 i = strlen(key), j, k;
+	uint32 i = strlen(key);
+	uint32 j, k;
 
 	for (j = 0, k = 0; j < i; j++) {
 		if (key[j] == TXT_CHAR_KEY_SEPERATOR)
@@ -385,23 +371,19 @@ uint32 txtCountKey(const char *key) {
 /* functions - STRING */
 char *txtGetNthString(uint32 textId, const char *key, uint32 nth, char *dest) {
 	LIST *txtList = txtGoKey(textId, key);
-	void *src;
+	void *src = GetNthNode(txtList, nth);
 
-	if ((src = GetNthNode(txtList, nth))) {
+	if (src)
 		strcpy(dest, NODE_NAME(src));
-	} else {
+	else
 		strcpy(dest, "");
-	}
 
 	RemoveList(txtList);
-
 	return dest;
 }
 
 void txtPutCharacter(LIST *list, uint16 pos, uint8 c) {
-	NODE *node;
-
-	for (node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node))
+	for (NODE *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node))
 		NODE_NAME(node)[pos] = c;
 }
 

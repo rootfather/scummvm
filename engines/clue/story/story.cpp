@@ -26,10 +26,7 @@ namespace Clue {
 byte tcDoLastBurglarySpot(uint32 ul_Time, uint32 ul_BuildingId);
 
 static void tcSomebodyIsComing(void) {
-	byte i;
-
-
-	for (i = 0; i < 3; i++) {
+	for (uint8 i = 0; i < 3; i++) {
 		inpDelay(50);
 		sndPrepareFX("klopfen.voc");
 		sndPlayFX();
@@ -37,10 +34,7 @@ static void tcSomebodyIsComing(void) {
 }
 
 static void tcSomebodyIsCalling(void) {
-	byte i;
-
-
-	for (i = 0; i < CalcRandomNr(1, 4); i++) {
+	for (uint32 i = 0; i < CalcRandomNr(1, 4); i++) {
 		inpDelay(180);
 		sndPrepareFX("ring.voc");
 		sndPlayFX();
@@ -106,62 +100,56 @@ void tcDoneHotelReception(void) {
 			tcSetPlayerMoney(tcGetPlayerMoney - tcCOSTS_FOR_HOTEL);
 
 			SceneArgs.ReturnValue = SCENE_HOTEL_ROOM;
-		} else {
-			if (env->MattHasHotelRoom == 0) {   /* 1. mal da */
-				byte choice = 2, evaluation = 0;
+		} else if (env->MattHasHotelRoom == 0) {   /* 1. mal da */
+			byte choice = 2, evaluation = 0;
 
-				while ((choice == 2) || (choice == 3)) {
-					choice = Say(STORY_0_TXT, 0, MATT_PICTID, "HOTEL_MATT_1");
+			while ((choice == 2) || (choice == 3)) {
+				choice = Say(STORY_0_TXT, 0, MATT_PICTID, "HOTEL_MATT_1");
 
-					switch (choice) {
-					case 0:
-						Say(STORY_0_TXT, 0, rig->PictID, "HOTEL_ANT_11");
+				switch (choice) {
+				case 0:
+					Say(STORY_0_TXT, 0, rig->PictID, "HOTEL_ANT_11");
 
-						if (Say(STORY_0_TXT, 0, MATT_PICTID, "HOTEL_MATT_2") ==
-						        1) {
-							evaluation = 1;
-							Say(STORY_0_TXT, 0, rig->PictID, "HOTEL_ANT_22");
-						} else {
-							Say(STORY_0_TXT, 0, rig->PictID, "HOTEL_ANT_21");
-							Say(STORY_0_TXT, 0, MATT_PICTID, "HOTEL_MATT_3");
-							Say(STORY_0_TXT, 0, rig->PictID, "HOTEL_ANT_31");
-						}
-						break;
-					case 1:
-						Say(STORY_0_TXT, 0, rig->PictID, "HOTEL_ANT_12");
+					if (Say(STORY_0_TXT, 0, MATT_PICTID, "HOTEL_MATT_2") ==
+					        1) {
+						evaluation = 1;
+						Say(STORY_0_TXT, 0, rig->PictID, "HOTEL_ANT_22");
+					} else {
+						Say(STORY_0_TXT, 0, rig->PictID, "HOTEL_ANT_21");
 						Say(STORY_0_TXT, 0, MATT_PICTID, "HOTEL_MATT_3");
 						Say(STORY_0_TXT, 0, rig->PictID, "HOTEL_ANT_31");
-						break;
-					case 2:
-						Say(STORY_0_TXT, 0, rig->PictID, "HOTEL_ANT_13");
-						break;
-					case 3:
-						Say(STORY_0_TXT, 0, rig->PictID, "HOTEL_ANT_14");
-						break;
-					case 4:
-						break;
 					}
-				}
-
-				if (!evaluation) {
-					SceneArgs.ReturnValue = SCENE_HOLLAND_STR;
-					env->MattHasHotelRoom = 1;
-				} else {
-					env->MattHasHotelRoom = 2;
-					SetBubbleType(THINK_BUBBLE);
-					Say(STORY_0_TXT, 0, MATT_PICTID, "MILLIONAIRE");
-
-					Say(STORY_0_TXT, 0, MATT_PICTID, "THANKS_FOR_KEY");
-
-					SceneArgs.ReturnValue = SCENE_HOTEL_ROOM;
-				}
-			} else {
-				if (env->MattHasHotelRoom == 1) {
-					Say(STORY_0_TXT, 0, rig->PictID, "YOU_HAVE_NO_MONEY");
-
-					SceneArgs.ReturnValue = SCENE_HOLLAND_STR;
+					break;
+				case 1:
+					Say(STORY_0_TXT, 0, rig->PictID, "HOTEL_ANT_12");
+					Say(STORY_0_TXT, 0, MATT_PICTID, "HOTEL_MATT_3");
+					Say(STORY_0_TXT, 0, rig->PictID, "HOTEL_ANT_31");
+					break;
+				case 2:
+					Say(STORY_0_TXT, 0, rig->PictID, "HOTEL_ANT_13");
+					break;
+				case 3:
+					Say(STORY_0_TXT, 0, rig->PictID, "HOTEL_ANT_14");
+					break;
+				case 4:
+					break;
 				}
 			}
+
+			if (!evaluation) {
+				SceneArgs.ReturnValue = SCENE_HOLLAND_STR;
+				env->MattHasHotelRoom = 1;
+			} else {
+				env->MattHasHotelRoom = 2;
+				SetBubbleType(THINK_BUBBLE);
+				Say(STORY_0_TXT, 0, MATT_PICTID, "MILLIONAIRE");
+				Say(STORY_0_TXT, 0, MATT_PICTID, "THANKS_FOR_KEY");
+
+				SceneArgs.ReturnValue = SCENE_HOTEL_ROOM;
+			}
+		} else if (env->MattHasHotelRoom == 1) {
+			Say(STORY_0_TXT, 0, rig->PictID, "YOU_HAVE_NO_MONEY");
+			SceneArgs.ReturnValue = SCENE_HOLLAND_STR;
 		}
 	}
 
@@ -173,7 +161,6 @@ void tcDoneHotelReception(void) {
 
 void tcDoneMamiCalls(void) {
 	Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "ST_31_OLD_0");
-
 	Say(STORY_0_TXT, 0, MATT_PICTID, "ST_31_MATT_0");
 	Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "ST_31_OLD_1");
 
@@ -186,12 +173,10 @@ void tcDoneMamiCalls(void) {
 void tcDoneGludoMoney(void) {
 	Person Gludo = (Person) dbGetObject(Person_John_Gludo);
 	Environment env = (Environment)dbGetObject(Environment_TheClou);
-	byte choice;
 
 	knowsSet(Person_Matt_Stuvysunt, Person_John_Gludo);
 
-	choice = Say(STORY_0_TXT, 0, MATT_PICTID, "POLI_MATT_1");
-
+	byte choice = Say(STORY_0_TXT, 0, MATT_PICTID, "POLI_MATT_1");
 	switch (choice) {
 	case 0:
 		Say(STORY_0_TXT, 0, Gludo->PictID, "POLI_ANT_11");
@@ -228,14 +213,12 @@ void tcDoneGludoMoney(void) {
 
 void tcDoneDanner(void) {
 	Person Jim = (Person) dbGetObject(Person_Jim_Danner);
-	byte choice;
 
 	if (tcGetPlayerMoney < tcCOSTS_FOR_HOTEL) {
 		knowsSet(Person_Matt_Stuvysunt, Person_Jim_Danner);
-
 		Say(STORY_0_TXT, 0, Jim->PictID, "DANNER_1");
-		choice = Say(STORY_0_TXT, 0, MATT_PICTID, "DANNER_2");
 
+		byte choice = Say(STORY_0_TXT, 0, MATT_PICTID, "DANNER_2");
 		switch (choice) {
 		case 0:
 			Say(STORY_0_TXT, 0, Jim->PictID, "DANNER_21");
@@ -265,7 +248,6 @@ void tcDoneDanner(void) {
 
 void tcDoneMeetBriggs(void) {
 	Person Briggs = (Person) dbGetObject(Person_Herbert_Briggs);
-	byte choice;
 
 #ifdef DEEP_DEBUG
 	printf("tcDoneMeetBriggs!\n");
@@ -278,15 +260,13 @@ void tcDoneMeetBriggs(void) {
 	Say(STORY_0_TXT, 0, MATT_PICTID, "BRIGGS_MATT_2");
 	Say(STORY_0_TXT, 0, Briggs->PictID, "BRIGGS_BRIGGS_3");
 
-	choice = Say(STORY_0_TXT, 0, MATT_PICTID, "BRIGGS_MATT_3");
-
+	byte choice = Say(STORY_0_TXT, 0, MATT_PICTID, "BRIGGS_MATT_3");
 	if (choice == 0) {      /* angenommen ! */
 		Building bui = (Building) dbGetObject(Building_Kiosk);
 
 		hasSet(Person_Matt_Stuvysunt, Building_Kiosk);
 
 		tcAddPlayerMoney(15);
-
 		tcAddBuildExactlyness(bui, 255L);
 		tcAddBuildStrike(bui, 5L);
 
@@ -301,13 +281,10 @@ void tcDoneMeetBriggs(void) {
 
 		SceneArgs.ReturnValue = SCENE_FAT_MANS;
 	} else {            /* nicht angenommen ! */
-
 		Person james = (Person)dbGetObject(Person_Pater_James);
 
 		Say(STORY_0_TXT, 0, Briggs->PictID, "BRIGGS_BRIGGS_5");
-
 		gfxShow(170, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);
-
 		Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "BRIGGS_MR_WHISKY");
 
 		tcAsTimeGoesBy(GetMinute + 793);
@@ -330,15 +307,12 @@ void tcDoneMeetBriggs(void) {
 
 			SceneArgs.ReturnValue = SCENE_NEW_GAME;
 		} else {        /* evil */
-
 			Say(STORY_0_TXT, 0, MATT_PICTID, "EVIL_MATT");
 			Say(STORY_0_TXT, 0, james->PictID, "EVIL_MATT_ABT");
 			Say(STORY_0_TXT, 0, MATT_PICTID, "EVIL_MATT_1");
-
 			Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "EVIL_OLD_MATT");
 
-			hasSetP(Person_Matt_Stuvysunt, Loot_Ring_des_Abtes,
-			        tcVALUE_OF_RING_OF_PATER);
+			hasSetP(Person_Matt_Stuvysunt, Loot_Ring_des_Abtes, tcVALUE_OF_RING_OF_PATER);
 
 			AddVTime(1440 + 525 - GetMinute);
 
@@ -354,9 +328,8 @@ void tcDoneMeetBriggs(void) {
 	AddTaxiLocation(20);    /* senioren */
 	AddTaxiLocation(12);    /* aunt */
 
-	if (g_clue->getFeatures() & GF_PROFIDISK) {
+	if (g_clue->getFeatures() & GF_PROFIDISK)
 		AddTaxiLocation(68);    /* baker street */
-	}
 }
 
 void tcDoneFreeTicket(void) {
@@ -377,19 +350,17 @@ static void tcDoneAfterMeetingBriggs(void) {
 	SceneArgs.ReturnValue = SCENE_WATLING;
 }
 #endif
-void tcDoneCallFromPooly(void) {
-	byte choice;
 
+void tcDoneCallFromPooly(void) {
 	knowsSet(Person_Matt_Stuvysunt, Person_Eric_Pooly);
 
 	if (has(Person_Matt_Stuvysunt, Loot_Ring_des_Abtes)) {
 		tcSomebodyIsCalling();
 
 		Say(STORY_0_TXT, 0, PHONE_PICTID, "A_CALL_FOR_YOU");
-
 		Say(STORY_0_TXT, 0, PHONE_PICTID, "DEALER_0");
-		choice = Say(STORY_0_TXT, 0, MATT_PICTID, "DEALER_MATT_1");
 
+		byte choice = Say(STORY_0_TXT, 0, MATT_PICTID, "DEALER_MATT_1");
 		if ((choice == 0) || (choice == 1))
 			Say(STORY_0_TXT, 0, PHONE_PICTID, "DEALER_1");
 		else
@@ -433,20 +404,20 @@ void tcDonePrison(void)
 	SceneArgs.ReturnValue = SCENE_NEW_GAME;
 }
 
-int32 tcIsDeadlock(void) {
-	int32 deadlock = 0, total = 0;
+bool tcIsDeadlock(void) {
+	bool deadlock = false;
 	CompleteLoot comp = (CompleteLoot)dbGetObject(CompleteLoot_LastLoot);
 
 	hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Car);
 
 	if (LIST_EMPTY(ObjectList)) {
-		NODE *n;
-		int32 money = tcGetPlayerMoney, enough = 0;
+		int32 money = tcGetPlayerMoney;
+		bool enough = false;
 
 		/* jetzt zum Geld noch die vorhandene Beute addieren */
 		RemoveList(tcMakeLootList(Person_Matt_Stuvysunt, Relation_has));
 
-		total = comp->Bild + comp->Gold + comp->Geld + comp->Juwelen +
+		int32 total = comp->Bild + comp->Gold + comp->Geld + comp->Juwelen +
 		        comp->Statue + comp->Kuriositaet + comp->HistKunst +
 		        comp->GebrauchsArt + comp->Vase + comp->Delikates;
 
@@ -456,12 +427,11 @@ int32 tcIsDeadlock(void) {
 		hasAll(Person_Marc_Smith, OLF_NORMAL, Object_Car);
 
 		/* get cheapest car! */
-		for (n = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(n);
-		        n = (NODE *) NODE_SUCC(n)) {
+		for (NODE *n = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n)) {
 			Car car = (Car)OL_DATA(n);
 
 			if (tcGetCarPrice(car) < money)
-				enough = 1;
+				enough = true;
 		}
 
 		if (!enough) {
@@ -476,7 +446,7 @@ int32 tcIsDeadlock(void) {
 			StopAnim();
 			gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
 
-			deadlock = 1;
+			deadlock = true;
 		}
 	}
 
@@ -641,9 +611,8 @@ void tcDone3rdBurglary(void) {
 	AddTaxiLocation(35);    /* sotherbys */
 	AddTaxiLocation(33);    /* chiswick */
 
-	if (g_clue->getFeatures() & GF_PROFIDISK) {
+	if (g_clue->getFeatures() & GF_PROFIDISK)
 		AddTaxiLocation(74);    /* downing */
-	}
 
 	knowsSet(Person_Matt_Stuvysunt, Person_John_Gludo);
 
@@ -704,9 +673,8 @@ void tcDone4thBurglary(void) {
 	AddTaxiLocation(31);    /* osterly */
 	AddTaxiLocation(29);    /* ham */
 
-	if (g_clue->getFeatures() & GF_PROFIDISK) {
+	if (g_clue->getFeatures() & GF_PROFIDISK)
 		AddTaxiLocation(70);    /* madame */
-	}
 
 	tcSomebodyIsComing();
 
@@ -720,9 +688,8 @@ void tcDone4thBurglary(void) {
 	hasSet(Person_Marc_Smith, Car_Standard_Vanguard_1950);
 	hasSet(Person_Marc_Smith, Car_Cadillac_Club_1952);
 
-	if (g_clue->getFeatures() & GF_PROFIDISK) {
+	if (g_clue->getFeatures() & GF_PROFIDISK)
 		hasSet(Person_Marc_Smith, Car_Fiat_634_N_1943);
-	}
 
 	hasSet(Person_Mary_Bolton, Tool_Dynamit);
 	hasSet(Person_Mary_Bolton, Tool_Kernbohrer);
@@ -767,9 +734,8 @@ void tcDone5thBurglary(void) {
 	AddTaxiLocation(27);    /* kenw */
 	AddTaxiLocation(39);    /* natural museum */
 
-	if (g_clue->getFeatures() & GF_PROFIDISK) {
+	if (g_clue->getFeatures() & GF_PROFIDISK)
 		AddTaxiLocation(77);    /* tate */
-	}
 
 	Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "5TH_OLD_0");
 
@@ -805,7 +771,6 @@ void tcDone5thBurglary(void) {
 
 void tcDoneDealerIsAfraid(void) {
 	uint32 persID;
-	Person pers;
 
 	switch (GetLocation) {
 	case 52:
@@ -826,7 +791,7 @@ void tcDoneDealerIsAfraid(void) {
 
 	knowsSet(Person_Matt_Stuvysunt, persID);
 
-	pers = (Person) dbGetObject(persID);
+	Person pers = (Person) dbGetObject(persID);
 	Say(STORY_0_TXT, 0, pers->PictID, "DEALER_IS_AFRAID");
 
 	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
@@ -862,7 +827,6 @@ void tcDoneRaidInWalrus(void) {
 }
 
 void tcDoneDartJager(void) {
-	byte choice;
 	Person Grull = (Person) dbGetObject(Person_Lucas_Grull);
 	Environment Env = (Environment) dbGetObject(Environment_TheClou);
 
@@ -870,12 +834,10 @@ void tcDoneDartJager(void) {
 		StopAnim();
 
 		gfxShow(169, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1); /* Knast */
-
 		knowsSet(Person_Matt_Stuvysunt, Person_Lucas_Grull);
-
 		Say(STORY_0_TXT, 0, Grull->PictID, "DART_GRULL_0");
-		choice = Say(STORY_0_TXT, 0, MATT_PICTID, "DART_MATT_1");
 
+		byte choice = Say(STORY_0_TXT, 0, MATT_PICTID, "DART_MATT_1");
 		if (choice == 0) {
 			Say(STORY_0_TXT, 0, Grull->PictID, "DART_GRULL_1");
 
@@ -885,8 +847,7 @@ void tcDoneDartJager(void) {
 			Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "DART_JAEGER_0");
 
 			gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
-			gfxShow(221, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP, 0, -1,
-			        -1);
+			gfxShow(221, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP, 0, -1, -1);
 
 			sndPrepareFX("darth.voc");
 			sndPlayFX();
@@ -1097,9 +1058,8 @@ void tcDone6thBurglary(void) {
 	AddTaxiLocation(43);    /* vict & alb */
 	AddTaxiLocation(37);    /* brit */
 
-	if (g_clue->getFeatures() & GF_PROFIDISK) {
+	if (g_clue->getFeatures() & GF_PROFIDISK)
 		AddTaxiLocation(79);    /* buckingham */
-	}
 
 	hasSet(Person_Marc_Smith, Car_Pontiac_Streamliner_1949);
 	hasSet(Person_Marc_Smith, Car_Triumph_Roadstar_1949);
@@ -1162,21 +1122,18 @@ void tcSabienDinner(void) {
 	SceneArgs.ReturnValue = SCENE_WALRUS;
 }
 
-
 /***********************************************************************
  ***
  *** 7th BURGLARY
  ***
  ***********************************************************************/
 
-
 void tcDone7thBurglary(void) {
 	AddTaxiLocation(41);    /* national */
 	AddTaxiLocation(45);    /* bank */
 
-	if (g_clue->getFeatures() & GF_PROFIDISK) {
+	if (g_clue->getFeatures() & GF_PROFIDISK)
 		AddTaxiLocation(81);    /* bulstrode  */
-	}
 
 	/* Jaguar kommt hier, da: 1. man barucht ihn für Villa, */
 	/* 2. Jaguar wird in Fahndung nie erwischt (sonst könnte er nicht explodieren) */
@@ -1191,9 +1148,6 @@ void tcDone7thBurglary(void) {
 }
 
 void tcDoneBirthday(void) {
-	LIST *persons;
-	struct ObjectNode *n;
-
 	StopAnim();
 	gfxShow(172, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);
 
@@ -1201,10 +1155,9 @@ void tcDoneBirthday(void) {
 	sndPlayFX();
 
 	knowsAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST, Object_Person);
-	persons = ObjectListPrivate;
+	LIST *persons = ObjectListPrivate;
 
-	for (n = (struct ObjectNode *) LIST_HEAD(persons); NODE_SUCC(n);
-	        n = (struct ObjectNode *) NODE_SUCC(n)) {
+	for (struct ObjectNode *n = (struct ObjectNode *) LIST_HEAD(persons); NODE_SUCC(n); n = (struct ObjectNode *) NODE_SUCC(n)) {
 		Person p = (Person)dbGetObject(OL_NR(n));
 
 		switch (OL_NR(n)) {
@@ -1455,22 +1408,23 @@ void tcDoneSouthhamptonSabienUnknown(void) {
 
 static void tcDoneFirstTimeLonelyInSouth(void) {
 	LIST *menu = txtGoKey(MENU_TXT, "SouthhamptonMenu");
-	uint32 startTime = 0, actionTime;
-	byte ende = 0, activ = 1;
 	Environment Env = (Environment)dbGetObject(Environment_TheClou);
 	Person Herb = (Person)dbGetObject(Person_Herbert_Briggs);
 
 	tcAsDaysGoBy(713518L, 30);
-	startTime = GetDay * 1440 + GetMinute;
+	uint32 startTime = GetDay * 1440 + GetMinute;
 
+	byte ende = 0;
+	byte activ = 0;
 	while (!ende) {
 		inpTurnFunctionKey(0);
 		inpTurnESC(0);
+
 		activ = Menu(menu, 46, activ, NULL, 0L);
 		inpTurnESC(1);
 		inpTurnFunctionKey(1);
 
-		actionTime = CalcRandomNr(180, 300);    /* 2 bis 5 Stunden */
+		uint32 actionTime = CalcRandomNr(180, 300);    /* 2 bis 5 Stunden */
 
 		switch (activ) {
 		case 1:
@@ -1516,8 +1470,7 @@ static void tcDoneFirstTimeLonelyInSouth(void) {
 				Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_23O_MATT");
 		}
 
-		if (((GetDay * 1440 + GetMinute) > (startTime + 2100))
-		        && (!(Env->SouthhamptonHappened & 8))) {
+		if (((GetDay * 1440 + GetMinute) > (startTime + 2100)) && (!(Env->SouthhamptonHappened & 8))) {
 			Env->SouthhamptonHappened |= 8;
 
 			Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_24_OLD_0");    /* The Return */
@@ -1554,8 +1507,6 @@ static void tcDoneFirstTimeLonelyInSouth(void) {
 
 void tcDoneSouthhampton(void) {
 	LIST *menu = txtGoKey(MENU_TXT, "SouthhamptonMenu");
-	byte activ = 1;     /* !! */
-	uint32 actionTime;
 	Environment Env = (Environment)dbGetObject(Environment_TheClou);
 
 	SceneArgs.Ueberschrieben = 1;
@@ -1573,6 +1524,7 @@ void tcDoneSouthhampton(void) {
 	}
 
 	/* mit Gehen oder Planen kommt man aus dem Menü raus */
+	byte activ = 1;     /* !! */
 	while ((activ != 0) && (SceneArgs.ReturnValue == 0)) {
 		inpTurnESC(0);
 		inpTurnFunctionKey(1);
@@ -1587,7 +1539,7 @@ void tcDoneSouthhampton(void) {
 
 			activ = 1;      /* nicht 0! */
 		} else {
-			actionTime = CalcRandomNr(180, 300);    /* 2 bis 5 Stunden */
+			uint32 actionTime = CalcRandomNr(180, 300);    /* 2 bis 5 Stunden */
 
 			switch (activ) {
 			case 0:
@@ -1640,7 +1592,6 @@ void tcDoneSouthhampton(void) {
 }
 
 void tcInitTowerBurglary(void) {
-	NODE *node;
 	Car car = (Car)dbGetObject(Car_Cadillac_Club_1952);
 	Player player = (Player)dbGetObject(Player_Player_1);
 
@@ -1649,7 +1600,7 @@ void tcInitTowerBurglary(void) {
 
 	joined_byAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Person);
 
-	for (node = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(node);
+	for (NODE *node = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(node);
 	        node = (NODE *) NODE_SUCC(node))
 		joined_byUnSet(Person_Matt_Stuvysunt, OL_NR(node));
 
@@ -1721,15 +1672,13 @@ void tcInitTowerBurglary(void) {
 }
 
 int32 tcDoTowerBurglary(void) {
-	int32 burglary;
-
 	/* das Organisatorische muß hier wiederholt werden, da */
 	/* es sonst zu Fehler kommen kann, da die Organisation */
 	/* nicht abgespeichert wird!                           */
 	tcInitTowerBurglary();
 
 	/* und los gehts! */
-	burglary = plPlayer(Building_Tower_of_London, 0, NULL);
+	int32 burglary = plPlayer(Building_Tower_of_London, 0, NULL);
 
 	if (burglary) {
 		if (has(Person_Matt_Stuvysunt, Loot_Kronjuwelen))
@@ -1778,8 +1727,6 @@ void tcDoneKaserne(void) {
 	Environment Env = (Environment)dbGetObject(Environment_TheClou);
 	Car car = (Car)dbGetObject(Car_Cadillac_Club_1952);
 	LIST *menu = txtGoKey(MENU_TXT, "KaserneMenu");
-	byte activ = 0, burglary = 0;
-	uint32 successor = 0;
 
 	joined_bySet(Person_Matt_Stuvysunt, Person_Matt_Stuvysunt);
 	joined_bySet(Person_Matt_Stuvysunt, Person_Herbert_Briggs);
@@ -1809,6 +1756,9 @@ void tcDoneKaserne(void) {
 	Organisation.GuyCount = 4;
 
 	/* und los gehts! */
+	byte burglary = 0;
+	uint32 successor = 0;
+	byte activ = 0;
 	while ((!burglary) && (!successor)) {
 		inpTurnESC(0);
 		activ = Menu(menu, 15, activ, NULL, 0L);
@@ -1887,31 +1837,33 @@ int32 tcIsLastBurglaryOk(void) {
 	int16 carYPos0 = kaserne->CarYPos - 40;
 	int16 carXPos1 = kaserne->CarXPos + 40;
 	int16 carYPos1 = kaserne->CarYPos + 40;
-	int32 madeIt = 1, i;
 	LSObject left = (LSObject)dbGetObject(tcLAST_BURGLARY_LEFT_CTRL_OBJ);
 	LSObject right = (LSObject)dbGetObject(tcLAST_BURGLARY_RIGHT_CTRL_OBJ);
 
 	/* Links muß ein, Rechts muß ausgeschalten sein */
 	/* 1.. OFF!    */
 
+	bool madeIt = true;
 	if ((left->ul_Status & (1 << Const_tcON_OFF)))
-		madeIt = 0;
+		madeIt = false;
 
 	if (!(right->ul_Status & (1 << Const_tcON_OFF)))
-		madeIt = 0;
+		madeIt = false;
 
 	if (!has(Person_Matt_Stuvysunt, Loot_Dokument))
-		madeIt = 0;
+		madeIt = false;
 
 	/* alle anderen müssen beim Auto sein... */
+	int32 i;
 	for (i = 1; i < 4; i++)
 		if ((Search.GuyXPos[i] < carXPos0) || (Search.GuyXPos[i] > carXPos1) ||
 		        (Search.GuyYPos[i] < carYPos0) || (Search.GuyYPos[i] > carYPos1))
-			madeIt = 0;
-
+			madeIt = false;
+	
+	// CHECKME: This looks absolutely wrong. i is equal to 4, thus it's our of bounds.
 	if ((Search.GuyXPos[0] >= carXPos0) && (Search.GuyXPos[0] <= carXPos1) &&
 	        (Search.GuyYPos[0] >= carYPos0) && (Search.GuyYPos[i] <= carYPos1))
-		madeIt = 0;
+		madeIt = false;
 
 	return madeIt;
 }

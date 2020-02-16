@@ -354,10 +354,6 @@ void lsFreeAllSpots(void) {
 		RemoveList(spot->p_positions);
 }
 
-struct Spot *lsGetSpot(const char *uch_Name) {
-	return ((struct Spot *) GetNode(sc->p_spots, uch_Name));
-}
-
 LIST *lsGetSpotList(void) {
 	return sc->p_spots;
 }
@@ -382,4 +378,9 @@ void lsBlitSpot(uint16 us_Size, uint16 us_XPos, uint16 us_YPos, byte visible) {
 		gfxLSPutClr(&sc->RP, sourceX, 0, us_XPos, us_YPos, us_Size, us_Size);
 }
 
+#if 0
+struct Spot *lsGetSpot(const char *uch_Name) {
+	return ((struct Spot *) GetNode(sc->p_spots, uch_Name));
+}
+#endif
 } // End of namespace Clue

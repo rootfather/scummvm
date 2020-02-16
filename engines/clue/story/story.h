@@ -303,7 +303,7 @@ void tcInitPrison(void);
 
 int32 tcIsLastBurglaryOk(void);
 int32 tcDoTowerBurglary(void);
-int32 tcIsDeadlock(void);
+bool tcIsDeadlock(void);
 void tcCheckForBones(void);
 
 uint32 tcLastBurglary(void);
