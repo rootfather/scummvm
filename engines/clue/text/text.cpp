@@ -326,7 +326,7 @@ LIST *txtGoKeyAndInsert(uint32 textId, const char *key, ...) {
 	}
 
 	RemoveList(originList);
-
+	va_end(argument);
 	return txtList;
 }
 
