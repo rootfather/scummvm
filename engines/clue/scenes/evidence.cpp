@@ -24,15 +24,15 @@
 namespace Clue {
 
 uint32 tcPersonWanted(uint32 persId);
-uint32 tcPersonQuestioning(Person person);
+bool tcPersonQuestioning(Person person);
 
 struct Search Search;
 
-static byte tcCarFound(Car car, uint32 time) {
-	int32 i = 0, hours;
+static bool tcCarFound(Car car, uint32 time) {
 	Person john = (Person)dbGetObject(Person_John_Gludo);
 	Person miles = (Person)dbGetObject(Person_Miles_Chickenwing);
-	byte found = 0;
+
+	bool found = false;
 
 	/* Der Jaguar darf nicht gefunden werden - sonst könnte er ja */
 	/* nicht explodieren! */
@@ -41,7 +41,8 @@ static byte tcCarFound(Car car, uint32 time) {
 		if (tcIsCarRecognised(car, time)) { /* Wagen wird erkannt! */
 			Say(BUSINESS_TXT, 0, john->PictID, "CAR_RECOG");
 
-			hours = CalcRandomNr(2L, 5L);
+			int32 hours = CalcRandomNr(2L, 5L);
+			int32 i = 0;
 
 			while ((i++) < hours) {
 				AddVTime(60);
@@ -53,8 +54,7 @@ static byte tcCarFound(Car car, uint32 time) {
 				Say(BUSINESS_TXT, 0, john->PictID, "CAR_NOT_FOUND");
 				car->Strike = CalcRandomNr(200, 255);
 			} else {        /* Wagen wird gefunden! */
-
-				found = 1;
+				found = true;
 				Say(BUSINESS_TXT, 0, john->PictID, "CAR_FOUND");
 				Say(BUSINESS_TXT, 0, miles->PictID, "GUTE_ARBEIT");
 				UnSet(dbGetObject(Person_Matt_Stuvysunt), Relation_has, car);
@@ -66,12 +66,13 @@ static byte tcCarFound(Car car, uint32 time) {
 }
 
 static uint32 tcATraitor(uint32 traitorId) {
-	char name[TXT_KEY_LENGTH], line[TXT_KEY_LENGTH];
 	LIST *bubble = txtGoKey(BUSINESS_TXT, "A_TRAITOR");
 	LIST *newList = CreateList();
 	Person john = (Person)dbGetObject(Person_John_Gludo);
 
+	char name[TXT_KEY_LENGTH];
 	dbGetObjectName(traitorId, name);
+	char line[TXT_KEY_LENGTH];
 	sprintf(line, NODE_NAME(LIST_HEAD(bubble)), name);
 
 	CreateNode(newList, 0L, line);
@@ -92,17 +93,15 @@ static uint32 tcATraitor(uint32 traitorId) {
 static uint32 tcIsThereATraitor(void) {
 	Player player = (Player)dbGetObject(Player_Player_1);
 	Person matt = (Person)dbGetObject(Person_Matt_Stuvysunt);
-	byte symp = 255;
 	uint32 traitorId = 0, caught = 0;
-	NODE *n;
 
 	if (player->JobOfferCount > 50 + CalcRandomNr(0, 20)) { /* ein Verrat?! */
 		if (CalcRandomNr(0, 255) < matt->Popularity) {  /* Verrat ! */
 			joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME,
 			             Object_Person);
 
-			for (n = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(n);
-			        n = (NODE *) NODE_SUCC(n)) {
+			byte symp = 255;
+			for (NODE *n = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n)) {
 				Person pers = (Person)OL_DATA(n);
 
 				if (OL_NR(n) != Person_Matt_Stuvysunt) {    /* Matt verrät sich nicht selbst */
@@ -121,38 +120,38 @@ static uint32 tcIsThereATraitor(void) {
 }
 
 uint32 tcStartEvidence(void) {
-	int32 MyEvidence[4][7], guarded, radio;
-	uint32 totalEvidence[7], i, j, shownEvidence[4], Recognition[4], caught = 0;
-	byte guyReady, guyNr, evidenceNr, guyCount, shown = 0;
-	char line[TXT_KEY_LENGTH];
-	Person p[4];
 	Evidence evidence = (Evidence)dbGetObject(Evidence_Evidence_1); /* just for presentation */
-	struct ObjectNode *n;
-	LIST *guys, *spuren;
 
-	if ((!(Search.EscapeBits & FAHN_ALARM))
-	        && (!(Search.EscapeBits & FAHN_QUIET_ALARM)))
+	if ((!(Search.EscapeBits & FAHN_ALARM)) && (!(Search.EscapeBits & FAHN_QUIET_ALARM)))
 		Say(BUSINESS_TXT, 0, ((Person) dbGetObject(Person_John_Gludo))->PictID,
 		    "A_BURGLARY_SIR");
 
-	Say(BUSINESS_TXT, 0,
-	    ((Person) dbGetObject(Person_Miles_Chickenwing))->PictID,
-	    "START_EVIDENCE");
+	Say(BUSINESS_TXT, 0, ((Person) dbGetObject(Person_Miles_Chickenwing))->PictID, 
+		"START_EVIDENCE");
 
 	joined_byAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST, Object_Person);
-	guys = ObjectListPrivate;
+
+	LIST *guys = ObjectListPrivate;
 	dbSortObjectList(&guys, dbStdCompareObjects);
 
-	guyCount = (byte) GetNrOfNodes(guys);
-	spuren = txtGoKey(BUSINESS_TXT, "SPUREN");
+	byte guyCount = (byte) GetNrOfNodes(guys);
+	LIST *spuren = txtGoKey(BUSINESS_TXT, "SPUREN");
 
+	Person p[4];
 	p[0] = p[1] = p[2] = p[3] = NULL;
 
-	guarded = ChangeAbs(((Building) dbGetObject(Search.BuildingId))->GRate,
+	int32 guarded = ChangeAbs(((Building) dbGetObject(Search.BuildingId))->GRate,
 	                    ((Building) dbGetObject(Search.BuildingId))->Strike / 7,
 	                    0, 255);
 
-	radio = (int32)((Building) dbGetObject(Search.BuildingId))->RadioGuarding;
+	int32 radio = (int32)((Building) dbGetObject(Search.BuildingId))->RadioGuarding;
+
+	struct ObjectNode *n;
+	int i= 0;
+	int32 MyEvidence[4][7];
+	uint32 totalEvidence[7];
+	uint32 shownEvidence[4];
+	uint32 Recognition[4];
 
 	for (n = (struct ObjectNode *) LIST_HEAD(guys), i = 0; NODE_SUCC(n);
 	        n = (struct ObjectNode *) NODE_SUCC(n), i++) {
@@ -188,12 +187,9 @@ uint32 tcStartEvidence(void) {
 		MyEvidence[i][5] =
 		    (p[i]->KnownToPolice * (MAX(1, guarded))) / (div * 3);
 		MyEvidence[i][6] =
-		    ChangeAbs(0,
-		              (int32) CalcRandomNr(200,
-		                                   255) * (int32) Search.SpotTouchCount[i],
-		              0, 255);
+		    ChangeAbs(0, (int32) CalcRandomNr(200, 255) * (int32) Search.SpotTouchCount[i], 0, 255);
 
-		for (j = 0; j < 7; j++) /* jeden Betrag != 0 AUFRUNDEN auf 1% ! */
+		for (uint32 j = 0; j < 7; j++) /* jeden Betrag != 0 AUFRUNDEN auf 1% ! */
 			if (MyEvidence[i][j])
 				MyEvidence[i][j] = MAX(MyEvidence[i][j], 5);
 
@@ -218,9 +214,11 @@ uint32 tcStartEvidence(void) {
 
 	prSetBarPrefs(m_gc, 300, 12, 1, 3, 0);
 
-	guyReady = 0;
+	byte guyReady = 0;
+	char line[TXT_KEY_LENGTH];
 	txtGetFirstLine(BUSINESS_TXT, "FAHNDUNG", line);
 
+	byte shown = 0;
 	while (guyReady != ((1 << guyCount) - 1)) {
 		if (shown) {
 			ShowTime(0);
@@ -230,7 +228,7 @@ uint32 tcStartEvidence(void) {
 			shown = 0;
 		}
 
-		guyNr = CalcRandomNr(0, guyCount);
+		byte guyNr = CalcRandomNr(0, guyCount);
 
 		/* wer ist den noch nicht fertig? */
 		while ((1 << guyNr) & guyReady)
@@ -241,12 +239,12 @@ uint32 tcStartEvidence(void) {
 		 */
 
 		/* zufällig eine Spurenart auswählen */
-		evidenceNr = CalcRandomNr(0, 7);
+		byte evidenceNr = CalcRandomNr(0, 7);
 
 		/* wenn diese Spurenart schon angzeigt wurde, eine freie
 		 * Spur suchen
 		 */
-		j = 0;
+		uint32 j = 0;
 
 		while (((1 << evidenceNr) & shownEvidence[guyNr]) && (j++ < 7))
 			evidenceNr = (evidenceNr + 1) % 7;
@@ -310,9 +308,8 @@ uint32 tcStartEvidence(void) {
 			guyReady |= (1 << guyNr);
 	}
 
-	guyReady = 0;
-
 	/* ein gewisses Restwissen bleibt der Polizei ! */
+	uint32 caught = 0;
 	for (i = 0; i < guyCount; i++) {
 		totalEvidence[i] /= 3;  /* change als in recognition = ... */
 
@@ -343,23 +340,17 @@ uint32 tcStartEvidence(void) {
 
 	caught |= tcIsThereATraitor();
 
-	if (!
-	        (tcCarFound
-	         ((Car) dbGetObject(Organisation.CarID),
+	if (!(tcCarFound((Car) dbGetObject(Organisation.CarID),
 	          Search.TimeOfBurglary - Search.TimeOfAlarm))) {
-		int32 newStrike;
 		Car car = (Car)dbGetObject(Organisation.CarID);
-
-		newStrike = CalcValue((int32) car->Strike, 0, 255, 255, 15);
-
+		int32 newStrike = CalcValue((int32) car->Strike, 0, 255, 255, 15);
 		if (newStrike < (car->Strike + 40))
 			newStrike = ChangeAbs((int32) car->Strike, 40, 0, 255);
 
 		car->Strike = newStrike;
 	}
 
-	((Player) dbGetObject(Player_Player_1))->MattsPart =
-	    (byte) tcCalcMattsPart();
+	((Player) dbGetObject(Player_Player_1))->MattsPart = (byte) tcCalcMattsPart();
 	tcForgetGuys();
 
 	RemoveList(spuren);
@@ -369,14 +360,10 @@ uint32 tcStartEvidence(void) {
 }
 
 void tcForgetGuys(void) {
-	LIST *guys;
-	NODE *node;
-
 	joined_byAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST, Object_Person);
-	guys = ObjectListPrivate;
+	LIST *guys = ObjectListPrivate;
 
-	for (node = (NODE *) LIST_HEAD(guys); NODE_SUCC(node);
-	        node = (NODE *) NODE_SUCC(node)) {
+	for (NODE *node = (NODE *) LIST_HEAD(guys); NODE_SUCC(node); node = (NODE *) NODE_SUCC(node)) {
 		if (OL_NR(node) != Person_Matt_Stuvysunt) {
 			Person pers = (Person)OL_DATA(node);
 
@@ -392,17 +379,16 @@ void tcForgetGuys(void) {
 }
 
 uint32 tcPersonWanted(uint32 persId) {
-	uint32 hours, i = 0, caught = 0;
 	Person john = (Person)dbGetObject(Person_John_Gludo);
 	Person miles = (Person)dbGetObject(Person_Miles_Chickenwing);
-	LIST *bubble;
 	LIST *jobs = txtGoKey(OBJECTS_ENUM_TXT, "enum_JobE");
-	char line[TXT_KEY_LENGTH], name[TXT_KEY_LENGTH];
 
+	char name[TXT_KEY_LENGTH];
 	dbGetObjectName(persId, name);
 
-	bubble = txtGoKey(BUSINESS_TXT, "BURGLAR_RECOG");
+	LIST *bubble = txtGoKey(BUSINESS_TXT, "BURGLAR_RECOG");
 
+	char line[TXT_KEY_LENGTH];
 	sprintf(line, "%s %s.", NODE_NAME(GetNthNode(bubble, 3)), name);
 
 	RemoveNode(bubble, NODE_NAME(GetNthNode(bubble, 3)));
@@ -416,24 +402,22 @@ uint32 tcPersonWanted(uint32 persId) {
 	livesInUnSet(London_London_1, persId);
 	tcMoveAPerson(persId, Location_Nirvana);
 
-	hours = CalcRandomNr(4L, 7L);
+	uint32 hours = CalcRandomNr(4L, 7L);
 
+	uint32 i = 0;
 	while ((i++) < hours) {
 		AddVTime(60);
 		inpDelay(35);
 		ShowTime(2);
 	}
 
+	uint32 caught = 0;
 	if (tcGuyCanEscape((Person)dbGetObject(persId)) > CalcRandomNr(100, 255)) { /* Flucht gelingt */
 		Say(BUSINESS_TXT, 0, john->PictID, "ESCAPED");
-
 		livesInSet(London_Escape, persId);
 	} else {            /* nicht */
-
 		Say(BUSINESS_TXT, 0, john->PictID, "ARRESTED");
-
 		livesInSet(London_Jail, persId);
-
 		caught = tcPersonQuestioning((Person)dbGetObject(persId));
 	}
 
@@ -442,8 +426,8 @@ uint32 tcPersonWanted(uint32 persId) {
 	return caught;
 }
 
-uint32 tcPersonQuestioning(Person person) {
-	uint32 caught = 0;
+bool tcPersonQuestioning(Person person) {
+	bool caught = false;
 	Person john = (Person)dbGetObject(Person_John_Gludo);
 	Person miles = (Person)dbGetObject(Person_Miles_Chickenwing);
 
@@ -451,12 +435,12 @@ uint32 tcPersonQuestioning(Person person) {
 		if (tcGuyTellsAll(person) > CalcRandomNr(0, 180)) { /* er spricht */
 			Say(BUSINESS_TXT, 0, john->PictID, "ER_GESTEHT");
 			Say(BUSINESS_TXT, 0, miles->PictID, "GUTE_ARBEIT");
-			caught = 1;
+			caught = true;
 		} else          /* er spricht nicht */
 			Say(BUSINESS_TXT, 0, john->PictID, "ER_GESTEHT_NICHT");
 	} else {
 		Say(BUSINESS_TXT, 0, john->PictID, "ER_GESTEHT_NICHT");
-		caught = 1;
+		caught = true;
 	}
 
 	return caught;
@@ -513,8 +497,8 @@ int32 tcEscapeFromBuilding(uint32 escBits) {
 int32 tcEscapeByCar(uint32 escBits, int32 timeLeft) {
 	Person gludo = (Person)dbGetObject(Person_John_Gludo);
 	Person miles = (Person)dbGetObject(Person_Miles_Chickenwing);
-	byte escapeSucc;
 
+	byte escapeSucc;
 	if (timeLeft > 0)
 		escapeSucc = FAHN_ESCAPED;
 	else
@@ -582,31 +566,25 @@ int32 tcCalcCarEscape(int32 timeLeft) {
 	byte kmhWeight[4] = { 32, 44, 60, 67 };
 	byte psWeight[4] = { 68, 56, 40, 33 };
 	byte driverWeight[4] = { 50, 40, 25, 20 };
-	byte policeSpeed[4] = { 90, 95, 103, 107 }
-	                      , paint;
-	char line[TXT_KEY_LENGTH];
-	int32 kmh, ps, i, j, YardsInFront, length, wayType, unrealSpeed, x, xOldMatt =
-	    -1, xOldPoli = -1;
+	byte policeSpeed[4] = { 90, 95, 103, 107 };
 	Car car = (Car)dbGetObject(Organisation.CarID);
 	Building build = (Building)dbGetObject(Organisation.BuildingID);
 	int32 result = FAHN_ESCAPED;
-	uint8 palette[GFX_PALETTE_SIZE];
 
-	if ((Organisation.BuildingID != Building_Tower_of_London) &&
-	        (Organisation.BuildingID != Building_Starford_Kaserne)) {
-		wayType = build->EscapeRoute;
-		length = build->EscapeRouteLength;
+	if ((Organisation.BuildingID != Building_Tower_of_London) && (Organisation.BuildingID != Building_Starford_Kaserne)) {
+		int32 wayType = build->EscapeRoute;
+		int32 length = build->EscapeRouteLength;
 
-		kmh = car->Speed;
-		ps = car->PS;
+		int32 kmh = car->Speed;
+		int32 ps = car->PS;
 
 		/* Motor : pro 10% Schaden -> 5% Leistung weniger */
 		kmh = CalcValue(kmh, 0, 65535L, (car->MotorState) / 2, 50);
 		ps = CalcValue(ps, 0, 65535L, (car->MotorState) / 2, 50);
 
 		/* pro Jahr 3% weniger */
-		i = (car->Speed * 3 * (tcRGetCarAge(car) + 1)) / 100;
-		j = (car->PS * 3 * (tcRGetCarAge(car) + 1)) / 100;
+		int32 i = (car->Speed * 3 * (tcRGetCarAge(car) + 1)) / 100;
+		int32 j = (car->PS * 3 * (tcRGetCarAge(car) + 1)) / 100;
 
 		if (kmh >= i)
 			kmh -= i;
@@ -643,7 +621,7 @@ int32 tcCalcCarEscape(int32 timeLeft) {
 
 		/* Maßzahl für Geschwindigkeit */
 		/* Einheit = m pro Schleifendurchlauf */
-		unrealSpeed = (kmh * kmhWeight[wayType] + ps * psWeight[wayType]) / 100;
+		int32 unrealSpeed = (kmh * kmhWeight[wayType] + ps * psWeight[wayType]) / 100;
 
 		unrealSpeed = unrealSpeed + 5 - (int32)(CalcRandomNr(0, 10));
 
@@ -665,7 +643,7 @@ int32 tcCalcCarEscape(int32 timeLeft) {
 		length *= 1000;     /* Fluchtweg in Meter */
 
 		/* Bildschirmdarstellung */
-
+		char line[TXT_KEY_LENGTH];
 		txtGetFirstLine(BUSINESS_TXT, "FLUCHT", line);
 		ShowMenuBackground();
 		PrintStatus(line);
@@ -674,6 +652,7 @@ int32 tcCalcCarEscape(int32 timeLeft) {
 		gfxShow(car->PictID, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1);
 
 		gfxPrepareColl(GFX_COLL_PARKING);
+		uint8 palette[GFX_PALETTE_SIZE];
 		gfxGetPalette(GFX_COLL_PARKING, palette);
 
 		gfxChangeColors(l_gc, 0, GFX_BLEND_UP, palette);
@@ -688,11 +667,14 @@ int32 tcCalcCarEscape(int32 timeLeft) {
 		sndPrepareFX("flucht.voc");
 		sndPlayFX();
 
+		int32 YardsInFront;
+		int32 xOldMatt = -1;
+		int32 xOldPoli = -1;
 		do {
 			i += unrealSpeed;   /* KmH von Matt */
 			i = MAX(i, 0);
 
-			paint = 0;
+			byte paint = 0;
 
 			if (Search.TimeOfAlarm)
 				j += policeSpeed[wayType];
@@ -700,7 +682,7 @@ int32 tcCalcCarEscape(int32 timeLeft) {
 			YardsInFront = i - j;   /* zum Vorsprung addieren */
 
 			/* Berechnung der Darstellung */
-			x = (i * 190) / length; /* Matts Car */
+			int32 x = (i * 190) / length; /* Matts Car */
 
 			if (x != xOldMatt) {
 				if (xOldMatt != -1) {

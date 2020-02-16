@@ -29,22 +29,18 @@ uint16 CurrentBackground = BGD_LONDON;
  */
 
 static byte tcDisplayInfoAboutPerson(uint32 objID) {
-	LIST *bubble;
-	char name[TXT_KEY_LENGTH];
-	byte ret = 0;
-
 	if (has(Person_Matt_Stuvysunt, objID))  /* hat Matt Wissen über ihn? */
-		ret = Present(objID, "Person", InitPersonPresent);
-	else {
-		dbGetObjectName(objID, name);
-		bubble = txtGoKey(LOOK_TXT, name);
+		return Present(objID, "Person", InitPersonPresent);
 
-		SetBubbleType(THINK_BUBBLE);
-		Bubble(bubble, 0, 0L, 0L);
-		RemoveList(bubble);
-	}
+	char name[TXT_KEY_LENGTH];
+	dbGetObjectName(objID, name);
+	LIST *bubble = txtGoKey(LOOK_TXT, name);
 
-	return ret;
+	SetBubbleType(THINK_BUBBLE);
+	Bubble(bubble, 0, 0L, 0L);
+	RemoveList(bubble);
+
+	return 0;
 }
 
 
@@ -56,16 +52,16 @@ static byte tcDisplayInfoAboutPerson(uint32 objID) {
  */
 
 void AddTaxiLocation(uint32 locNr) {
-	uint32 objNr;
+	uint32 objNr = GetObjNrOfLocation(locNr);
 
-	if ((objNr = GetObjNrOfLocation(locNr)))
+	if (objNr)
 		taxiSet(Person_Matt_Stuvysunt, objNr);
 }
 
 void RemTaxiLocation(uint32 locNr) {
-	uint32 objNr;
+	uint32 objNr = GetObjNrOfLocation(locNr);
 
-	if ((objNr = GetObjNrOfLocation(locNr)))
+	if (objNr)
 		taxiUnSet(Person_Matt_Stuvysunt, objNr);
 }
 
@@ -79,28 +75,23 @@ void RemTaxiLocation(uint32 locNr) {
  */
 
 uint32 Go(LIST *succ) {
-	struct TCEventNode *node;
-	struct Scene *sc;
-	uint32 prob, succ_eventnr;
-	NODE *location;
-	char line[255];
-
+	uint32 succ_eventnr;
 	inpTurnFunctionKey(0);
 
 	if (GetNrOfNodes(succ) > 1) {
-		prob = 0L;
+		uint32 prob = 0L;
 
 		ShowMenuBackground();
 
+		char line[255];
 		txtGetFirstLine(THECLOU_TXT, "Gehen", line);
 
 		PrintStatus(line);
 
-		for (node = (struct TCEventNode *) LIST_HEAD(succ); NODE_SUCC(node);
+		for (struct TCEventNode *node = (struct TCEventNode *) LIST_HEAD(succ); NODE_SUCC(node);
 		        node = (struct TCEventNode *) NODE_SUCC(node)) {
-			sc = GetScene(node->EventNr);
-
-			location = (NODE *)GetNthNode(film->loc_names, (uint32) sc->LocationNr);
+			struct Scene *sc = GetScene(node->EventNr);
+			NODE *location = (NODE *)GetNthNode(film->loc_names, (uint32) sc->LocationNr);
 
 			NODE_NAME(node) = NODE_NAME(location);
 
@@ -108,7 +99,6 @@ uint32 Go(LIST *succ) {
 		}
 
 		prob = (1 << prob) - 1;
-
 		prob = Menu(succ, prob, 0, NULL, 0L);
 
 		succ_eventnr =
@@ -117,7 +107,7 @@ uint32 Go(LIST *succ) {
 		/* jetzt die Zuweisung wieder entfernen, damit der Name */
 		/* nicht 2 mal freigegeben wird */
 
-		for (node = (struct TCEventNode *) LIST_HEAD(succ); NODE_SUCC(node);
+		for (struct TCEventNode *node = (struct TCEventNode *) LIST_HEAD(succ); NODE_SUCC(node);
 		        node = (struct TCEventNode *) NODE_SUCC(node))
 			NODE_NAME(node) = NULL;
 	} else {
@@ -132,20 +122,17 @@ uint32 Go(LIST *succ) {
 
 
 void Information(void) {
-	LIST *bubble, *list;
-	byte choice = 0, choice1 = 0, ret = 0;
-	char enough[TXT_KEY_LENGTH];
-	uint32 objID;
-
 	inpTurnESC(1);
 
+	byte choice = 0;
+	byte ret = 0;
 	while ((choice != 6) && (ret != GET_OUT)) {
 		SetBubbleType(THINK_BUBBLE);
-		bubble = txtGoKey(THECLOU_TXT, "INFORMATION");
+		LIST *bubble = txtGoKey(THECLOU_TXT, "INFORMATION");
 		choice = Bubble(bubble, choice, 0L, 0L);
 		RemoveList(bubble);
 
-		choice1 = 0;
+		byte choice1 = 0;
 
 		switch (choice) {
 		case 0:
@@ -154,112 +141,104 @@ void Information(void) {
 				Present(Person_Matt_Stuvysunt, "Person", InitPersonPresent);
 			break;
 
-		case 1:
+		case 1: {
 			hasAll(Person_Matt_Stuvysunt,
 			       OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
 			       Object_Car);
-			list = ObjectListPrivate;
+			LIST *list = ObjectListPrivate;
 
 			if (!(LIST_EMPTY(list))) {
+				char enough[TXT_KEY_LENGTH];
 				txtGetFirstLine(BUSINESS_TXT, "GENUG", enough);
 				ExpandObjectList(list, enough);
 				SetBubbleType(THINK_BUBBLE);
 
-				while (ChoiceOk
-				        ((choice1 =
-				              Bubble(list, choice1, 0L, 0L)), GET_OUT, list)) {
+				while (ChoiceOk((choice1 = Bubble(list, choice1, 0L, 0L)), GET_OUT, list)) {
 					SetBubbleType(THINK_BUBBLE);
 
-					objID =
-					    (uint32)(((struct ObjectNode *)
-					              GetNthNode(list, (uint32) choice1))->nr);
+					uint32 objID = (uint32)(((struct ObjectNode *) GetNthNode(list, (uint32) choice1))->nr);
 					ret = Present(objID, "Car", InitCarPresent);
 				}
 			} else
 				Say(BUSINESS_TXT, 0, MATT_PICTID, "POOR");
 
 			RemoveList(list);
+			}
 			break;
 
-		case 2:
+		case 2: {
 			knowsAll(Person_Matt_Stuvysunt,
 			         OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
 			         Object_Person);
-			list = ObjectListPrivate;
+			LIST *list = ObjectListPrivate;
 
 			if (!(LIST_EMPTY(list))) {
+				char enough[TXT_KEY_LENGTH];
 				txtGetFirstLine(BUSINESS_TXT, "GENUG", enough);
 				ExpandObjectList(list, enough);
 				SetBubbleType(THINK_BUBBLE);
 
-				while (ChoiceOk
-				        ((choice1 =
-				              Bubble(list, choice1, 0L, 0L)), GET_OUT, list)) {
+				while (ChoiceOk((choice1 = Bubble(list, choice1, 0L, 0L)), GET_OUT, list)) {
 					SetBubbleType(THINK_BUBBLE);
 
-					objID =
-					    (uint32)(((struct ObjectNode *)
-					              GetNthNode(list, (uint32) choice1))->nr);
+					uint32 objID = (uint32)(((struct ObjectNode *) GetNthNode(list, (uint32) choice1))->nr);
 					ret = tcDisplayInfoAboutPerson(objID);
 				}
 			} else
 				Say(BUSINESS_TXT, 0, MATT_PICTID, "POOR");
 
 			RemoveList(list);
+			}
 			break;
 
-		case 3:
+		case 3: {
 			hasAll(Person_Matt_Stuvysunt,
 			       OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
 			       Object_Tool);
-			list = ObjectListPrivate;
+			LIST *list = ObjectListPrivate;
 
 			if (!(LIST_EMPTY(list))) {
 				SetBubbleType(THINK_BUBBLE);
+				char enough[TXT_KEY_LENGTH];
 				txtGetFirstLine(BUSINESS_TXT, "GENUG", enough);
 				ExpandObjectList(list, enough);
 
-				while (ChoiceOk
-				        ((choice1 =
-				              Bubble(list, choice1, 0L, 0L)), GET_OUT, list)) {
+				while (ChoiceOk((choice1 = Bubble(list, choice1, 0L, 0L)), GET_OUT, list)) {
 					SetBubbleType(THINK_BUBBLE);
 
-					objID =
-					    (uint32)(((struct ObjectNode *)
-					              GetNthNode(list, (uint32) choice1))->nr);
+					uint32 objID = (uint32)(((struct ObjectNode *) GetNthNode(list, (uint32) choice1))->nr);
 					ret = Present(objID, "Tool", InitToolPresent);
 				}
 			} else
 				Say(BUSINESS_TXT, 0, MATT_PICTID, "POOR");
 
 			RemoveList(list);
+			}
 			break;
 
-		case 4:
+		case 4: {
 			hasAll(Person_Matt_Stuvysunt,
 			       OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
 			       Object_Building);
-			list = ObjectListPrivate;
+			LIST *list = ObjectListPrivate;
 
 			if (!(LIST_EMPTY(list))) {
 				SetBubbleType(THINK_BUBBLE);
+				char enough[TXT_KEY_LENGTH];
 				txtGetFirstLine(BUSINESS_TXT, "GENUG", enough);
 				ExpandObjectList(list, enough);
 
-				while (ChoiceOk
-				        ((choice1 =
-				              Bubble(list, choice1, 0L, 0L)), GET_OUT, list)) {
+				while (ChoiceOk((choice1 = Bubble(list, choice1, 0L, 0L)), GET_OUT, list)) {
 					SetBubbleType(THINK_BUBBLE);
 
-					objID =
-					    (uint32)(((struct ObjectNode *)
-					              GetNthNode(list, (uint32) choice1))->nr);
+					uint32 objID = (uint32)(((struct ObjectNode *)GetNthNode(list, (uint32) choice1))->nr);
 					ret = Present(objID, "Building", InitBuildingPresent);
 				}
 			} else
 				Say(BUSINESS_TXT, 0, MATT_PICTID, "POOR");
 
 			RemoveList(list);
+			}
 			break;
 
 		case 5:
@@ -275,41 +254,38 @@ void Information(void) {
 
 
 void Look(uint32 locNr) {
-	LIST *menu, *bubble = NULL;
-	byte choice = 0, choice1 = 0;
-	char enough[TXT_KEY_LENGTH];
-	uint32 objID;
-
 	inpTurnESC(1);
 
+	byte choice = 0;
 	while (choice != 2) {
-		menu = txtGoKey(THECLOU_TXT, "UMSEHEN");
+		LIST *menu = txtGoKey(THECLOU_TXT, "UMSEHEN");
 
 		SetBubbleType(THINK_BUBBLE);
 		choice = Bubble(menu, 0, 0L, 0L);
 		RemoveList(menu);
 
-		choice1 = 0;
+		byte choice1 = 0;
 
 		switch (choice) {
-		case 0:
-			bubble = txtGoKey(HOUSEDESC_TXT,
+		case 0: {
+			LIST *bubble = txtGoKey(HOUSEDESC_TXT,
 			                  NODE_NAME(GetNthNode(film->loc_names, (locNr))));
 
 			SetBubbleType(THINK_BUBBLE);
 			choice1 = Bubble(bubble, 0, 0L, 0L);
 			RemoveList(bubble);
+			}
 			break;
 
-		case 1:
-			objID = GetObjNrOfLocation(locNr);
+		case 1: {
+			uint32 objID = GetObjNrOfLocation(locNr);
+			LIST *bubble = nullptr;
 			if (objID) {
-				hasAll(objID,
-				       OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
-				       Object_Person);
+				hasAll(objID, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Person);
 				bubble = ObjectListPrivate;
 
 				if (!(LIST_EMPTY(bubble))) {
+					char enough[TXT_KEY_LENGTH];
 					txtGetFirstLine(BUSINESS_TXT, "GENUG_2", enough);
 					ExpandObjectList(bubble, enough);
 
@@ -331,6 +307,7 @@ void Look(uint32 locNr) {
 				Say(BUSINESS_TXT, 0, MATT_PICTID, "NOBODY TO SEE");
 
 			RemoveList(bubble);
+			}
 			break;
 		default:
 			choice = 2;
@@ -340,19 +317,17 @@ void Look(uint32 locNr) {
 }
 
 uint32 tcTelefon(void) {
-	char connect[TXT_KEY_LENGTH];
+	// CHECME: Always returns 0
+
 	uint32 eventNr = 0L;
 	Person ben = (Person)dbGetObject(Person_Ben_Riggley);
-
 	gfxShow(175, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1);
-
-	knowsAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_INSERT_STAR,
-	         Object_Person);
+	knowsAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Person);
 
 	if (!(LIST_EMPTY(ObjectList))) {
 		byte choice = 0;
-		uint32 persID;
 
+		char connect[TXT_KEY_LENGTH];
 		txtGetFirstLine(BUSINESS_TXT, "DONT_CONNECT_ME", connect);
 		ExpandObjectList(ObjectList, connect);
 
@@ -361,12 +336,8 @@ uint32 tcTelefon(void) {
 		inpTurnESC(1);
 
 		if (choice != GET_OUT) {
-			if (ChoiceOk
-			        ((choice =
-			              Bubble(ObjectList, 0, 0L, 0L)), GET_OUT, ObjectList)) {
-				persID =
-				    (uint32)(((struct ObjectNode *)
-				              GetNthNode(ObjectList, (uint32) choice))->nr);
+			if (ChoiceOk((choice = Bubble(ObjectList, 0, 0L, 0L)), GET_OUT, ObjectList)) {
+				uint32 persID = (uint32)(((struct ObjectNode *) GetNthNode(ObjectList, (uint32) choice))->nr);
 
 				if (persID == Person_Ben_Riggley)
 					Say(BUSINESS_TXT, 0, ben->PictID, "ALREADY_PHONING");
@@ -394,10 +365,7 @@ uint32 tcTelefon(void) {
 }
 
 void tcWait(void) {
-	char line[TXT_KEY_LENGTH];
-	byte ende = 0;
-	uint32 action = 0L, minutes = 0L, locNr = GetObjNrOfLocation(GetLocation);
-	uint32 newCount = 0, oldCount = 0;
+	uint32 locNr = GetObjNrOfLocation(GetLocation);
 
 	inpTurnESC(0);
 
@@ -407,9 +375,12 @@ void tcWait(void) {
 
 	gfxSetRect(0, 320);
 	gfxSetPens(m_gc, 249, 0, GFX_SAME_PEN);
+	char line[TXT_KEY_LENGTH];
 	txtGetFirstLine(THECLOU_TXT, "WAIT", line);
 	gfxPrint(m_gc, line, 22, GFX_PRINT_CENTER);
 
+	byte ende = 0;
+	uint32 minutes = 0L;
 	while ((!ende) && (minutes < 960)) {
 		minutes += 60;
 
@@ -419,7 +390,8 @@ void tcWait(void) {
 		if (locNr) {
 			hasAll(locNr, OLF_NORMAL, Object_Person);
 
-			newCount = GetNrOfNodes(ObjectList);
+			uint32 newCount = GetNrOfNodes(ObjectList);
+			uint32 oldCount = 0;
 
 			if ((newCount > oldCount) && (oldCount != 0)) {
 				SetBubbleType(THINK_BUBBLE);
@@ -430,7 +402,7 @@ void tcWait(void) {
 			oldCount = newCount;
 		}
 
-		action = inpWaitFor(INP_TIME | INP_LBUTTONP | INP_RBUTTONP | INP_ESC);
+		uint32 action = inpWaitFor(INP_TIME | INP_LBUTTONP | INP_RBUTTONP | INP_ESC);
 
 		if ((action & INP_LBUTTONP) || (action & INP_RBUTTONP) ||
 		        (action & INP_ESC))

@@ -154,8 +154,6 @@ void DoneInsideHouse(void) {
 }
 
 void DoneTools(void) {
-	byte activ = 0;
-	uint32 choice = 0;
 	LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
 
 	SceneArgs.Ueberschrieben = 1;
@@ -163,6 +161,7 @@ void DoneTools(void) {
 	tcMoveAPerson(Person_Mary_Bolton, Location_Tools_Shop);
 	livesInUnSet(London_London_1, Person_Mary_Bolton);
 
+	byte activ = 0;
 	while (!SceneArgs.ReturnValue) {
 		tcPersonIsHere();
 
@@ -171,7 +170,7 @@ void DoneTools(void) {
 		activ = Menu(menu, SceneArgs.Moeglichkeiten, (byte)(activ), NULL, 0L);
 		inpTurnESC(1);
 
-		choice = (uint32) 1L << (activ);
+		uint32 choice = (uint32) 1L << (activ);
 
 		if (choice == BUSINESS_TALK) {
 			tcToolsShop();
@@ -191,8 +190,6 @@ void DoneTools(void) {
 }
 
 void DoneDealer(void) {
-	byte activ = 0;
-	uint32 choice = 0;
 	LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
 
 	SceneArgs.Ueberschrieben = 1;
@@ -206,6 +203,7 @@ void DoneDealer(void) {
 	livesInUnSet(London_London_1, Person_Eric_Pooly);   /* nicht bewegen! */
 	livesInUnSet(London_London_1, Person_Helen_Parker);
 
+	byte activ = 0;
 	while (!SceneArgs.ReturnValue) {
 		inpTurnFunctionKey(0);  /* or call save functions in case of space */
 		inpTurnESC(0);
@@ -213,7 +211,7 @@ void DoneDealer(void) {
 		inpTurnESC(1);
 		inpTurnFunctionKey(1);
 
-		choice = (uint32) 1L << (activ);
+		uint32 choice = (uint32) 1L << (activ);
 
 		if (choice == BUSINESS_TALK)
 			tcDealerDlg();
@@ -233,12 +231,12 @@ void DoneDealer(void) {
 void DoneParking(void) {
 	LIST *bubble = txtGoKey(BUSINESS_TXT, "PARKING");
 	LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
-	byte activ = 0, choice = 0;
 	Person marc = (Person)dbGetObject(Person_Marc_Smith);
 
 	SceneArgs.Ueberschrieben = 1;
 	SceneArgs.ReturnValue = 0;
 
+	byte activ = 0;
 	while (!SceneArgs.ReturnValue) {
 		inpTurnFunctionKey(0);  /* or call save functions in case of space */
 		inpTurnESC(0);
@@ -249,7 +247,7 @@ void DoneParking(void) {
 		inpTurnFunctionKey(1);
 
 		if ((1L << activ) == BUSINESS_TALK) {
-			choice = 0;
+			byte choice = 0;
 
 			while (choice != 2) {
 				choice = Bubble(bubble, 0, 0L, 0L);

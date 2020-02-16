@@ -33,16 +33,17 @@ static void FadeInsideObject(void) {
 
 uint32 tcGoInsideOfHouse(uint32 buildingID) {
 	LIST *menu = txtGoKey(MENU_TXT, "INSIDE_MENU"), *areas;
-	uint32 count, i, areaID = 0;
+	uint32 areaID = 0;
 
 	consistsOfAll(buildingID, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME,
 	              Object_LSArea);
 	areas = ObjectListPrivate;
 	dbSortObjectList(&areas, dbStdCompareObjects);
 
-	count = GetNrOfNodes(areas) + 1;
+	uint32 count = GetNrOfNodes(areas) + 1;
 
 	if (count > 2) {
+		uint32 i;
 		for (i = count; i < 5; i++)
 			RemoveNode(menu, NODE_NAME(GetNthNode(menu, count)));
 
@@ -70,15 +71,10 @@ uint32 tcGoInsideOfHouse(uint32 buildingID) {
 }
 
 void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
-	LIST *objects;
-	NODE *node, *n;
-	uint32 action = 0, count;
-	char name[TXT_KEY_LENGTH];
-	char alarm[TXT_KEY_LENGTH], power[TXT_KEY_LENGTH];
-	LSObject lso;
 	LSArea area = (LSArea)dbGetObject(areaID);
 	LIST *menu = txtGoKey(MENU_TXT, "LookMenu");
 
+	char alarm[TXT_KEY_LENGTH], power[TXT_KEY_LENGTH];
 	txtGetFirstLine(BUSINESS_TXT, "PROTECTED", alarm);
 	txtGetFirstLine(BUSINESS_TXT, "SUPPLIED", power);
 
@@ -88,12 +84,12 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 	/* liste und node initialisieren */
 	SetObjectListAttr(OLF_PRIVATE_LIST, Object_LSObject);
 	AskAll(area, ConsistOfRelationID, BuildObjectList);
-	objects = ObjectListPrivate;
+	LIST *objects = ObjectListPrivate;
 
 	/*lsSortObjectList(&objects);*/
 
-	count = (GetNrOfNodes(objects) * perc) / 255;
-	node = lsGetSuccObject((NODE *) LIST_HEAD(objects));
+	uint32 count = (GetNrOfNodes(objects) * perc) / 255;
+	NODE *node = lsGetSuccObject((NODE *) LIST_HEAD(objects));
 
 	CurrAreaId = areaID;
 
@@ -101,9 +97,10 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 		SetBubbleType(THINK_BUBBLE);
 		Say(BUSINESS_TXT, 0, MATT_PICTID, "CANT_LOOK");
 	} else {
+		uint32 action = 0;
 		while (action != 4) {
-			lso = (LSObject) OL_DATA(node);
-
+			LSObject lso = (LSObject) OL_DATA(node);
+			char name[TXT_KEY_LENGTH];
 			dbGetObjectName(lso->Type, name);
 
 			if (lso->uch_Chained) {
@@ -114,13 +111,12 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 						strcat(name, ", ");
 						strcat(name, power);
 					}
-				} else {
-					if (lso->uch_Chained & Const_tcCHAINED_TO_POWER)
-						strcat(name, power);
-				}
+				} else if (lso->uch_Chained & Const_tcCHAINED_TO_POWER)
+					strcat(name, power);
 
 				strcat(name, ")");
 			}
+// TODO : use console
 #ifdef THECLOU_DEBUG
 			{
 				char debugtxt[TXT_KEY_LENGTH];
@@ -146,10 +142,11 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 			lsFadeRasterObject(areaID, lso, 1);
 
 			switch (action) {
-			case 0:
-				if ((GetNodeNrByAddr(objects, n = lsGetSuccObject(node))) <
-				        (count - 1))
+			case 0: {
+				NODE *n = lsGetSuccObject(node);
+				if (GetNodeNrByAddr(objects, n) < (count - 1))
 					node = n;
+				}
 				break;
 			case 1:
 				node = lsGetPredObject(node);
@@ -183,8 +180,6 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 }
 
 void tcShowObjectData(uint32 areaID, NODE *node, byte perc) {
-	NODE *n;
-
 	/* Objekt selbst präsentieren */
 	Present(OL_NR(node), "RasterObject", InitObjectPresent);
 
@@ -194,7 +189,7 @@ void tcShowObjectData(uint32 areaID, NODE *node, byte perc) {
 
 	if (!LIST_EMPTY(ObjectList)) {
 		/* alle Loots durchgehen und anzeigen! */
-		for (n = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(n);
+		for (NODE *n = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(n);
 		        n = (NODE *) NODE_SUCC(n)) {
 			/* zur Variablenübergabe... (DIRTY, DIRTY...) */
 			SetP(OL_DATA(n), hasLootRelationID, OL_DATA(n),
