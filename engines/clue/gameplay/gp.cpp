@@ -581,12 +581,7 @@ void AddVTime(uint32 add) {
 	SetTime(time);
 	tcTheAlmighty(time);
 }
-#ifdef UNUSED
-static uint32 GetAmountOfScenes(void) {
-	/* for extern modules */
-	return (film ? film->AmountOfScenes : 0);
-}
-#endif
+
 void SetCurrentScene(struct Scene *scene) {
 	film->act_scene = scene;
 }
@@ -667,5 +662,12 @@ char *GetCurrLocName(void) {
 	uint32 index = GetCurrentScene()->LocationNr;
 	return (NODE_NAME(GetNthNode(film->loc_names, index)));
 }
+
+#if 0
+static uint32 GetAmountOfScenes(void) {
+	/* for extern modules */
+	return (film ? film->AmountOfScenes : 0);
+}
+#endif
 
 } // End of namespace Clue

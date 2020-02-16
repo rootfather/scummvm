@@ -193,9 +193,8 @@ void gfxSetVideoMode(byte uch_NewMode) {
 	gfxClearArea(NULL);
 }
 
-void gfxCorrectUpperRPBitmap(void)
+void gfxCorrectUpperRPBitmap(void) {
 /* should be called after each scrolling (and before displaying a bubble) */
-{
 	/*
 	    NCH4UpperRP.p_BitMap = (void *) ((uint32) GfxBoardBase + gfxNCH4GetCurrScrollOffset());
 	*/

@@ -189,13 +189,6 @@ void txtPrepare(uint32 textId) {
 	}
 }
 
-void txtUnPrepare(uint32 textId) {
-	struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
-
-	if (txt)
-		txt->txt_LastMark = NULL;
-}
-
 void txtReset(uint32 textId) {
 	struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 
@@ -386,6 +379,15 @@ void txtPutCharacter(LIST *list, uint16 pos, uint8 c) {
 	for (NODE *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node))
 		NODE_NAME(node)[pos] = c;
 }
+
+#if 0
+void txtUnPrepare(uint32 textId) {
+	struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
+
+	if (txt)
+		txt->txt_LastMark = NULL;
+}
+#endif
 
 } // End of namespace Clue
 

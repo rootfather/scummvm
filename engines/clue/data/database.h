@@ -98,7 +98,6 @@ void dbSetLoadObjectsMode(uint8 mode);
 
 /* public prototypes - OBJECT */
 void *dbNewObject(uint32 nr, uint32 type, uint32 size, char *name, uint32 realNr);
-void dbDeleteObject(uint32 nr);
 
 void *dbGetObject(uint32 nr);
 uint32 dbGetObjectNr(void *key);
@@ -132,6 +131,9 @@ void dbRemObjectNode(LIST *objectList, uint32 nr);
 void dbInit(void);
 void dbDone(void);
 
+#if 0
+void dbDeleteObject(uint32 nr);
+#endif
 } // End of namespace Clue
 
 #endif

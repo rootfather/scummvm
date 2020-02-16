@@ -66,7 +66,6 @@ void *AddNode(LIST *list, void *node, void *predNode);
 void *AddTailNode(LIST *list, void *node);
 void *AddHeadNode(LIST *list, void *node);
 void *RemNode(void *node);
-void *RemHeadNode(LIST *list);
 void *RemTailNode(LIST *list);
 void *CreateNode(LIST *list, size_t size, const char *name);
 void RemoveNode(LIST *list, const char *name);
@@ -75,7 +74,6 @@ void *GetNode(LIST *list, const char *name);
 void *GetNthNode(LIST *list, uint32 nth);
 uint32 GetNrOfNodes(LIST *list);
 uint32 GetNodeNrByAddr(LIST *list, void *node);
-uint32 GetNodeNr(LIST *list, const char *name);
 void foreach(LIST *list, void (*processNode)(void *));
 void Link(LIST *list, void *node, void *predNode);
 void *UnLinkByAddr(LIST *list, void *node, NODE **predNode);
@@ -85,6 +83,10 @@ void ReplaceNode(LIST *list, const char *name, NODE *newNode);
 uint32 ReadList(LIST *list, size_t size, char *fileName);
 void WriteList(LIST *list, char *fileName);
 
+#if 0
+void *RemHeadNode(LIST *list);
+uint32 GetNodeNr(LIST *list, const char *name);
+#endif
 } // End of namespace Clue
 
 #endif              /* MODULE_LIST */

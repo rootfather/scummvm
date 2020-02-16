@@ -247,22 +247,6 @@ LIST *lsGetObjectsByList(uint16 x, uint16 y, uint16 width, uint16 height,
 	return (list);
 }
 
-uint16 lsGetWindowXPos(void) {
-	return (ls->us_WindowXPos);
-}
-
-uint16 lsGetWindowYPos(void) {
-	return (ls->us_WindowYPos);
-}
-
-uint16 lsGetTotalXPos(void) {
-	return (uint16)(ls->us_WindowXPos + ls->us_PersonXPos);
-}
-
-uint16 lsGetTotalYPos(void) {
-	return (uint16)(ls->us_WindowYPos + ls->us_PersonYPos);
-}
-
 void lsSetCollMode(byte collMode) {
 	ls->uch_CollMode = collMode;
 }
@@ -297,5 +281,23 @@ LIST *lsGetRoomsOfArea(uint32 ul_AreaId) {
 
 	return ObjectListPrivate;
 }
+
+#if 0
+uint16 lsGetWindowXPos(void) {
+	return (ls->us_WindowXPos);
+}
+
+uint16 lsGetWindowYPos(void) {
+	return (ls->us_WindowYPos);
+}
+
+uint16 lsGetTotalXPos(void) {
+	return (uint16)(ls->us_WindowXPos + ls->us_PersonXPos);
+}
+
+uint16 lsGetTotalYPos(void) {
+	return (uint16)(ls->us_WindowYPos + ls->us_PersonYPos);
+}
+#endif 
 
 } // End of namespace Clue

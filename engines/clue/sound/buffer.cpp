@@ -36,11 +36,11 @@ void sndResetBuffer(SND_BUFFER *buffer) {
 	buffer->removePos = 0;
 }
 
+#if 0
 unsigned sndLenBuffer(SND_BUFFER *buffer) {
 	return buffer->insertPos - buffer->removePos;
 }
 
-#if 0
 void sndFreeBuffer(SND_BUFFER *buffer) {
 	TCFreeMem(buffer->data, buffer->size);
 	TCFreeMem(buffer, sizeof(*buffer));

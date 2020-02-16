@@ -1304,21 +1304,6 @@ void *dbNewObject(uint32 nr, uint32 type, uint32 size, char *name, uint32 realNr
 	return dbGetObjectKey(obj);
 }
 
-void dbDeleteObject(uint32 nr) {
-	struct dbObject *obj = NULL;
-	uint8 objHashValue = dbGetObjectHashNr(nr);
-
-	for (obj = (struct dbObject *) LIST_HEAD(objHash[objHashValue]);
-	        NODE_SUCC(obj); obj = (struct dbObject *) NODE_SUCC(obj)) {
-		if (obj->nr == nr) {
-			UnSetAll((KEY)(obj + 1), NULL);
-			RemNode(obj);
-			FreeNode(obj);
-			return;
-		}
-	}
-}
-
 void *dbGetObject(uint32 nr) {
 	struct dbObject *obj;
 	uint8 objHashValue = dbGetObjectHashNr(nr);
@@ -1670,7 +1655,7 @@ static uint32 getKeyStd(KeyConflictE key) {
 
 	default:
 		DebugMsg(ERR_ERROR, ERROR_MODULE_DATABASE,
-		         "Unknown trouble key #%u", key);
+			"Unknown trouble key #%u", key);
 		return 0;
 	}
 }
@@ -1736,7 +1721,7 @@ static uint32 getKeyProfi(KeyConflictE key) {
 
 	default:
 		DebugMsg(ERR_ERROR, ERROR_MODULE_DATABASE,
-		         "Unknown trouble key #%u", key);
+			"Unknown trouble key #%u", key);
 		return 0;
 	}
 }
@@ -1748,5 +1733,22 @@ uint32 getKey(KeyConflictE key) {
 		return getKeyStd(key);
 	}
 }
+
+#if 0
+void dbDeleteObject(uint32 nr) {
+	struct dbObject *obj = NULL;
+	uint8 objHashValue = dbGetObjectHashNr(nr);
+
+	for (obj = (struct dbObject *) LIST_HEAD(objHash[objHashValue]);
+		NODE_SUCC(obj); obj = (struct dbObject *) NODE_SUCC(obj)) {
+			if (obj->nr == nr) {
+				UnSetAll((KEY)(obj + 1), NULL);
+				RemNode(obj);
+				FreeNode(obj);
+				return;
+			}
+	}
+}
+#endif
 
 } // End of namespace Clue

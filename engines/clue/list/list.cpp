@@ -77,13 +77,6 @@ void *RemNode(void *node) {
 	return node;
 }
 
-void *RemHeadNode(LIST *list) {
-	if (!LIST_EMPTY(list))
-		return RemNode(LIST_HEAD(list));
-
-	return NULL;
-}
-
 void *RemTailNode(LIST *list) {
 	if (!LIST_EMPTY(list))
 		return RemNode(LIST_TAIL(list));
@@ -184,10 +177,6 @@ uint32 GetNodeNrByAddr(LIST *list, void *node) {
 	return i;
 }
 
-uint32 GetNodeNr(LIST *list, const char *name) {
-	return GetNodeNrByAddr(list, GetNode(list, name));
-}
-
 void foreach (LIST *list, void (*processNode)(void *)) {
 	for (NODE *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node))
 		processNode(node);
@@ -255,5 +244,18 @@ void WriteList(LIST *list, char *fileName) {
 		fclose(fh);
 	}
 }
+
+#if 0
+void *RemHeadNode(LIST *list) {
+	if (!LIST_EMPTY(list))
+		return RemNode(LIST_HEAD(list));
+
+	return NULL;
+}
+
+uint32 GetNodeNr(LIST *list, const char *name) {
+	return GetNodeNrByAddr(list, GetNode(list, name));
+}
+#endif
 
 } // End of namespace Clue

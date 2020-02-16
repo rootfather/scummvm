@@ -67,10 +67,7 @@ void txtLoad(uint32 textId);
 void txtUnLoad(uint32 textId);
 
 void txtPrepare(uint32 textId);
-void txtUnPrepare(uint32 textId);
-
 void txtReset(uint32 textId);
-
 
 /* public prototypes - KEY */
 char *txtGetKey(uint16 keyNr, const char *key);
@@ -88,6 +85,9 @@ char *txtGetString(uint32 textId, const char *key, char *dest);
 char *txtGetNthString(uint32 textId, const char *key, uint32 nth, char *dest);
 void txtPutCharacter(LIST *list, uint16 pos, uint8 c);
 
+#if 0
+void txtUnPrepare(uint32 textId);
+#endif
 } // End of namespace Clue
 
 #endif

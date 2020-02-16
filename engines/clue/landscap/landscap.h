@@ -181,10 +181,6 @@ extern void lsCalcExactSize(LSObject lso, uint16 *x0, uint16 *y0, uint16 *x1,
 extern void lsInitDoorRefresh(uint32 ObjId);
 extern void lsDoDoorRefresh(LSObject lso);
 
-extern uint16 lsGetTotalXPos(void);
-extern uint16 lsGetTotalYPos(void);
-extern uint16 lsGetWindowXPos(void);
-extern uint16 lsGetWindowYPos(void);
 extern uint16 lsGetFloorIndex(uint16 x, uint16 y);
 
 extern void lsGuyInsideSpot(uint16 *us_XPos, uint16 *us_YPos, uint32 *areaId);
@@ -244,6 +240,12 @@ extern uint32 hasPowerRelationID;
 extern uint32 hasLootRelationID;
 extern uint32 hasRoomRelationID;
 
+#if 0
+extern uint16 lsGetTotalXPos(void);
+extern uint16 lsGetTotalYPos(void);
+extern uint16 lsGetWindowXPos(void);
+extern uint16 lsGetWindowYPos(void);
+#endif
 } // End of namespace Clue
 
 #endif
