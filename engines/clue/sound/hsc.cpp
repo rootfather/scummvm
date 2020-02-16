@@ -16,12 +16,10 @@
 namespace Clue {
 
 #define OPL_INTERNAL_FREQ   3579545 /* 3.6 MHz... */
-#define OPL_NUM_CHIPS           1
-#define OPL_CHIP0                   0
+#define OPL_NUM_CHIPS       1
+#define OPL_CHIP0           0
 
-static int OPL_Ok;
-
-
+static bool OPL_Ok;
 
 static const int index_car[] =
 { 0x03, 0x04, 0x05, 0x0B, 0x0C, 0x0D, 0x13, 0x14, 0x15 };
@@ -153,14 +151,12 @@ static void hsc_set_instrument(int channel, int new_inst) {
 
 
 static void hsc_set_voice(int channel, voice_type vt) {
-	int note_high =
-	    (hsc_ch_note[channel] >> 0x08) | (hsc_ch_octave[channel] << 0x02);
+	int note_high = (hsc_ch_note[channel] >> 0x08) | (hsc_ch_octave[channel] << 0x02);
 	int note_low = hsc_ch_note[channel] & 0xFF;
 
 	switch (vt) {
 	case on: {
 		ym3812_write(0xB0 + channel, 0x00);
-
 		ym3812_write(0xA0 + channel, note_low);
 		ym3812_write(0xB0 + channel, note_high | 0x20);
 
@@ -190,30 +186,22 @@ static void hsc_set_voice(int channel, voice_type vt) {
 
 
 static void hsc_process_row() {
-	int i, channel, cur_pattern, note, effect;
-
 	bool pat_break = false;
 
-
-	if (!hsc_valid_data || hsc_in_process) {
+	if (!hsc_valid_data || hsc_in_process)
 		return;
-	}
 
 	hsc_in_process = true;
 
-
 	if (hsc_ticks < hsc_speed) {
 		hsc_ticks++;
-
 		hsc_in_process = false;
-
 		return;
 	}
 
 	hsc_ticks = 1;
 
-
-	cur_pattern = pattern_table[hsc_index];
+	int cur_pattern = pattern_table[hsc_index];
 
 	if (hsc_effect03) {
 		hsc_effect03_line++;
@@ -223,7 +211,7 @@ static void hsc_process_row() {
 			/*hsc_set_volume(4, 0x03 * 4, 0x03 * 4);*/
 			/*hsc_set_volume(3, 0x03 * 4, 0x03 * 4);*/
 		} else {
-			for (i = 0; i < 9; i++) {
+			for (int i = 0; i < 9; i++) {
 				hsc_set_volume(i, 0x3F - hsc_effect03_line * 2 + 1,
 				               0x3F - hsc_effect03_line * 2 + 1);
 			}
@@ -232,9 +220,9 @@ static void hsc_process_row() {
 
 
 
-	for (channel = 0; channel < 9; channel++) {
-		note = pattern[cur_pattern].note[channel][hsc_line];
-		effect = pattern[cur_pattern].effect[channel][hsc_line];
+	for (int channel = 0; channel < 9; channel++) {
+		int note = pattern[cur_pattern].note[channel][hsc_line];
+		int effect = pattern[cur_pattern].effect[channel][hsc_line];
 
 		switch (note) {
 		case 0: {
@@ -290,7 +278,7 @@ static void hsc_process_row() {
 
 				hsc_effect03_line = 0;
 
-				for (i = 0; i < 9; i++) {
+				for (int i = 0; i < 9; i++) {
 					hsc_set_volume(i, 0x3F, 0x3F);
 				}
 			}
@@ -348,7 +336,7 @@ static void hsc_process_row() {
 			ym3812_write(0x08, 0x40);
 
 
-			for (i = 0; i < 9; i++) {
+			for (int i = 0; i < 9; i++) {
 				ym3812_write(0xB0 + i, 0);
 				ym3812_write(0xA0 + i, 0);
 
@@ -369,7 +357,7 @@ static void hsc_process_row() {
 			ym3812_write(0x01, 0x20);
 			ym3812_write(0x08, 0x40);
 
-			for (i = 0; i < 9; i++) {
+			for (int i = 0; i < 9; i++) {
 				ym3812_write(0xB0 + i, 0);
 				ym3812_write(0xA0 + i, 0);
 
@@ -396,9 +384,8 @@ static void hsc_process_row() {
 static int16 MusicStream[HSC_BUFFER_SIZE];
 
 void hscMusicPlayer(void) {
-	if (OPL_Ok) {
+	if (OPL_Ok)
 		hsc_process_row();
-	}
 }
 
 void hscReset(void) {
@@ -415,22 +402,17 @@ void hscReset(void) {
 	hsc_in_process = false;
 }
 
-int hscLoad(const char *filename) {
-	int i, line, channel, num_pattern;
-
-	uint8 *hsc_file, *hsc_data;
-
+bool hscLoad(const char *filename) {
 	if (!OPL_Ok)
-		return 0;
+		return false;
 
 	hscReset();
-
 	hsc_in_process = true;
 
-	hsc_file = (uint8 *)dskLoad(filename);
-	hsc_data = hsc_file;
+	uint8 *hsc_file = (uint8 *)dskLoad(filename);
+	uint8 *hsc_data = hsc_file;
 
-	for (i = 0; i < 128; i++) {
+	for (int i = 0; i < 128; i++) {
 		instrument[i].car_am_vib_eg_ksr_multi = *hsc_data++;
 		instrument[i].mod_am_vib_eg_ksr_multi = *hsc_data++;
 
@@ -452,15 +434,15 @@ int hscLoad(const char *filename) {
 	}
 
 
-	for (i = 0; i < 51; i++)
+	for (int i = 0; i < 51; i++)
 		pattern_table[i] = *hsc_data++;
 
 
-	num_pattern = (dskFileLength(filename) - 1587) / 1152;
+	int num_pattern = (dskFileLength(filename) - 1587) / 1152;
 
-	for (i = 0; i < num_pattern; i++) {
-		for (line = 0; line < 64; line++) {
-			for (channel = 0; channel < 9; channel++) {
+	for (int i = 0; i < num_pattern; i++) {
+		for (int line = 0; line < 64; line++) {
+			for (int channel = 0; channel < 9; channel++) {
 				pattern[i].note[channel][line] = *hsc_data++;
 				pattern[i].effect[channel][line] = *hsc_data++;
 			}
@@ -472,7 +454,7 @@ int hscLoad(const char *filename) {
 	ym3812_write(0x01, 0x20);
 	ym3812_write(0x08, 0x40);
 
-	for (i = 0; i < 9; i++) {
+	for (int i = 0; i < 9; i++) {
 		ym3812_write(0xB0 + i, 0);
 		ym3812_write(0xA0 + i, 0);
 
@@ -490,7 +472,7 @@ int hscLoad(const char *filename) {
 
 	hsc_valid_data = true;
 	hsc_in_process = false;
-	return 1;
+	return true;
 }
 
 template<class Res>
@@ -513,17 +495,18 @@ private:
 void hscInit(void) {
 	opl = OPL::Config::create();
 	if (!opl || !opl->init()) {
-		OPL_Ok = 0;
+		OPL_Ok = false;
 		DebugMsg(ERR_WARNING, ERROR_MODULE_SOUND, "OPL error");
 	} else {
-		OPL_Ok = 1;
+		OPL_Ok = true;
 		opl->start(new Functor0Ptr<void>(hscMusicPlayer), 18);
 	}
 }
 
 void hscDone(void) {
 	delete opl;
-	OPL_Ok = 0;
+	opl = nullptr;
+	OPL_Ok = false;
 }
 
 } // End of namespace Clue

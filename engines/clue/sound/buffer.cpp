@@ -6,7 +6,6 @@
   distribution.
  ****************************************************************************/
 #include "clue/memory/memory.h"
-
 #include "clue/sound/buffer.h"
 
 namespace Clue {
@@ -21,11 +20,8 @@ struct SndBuffer {
 
 
 SND_BUFFER *sndCreateBuffer(unsigned size) {
-	SND_BUFFER *buffer;
-	unsigned char *data;
-
-	buffer = (SND_BUFFER *)TCAllocMem(sizeof(*buffer), false);
-	data = (unsigned char *)TCAllocMem(size, true);
+	SND_BUFFER *buffer = (SND_BUFFER *)TCAllocMem(sizeof(*buffer), false);
+	unsigned char *data = (unsigned char *)TCAllocMem(size, true);
 
 	buffer->data = data;
 	buffer->size = size;
@@ -51,12 +47,11 @@ unsigned sndLenBuffer(SND_BUFFER *buffer) {
 
 unsigned sndInsertBuffer(SND_BUFFER *buffer, const void *src, unsigned srcLen) {
 	const unsigned char *psrc = (const unsigned char *)src;
-	unsigned len, pos;
 
 	srcLen = MIN(srcLen, buffer->size - sndLenBuffer(buffer));
 
-	pos = buffer->insertPos % buffer->size;
-	len = MIN(srcLen, buffer->size - pos);
+	uint pos = buffer->insertPos % buffer->size;
+	uint len = MIN(srcLen, buffer->size - pos);
 
 	/* insert to the end */
 	memcpy(buffer->data + pos, psrc, len);
@@ -69,14 +64,13 @@ unsigned sndInsertBuffer(SND_BUFFER *buffer, const void *src, unsigned srcLen) {
 	return srcLen;
 }
 
-unsigned sndRemoveBuffer(SND_BUFFER *buffer, void *dst, unsigned dstLen) {
+unsigned sndRemoveBuffer(SND_BUFFER *buffer, void *dst, uint dstLen) {
 	unsigned char *pdst = (unsigned char *)dst;
-	unsigned len, pos;
 
 	dstLen = MIN(dstLen, sndLenBuffer(buffer));
 
-	pos = buffer->removePos % buffer->size;
-	len = MIN(dstLen, buffer->size - pos);
+	uint pos = buffer->removePos % buffer->size;
+	uint len = MIN(dstLen, buffer->size - pos);
 
 	/* remove from the end */
 	memcpy(pdst, buffer->data + pos, len);

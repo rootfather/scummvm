@@ -34,13 +34,7 @@ char *tcShowPriceOfTool(uint32 nr, uint32 type, void *data) {
 }
 
 byte tcBuyTool(byte choice) {
-	LIST *tools;
-	NODE *node;
-	uint32 toolID, price, count;
 	Person mary = (Person)dbGetObject(Person_Mary_Bolton);
-	Tool tool;
-	uint8 oldChoice = GET_OUT;
-	char exp[TXT_KEY_LENGTH];
 
 	ObjectListSuccString = tcShowPriceOfTool;
 	ObjectListWidth = 48;
@@ -48,30 +42,31 @@ byte tcBuyTool(byte choice) {
 	hasAll(Person_Mary_Bolton,
 	       OLF_ALIGNED | OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR |
 	       OLF_ADD_SUCC_STRING, Object_Tool);
-	tools = ObjectListPrivate;
+	LIST *tools = ObjectListPrivate;
 
 	ObjectListSuccString = NULL;
 	ObjectListWidth = 0;
 
+	char exp[TXT_KEY_LENGTH];
 	txtGetFirstLine(BUSINESS_TXT, "THANKS", exp);
 	ExpandObjectList(tools, exp);
 
 	SetBubbleType(THINK_BUBBLE);
 
-	count = GetNrOfNodes(tools) - 1;
+	uint32 count = GetNrOfNodes(tools) - 1;
 
 	choice = MIN((uint32)choice, count);
-
+	uint8 oldChoice = GET_OUT;
 	while (choice != GET_OUT) {
 		SetPictID(MATT_PICTID);
 
 		oldChoice = choice;
 
 		if (ChoiceOk(choice = Bubble(tools, choice, 0L, 0L), GET_OUT, tools)) {
-			node = (NODE *)GetNthNode(tools, (uint32) choice);
-			toolID = OL_NR(node);
-			tool = (Tool) dbGetObject(toolID);
-			price = tcGetToolPrice(tool);
+			NODE *node = (NODE *)GetNthNode(tools, (uint32) choice);
+			uint32 toolID = OL_NR(node);
+			Tool tool = (Tool) dbGetObject(toolID);
+			uint32 price = tcGetToolPrice(tool);
 
 			if (has(Person_Matt_Stuvysunt, toolID))
 				Say(BUSINESS_TXT, 0, mary->PictID, "AUSVERKAUFT");
@@ -91,8 +86,6 @@ byte tcBuyTool(byte choice) {
 }
 
 byte tcDescTool(byte choice) {
-	LIST *tools, *desc;
-	char line[TXT_KEY_LENGTH], exp[TXT_KEY_LENGTH];
 	uint8 oldChoice = GET_OUT;
 	Person mary = (Person) dbGetObject(Person_Mary_Bolton);
 
@@ -102,11 +95,12 @@ byte tcDescTool(byte choice) {
 	hasAll(Person_Mary_Bolton,
 	       OLF_ALIGNED | OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR |
 	       OLF_ADD_SUCC_STRING, Object_Tool);
-	tools = ObjectListPrivate;
+	LIST *tools = ObjectListPrivate;
 
 	ObjectListWidth = 0;
 	ObjectListSuccString = NULL;
 
+	char exp[TXT_KEY_LENGTH];
 	txtGetFirstLine(BUSINESS_TXT, "THANKS", exp);
 	ExpandObjectList(tools, exp);
 
@@ -118,6 +112,8 @@ byte tcDescTool(byte choice) {
 		oldChoice = choice;
 
 		if (ChoiceOk(choice = Bubble(tools, choice, 0L, 0L), GET_OUT, tools)) {
+			LIST *desc;
+			char line[TXT_KEY_LENGTH];
 			dbGetObjectName(OL_NR(GetNthNode(tools, (uint32) choice)), line);
 
 			desc = txtGoKey(TOOLS_TXT, line);
@@ -136,11 +132,7 @@ byte tcDescTool(byte choice) {
 }
 
 byte tcShowTool(byte choice) {
-	LIST *tools;
-	NODE *node;
-	uint32 toolID;
 	uint8 oldChoice = GET_OUT;
-	char exp[TXT_KEY_LENGTH];
 
 	ObjectListSuccString = tcShowPriceOfTool;
 	ObjectListWidth = 48;
@@ -148,11 +140,12 @@ byte tcShowTool(byte choice) {
 	hasAll(Person_Mary_Bolton,
 	       OLF_ALIGNED | OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR |
 	       OLF_ADD_SUCC_STRING, Object_Tool);
-	tools = ObjectListPrivate;
+	LIST *tools = ObjectListPrivate;
 
 	ObjectListSuccString = NULL;
 	ObjectListWidth = 0;
 
+	char exp[TXT_KEY_LENGTH];
 	txtGetFirstLine(BUSINESS_TXT, "THANKS", exp);
 	ExpandObjectList(tools, exp);
 
@@ -164,8 +157,8 @@ byte tcShowTool(byte choice) {
 		oldChoice = choice;
 
 		if (ChoiceOk(choice = Bubble(tools, choice, 0L, 0L), GET_OUT, tools)) {
-			node = (NODE *)GetNthNode(tools, (uint32) choice);
-			toolID = OL_NR(node);
+			NODE *node = (NODE *)GetNthNode(tools, (uint32) choice);
+			uint32 toolID = OL_NR(node);
 
 			Present(toolID, "Tool", InitToolPresent);
 		} else
@@ -178,18 +171,10 @@ byte tcShowTool(byte choice) {
 }
 
 void tcSellTool() {
-	LIST *bubble, *tools;
-	NODE *node;
-	uint32 toolID, price;
-	byte choice = 0;
-	Tool tool;
-	Person mary;
+	Person mary = (Person) dbGetObject(Person_Mary_Bolton);
 
-	mary = (Person) dbGetObject(Person_Mary_Bolton);
-
-	hasAll(Person_Matt_Stuvysunt,
-	       OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Tool);
-	tools = ObjectListPrivate;
+	hasAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Tool);
+	LIST *tools = ObjectListPrivate;
 
 	dbRemObjectNode(tools, Tool_Hand);
 	dbRemObjectNode(tools, Tool_Fusz);
@@ -197,6 +182,7 @@ void tcSellTool() {
 	if (LIST_EMPTY(tools))
 		Say(BUSINESS_TXT, 0, MATT_PICTID, "MATT_HAS_NO_TOOL");
 
+	byte choice = 0;
 	while ((choice != GET_OUT) && (!LIST_EMPTY(tools))) {
 		char exp[TXT_KEY_LENGTH];
 
@@ -206,14 +192,13 @@ void tcSellTool() {
 		SetPictID(MATT_PICTID);
 		if (ChoiceOk(choice = Bubble(tools, 0, NULL, 0L), GET_OUT, tools)) {
 			byte choice2 = 0;
+			NODE *node = (NODE *)GetNthNode(tools, (uint32) choice);
+			uint32 toolID = OL_NR(node);
 
-			node = (NODE *)GetNthNode(tools, (uint32) choice);
-			toolID = OL_NR(node);
+			Tool tool = (Tool) dbGetObject(toolID);
+			uint32 price = tcGetToolTraderOffer(tool);
 
-			tool = (Tool) dbGetObject(toolID);
-			price = tcGetToolTraderOffer(tool);
-
-			bubble = txtGoKeyAndInsert(BUSINESS_TXT, "ANGEBOT_WERKZ", price);
+			LIST *bubble = txtGoKeyAndInsert(BUSINESS_TXT, "ANGEBOT_WERKZ", price);
 
 			SetPictID(mary->PictID);
 			Bubble(bubble, 0, 0L, 0L);
@@ -221,8 +206,7 @@ void tcSellTool() {
 
 			bubble = txtGoKey(BUSINESS_TXT, "VERKAUF");
 
-			if (ChoiceOk
-			        (choice2 = Bubble(bubble, choice2, 0L, 0L), GET_OUT, bubble)) {
+			if (ChoiceOk(choice2 = Bubble(bubble, choice2, 0L, 0L), GET_OUT, bubble)) {
 				if (choice2 == 0) {
 					tcAddPlayerMoney(price);
 					hasSet(Person_Mary_Bolton, toolID);
@@ -236,9 +220,7 @@ void tcSellTool() {
 
 		RemoveList(tools);
 
-		hasAll(Person_Matt_Stuvysunt,
-		       OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
-		       Object_Tool);
+		hasAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Tool);
 		tools = ObjectListPrivate;
 
 		dbRemObjectNode(tools, Tool_Hand);
@@ -249,12 +231,12 @@ void tcSellTool() {
 }
 
 void tcToolsShop(void) {
-	byte choice = 0;
 	static byte choice1 = 0;
 
 	if (!(knows(Person_Matt_Stuvysunt, Person_Mary_Bolton)))
 		knowsSet(Person_Matt_Stuvysunt, Person_Mary_Bolton);
 
+	byte choice = 0;
 	while (choice != 4) {
 		choice = Say(BUSINESS_TXT, choice, MATT_PICTID, "Tools Shop");
 

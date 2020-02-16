@@ -16,7 +16,7 @@ namespace Clue {
 void hscInit(void);
 void hscReset(void);
 void hscDone(void);
-int hscLoad(const char *fileName);
+bool hscLoad(const char *fileName);
 
 void hscMusicPlayer(void);
 
