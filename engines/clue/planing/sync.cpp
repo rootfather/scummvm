@@ -1192,8 +1192,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 					}
 				}
 
-				if ((i < BurglarsNr)
-				        || ((i >= BurglarsNr) && !Planing_Guard[i - BurglarsNr]))
+				if ((i < BurglarsNr) || (!Planing_Guard[i - BurglarsNr]))
 					livAnimate(Planing_Name[i], dir, 0, 0);
 
 				livSetPos(Planing_Name[i], xpos, ypos);
