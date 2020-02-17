@@ -354,8 +354,7 @@ uint32 tcTelefon(void) {
 				} else
 					Say(BUSINESS_TXT, 0, ben->PictID, "NOBODY_AT_HOME");
 			}
-		} else
-			choice = GET_OUT;
+		}
 	} else
 		Say(THECLOU_TXT, 0, MATT_PICTID, "POOR_MATT");
 

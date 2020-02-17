@@ -62,11 +62,7 @@ void tcDisplayOrganisation(void) {
 }
 
 void tcDisplayCommon(void) {
-	LIST *texts;
-	char line[TXT_KEY_LENGTH], name[TXT_KEY_LENGTH];
-	Building building = NULL;
-
-	texts = txtGoKey(BUSINESS_TXT, "PLAN_COMMON_DATA");
+	LIST *texts = txtGoKey(BUSINESS_TXT, "PLAN_COMMON_DATA");
 
 	gfxSetGC(l_gc);
 	gfxShow(ORG_PICT_ID, GFX_ONE_STEP | GFX_NO_REFRESH, 0, -1, -1);
@@ -79,6 +75,8 @@ void tcDisplayCommon(void) {
 
 	gfxSetPens(l_gc, 249, 254, GFX_SAME_PEN);
 
+	char line[TXT_KEY_LENGTH];
+	Building building = NULL;
 	if (Organisation.BuildingID) {
 		building = (Building) dbGetObject(Organisation.BuildingID);
 
@@ -97,6 +95,7 @@ void tcDisplayCommon(void) {
 	gfxSetRect(0, 106);
 	strcpy(line, NODE_NAME(GetNthNode(texts, 0L)));
 
+	char name[TXT_KEY_LENGTH];
 	if (Organisation.CarID) {
 		dbGetObjectName(Organisation.CarID, name);
 		tcCutName(name, (byte) ' ', 12);
@@ -186,19 +185,15 @@ void tcDisplayCommon(void) {
 }
 
 void tcDisplayPerson(uint32 displayMode) {
-	uint32 objNr, i;
-	NODE *node;
-	char line[TXT_KEY_LENGTH];
-	LIST *guys;
-
-	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST,
-	             Object_Person);
-	guys = ObjectListPrivate;
+	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST, Object_Person);
+	LIST *guys = ObjectListPrivate;
 	dbSortObjectList(&guys, dbStdCompareObjects);
 
-	for (node = LIST_HEAD(guys), i = 0; NODE_SUCC(node);
-	        node = NODE_SUCC(node), i++) {
-		objNr = ((struct ObjectNode *) node)->nr;
+	uint32 i;
+	NODE *node;
+	for (node = LIST_HEAD(guys), i = 0; NODE_SUCC(node); node = NODE_SUCC(node), i++) {
+		char line[TXT_KEY_LENGTH];
+		uint32 objNr = ((struct ObjectNode *) node)->nr;
 
 		if (strlen(NODE_NAME(node)) >= 16)
 			tcGetLastName(NODE_NAME(node), line, 15);
@@ -220,27 +215,24 @@ void tcDisplayPerson(uint32 displayMode) {
 }
 
 void tcDisplayAbilities(uint32 personNr, uint32 displayData) {
-	LIST *abilities;
-	NODE *node;
-	uint32 abiNr, ability;
-	unsigned i;
-
 	hasAll(personNr, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME, Object_Ability);
-	abilities = ObjectListPrivate;
 
-	prSetBarPrefs(l_gc, ORG_DISP_GUY_WIDTH - 5, ORG_DISP_LINE + 1, 251,
-	              250, 249);
+	LIST *abilities = ObjectListPrivate;
+
+	prSetBarPrefs(l_gc, ORG_DISP_GUY_WIDTH - 5, ORG_DISP_LINE + 1, 251, 250, 249);
 
 	if (!(LIST_EMPTY(abilities))) {
+		NODE *node;
+		unsigned i;
+
 		for (node = LIST_HEAD(abilities), i = 0; NODE_SUCC(node);
 		        node = NODE_SUCC(node), i++) {
 			char line[TXT_KEY_LENGTH];
 
-			abiNr = ((struct ObjectNode *) GetNthNode(abilities, (uint32) i))->nr;
-			ability = hasGet(personNr, abiNr);
+			uint32 abiNr = ((struct ObjectNode *) GetNthNode(abilities, (uint32) i))->nr;
+			uint32 ability = hasGet(personNr, abiNr);
 
-			sprintf(line, "%s %d%%", NODE_NAME(node),
-			        (uint16)((ability * 100) / 255));
+			sprintf(line, "%s %d%%", NODE_NAME(node), (uint16)((ability * 100) / 255));
 
 			prDrawTextBar(line, ability, 255L,
 			              displayData * ORG_DISP_GUY_WIDTH + 5,

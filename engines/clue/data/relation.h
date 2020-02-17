@@ -77,12 +77,14 @@ RELATION UnSet(KEY, RELATION, KEY);
 PARAMETER GetP(KEY, RELATION, KEY);
 RELATION AskP(KEY, RELATION, KEY, PARAMETER, COMPARSION);
 void AskAll(KEY, RELATION, void (*)(void *));
-void UnSetAll(KEY, void (*)(KEY));
 
 int SaveRelations(const char *, uint32, uint32, uint16 disk_id);
 bool LoadRelations(const char *, uint16 disk_id);
 void RemRelations(uint32, uint32);
 
+#if 0
+void UnSetAll(KEY, void (*)(KEY));
+#endif
 } // End of namespace Clue
 
 #endif

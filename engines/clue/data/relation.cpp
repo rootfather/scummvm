@@ -201,25 +201,6 @@ void AskAll(KEY leftKey, RELATION id, void (*UseKey)(void *)) {
 	}
 }
 
-void UnSetAll(KEY key, void (*UseKey)(KEY)) {
-	for (struct relationDef *rd = relationsDefBase; rd; rd = rd->rd_next) {
-		struct relation **h = &rd->rd_relationsTable;
-
-		for (struct relation *r = rd->rd_relationsTable; r; r = r->r_next) {
-			if (CompareKey(r->r_leftKey, key) || CompareKey(r->r_rightKey, key)) {
-				if (UseKey)
-					UseKey(key);
-
-				*h = r->r_next;
-
-				TCFreeMem(r, sizeof(*r));
-			}
-
-			h = &r->r_next;
-		}
-	}
-}
-
 int SaveRelations(const char *file, uint32 offset, uint32 size, uint16 disk_id) {
 	if (relationsDefBase && DecodeKey) {
 		FILE *fh = dskOpen(file, "wb");
@@ -337,4 +318,25 @@ void RemRelations(uint32 offset, uint32 size) {
 	}
 }
 
+#if 0
+void UnSetAll(KEY key, void (*UseKey)(KEY)) {
+	for (struct relationDef *rd = relationsDefBase; rd; rd = rd->rd_next) {
+		struct relation **h = &rd->rd_relationsTable;
+
+		for (struct relation *r = rd->rd_relationsTable; r; r = r->r_next) {
+			if (CompareKey(r->r_leftKey, key) || CompareKey(r->r_rightKey, key)) {
+				if (UseKey)
+					UseKey(key);
+
+				*h = r->r_next;
+
+				TCFreeMem(r, sizeof(*r));
+			}
+
+			h = &r->r_next;
+		}
+	}
+}
+
+#endif
 } // End of namespace Clue

@@ -52,6 +52,9 @@ void plMessage(const char *msg, byte flags) {
 }
 
 void plDisplayTimer(uint32 time, byte doSpotsImmediatly) {
+	/* 2014-06-28 LucyG : static */
+	static uint32 oldTimer = (uint32) -1;
+
 	if (!time)
 		time = CurrentTimer(plSys) / PLANING_CORRECT_TIME;
 
@@ -82,7 +85,6 @@ void plDisplayTimer(uint32 time, byte doSpotsImmediatly) {
 		gfxPrint(m_gc, info, 2, GFX_PRINT_RIGHT);
 	}
 
-	uint32 oldTimer = (uint32) -1;
 	if (doSpotsImmediatly || (oldTimer != CurrentTimer(plSys))) {
 		oldTimer = CurrentTimer(plSys);
 		lsMoveAllSpots(time);
