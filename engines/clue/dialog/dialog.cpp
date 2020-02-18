@@ -179,7 +179,8 @@ void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode) {
 		choice = Bubble(questions, 0, 0L, 0L);
 		quit = max = GetNrOfNodes(questions) - 1;
 
-		for (uint8 i = 0, stdcount = 0; i < 32; i++) {  /* Std Fragen zählen */
+		uint8 i;
+		for (i = 0, stdcount = 0; i < 32; i++) {  /* Std Fragen zählen */
 			if (p2->TalkBits & (1 << i))
 				stdcount++;
 		}
@@ -198,7 +199,6 @@ void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode) {
 		}
 
 		if (choice >= gencount && choice < quit) {
-			uint8 i;
 			for (i = 0; i < 32; i++) {    /* beim 1. gesetzten Bit anfangen ! */
 				if (1 << i & p2->TalkBits)
 					break;
