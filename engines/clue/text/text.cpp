@@ -212,7 +212,7 @@ char *txtGetKey(uint16 keyNr, const char *key) {
 			key++;
 	}
 
-	while (isspace(*key))
+	while (Common::isSpace(*key))
 		key++;
 
 	if (!*key)

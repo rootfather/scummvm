@@ -17,7 +17,6 @@
 /*
  * verwendete Typen
  */
-#define FORBIDDEN_SYMBOL_ALLOW_ALL
 #include "common/scummsys.h"
 #include "common/util.h"
 #include <string.h>

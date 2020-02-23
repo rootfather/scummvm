@@ -593,7 +593,7 @@ static void parseOptions(int argc, char *argv[]) {
 	setup.Debug         = 1;
 	setup.CDAudio       = false;
 	setup.Scale         = 1;
-
+#if 0
 	for (int i = 1; i < argc; i++) {
 		const char *s = argv[i];
 
@@ -659,6 +659,7 @@ static void parseOptions(int argc, char *argv[]) {
 			}
 		}
 	}
+#endif
 }
 
 /**********************************************************/

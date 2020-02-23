@@ -58,20 +58,19 @@ void ErrorMsg(ErrorE type, ErrorModuleE moduleId, uint32 errorId) {
 
 	switch (type) {
 	case Internal_Error:
-		printf("Internal Error!\n");
+		error("Internal Error!");
 		break;
 
 	case No_Mem:
-		printf("You don't have enough memory!\n");
+		error("You don't have enough memory!");
 		break;
 
 	case Disk_Defect:
-		printf("Can't open file! Please install DER CLOU! again\n");
+		error("Can't open file! Please install DER CLOU! again");
 		break;
 	default:
 		break;
 	}
-	exit(-1);
 }
 
 static void ErrDebugMsg(DebugE type, const char *moduleName, const char *txt) {
@@ -85,11 +84,8 @@ static void ErrDebugMsg(DebugE type, const char *moduleName, const char *txt) {
 		break;
 
 	case ERR_ERROR:
-		error("ERROR: Module %s: %s", moduleName, txt);
-
 		tcDone();
-
-		exit(ERR_EXIT_ERROR);
+		error("ERROR: Module %s: %s", moduleName, txt);
 		break;
 	}
 }
