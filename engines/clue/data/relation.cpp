@@ -203,24 +203,26 @@ void AskAll(KEY leftKey, RELATION id, void (*UseKey)(void *)) {
 
 int SaveRelations(const char *file, uint32 offset, uint32 size, uint16 disk_id) {
 	if (relationsDefBase && DecodeKey) {
-		FILE *fh = dskOpen(file, "wb");
+		Common::Stream *fh = dskOpen(file, 1);
 		if (fh) {
-			fprintf(fh, "%s\r\n", REL_FILE_MARK);
+			dskSetLine(fh, REL_FILE_MARK);
 
 			for (struct relationDef *rd = relationsDefBase; rd; rd = rd->rd_next) {
 				if (rd->rd_id > offset) {
 					if (size && (rd->rd_id > offset + size))
 						continue;
 
-					fprintf(fh, "%s\r\n", REL_TABLE_MARK);
-					fprintf(fh, "%u\r\n", rd->rd_id);
+					dskSetLine(fh, REL_TABLE_MARK);
+					dskSetLine_U32(fh, rd->rd_id);
 
 					for (struct relation *r = rd->rd_relationsTable; r; r = r->r_next) {
 						char left[256];
 						char right[256];
 						strcpy(left, DecodeKey(r->r_leftKey));
 						strcpy(right, DecodeKey(r->r_rightKey));
-						fprintf(fh, "%s\r\n%s\r\n%u\r\n", left, right, r->r_parameter);
+						dskSetLine(fh, left);
+						dskSetLine(fh, right);
+						dskSetLine_U32(fh, r->r_parameter);
 					}
 				}
 			}
@@ -244,16 +246,16 @@ bool LoadRelations(const char *file, uint16 disk_id) {
 	right[0] = '\0';
 
 	if (EncodeKey) {
-		FILE *fh = dskOpen(file, "rb");
+		Common::Stream *fh = dskOpen(file, 0);
 		if (fh) {
 			dskGetLine(buffer, sizeof(buffer), fh);
 
 			if (strcmp(buffer, REL_FILE_MARK) == 0) {
 				dskGetLine(buffer, sizeof(buffer), fh);
 
-				while (!feof(fh) && strcmp(buffer, REL_TABLE_MARK) == 0) {
+				while (!dskEOF(fh) && strcmp(buffer, REL_TABLE_MARK) == 0) {
 					RELATION rd;
-					fscanf(fh, "%u\r\n", &rd);
+					dskGetLine_U32(fh, &rd);
 
 					bool goOn = false;
 					if (FindRelation(rd))
@@ -278,7 +280,7 @@ bool LoadRelations(const char *file, uint16 disk_id) {
 								break;
 
 							PARAMETER parameter;
-							if (fscanf(fh, "%u\r\n", &parameter) != 1)
+							if (!dskGetLine_U32(fh, &parameter))
 								break;
 
 							if (!SetP(EncodeKey(left), rd, EncodeKey(right), parameter)) {

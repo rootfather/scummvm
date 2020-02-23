@@ -114,13 +114,13 @@ namespace Clue {
 #define PLANING_OPEN_ERR_NO_PLAN      2
 
 
-byte plOpen(uint32 objId, byte mode, FILE **fh);
+byte plOpen(uint32 objId, byte mode, Common::Stream **fh);
 void plLoad(uint32 objId);
 void plSave(uint32 objId);
 void plSaveChanged(uint32 objId);
 
-LIST *plLoadTools(FILE *fh);
-void plSaveTools(FILE *fh);
+LIST *plLoadTools(Common::Stream *fh);
+void plSaveTools(Common::Stream *fh);
 
 } // End of namespace Clue
 

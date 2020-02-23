@@ -144,8 +144,9 @@ namespace Clue {
 #define DATA_DIRECTORY      "data"
 #define SOUND_DIRECTORY     "sounds"
 #define SAMPLES_DIRECTORY   "samples"
+#define INTRO_DIRECTORY     "intropix"
 
-#define DATADISK                "datadisk"
+#define DATADISK            "datadisk"
 
 #define BUILD_DATA_NAME     "tcbuild"
 #define MAIN_DATA_NAME      "tcmain"

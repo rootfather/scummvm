@@ -13,6 +13,10 @@
 
 #include "clue/theclou.h"
 
+namespace Common {
+class Stream;
+}
+
 namespace Clue {
 
 #define DSK_PATH_MAX 512
@@ -32,31 +36,40 @@ extern void dskSetRootPath(const char *newRootPath);
 
 void *dskLoad(const char *Pathname);
 bool dskBuildPathName(DiskCheckE check, const char *Directory, const char *Filename, char *Result);
-void dskClose(FILE *fp);
-void dskWrite(FILE *fp, void *src, size_t size);
+void dskClose(Common::Stream *fp);
+void dskWrite(Common::Stream *fp, void *src, uint32 size);
 
-void dskWrite_U8(FILE *fp, uint8 *x);
-void dskWrite_S8(FILE *fp, int8 *x);
-void dskWrite_U16LE(FILE *fp, uint16 *x);
-void dskWrite_S16LE(FILE *fp, int16 *x);
-void dskWrite_U32LE(FILE *fp, uint32 *x);
-void dskWrite_S32LE(FILE *fp, int32 *x);
+void dskWrite_U8(Common::Stream *fp, uint8 *x);
+void dskWrite_S8(Common::Stream *fp, int8 *x);
+void dskWrite_U16LE(Common::Stream *fp, uint16 *x);
+void dskWrite_S16LE(Common::Stream *fp, int16 *x);
+void dskWrite_U32LE(Common::Stream *fp, uint32 *x);
+void dskWrite_S32LE(Common::Stream *fp, int32 *x);
 
-void dskRead(FILE *fp, void *dest, size_t size);
+void dskRead(Common::Stream *fp, void *dest, uint32 size);
 
-void dskRead_U8(FILE *fp, uint8 *x);
-void dskRead_S8(FILE *fp, int8 *x);
-void dskRead_U16LE(FILE *fp, uint16 *x);
-void dskRead_S16LE(FILE *fp, int16 *x);
-void dskRead_U32LE(FILE *fp, uint32 *x);
-void dskRead_S32LE(FILE *fp, int32 *x);
+void dskRead_U8(Common::Stream *fp, uint8 *x);
+void dskRead_S8(Common::Stream *fp, int8 *x);
+void dskRead_U16LE(Common::Stream *fp, uint16 *x);
+void dskRead_S16LE(Common::Stream *fp, int16 *x);
+void dskRead_U32LE(Common::Stream *fp, uint32 *x);
+void dskRead_S32LE(Common::Stream *fp, int32 *x);
 
 
 size_t dskFileLength(const char *Pathname);
 
-FILE *dskOpen(const char *Pathname, const char *Mode);
+Common::Stream *dskOpen(const char *Pathname, int RW);
 
-extern bool dskGetLine(char *s, int size, FILE *fp);
+extern bool dskGetLine(char *s, int size, Common::Stream *fp);
+extern void dskSetLine(Common::Stream *fp, const char *s);
+extern bool dskGetLine_U16(Common::Stream *fp, uint16 *x);
+extern bool dskGetLine_U32(Common::Stream *fp, uint32 *x);
+extern void dskSetLine_U16(Common::Stream *fp, uint16 x);
+extern void dskSetLine_U32(Common::Stream *fp, uint32 x);
+
+bool dskEOF(Common::Stream *fp);
+int32 dskTell(Common::Stream *fp);
+void dskPeek(Common::Stream *fp);
 
 } // End of namespace Clue
 

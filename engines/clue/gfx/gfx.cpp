@@ -1307,17 +1307,17 @@ void ShowIntro(void) {
 		if (setup.CDAudio)
 			CDROM_StopAudioTrack();
 
-		if (!dskBuildPathName(DISK_CHECK_FILE, "intropix", names[anims], pathName))
+		if (!dskBuildPathName(DISK_CHECK_FILE, INTRO_DIRECTORY, names[anims], pathName))
 			continue;
 
-		FILE *fp = dskOpen(pathName, "rb");
-		if (fp) {
+		Common::Stream *fp = dskOpen(pathName, 0);
+		if (!fp) {
 			XMSOffset = 0;
 
-			char head[4];
-			fread(&head[0], 1, 4, fp);
+			uint32 head;
+			dskRead_U32LE(fp, &head);
 			size_t size;
-			fread(&size, 1, 4, fp);
+			dskRead_U32LE(fp, &size);
 			size_t rsize = Amg2Pc(size);
 
 			dskRead(fp, XMSHandle, rsize);

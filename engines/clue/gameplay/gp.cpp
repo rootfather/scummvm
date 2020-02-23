@@ -31,7 +31,7 @@ void InitSceneInfo(void);
 void FreeSceneInfo(void);
 
 void PrepareStory(const char *filename);
-void LoadSceneforStory(struct NewScene *dest, FILE *file);
+void LoadSceneforStory(struct NewScene *dest, Common::Stream *file);
 
 void InitConditions(struct Scene *scene, struct NewScene *ns);
 void FreeConditions(struct Scene *scene);
@@ -365,7 +365,7 @@ void PrepareStory(const char *filename) {
 	dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, filename, pathname);
 
 	/* StoryHeader laden ! */
-	FILE *file = dskOpen(pathname, "rb");
+	Common::Stream *file = dskOpen(pathname, 0);
 
 	struct StoryHeader SH;
 	dskRead(file, SH.StoryName, sizeof(SH.StoryName));
@@ -493,7 +493,7 @@ void FreeConditions(struct Scene *scene) {
 	}
 }
 
-void LoadSceneforStory(struct NewScene *dest, FILE *file) {
+void LoadSceneforStory(struct NewScene *dest, Common::Stream *file) {
 	dskRead_U32LE(file, &dest->EventNr);
 
 	dskRead(file, dest->SceneName, sizeof(dest->SceneName));

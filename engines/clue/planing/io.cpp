@@ -30,27 +30,25 @@ struct IOData {
 };
 
 
-static const char *Planing_Open[3] = { "rb", "wb", "rb" };
+static int Planing_Open[3] = { 0, 1, 0 };
 
 
 /* Loading & saving functions */
-void plSaveTools(FILE *fh) {
+void plSaveTools(Common::Stream *fh) {
 	if (fh) {
 		hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Tool);
 
-		fprintf(fh, PLANING_PLAN_TOOL_BEGIN_ID);
-		fprintf(fh, "\r\n");
+		dskSetLine(fh, PLANING_PLAN_TOOL_BEGIN_ID);
 
 		for (struct ObjectNode *n = (struct ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n);
 		        n = (struct ObjectNode *) NODE_SUCC(n))
-			fprintf(fh, "%u\r\n", OL_NR(n));
+			dskSetLine_U32(fh, OL_NR(n));
 
-		fprintf(fh, PLANING_PLAN_TOOL_END_ID);
-		fprintf(fh, "\r\n");
+		dskSetLine(fh, PLANING_PLAN_TOOL_END_ID);
 	}
 }
 
-LIST *plLoadTools(FILE *fh) {
+LIST *plLoadTools(Common::Stream *fh) {
 	LIST *l = txtGoKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_1");
 	byte foundAll = 1, canGet = 2, toolsNr = 0;
 
@@ -101,7 +99,7 @@ LIST *plLoadTools(FILE *fh) {
 	return l;
 }
 
-byte plOpen(uint32 objId, byte mode, FILE **fh) {
+byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 	if (GamePlayMode & GP_GUARD_DESIGN) {
 		if (grdInit(fh, Planing_Open[mode], objId, lsGetActivAreaID()))
 			return PLANING_OPEN_OK;
@@ -117,10 +115,12 @@ byte plOpen(uint32 objId, byte mode, FILE **fh) {
 		char pllPath[DSK_PATH_MAX];
 		dskBuildPathName(DISK_CHECK_FILE, DATADISK, name2, pllPath);
 
-		FILE *pllFh = dskOpen(pllPath, "rb");
+		Common::Stream *pllFh = dskOpen(pllPath, 0);
 		if (pllFh) {
 			uint32 pllData = 0;
-			fscanf(pllFh, "%u", &pllData);
+			// TODO: Make sure this still works
+			//fscanf(pllFh, "%u", &pllData);
+			dskGetLine_U32(pllFh, &pllData);
 			dskClose(pllFh);
 
 			if ((mode == PLANING_OPEN_WRITE_PLAN) || pllData) {
@@ -180,8 +180,10 @@ byte plOpen(uint32 objId, byte mode, FILE **fh) {
 					if (mode == PLANING_OPEN_WRITE_PLAN) {
 						pllData |= 1L << i;
 
-						if ((pllFh = dskOpen(pllPath, "wb"))) {
-							fprintf(pllFh, "%u", pllData);
+						if ((pllFh = dskOpen(pllPath, 1))) {
+							// TODO: Make sure this still works
+							//dskPrintf(pllFh, "%u", pllData);
+							dskSetLine_U32(pllFh, pllData);
 							dskClose(pllFh);
 						}
 					}
@@ -207,7 +209,7 @@ byte plOpen(uint32 objId, byte mode, FILE **fh) {
 }
 
 void plSave(uint32 objId) {
-	FILE *fh = NULL;
+	Common::Stream *fh = NULL;
 
 	if (plOpen(objId, PLANING_OPEN_WRITE_PLAN, &fh) == PLANING_OPEN_OK) {
 		if (GamePlayMode & GP_GUARD_DESIGN) {
@@ -245,7 +247,7 @@ void plSaveChanged(uint32 objId) {
 }
 
 void plLoad(uint32 objId) {
-	FILE *fh = NULL;
+	Common::Stream *fh = NULL;
 	byte ret;
 
 	if (objId == Building_Starford_Kaserne)

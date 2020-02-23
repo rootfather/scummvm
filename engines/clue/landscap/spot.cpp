@@ -310,33 +310,32 @@ void lsLoadSpotBitMap(MemRastPort *rp) {
 void lsLoadSpots(uint32 bldId, char *uch_FileName) {
 	char filename[DSK_PATH_MAX];
 	dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, uch_FileName, filename);
-	FILE *file = dskOpen(filename, "r");
+	Common::Stream *file = dskOpen(filename, 0);
 
-	char buffer[TXT_KEY_LENGTH];
-	fgets(buffer, TXT_KEY_LENGTH - 1, file);
-	uint16 SpotCount = (uint16) atol(buffer);
+	uint16 SpotCount;
+	dskGetLine_U16(file, &SpotCount);
 
 	for (uint16 i = 0; i < SpotCount; i++) {
-		fgets(buffer, TXT_KEY_LENGTH - 1, file);
-		uint16 Size = (uint16) atol(buffer);
+		uint16 Size;
+		dskGetLine_U16(file, &Size);
 
-		fgets(buffer, TXT_KEY_LENGTH - 1, file);
-		uint16 Speed = (uint16) atol(buffer);
+		uint16 Speed;
+		dskGetLine_U16(file, &Speed);
 
-		fgets(buffer, TXT_KEY_LENGTH - 1, file);
-		uint32 CtrlObjId = atol(buffer);
+		uint32 CtrlObjId;
+		dskGetLine_U32(file, &CtrlObjId);
 
-		fgets(buffer, TXT_KEY_LENGTH - 1, file);
-		uint16 Count = (uint16) atol(buffer);
+		uint16 Count;
+		dskGetLine_U16(file, &Count);
 
 		struct Spot *spot = lsAddSpot(Size, Speed, CtrlObjId);
 
 		for (uint16 j = 0; j < Count; j++) {
-			fgets(buffer, TXT_KEY_LENGTH - 1, file);
-			uint16 XPos = (uint16) atol(buffer);
+			uint16 XPos;
+			dskGetLine_U16(file, &XPos);
 
-			fgets(buffer, TXT_KEY_LENGTH - 1, file);
-			uint16 YPos = (uint16) atol(buffer);
+			uint16 YPos;
+			dskGetLine_U16(file, &YPos);
 
 			lsAddSpotPosition(spot, XPos, YPos);
 		}

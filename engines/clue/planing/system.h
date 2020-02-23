@@ -52,8 +52,8 @@ struct System *InitSystem(void);    /* Initialize system for use */
 void CloseSystem(struct System *sys);   /* Close all system immedietly */
 void SetActivHandler(struct System *sys, uint32 id);
 
-void SaveSystem(FILE *fh, struct System *sys);
-LIST *LoadSystem(FILE *fh, struct System *sys);
+void SaveSystem(Common::Stream *fh, struct System *sys);
+LIST *LoadSystem(Common::Stream *fh, struct System *sys);
 
 
 /* System Handler Flags */
@@ -83,8 +83,8 @@ struct Handler *FindHandler(struct System *sys, uint32 id);
 
 bool IsHandlerCleared(struct System *sys);
 
-void SaveHandler(FILE *fh, struct System *sys, uint32 id);
-bool LoadHandler(FILE *fh, struct System *sys, uint32 id);
+void SaveHandler(Common::Stream *fh, struct System *sys, uint32 id);
+bool LoadHandler(Common::Stream *fh, struct System *sys, uint32 id);
 
 /* here we are at the real part - the actions */
 #define ACTION_GO                1

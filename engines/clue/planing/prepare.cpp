@@ -265,11 +265,11 @@ void plPrepareSys(uint32 currPer, uint32 objId, byte sysMode) {
 
 	if ((sysMode & PLANING_GUARDS_LOAD) && (PersonsNr > BurglarsNr)
 	        && !(GamePlayMode & GP_LEVEL_DESIGN)) {
-		FILE *fh = NULL;
+		Common::Stream *fh = NULL;
 
 		startsWithAll(objId, OLF_NORMAL, Object_LSArea);
 
-		if (grdInit(&fh, "r", Planing_BldId, OL_NR(GetNthNode(ObjectList, 0))))
+		if (grdInit(&fh, 0, Planing_BldId, OL_NR(GetNthNode(ObjectList, 0))))
 			grdDo(fh, plSys, PersonsList, BurglarsNr, PersonsNr,
 			      GUARDS_DO_LOAD);
 

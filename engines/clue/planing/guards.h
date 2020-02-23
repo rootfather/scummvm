@@ -107,7 +107,7 @@ struct System;
 struct _GC;
 
 /* main method */
-void grdDo(FILE *fh, struct System *sys, LIST *PersonsList, uint32 BurglarsNr,
+void grdDo(Common::Stream *fh, struct System *sys, LIST *PersonsList, uint32 BurglarsNr,
            uint32 PersonsNr, byte grdAction);
 
 /* support */
@@ -115,8 +115,8 @@ bool grdAddToList(uint32 bldId, LIST *l);
 bool grdDraw(struct _GC *gc, uint32 bldId, uint32 areaId);
 
 /* con- & destructor */
-bool grdInit(FILE **fh, const char *mode, uint32 bldId, uint32 areaId);
-void grdDone(FILE *fh);
+bool grdInit(Common::Stream **fh, int RW, uint32 bldId, uint32 areaId);
+void grdDone(Common::Stream *fh);
 
 } // End of namespace Clue
 

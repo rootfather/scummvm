@@ -257,13 +257,13 @@ static uint32 dbGetMemSize(uint32 type) {
 }
 
 static void
-dbRWStdObject(void *obj, int RW, uint32 type, uint32 size, uint32 localSize, FILE *fp) {
-	void (*U8_RW)(FILE * fp, uint8 * x);
-	void (*S8_RW)(FILE * fp, int8 * x);
-	void (*U16LE_RW)(FILE * fp, uint16 * x);
-	void (*S16LE_RW)(FILE * fp, int16 * x);
-	void (*U32LE_RW)(FILE * fp, uint32 * x);
-	void (*S32LE_RW)(FILE * fp, int32 * x);
+dbRWStdObject(void *obj, int RW, uint32 type, uint32 size, uint32 localSize, Common::Stream *fp) {
+	void (*U8_RW)(Common::Stream * fp, uint8 * x);
+	void (*S8_RW)(Common::Stream * fp, int8 * x);
+	void (*U16LE_RW)(Common::Stream * fp, uint16 * x);
+	void (*S16LE_RW)(Common::Stream * fp, int16 * x);
+	void (*U32LE_RW)(Common::Stream * fp, uint32 * x);
+	void (*S32LE_RW)(Common::Stream * fp, int32 * x);
 
 	if (RW == 0) {
 		U8_RW = dskRead_U8;
@@ -696,13 +696,13 @@ dbRWStdObject(void *obj, int RW, uint32 type, uint32 size, uint32 localSize, FIL
 }
 
 static void
-dbRWProfiObject(void *obj, int RW, uint32 type, uint32 size, uint32 localSize, FILE *fp) {
-	void (*U8_RW)(FILE * fp, uint8 * x);
-	void (*S8_RW)(FILE * fp, int8 * x);
-	void (*U16LE_RW)(FILE * fp, uint16 * x);
-	void (*S16LE_RW)(FILE * fp, int16 * x);
-	void (*U32LE_RW)(FILE * fp, uint32 * x);
-	void (*S32LE_RW)(FILE * fp, int32 * x);
+dbRWProfiObject(void *obj, int RW, uint32 type, uint32 size, uint32 localSize, Common::Stream *fp) {
+	void (*U8_RW)(Common::Stream * fp, uint8 * x);
+	void (*S8_RW)(Common::Stream * fp, int8 * x);
+	void (*U16LE_RW)(Common::Stream * fp, uint16 * x);
+	void (*S16LE_RW)(Common::Stream * fp, int16 * x);
+	void (*U32LE_RW)(Common::Stream * fp, uint32 * x);
+	void (*S32LE_RW)(Common::Stream * fp, int32 * x);
 
 	if (RW == 0) {
 		U8_RW = dskRead_U8;
@@ -1134,11 +1134,11 @@ dbRWProfiObject(void *obj, int RW, uint32 type, uint32 size, uint32 localSize, F
 }
 
 static void
-dbRWObject(void *obj, int RW, uint32 type, uint32 size, uint32 localSize, FILE *fp) {
+dbRWObject(void *obj, int RW, uint32 type, uint32 size, uint32 localSize, Common::Stream *fp) {
 	int32 start;
 
 
-	start = ftell(fp);
+	start = dskTell(fp);
 
 	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		dbRWProfiObject(obj, RW, type, size, localSize, fp);
@@ -1146,20 +1146,20 @@ dbRWObject(void *obj, int RW, uint32 type, uint32 size, uint32 localSize, FILE *
 		dbRWStdObject(obj, RW, type, size, localSize, fp);
 	}
 
-	if ((uint32)(ftell(fp) - start) != size) {
+	if ((uint32)(dskTell(fp) - start) != size) {
 		ErrorMsg(Disk_Defect, ERROR_MODULE_DATABASE, 1);
 	}
 }
 
 
 uint8 dbLoadAllObjects(const char *fileName, uint16 diskId) {
-	FILE *fh;
+	Common::Stream *fh;
 
-	if ((fh = dskOpen(fileName, "rb"))) {
+	if ((fh = dskOpen(fileName, 0))) {
 		uint32 realNr = 1;
 		struct dbObjectHeader objHd;
 
-		while (!feof(fh)) {
+		while (!dskEOF(fh)) {
 			int ch;
 
 			objHd.nr = 0;
@@ -1205,8 +1205,7 @@ uint8 dbLoadAllObjects(const char *fileName, uint16 diskId) {
 				dbRWObject(obj, 0, objHd.type, objHd.size, localSize, fh);
 			}
 
-			if ((ch = fgetc(fh)) != EOF)
-				ungetc(ch, fh);
+			dskPeek(fh);
 		}
 
 		dskClose(fh);
@@ -1217,12 +1216,12 @@ uint8 dbLoadAllObjects(const char *fileName, uint16 diskId) {
 }
 
 uint8 dbSaveAllObjects(const char *fileName, uint32 offset, uint32 size, uint16 diskId) {
-	FILE *fh;
+	Common::Stream *fh;
 	struct dbObject *obj;
 	uint32 realNr = 1;
 	uint32 dbSize = dbGetObjectCountOfDB(offset, size);
 
-	if ((fh = dskOpen(fileName, "wb"))) {
+	if ((fh = dskOpen(fileName, 1))) {
 		while (realNr <= dbSize) {
 			if ((obj = dbFindRealObject(realNr++, offset, size))) {
 				struct dbObjectHeader objHd;

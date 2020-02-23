@@ -93,17 +93,19 @@ void SetActivHandler(struct System *sys, uint32 id) {
 		sys->ActivHandler = NULL;
 }
 
-void SaveSystem(FILE *fh, struct System *sys) {
+void SaveSystem(Common::Stream *fh, struct System *sys) {
 	if (fh) {
-		fprintf(fh, FILE_SYSTEM_ID "\r\n");
+		dskSetLine(fh, FILE_SYSTEM_ID);
 
 		for (struct Handler *h = (struct Handler *) LIST_HEAD(sys->Handlers); NODE_SUCC(h);
-		        h = (struct Handler *) NODE_SUCC(h))
-			fprintf(fh, FILE_HANDLER_ID "\r\n%u\r\n", h->Id);
+		        h = (struct Handler *) NODE_SUCC(h)) {
+			dskSetLine(fh, FILE_HANDLER_ID);
+			dskSetLine_U32(fh, h->Id);
+		}
 	}
 }
 
-LIST *LoadSystem(FILE *fh, struct System *sys) {
+LIST *LoadSystem(Common::Stream *fh, struct System *sys) {
 	LIST *l = txtGoKey(PLAN_TXT, "SYSTEM_GUYS_MISSING_1");
 	bool foundAll = true;
 	uint8 knowsSomebody = 1, handlerNr = 0;
@@ -116,7 +118,7 @@ LIST *LoadSystem(FILE *fh, struct System *sys) {
 			        && strcmp(buffer, FILE_HANDLER_ID) == 0) {
 				uint32 id;
 
-				if (fscanf(fh, "%u\r\n", &id) == 1
+				if (dskGetLine_U32(fh, &id)
 				        && !dbIsObject(id, Object_Police)) {
 					handlerNr++;
 
@@ -228,32 +230,32 @@ bool IsHandlerCleared(struct System *sys) {
 	return false;
 }
 
-void SaveHandler(FILE *fh, struct System *sys, uint32 id) {
+void SaveHandler(Common::Stream *fh, struct System *sys, uint32 id) {
 	struct Handler *h;
 
 	if (fh && sys && (h = FindHandler(sys, id))) {
-		fprintf(fh, FILE_ACTION_LIST_ID "\r\n%u\r\n", id);
+		dskSetLine(fh, FILE_ACTION_LIST_ID);
+		dskSetLine_U32(fh, id);
 
 		for (struct Action *a = (struct Action *) LIST_HEAD(h->Actions); NODE_SUCC(a);
 		        a = (struct Action *) NODE_SUCC(a)) {
-			fprintf(fh, FILE_ACTION_ID "\r\n%hu\r\n%hu\r\n",
-			        a->Type, a->TimeNeeded);
+			dskSetLine(fh, FILE_ACTION_ID);
+			dskSetLine_U16(fh, a->Type);
+			dskSetLine_U16(fh, a->TimeNeeded);
 
 			switch (a->Type) {
 			case ACTION_GO:
-				fprintf(fh, "%hu\r\n",
+				dskSetLine_U16(fh,
 				        ActionData(a, struct ActionGo *)->Direction);
 				break;
 
 			case ACTION_USE:
 			case ACTION_TAKE:
 			case ACTION_DROP:
-				fprintf(fh, "%u\r\n%u\r\n",
-				        ActionData(a, struct ActionUse *)->ToolId, ActionData(a,
-				                struct
-				                ActionUse
-				                *)->
-				        ItemId);
+				dskSetLine_U16(fh,
+				        ActionData(a, struct ActionUse *)->ToolId);
+				dskSetLine_U16(fh,
+				        ActionData(a, struct ActionUse *)->ItemId);
 				break;
 
 			case ACTION_OPEN:
@@ -261,7 +263,7 @@ void SaveHandler(FILE *fh, struct System *sys, uint32 id) {
 			case ACTION_CONTROL:
 			case ACTION_SIGNAL:
 			case ACTION_WAIT_SIGNAL:
-				fprintf(fh, "%u\r\n",
+				dskSetLine_U16(fh,
 				        ActionData(a, struct ActionOpen *)->ItemId);
 				break;
 			}
@@ -269,24 +271,24 @@ void SaveHandler(FILE *fh, struct System *sys, uint32 id) {
 	}
 }
 
-bool LoadHandler(FILE *fh, struct System *sys, uint32 id) {
+bool LoadHandler(Common::Stream *fh, struct System *sys, uint32 id) {
 	if (fh && sys && (FindHandler(sys, id))) {
-		rewind(fh);
+		//rewind(fh);
 
 		char buffer[64];
 		while (dskGetLine(buffer, sizeof(buffer), fh)) {
 			if (strcmp(buffer, FILE_ACTION_LIST_ID) == 0) {
 				uint32 rid;
 
-				if (fscanf(fh, "%u\r\n", &rid) == 1 && id == rid) {
+				if (dskGetLine_U32(fh, &rid) && id == rid) {
 					SetActivHandler(sys, id);
 
 					while (dskGetLine(buffer, sizeof(buffer), fh)
 					        && (strcmp(buffer, FILE_ACTION_ID) == 0)) {
 						uint16 type;
 						uint16 time;
-						fscanf(fh, "%hu\r\n", &type);
-						fscanf(fh, "%hu\r\n", &time);
+						dskGetLine_U16(fh, &type);
+						dskGetLine_U16(fh, &time);
 
 						if (type) {
 							struct Action *a = InitAction(sys, type, 0L, 0L, time);
@@ -295,17 +297,17 @@ bool LoadHandler(FILE *fh, struct System *sys, uint32 id) {
 
 							switch (type) {
 							case ACTION_GO:
-								fscanf(fh, "%hu\r\n", &value16);
+								dskGetLine_U16(fh, &value16);
 								ActionData(a, struct ActionGo *)->Direction = value16;
 								break;
 
 							case ACTION_USE:
 							case ACTION_TAKE:
 							case ACTION_DROP:
-								fscanf(fh, "%u\r\n", &value32);
+								dskGetLine_U32(fh, &value32);
 								ActionData(a, struct ActionUse *)->ToolId = value32;
 
-								fscanf(fh, "%u\r\n", &value32);
+								dskGetLine_U32(fh, &value32);
 								ActionData(a, struct ActionUse *)->ItemId = value32;
 								break;
 
@@ -314,7 +316,7 @@ bool LoadHandler(FILE *fh, struct System *sys, uint32 id) {
 							case ACTION_CONTROL:
 							case ACTION_WAIT_SIGNAL:
 							case ACTION_SIGNAL:
-								fscanf(fh, "%u\r\n", &value32);
+								dskGetLine_U32(fh, &value32);
 								ActionData(a, struct ActionOpen *)->ItemId = value32;
 								break;
 							}

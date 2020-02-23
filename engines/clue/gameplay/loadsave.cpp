@@ -227,13 +227,13 @@ void tcRefreshAfterLoad(bool loaded) {
 
 bool tcSaveChangesInScenes(const char *fileName) {
 	bool back = false;
-	FILE *file = dskOpen(fileName, "wb");
+	Common::Stream *file = dskOpen(fileName, 1);
 	if (file) {
-		fprintf(file, "%u\r\n", film->EnabledChoices);
+		dskSetLine_U32(file, film->EnabledChoices);
 
 		for (uint32 i = 0; i < film->AmountOfScenes; i++) {
-			fprintf(file, "%u\r\n", film->gameplay[i].EventNr);
-			fprintf(file, "%hu\r\n", film->gameplay[i].Geschehen);
+			dskSetLine_U32(file, film->gameplay[i].EventNr);
+			dskSetLine_U16(file, film->gameplay[i].Geschehen);
 		}
 
 		dskClose(file);
@@ -245,17 +245,17 @@ bool tcSaveChangesInScenes(const char *fileName) {
 
 bool tcLoadChangesInScenes(const char *fileName) {
 	bool back = true;
-	FILE *file = dskOpen(fileName, "rb");
+	Common::Stream *file = dskOpen(fileName, 0);
 	if (file) {
 		uint32 choice;
-		fscanf(file, "%u\r\n", &choice);
+		dskGetLine_U32(file, &choice);
 		SetEnabledChoices(choice);
 
 		for (uint32 i = 0; i < film->AmountOfScenes; i++) {
 			uint32 eventNr;
 			uint16 count;
-			fscanf(file, "%u\r\n", &eventNr);
-			fscanf(file, "%hu\r\n", &count);
+			dskGetLine_U32(file, &eventNr);
+			dskGetLine_U16(file, &count);
 
 			struct Scene *sc = GetScene(eventNr);
 			if (sc)

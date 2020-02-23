@@ -22,7 +22,7 @@
 
 namespace Clue {
 
-void grdDo(FILE *fh, struct System *sys, LIST *PersonsList, uint32 BurglarsNr,
+void grdDo(Common::Stream *fh, struct System *sys, LIST *PersonsList, uint32 BurglarsNr,
            uint32 PersonsNr, byte grdAction) {
 	for (uint32 i = BurglarsNr; i < PersonsNr; i++) {
 		switch (grdAction) {
@@ -37,7 +37,7 @@ void grdDo(FILE *fh, struct System *sys, LIST *PersonsList, uint32 BurglarsNr,
 	}
 }
 
-bool grdInit(FILE **fh, const char *mode, uint32 bldId, uint32 areaId) {
+bool grdInit(Common::Stream **fh, int RW, uint32 bldId, uint32 areaId) {
 	char fileName[DSK_PATH_MAX];
 	dbGetObjectName(areaId, fileName);
 	fileName[strlen(fileName) - 1] = '\0';
@@ -46,13 +46,13 @@ bool grdInit(FILE **fh, const char *mode, uint32 bldId, uint32 areaId) {
 
 	dskBuildPathName(DISK_CHECK_FILE, GUARD_DIRECTORY, bldName, fileName);
 
-	if ((*fh = dskOpen(fileName, mode)))
+	if ((*fh = dskOpen(fileName, RW)))
 		return true;
 
 	return false;
 }
 
-void grdDone(FILE *fh) {
+void grdDone(Common::Stream *fh) {
 	dskClose(fh);
 }
 
@@ -74,8 +74,8 @@ bool grdDraw(GC *gc, uint32 bldId, uint32 areaId) {
 	bool ret = false;
 	LIST *GuardsList = CreateList();
 	if (grdAddToList(bldId, GuardsList)) {
-		FILE *fh;
-		if (grdInit(&fh, "r", bldId, areaId)) {
+		Common::Stream *fh;
+		if (grdInit(&fh, 0, bldId, areaId)) {
 			uint16 xpos = 0, ypos = 0;
 
 			uint32 GuardsNr = GetNrOfNodes(GuardsList);

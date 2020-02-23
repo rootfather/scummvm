@@ -9,7 +9,7 @@
 #include "clue/base/base.h"
 #include "clue/clue.h"
 
-#include "common/file.h"
+#include "common/stream.h"
 #include "audio/mixer.h"
 #include "audio/audiostream.h"
 #include "audio/decoders/raw.h"
@@ -63,18 +63,13 @@ void sndPrepareFX(const char *name) {
 	sndDoneFX();
 
 	if (FXBase.us_AudioOk) {
-		/*
+		// TODO: Use proper Dsk functions
 		char fileName[DSK_PATH_MAX];
 
 		dskBuildPathName(DISK_CHECK_FILE, SAMPLES_DIRECTORY, name, fileName);
-		LoadVOC(fileName);
-		*/
-		Common::File *file = new Common::File();
-		Common::String fileName = SAMPLES_DIRECTORY;
-		fileName += DIR_SEP;
-		fileName += name;
-		file->open(fileName);
-		sfxFile = Audio::makeVOCStream(file, Audio::FLAG_UNSIGNED, DisposeAfterUse::YES);
+		Common::Stream *file = dskOpen(fileName, 0);
+		Common::SeekableReadStream *stream = dynamic_cast<Common::SeekableReadStream *>(file);
+		sfxFile = Audio::makeVOCStream(stream, Audio::FLAG_UNSIGNED, DisposeAfterUse::YES);
 	}
 }
 

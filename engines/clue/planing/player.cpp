@@ -1596,7 +1596,7 @@ static void plPlayerAction(void) {
 }
 
 int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32)) {
-	FILE *fh = NULL;
+	Common::Stream *fh = NULL;
 	LIST *menu = txtGoKey(PLAN_TXT, "PLAYER_MENU");
 	byte activ = 0;
 	uint32 timeLeft = 0, bitset, choice1, choice2;

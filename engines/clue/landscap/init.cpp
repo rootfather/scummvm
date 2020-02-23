@@ -244,7 +244,7 @@ static void lsInitFloorSquares(void) {
 		char fileName[TXT_KEY_LENGTH];
 		dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, areaName, fileName);
 
-		FILE *fh = dskOpen(fileName, "rb");
+		Common::Stream *fh = dskOpen(fileName, 0);
 		if (fh) {
 			for (uint32 j = 0; j < count; j++)
 				dskRead(fh, &ls->p_AllFloors[i][j].uch_FloorType, sizeof(uint8));

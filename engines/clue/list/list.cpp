@@ -215,14 +215,14 @@ void ReplaceNode(LIST *list, const char *name, NODE *newNode) {
 uint32 ReadList(LIST *list, size_t size, char *fileName) {
 
 	uint32 i = 0;
-	FILE *fh = dskOpen(fileName, "rb");
+	Common::Stream *fh = dskOpen(fileName, 0);
 	if (fh) {
 		char buffer[256];
 		while (dskGetLine(buffer, sizeof(buffer), fh)) {
 			if (buffer[0] != ';') { /* skip comments */
 				if (!CreateNode(list, size, buffer)) {
 					RemoveNode(list, NULL);
-					fclose(fh);
+					dskClose(fh);
 					return 0;
 				}
 
@@ -230,18 +230,18 @@ uint32 ReadList(LIST *list, size_t size, char *fileName) {
 			}
 		}
 
-		fclose(fh);
+		dskClose(fh);
 	}
 	return i;
 }
 
 void WriteList(LIST *list, char *fileName) {
-	FILE *fh = dskOpen(fileName, "wb");
+	Common::Stream *fh = dskOpen(fileName, 1);
 	if (fh) {
 		for (NODE *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node))
-			fprintf(fh, "%s\r\n", NODE_NAME(node));
+			dskSetLine(fh, NODE_NAME(node));
 
-		fclose(fh);
+		dskClose(fh);
 	}
 }
 
