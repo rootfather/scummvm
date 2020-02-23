@@ -88,8 +88,8 @@ extern LIST *objHash[OBJ_HASH_SIZE];
 
 
 /* public prototypes - OBJECTS */
-uint8 dbLoadAllObjects(const char *fileName, uint16 diskId);
-uint8 dbSaveAllObjects(const char *fileName, uint32 offset, uint32 size, uint16 diskId);
+bool dbLoadAllObjects(const char *fileName, uint16 diskId);
+bool dbSaveAllObjects(const char *fileName, uint32 offset, uint32 size, uint16 diskId);
 void dbDeleteAllObjects(uint32 offset, uint32 size);
 
 uint32 dbGetObjectCountOfDB(uint32 offset, uint32 size);

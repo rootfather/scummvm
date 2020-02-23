@@ -49,7 +49,8 @@ ClueEngine::~ClueEngine() {
 
 Common::Error ClueEngine::run() {
 	// Game entry point
-	clue_main(ConfMan.get("path").c_str()); quitGame();
+	clue_main(ConfMan.get("path").c_str());
+	quitGame();
 
 	/*
 	// Run a dummy loop
