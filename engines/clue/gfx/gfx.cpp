@@ -1311,7 +1311,7 @@ void ShowIntro(void) {
 			continue;
 
 		Common::Stream *fp = dskOpen(pathName, 0);
-		if (!fp) {
+		if (fp) {
 			XMSOffset = 0;
 
 			uint32 head;
