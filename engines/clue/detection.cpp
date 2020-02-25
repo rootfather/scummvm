@@ -160,20 +160,20 @@ public:
 		_directoryGlobs = directoryGlobs;
 	}
 
-	virtual const char *getEngineId() const {
+	const char *getEngineId() const override {
 		return "clue";
 	}
 
-	virtual const char *getName() const {
+	const char *getName() const override {
 		return "Clue";
 	}
 
-	virtual const char *getOriginalCopyright() const {
+	const char *getOriginalCopyright() const override {
 		return "The Clue! (C) 1994 neo Software Produktions GmbH";
 	}
 
-	virtual bool hasFeature(MetaEngineFeature f) const;
-	virtual bool createInstance(OSystem *syst, Engine **engine, const ADGameDescription *desc) const;
+	bool hasFeature(MetaEngineFeature f) const override;
+	bool createInstance(OSystem *syst, Engine **engine, const ADGameDescription *desc) const override;
 };
 
 bool ClueMetaEngine::hasFeature(MetaEngineFeature f) const {
