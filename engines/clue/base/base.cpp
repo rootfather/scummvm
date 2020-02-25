@@ -19,6 +19,7 @@
  ****************************************************************************/
 
 #include "clue/base/base.h"
+#include "common/config-manager.h"
 #include "clue/clue.h"
 
 namespace Clue {
@@ -503,55 +504,11 @@ static byte StartupMenu(void) {
 
 	return ret;
 }
-
-static void tcDo(void) {
-	uint32 sceneId = SCENE_NEW_GAME;
-
-	gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
-	gfxChangeColors(m_gc, 0, GFX_FADE_OUT, 0);
-
-	tcSetPermanentColors();
-
-	/* to blend the menu colours once: */
-	gfxShow(CurrentBackground, GFX_ONE_STEP | GFX_NO_REFRESH | GFX_BLEND_UP, 0,
-	        -1, -1);
-
-	/* mouse to white - assume we need to set 15 and 16 */
-	gfxSetRGB(NULL, 15, 255, 255, 255);
-	gfxSetRGB(NULL, 16, 255, 255, 255);
-
-	SetBubbleType(SPEAK_BUBBLE);
-
-	ShowMenuBackground();
-
-	while (sceneId == SCENE_NEW_GAME) {
-		byte ret = 0;
-
-		if (!(GamePlayMode & GP_DEMO))
-			InitStory(STORY_DAT);
-		else
-			InitStory(STORY_DAT_DEMO);
-
-		while (!ret)
-			ret = StartupMenu();
-
-		if (ret != 2) {
-			if (GamePlayMode & GP_FULL_ENV)
-				SetFullEnviroment();
-
-			sceneId = PlayStory();
-		} else
-			sceneId = SCENE_THE_END;
-
-		CloseData();
-		CloseStory();
-	}
-}
-
+/*
 static bool OptionSet(const char *str, char c) {
 	return !!strchr(str, c);
 }
-
+*/
 /******************************************************************************/
 struct Setup setup;
 
@@ -593,6 +550,12 @@ static void parseOptions(int argc, char *argv[]) {
 	setup.Debug         = 1;
 	setup.CDAudio       = false;
 	setup.Scale         = 1;
+
+
+	bool demoFl = g_clue->getFeatures() & ADGF_CD;
+	if (demoFl)
+		GamePlayMode |= GP_DEMO | GP_STORY_OFF;
+
 #if 0
 	for (int i = 1; i < argc; i++) {
 		const char *s = argv[i];
@@ -674,8 +637,49 @@ int clue_main(const char *path) {
 	/* set path for BuildPathName! */
 	dskSetRootPath(path);
 
-	if (tcInit())
-		tcDo();
+	if (tcInit()) {
+		uint32 sceneId = SCENE_NEW_GAME;
+
+		gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
+		gfxChangeColors(m_gc, 0, GFX_FADE_OUT, 0);
+
+		tcSetPermanentColors();
+
+		/* to blend the menu colours once: */
+		gfxShow(CurrentBackground, GFX_ONE_STEP | GFX_NO_REFRESH | GFX_BLEND_UP, 0,
+			-1, -1);
+
+		/* mouse to white - assume we need to set 15 and 16 */
+		gfxSetRGB(NULL, 15, 255, 255, 255);
+		gfxSetRGB(NULL, 16, 255, 255, 255);
+
+		SetBubbleType(SPEAK_BUBBLE);
+
+		ShowMenuBackground();
+
+		while (sceneId == SCENE_NEW_GAME) {
+			byte ret = 0;
+
+			if (!(GamePlayMode & GP_DEMO))
+				InitStory(STORY_DAT);
+			else
+				InitStory(STORY_DAT_DEMO);
+
+			while (!ret)
+				ret = StartupMenu();
+
+			if (ret != 2) {
+				if (GamePlayMode & GP_FULL_ENV)
+					SetFullEnviroment();
+
+				sceneId = PlayStory();
+			} else
+				sceneId = SCENE_THE_END;
+
+			CloseData();
+			CloseStory();
+		}
+	}
 
 	tcDone();
 	return 0;

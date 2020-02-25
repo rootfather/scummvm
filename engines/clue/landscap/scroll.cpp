@@ -340,9 +340,10 @@ byte lsIsCollision(int32 x, int32 y, byte direction) {
 			color[i] = 1;
 	}
 
-	for (uint32 i = 0; i < 14; i++)
+	for (uint32 i = 0; i < 14; i++) {
 		if (color[i])
 			collis = collisDir;
+	}
 
 	/* if outer collide, but inner do not -> no collision (door!) */
 	if ((color[0] || color[1]) && (color[6] || color[5]) && !color[3])
