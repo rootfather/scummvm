@@ -16,8 +16,6 @@
 #ifndef MODULE_LIST
 #define MODULE_LIST
 
-#include <stdlib.h>
-
 #include "clue/theclou.h"
 
 namespace Clue {

@@ -21,20 +21,8 @@
 #ifndef MODULE_GAMEPLAY_APP
 #define MODULE_GAMEPLAY_APP
 
-#include "clue/theclou.h"
-#include "clue/memory/memory.h"
-#include "clue/error/error.h"
-#include "clue/list/list.h"
-#include "clue/disk/disk.h"
-#include "clue/gfx/gfx.h"
-#include "clue/anim/sysanim.h"
-#include "clue/story/story.h"
-#include "clue/data/dataappl.h"
-#include "clue/random/random.h"
 #include "clue/gameplay/gp.h"
 #include "clue/sound/newsound.h"
-#include "clue/scenes/evidence.h"
-#include "clue/scenes/scenes.h"
 
 namespace Clue {
 

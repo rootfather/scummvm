@@ -7,7 +7,6 @@
   distribution.
  ****************************************************************************/
 
-#include "clue/inphdl/inphdl.h"
 #include "clue/base/base.h"
 
 #include "common/system.h"

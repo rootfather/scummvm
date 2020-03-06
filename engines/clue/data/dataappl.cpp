@@ -15,7 +15,6 @@
  ****************************************************************************/
 
 #include "clue/data/dataappl.h"
-#include <assert.h>
 #include "clue/clue.h"
 
 namespace Clue {

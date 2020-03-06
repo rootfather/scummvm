@@ -22,15 +22,8 @@
 #ifndef INPHDL_MODULE
 #define INPHDL_MODULE
 
-#include "clue/theclou.h"
-
-#ifndef MODULE_GFX
 #include "clue/gfx/gfx.h"
-#endif
-
-#ifndef MODULE_ANIM
 #include "clue/anim/sysanim.h"
-#endif
 
 namespace Clue {
 

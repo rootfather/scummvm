@@ -21,8 +21,6 @@
 #include "clue/gameplay/gp_app.h"
 #include "clue/clue.h"
 
-#include <assert.h>
-
 namespace Clue {
 
 void tcAsTimeGoesBy(uint32 untilMinute) {

@@ -11,10 +11,6 @@
   distribution.
  ****************************************************************************/
 
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
-#include <ctype.h>
 
 #include "clue/list/list.h"
 #include "clue/memory/memory.h"

@@ -20,14 +20,8 @@
 #ifndef MODULE_ERROR
 #define MODULE_ERROR
 
-#include <stdio.h>
-#include <stdarg.h>
-#include <fcntl.h>
 #include <sys/stat.h>
-#include <string.h>
-#include <stdlib.h>
 
-#include "clue/theclou.h"
 #include "clue/disk/disk.h"
 
 namespace Clue {

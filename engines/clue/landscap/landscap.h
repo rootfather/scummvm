@@ -21,19 +21,9 @@
 #ifndef MODULE_LANDSCAP
 #define MODULE_LANDSCAP
 
-#include "clue/theclou.h"
-
-#include "clue/error/error.h"
-#include "clue/list/list.h"
-#include "clue/memory/memory.h"
-#include "clue/disk/disk.h"
 #include "clue/inphdl/inphdl.h"
-#include "clue/gfx/gfx.h"
-#include "clue/gfx/gfxnch4.h"
-#include "clue/text/text.h"
 #include "clue/data/relation.h"
 #include "clue/data/database.h"
-
 #include "clue/data/objstd/tcdata.h"
 #include "clue/living/living.h"
 #include "clue/landscap/spot.h"

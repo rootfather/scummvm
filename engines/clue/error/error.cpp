@@ -23,7 +23,6 @@
 #include "clue/base/base.h"
 #include "common/debug.h"
 #include "common/textconsole.h"
-#include "clue/error/error.h"
 
 namespace Clue {
 

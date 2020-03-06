@@ -20,6 +20,9 @@ class Stream;
 namespace Clue {
 
 #define DSK_PATH_MAX 512
+#define ERR_DISK_OPEN_FAILED        1
+#define ERR_DISK_WRITE_FAILED       2
+#define ERR_DISK_READ_FAILED        3
 
 typedef enum {
 	DISK_CHECK_FILE,

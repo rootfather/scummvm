@@ -21,7 +21,6 @@
 /* includes */
 #include "clue/base/base.h"
 
-#include "clue/data/database.h"
 #include "clue/data/database_p.h"
 #include "clue/clue.h"
 

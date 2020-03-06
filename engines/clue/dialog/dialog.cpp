@@ -18,7 +18,6 @@
   distribution.
  ****************************************************************************/
 
-#include "clue/dialog/dialog.h"
 #include "clue/dialog/talkappl.h"
 #include "clue/clue.h"
 

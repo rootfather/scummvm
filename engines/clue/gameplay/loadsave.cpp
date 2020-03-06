@@ -18,9 +18,7 @@
   distribution.
  ****************************************************************************/
 
-#include "clue/gameplay/gp.h"
 #include "clue/gameplay/gp_app.h"
-#include "clue/organisa/organisa.h"
 
 namespace Clue {
 

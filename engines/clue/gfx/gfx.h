@@ -21,9 +21,7 @@
 #ifndef MODULE_GFX
 #define MODULE_GFX
 
-#include "clue/theclou.h"
 #include "graphics/surface.h"
-
 #include "clue/list/list.h"
 
 namespace Clue {

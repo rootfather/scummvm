@@ -19,17 +19,13 @@
   distribution.
  ****************************************************************************/
 
-#include <assert.h>
-
 #include "clue/base/base.h"
 #include "clue/clue.h"
 
 #include "common/events.h"
-#include "common/rect.h"
 #include "common/system.h"
 #include "engines/util.h"
 #include "graphics/palette.h"
-#include "graphics/surface.h"
 
 namespace Clue {
 

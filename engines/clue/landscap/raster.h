@@ -21,7 +21,6 @@
 #ifndef MODULE_RASTER
 #define MODULE_RASTER
 
-#include "clue/theclou.h"
 #include "clue/dialog/dialog.h"
 #include "clue/landscap/landscap.h"
 

@@ -9,8 +9,6 @@
 
 #include "clue/landscap/landscap.h"
 
-#include "clue/gfx/gfxnch4.h"
-
 namespace Clue {
 
 int ScrX, ScrY;

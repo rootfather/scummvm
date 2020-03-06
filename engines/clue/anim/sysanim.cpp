@@ -20,8 +20,6 @@
 
 #include "clue/inphdl/inphdl.h"
 
-#include "clue/anim/sysanim.h"
-
 namespace Clue {
 
 #define PIC_MODE_POS         1

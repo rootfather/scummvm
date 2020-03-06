@@ -19,10 +19,6 @@
 #ifndef MODULE_GFXNCH4
 #define MODULE_GFXNCH4
 
-#include "clue/theclou.h"
-
-#include "clue/gfx/gfx.h"
-
 namespace Clue {
 
 #define GFX_NCH4_SCROLLOFFSET   (160 * 72)  /* memory used by the fixed display */

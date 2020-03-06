@@ -6,12 +6,7 @@
   distribution.
  ****************************************************************************/
 
-#include <ctype.h>
-
 #include "clue/error/error.h"
-
-#include "clue/disk/disk.h"
-#include "clue/disk/disk_e.h"
 
 // HACK: Replace with proper streams
 #include "backends/fs/stdiostream.h"

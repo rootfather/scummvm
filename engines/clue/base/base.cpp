@@ -19,7 +19,6 @@
  ****************************************************************************/
 
 #include "clue/base/base.h"
-#include "common/config-manager.h"
 #include "clue/clue.h"
 
 namespace Clue {

@@ -19,8 +19,6 @@
  ****************************************************************************/
 
 #include "clue/base/base.h"
-
-#include "clue/landscap/spot.h"
 #include "clue/clue.h"
 
 namespace Clue {
