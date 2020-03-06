@@ -28,17 +28,10 @@
 
 #include "clue/theclou.h"
 
-#ifndef __STDARG_H
 #include <stdarg.h>
-#endif
 
-#ifndef MODULE_LIST
 #include "clue/list/list.h"
-#endif
-
-#ifndef MODULE_RANDOM
 #include "clue/random/random.h"
-#endif
 
 namespace Clue {
 

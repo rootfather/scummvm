@@ -23,55 +23,20 @@
 
 #include "clue/theclou.h"
 
-#ifndef MODULE_ERROR
 #include "clue/error/error.h"
-#endif
-
-#ifndef MODULE_LIST
 #include "clue/list/list.h"
-#endif
-
-#ifndef MODULE_MEMORY
 #include "clue/memory/memory.h"
-#endif
-
-#ifndef MODULE_DISK
 #include "clue/disk/disk.h"
-#endif
-
-#ifndef MODULE_INPHDL
 #include "clue/inphdl/inphdl.h"
-#endif
-
-#ifndef MODULE_GFX
 #include "clue/gfx/gfx.h"
-#endif
-
-#ifndef MODULE_GFXNCH4
 #include "clue/gfx/gfxnch4.h"
-#endif
-
-#ifndef MODULE_TEXT
 #include "clue/text/text.h"
-#endif
-
-#ifndef MODULE_RELATION
 #include "clue/data/relation.h"
-#endif
-
-#ifndef MODULE_DATABASE
 #include "clue/data/database.h"
-#endif
 
 #include "clue/data/objstd/tcdata.h"
-
-#ifndef MODULE_LIVING
 #include "clue/living/living.h"
-#endif
-
-#ifndef MODULE_SPOT
 #include "clue/landscap/spot.h"
-#endif
 
 namespace Clue {
 

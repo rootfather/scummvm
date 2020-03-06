@@ -20,69 +20,8 @@
 #ifndef MODULE_BASE
 #define MODULE_BASE
 
-#ifndef __STDIO_H
-#include <stdio.h>
-#endif
-
-#ifndef __STDARG_H
-#include <stdarg.h>
-#endif
-
-#ifndef __STDLIB_H
-#include <stdlib.h>
-#endif
-
-#ifndef __FCNTL_H
-#include <fcntl.h>
-#endif
-
-#include "clue/theclou.h"
-
-#ifndef MODULE_ERROR
-#include "clue/error/error.h"
-#endif
-
-#ifndef MODULE_LIST
-#include "clue/list/list.h"
-#endif
-
-#ifndef MODULE_MEMORY
-#include "clue/memory/memory.h"
-#endif
-
-#ifndef MODULE_DISK
-#include "clue/disk/disk.h"
-#endif
-
-#ifndef MODULE_INPHDL
-#include "clue/inphdl/inphdl.h"
-#endif
-
-#include "clue/gfx/gfx.h"
-#include "clue/text/text.h"
-#include "clue/anim/sysanim.h"
-#include "clue/present/interac.h"
-#include "clue/data/relation.h"
 #include "clue/sound/hsc.h"
-
-
-#ifndef MODULE_DATABASE
-#include "clue/data/database.h"
-#endif
-
-#ifndef MODULE_GAMEPLAY
 #include "clue/gameplay/gp.h"
-#endif
-
-#ifndef MODULE_SOUND
-#include "clue/sound/newsound.h"
-#endif
-
-#ifndef MODULE_FX
-#include "clue/sound/fx.h"
-#endif
-
-#include "clue/cdrom/cdrom.h"
 
 namespace Clue {
 
@@ -102,7 +41,6 @@ struct Setup {
 };
 
 extern struct Setup setup;
-
 
 /*
  * Usage:

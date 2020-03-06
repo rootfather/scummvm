@@ -21,16 +21,6 @@
 #ifndef MODULE_DATABASE
 #define MODULE_DATABASE
 
-/* includes */
-#include "clue/theclou.h"
-
-#include "clue/data/relation.h"
-#include "clue/list/list.h"
-#include "clue/disk/disk.h"
-#include "clue/text/text.h"
-
-#include "clue/data/objstd/tcdata.h"
-
 namespace Clue {
 
 #define GET_OUT                 ((uint8)-1)

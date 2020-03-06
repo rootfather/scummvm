@@ -20,44 +20,16 @@
 #define MODULE_DATAAPPL
 
 #include "clue/theclou.h"
-
-#ifndef MODULE_LIST
 #include "clue/list/list.h"
-#endif
-
-#ifndef MODULE_TEXT
 #include "clue/text/text.h"
-#endif
-
-#ifndef MODULE_RELATION
 #include "clue/data/relation.h"
-#endif
-
-#ifndef MODULE_DATABASE
 #include "clue/data/database.h"
-#endif
-
-#ifndef MODULE_DATACALC
 #include "clue/data/datacalc.h"
-#endif
-
-#ifndef MODULE_DATAAPPL
-#include "clue/data/dataapplh"
-#endif
 
 #include "clue/data/objstd/tcdata.h"
-
-#ifndef MODULE_EVIDENCE
 #include "clue/scenes/evidence.h"
-#endif
-
-#ifndef MODULE_LIVING
 #include "clue/living/living.h"
-#endif
-
-#ifndef MODULE_LANDSCAP
 #include "clue/landscap/landscap.h"
-#endif
 
 namespace Clue {
 

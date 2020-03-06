@@ -21,35 +21,7 @@
 #ifndef MODULE_TALKAPPL
 #define MODULE_TALKAPPL
 
-#include "clue/theclou.h"
-
-#ifndef MODULE_LIST
-#include "clue/list/list.h"
-#endif
-
-#ifndef MODULE_TEXT
-#include "clue/text/text.h"
-#endif
-
-#ifndef MODULE_DIALOG
-#include "clue/dialog/dialog.h"
-#endif
-
-#ifndef MODULE_RELATION
-#include "clue/data/relation.h"
-#endif
-
-#ifndef MODULE_DATABASE
-#include "clue/data/database.h"
-#endif
-
-#ifndef MODULE_DATACALC
-#include "clue/data/datacalc.h"
-#endif
-
-#ifndef MODULE_DATAAPPL
 #include "clue/data/dataappl.h"
-#endif
 
 namespace Clue {
 

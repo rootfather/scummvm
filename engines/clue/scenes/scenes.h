@@ -21,51 +21,19 @@
 #ifndef MODULE_SCENES
 #define MODULE_SCENES
 
-#ifndef MODULE_LIST
 #include "clue/list/list.h"
-#endif
-
-#ifndef MODULE_TEXT
 #include "clue/text/text.h"
-#endif
-
-#ifndef MODULE_INTERAC
 #include "clue/present/interac.h"
-#endif
-
-#ifndef MODULE_PRESENT
 #include "clue/present/present.h"
-#endif
-
-#ifndef MODULE_DIALOG
 #include "clue/dialog/dialog.h"
-#endif
-
-#ifndef MODULE_RELATION
 #include "clue/data/relation.h"
-#endif
-
-#ifndef MODULE_DATABASE
 #include "clue/data/database.h"
-#endif
-
-#ifndef MODULE_DATACALC
 #include "clue/data/datacalc.h"
-#endif
-
-#ifndef MODULE_DATAAPPL
 #include "clue/data/dataappl.h"
-#endif
-
 #include "clue/data/objstd/tcdata.h"
-
-#ifndef MODULE_GAMEPLAY_APP
 #include "clue/gameplay/gp_app.h"
-#endif
-
-#ifndef MODULE_RASTER
 #include "clue/landscap/raster.h"
-#endif
+
 
 namespace Clue {
 
@@ -135,7 +103,6 @@ void tcDealerDlg(void);
 uint32 tcStartEvidence(void);
 uint32 tcGoInsideOfHouse(uint32 buildingID);
 
-void tcShowLootInfo(Loot loot);
 void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc);
 void tcShowObjectData(uint32 areaID, NODE *node, byte perc);
 

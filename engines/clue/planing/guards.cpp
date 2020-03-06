@@ -22,16 +22,16 @@
 
 namespace Clue {
 
-void grdDo(Common::Stream *fh, struct System *sys, LIST *PersonsList, uint32 BurglarsNr,
-           uint32 PersonsNr, byte grdAction) {
-	for (uint32 i = BurglarsNr; i < PersonsNr; i++) {
+void grdDo(Common::Stream *fh, struct System *sys, LIST *personsList, uint32 burglarsNr,
+           uint32 personsNr, byte grdAction) {
+	for (uint32 i = burglarsNr; i < personsNr; i++) {
 		switch (grdAction) {
 		case GUARDS_DO_SAVE:
-			SaveHandler(fh, sys, OL_NR(GetNthNode(PersonsList, i)));
+			SaveHandler(fh, sys, OL_NR(GetNthNode(personsList, i)));
 			break;
 
 		case GUARDS_DO_LOAD:
-			LoadHandler(fh, sys, OL_NR(GetNthNode(PersonsList, i)));
+			LoadHandler(fh, sys, OL_NR(GetNthNode(personsList, i)));
 			break;
 		}
 	}

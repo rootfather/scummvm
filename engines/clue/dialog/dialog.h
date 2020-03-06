@@ -21,38 +21,6 @@
 #ifndef MODULE_DIALOG
 #define MODULE_DIALOG
 
-#include "clue/theclou.h"
-
-#ifndef MODULE_LIST
-#include "clue/list/list.h"
-#endif
-
-#ifndef MODULE_TEXT
-#include "clue/text/text.h"
-#endif
-
-#ifndef MODULE_INTERAC
-#include "clue/present/interac.h"
-#endif
-
-#include "clue/data/objstd/tcdata.h"
-
-#ifndef MODULE_RELATION
-#include "clue/data/relation.h"
-#endif
-
-#ifndef MODULE_DATABASE
-#include "clue/data/database.h"
-#endif
-
-#ifndef MODULE_GAMEPLAY
-#include "clue/gameplay/gp.h"
-#endif
-
-#ifndef MODULE_SOUND
-#include "clue/sound/newsound.h"
-#endif
-
 #include "clue/cdrom/cdrom.h"
 
 namespace Clue {

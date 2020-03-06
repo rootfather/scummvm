@@ -22,34 +22,13 @@
 #define MODULE_LIVING
 
 #include "clue/theclou.h"
-
-#ifndef MODULE_LIST
 #include "clue/list/list.h"
-#endif
-
-#ifndef MODULE_MEMORY
 #include "clue/memory/memory.h"
-#endif
-
-#ifndef MODULE_LANDSCAP
 #include "clue/landscap/landscap.h"
-#endif
-
-#ifndef MODULE_DISK
 #include "clue/disk/disk.h"
-#endif
-
-#ifndef MODULE_TEXT
 #include "clue/text/text.h"
-#endif
-
-#ifndef MODULE_GFX
 #include "clue/gfx/gfx.h"
-#endif
-
-#ifndef MODULE_BOB
 #include "clue/living/bob.h"
-#endif
 
 namespace Clue {
 

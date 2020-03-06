@@ -28,17 +28,8 @@
 #ifndef MODULE_ANIM
 #define MODULE_ANIM
 
-#include "clue/theclou.h"
-
-#ifndef MODULE_TEXT
 #include "clue/text/text.h"
-#endif
-
-#include "clue/gfx/gfx.h"
-
-#ifndef MODULE_RANDOM
 #include "clue/random/random.h"
-#endif
 
 namespace Clue {
 

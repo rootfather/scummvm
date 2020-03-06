@@ -14,15 +14,7 @@
 #ifndef MODULE_RELATION
 #define MODULE_RELATION
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
-#include "clue/theclou.h"
-
-#include "clue/error/error.h"
 #include "clue/memory/memory.h"
-#include "clue/disk/disk.h"
 
 namespace Clue {
 
