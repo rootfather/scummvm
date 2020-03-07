@@ -35,7 +35,6 @@ struct Setup {
 	bool CDRom;
 	int32 SfxVolume;
 	int32 MusicVolume;
-	unsigned Debug;
 	bool CDAudio;
 	unsigned Scale;
 };

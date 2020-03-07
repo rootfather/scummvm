@@ -46,10 +46,6 @@ static const char *moduleNames[ERROR_MODULE_LAST] = {
 	"Input"
 };
 
-bool pcErrOpen(int32 l_Mode, const char *ErrorFilename) {
-	return true;
-}
-
 void ErrorMsg(ErrorE type, ErrorModuleE moduleId, uint32 errorId) {
 	DebugMsg(ERR_DEBUG, moduleId, "Error %d", errorId);
 

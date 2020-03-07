@@ -127,12 +127,6 @@ static char AutoDetectLanguage(void) {
 #endif
 
 static bool tcInit(void) {
-	if (setup.Debug >= ERR_DEBUG) {
-		pcErrOpen(ERR_OUTPUT_TO_DISK, "debug.txt");
-	} else {
-		pcErrOpen(ERR_NO_OUTPUT, NULL);
-	}
-
 	InitAudio();
 
 	StdBuffer1 = TCAllocMem(STD_BUFFER1_SIZE, true);
@@ -546,7 +540,6 @@ static void parseOptions(int argc, char *argv[]) {
 	setup.MusicVolume   = SND_MAX_VOLUME;
 	setup.Profidisk     = false;
 	setup.CDRom         = false;
-	setup.Debug         = 1;
 	setup.CDAudio       = false;
 	setup.Scale         = 1;
 
