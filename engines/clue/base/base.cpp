@@ -26,14 +26,6 @@ namespace Clue {
 void *StdBuffer0 = NULL;
 void *StdBuffer1 = NULL;
 
-#if 0
-void tcClearStdBuffer(void *p) {
-	if (p == StdBuffer0)
-		memset(p, 0, STD_BUFFER0_SIZE);
-	else if (p == StdBuffer1)
-		memset(p, 0, STD_BUFFER1_SIZE);
-}
-#endif
 void tcDone(void) {
 	static bool inprogress;
 
@@ -78,54 +70,6 @@ void tcDone(void) {
 	}
 }
 
-#if 0
-// TODO : Check and eventually remove
-static void AutoDetectVersion(void) {
-	if (txtKeyExists(THECLOU_TXT, "BITTE_WARTEN_PC_CD_ROM_PROFI")) {
-		setup.Profidisk = true;
-		setup.CDRom = true;
-	} else if (txtKeyExists(THECLOU_TXT, "BITTE_WARTEN_PC_PROFI")) {
-		setup.Profidisk = true;
-		setup.CDRom = false;
-	} else if (txtKeyExists(THECLOU_TXT, "BITTE_WARTEN_PC_CD_ROM")) {
-		setup.Profidisk = false;
-		setup.CDRom = true;
-	} else if (txtKeyExists(THECLOU_TXT, "BITTE_WARTEN_PC")) {
-		setup.Profidisk = false;
-		setup.CDRom = false;
-	}
-
-	DebugMsg(ERR_DEBUG, ERROR_MODULE_BASE,
-	         "Detected Version: Der Clou! %s %s",
-	         setup.Profidisk ? "Profidisk" : "",
-	         setup.CDRom ? "CD-ROM" : "");
-}
-
-static char AutoDetectLanguage(void) {
-	const char langs[] = { 'd', 'e', 'f', 's' };
-	char lang = ' ';
-
-	DebugMsg(ERR_DEBUG, ERROR_MODULE_BASE, "Detecting Language...");
-
-	for (int i = 0; i < ARRAYSIZE(langs); i++) {
-		char File[DSK_PATH_MAX], Path[DSK_PATH_MAX];
-
-		sprintf(File, "tcmaine%c.txt", langs[i]);
-		if (dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, File, Path)) {
-			lang = langs[i];
-			break;
-		}
-	}
-
-	if (lang == ' ') {
-		DebugMsg(ERR_ERROR, ERROR_MODULE_BASE, "Could not detect language!");
-	} else {
-		DebugMsg(ERR_DEBUG, ERROR_MODULE_BASE, "Detected Language: '%c'", lang);
-	}
-	return lang;
-}
-#endif
-
 static bool tcInit(void) {
 	InitAudio();
 
@@ -135,7 +79,7 @@ static bool tcInit(void) {
 	if (!StdBuffer0 || !StdBuffer1) {
 		return false;
 	}
-
+	 
 	if (g_clue->getFeatures() & GF_CDAUDIO) {
 		if ((CDRomInstalled = CDROM_Install())) {
 			CDROM_WaitForMedia();
@@ -495,75 +439,20 @@ static byte StartupMenu(void) {
 
 	return ret;
 }
-/*
-static bool OptionSet(const char *str, char c) {
-	return !!strchr(str, c);
-}
-*/
-/******************************************************************************/
+
 #if 0
-struct Setup setup;
-
-static const char aboutString[] =
-    "Der Clou! - SDL Port\n"
-    "\n"
-    "Original version by neo Software Produktions GmbH\n"
-    "Port by Vasco Alexandre da Silva Costa\n"
-    "\n\n"
-    "Copyright (c) 1993,1994 neo Software Produktions GmbH\n"
-    "Copyright (c) 2005 Vasco Alexandre da Silva Costa\n"
-    "Copyright (c) 2005 Thomas Trummer\n"
-    "Copyright (c) 2005 Jens Granseuer\n"
-    "\n"
-    "Please read the license terms in 'publiclicensecontract.doc'.\n"
-    "\n";
-
-static const char syntaxString[] =
-    "Syntax:\n"
-    "\tderclou [-h] [-d[<num>]] [-f] [-m<num>] [-s<num>]\n"
-    "Flags:\n"
-    "\t-d[<num>]  - enable debug output (debug level [1])\n"
-    "\t-f         - fullscreen mode\n"
-    "\t-g<mode>   - graphics mode (normal,2x,linear2x)\n"
-    "\t-h         - show help\n"
-    "\t-m<num>    - set music volume to <num> (0-255)\n"
-    "\t-s<num>    - set sfx volume to <num> (0-255)\n"
-    "\t-t         - trainer\n";
-
-
+TODO : Implement trainer in the debugger
+	
 /**********************************************************/
 static void parseOptions(int argc, char *argv[]) {
-	/* default values. */
-	setup.SfxVolume     = SND_MAX_VOLUME;
-	setup.MusicVolume   = SND_MAX_VOLUME;
-	setup.Profidisk     = false;
-	setup.CDRom         = false;
-	setup.CDAudio       = false;
+// MOST OF THE CODE HAS BEEN REMOVED
+// The remaining code has to be moved to debugger commands.
 
 	for (int i = 1; i < argc; i++) {
 		const char *s = argv[i];
 
 		if (s[0] == '-') {
 			switch (s[1]) {
-			case 'g':
-				setup.Scale = MAX(atoi(s + 2), 1);
-				break;
-
-			case 'd':
-				setup.Debug = MAX(atoi(s + 2), 0);
-				break;
-
-			case 'f':
-				setup.FullScreen = true;
-				break;
-
-			case 's':
-				setup.SfxVolume = CLIP(atoi(s + 2), 0, SND_MAX_VOLUME);
-				break;
-
-			case 'm':
-				setup.MusicVolume = CLIP(atoi(s + 2), 0, SND_MAX_VOLUME);
-				break;
 
 			case 't':
 				if (OptionSet(s + 2, 'd'))
@@ -590,18 +479,6 @@ static void parseOptions(int argc, char *argv[]) {
 				if (OptionSet(s + 2, 'r'))
 					GamePlayMode |= GP_SHOW_ROOMS;
 				break;
-
-			case 'h':
-				puts(aboutString);
-				puts(syntaxString);
-				exit(0);
-				return;
-
-			default:
-				puts(aboutString);
-				puts(syntaxString);
-				exit(1);
-				return;
 			}
 		}
 	}
