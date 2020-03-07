@@ -30,13 +30,11 @@ namespace Clue {
  *
  */
 struct Setup {
-	bool FullScreen;
 	bool Profidisk;
 	bool CDRom;
 	int32 SfxVolume;
 	int32 MusicVolume;
 	bool CDAudio;
-	unsigned Scale;
 };
 
 extern struct Setup setup;

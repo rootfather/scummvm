@@ -535,14 +535,11 @@ static const char syntaxString[] =
 /**********************************************************/
 static void parseOptions(int argc, char *argv[]) {
 	/* default values. */
-	setup.FullScreen    = false;
 	setup.SfxVolume     = SND_MAX_VOLUME;
 	setup.MusicVolume   = SND_MAX_VOLUME;
 	setup.Profidisk     = false;
 	setup.CDRom         = false;
 	setup.CDAudio       = false;
-	setup.Scale         = 1;
-
 
 	bool demoFl = g_clue->getFeatures() & ADGF_CD;
 	if (demoFl)
