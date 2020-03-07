@@ -1300,7 +1300,7 @@ void ShowIntro(void) {
 	for (int anims = 0; anims < 5; anims++) {
 		char pathName[DSK_PATH_MAX];
 
-		if (setup.CDAudio)
+		if (g_clue->getFeatures() & GF_CDAUDIO)
 			CDROM_StopAudioTrack();
 
 		if (!dskBuildPathName(DISK_CHECK_FILE, INTRO_DIRECTORY, names[anims], pathName))
@@ -1404,7 +1404,7 @@ void ShowIntro(void) {
 					sndPlaySound("title.bk", 0);
 				}
 
-				if (setup.CDAudio) {
+				if (g_clue->getFeatures() & GF_CDAUDIO) {
 #if 0
 					for (s = 0; s < MAX_TRACKS; s++) {
 						if ((CDFrames[s * 6] == anims)
@@ -1437,7 +1437,7 @@ endit:
 endit2:
 	gfxClearArea(NULL);
 
-	if (setup.CDAudio) {
+	if (g_clue->getFeatures() & GF_CDAUDIO) {
 		CDROM_StopAudioTrack();
 		sndFading(0);
 	}

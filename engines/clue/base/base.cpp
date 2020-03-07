@@ -51,7 +51,7 @@ void tcDone(void) {
 		gfxDone();
 		rndDone();
 
-		if (setup.CDAudio) {
+		if (g_clue->getFeatures() & GF_CDAUDIO) {
 			if (CDRomInstalled) {
 				CDROM_StopAudioTrack();
 				CDROM_UnInstall();
@@ -78,6 +78,8 @@ void tcDone(void) {
 	}
 }
 
+#if 0
+// TODO : Check and eventually remove
 static void AutoDetectVersion(void) {
 	if (txtKeyExists(THECLOU_TXT, "BITTE_WARTEN_PC_CD_ROM_PROFI")) {
 		setup.Profidisk = true;
@@ -99,8 +101,6 @@ static void AutoDetectVersion(void) {
 	         setup.CDRom ? "CD-ROM" : "");
 }
 
-#if 0
-// TODO : Check and eventually remove
 static char AutoDetectLanguage(void) {
 	const char langs[] = { 'd', 'e', 'f', 's' };
 	char lang = ' ';
@@ -136,7 +136,7 @@ static bool tcInit(void) {
 		return false;
 	}
 
-	if (setup.CDAudio) {
+	if (g_clue->getFeatures() & GF_CDAUDIO) {
 		if ((CDRomInstalled = CDROM_Install())) {
 			CDROM_WaitForMedia();
 			return false;
@@ -161,8 +161,6 @@ static bool tcInit(void) {
 	inpOpenAllInputDevs();
 
 	txtInit(g_clue->getTxtLanguage());
-
-	AutoDetectVersion();
 
 	InitAnimHandler();
 
@@ -503,6 +501,7 @@ static bool OptionSet(const char *str, char c) {
 }
 */
 /******************************************************************************/
+#if 0
 struct Setup setup;
 
 static const char aboutString[] =
@@ -541,11 +540,6 @@ static void parseOptions(int argc, char *argv[]) {
 	setup.CDRom         = false;
 	setup.CDAudio       = false;
 
-	bool demoFl = g_clue->getFeatures() & ADGF_CD;
-	if (demoFl)
-		GamePlayMode |= GP_DEMO | GP_STORY_OFF;
-
-#if 0
 	for (int i = 1; i < argc; i++) {
 		const char *s = argv[i];
 
@@ -611,12 +605,14 @@ static void parseOptions(int argc, char *argv[]) {
 			}
 		}
 	}
-#endif
 }
+#endif
 
 /**********************************************************/
 int clue_main(const char *path) {
-	parseOptions(0, NULL);
+	bool demoFl = g_clue->getFeatures() & ADGF_DEMO;
+	if (demoFl)
+		GamePlayMode |= GP_DEMO | GP_STORY_OFF;
 
 	rndInit();
 

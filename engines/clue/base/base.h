@@ -29,6 +29,7 @@ namespace Clue {
  *
  *
  */
+#if 0
 struct Setup {
 	bool Profidisk;
 	bool CDRom;
@@ -38,6 +39,7 @@ struct Setup {
 };
 
 extern struct Setup setup;
+#endif
 
 /*
  * Usage:

@@ -49,8 +49,9 @@ char ClueEngine::getTxtLanguage() const {
 		return 'f';
 	case Common::ES_ESP:
 		return 's';
+	default:
+		return 'd'; // default to 'deutsche'
 	}
-	return 'd'; // default to 'deutsche'
 }
 
 Common::Platform ClueEngine::getPlatform() const {

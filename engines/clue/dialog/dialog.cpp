@@ -276,7 +276,7 @@ byte Say(uint32 TextID, byte activ, uint16 person, const char *text) {
 			choice = Bubble(bubble, activ, NULL, 0L);
 		}
 
-		if (setup.CDAudio) {
+		if (g_clue->getFeatures() & GF_CDAUDIO) {
 			CDROM_StopAudioTrack();
 			sndFading(0);
 		}

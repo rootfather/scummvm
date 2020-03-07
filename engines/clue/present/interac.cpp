@@ -19,6 +19,7 @@
  ****************************************************************************/
 
 #include "clue/base/base.h"
+#include "clue/clue.h"
 #include "clue/present/interac_p.h"
 
 namespace Clue {
@@ -395,7 +396,7 @@ byte Bubble(LIST *bubble, byte activ, void (*func)(byte), uint32 waitTime) {
 
 	gfxScreenThaw(u_gc, 0, 0, 320, 67);
 
-	if (setup.CDAudio) {
+	if (g_clue->getFeatures() & GF_CDAUDIO) {
 		PlayFromCDROM();
 	}
 
