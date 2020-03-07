@@ -21,24 +21,6 @@
 #ifndef MODULE_INTERAC
 #define MODULE_INTERAC
 
-#include "clue/theclou.h"
-
-#ifndef MODULE_LIST
-#include "clue/list/list.h"
-#endif
-
-#ifndef MODULE_MEMORY
-#include "clue/memory/memory.h"
-#endif
-
-#ifndef MODULE_GFX
-#include "clue/gfx/gfx.h"
-#endif
-
-#ifndef MODULE_TEXT
-#include "clue/text/text.h"
-#endif
-
 namespace Clue {
 
 #define X_OFFSET    112
@@ -57,10 +39,8 @@ namespace Clue {
 
 extern bool ChoiceOk(byte choice, byte exit, LIST *l);
 
-extern byte Bubble(LIST *bubble, byte activ, void (*func)(byte),
-                   uint32 waitTime);
-extern byte Menu(LIST *menu, uint32 possibility, byte activ,
-                 void (*func)(byte), uint32 waitTime);
+extern byte Bubble(LIST *bubble, byte activ, void (*func)(byte), uint32 waitTime);
+extern byte Menu(LIST *menu, uint32 possibility, byte activ, void (*func)(byte), uint32 waitTime);
 
 extern void RefreshMenu(void);
 

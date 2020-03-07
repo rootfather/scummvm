@@ -21,21 +21,6 @@
 #ifndef MODULE_PLANING_SYSTEM
 #define MODULE_PLANING_SYSTEM
 
-#include <stdio.h>
-
-#include "clue/theclou.h"
-
-#include "clue/memory/memory.h"
-#include "clue/error/error.h"
-#include "clue/disk/disk.h"
-#include "clue/list/list.h"
-#include "clue/data/database.h"
-#include "clue/data/relation.h"
-
-#include "clue/data/objstd/tcdata.h"
-
-#include "clue/text/text.h"
-#include "clue/landscap/landscap.h"
 #include "clue/planing/main.h"
 
 namespace Clue {

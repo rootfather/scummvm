@@ -19,8 +19,6 @@
  ****************************************************************************/
 
 #include "clue/base/base.h"
-
-#include "clue/planing/planer.h"
 #include "clue/clue.h"
 
 namespace Clue {

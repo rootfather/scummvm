@@ -22,9 +22,6 @@
 #define MODULE_TXT_PH
 
 /* includes */
-#include "clue/theclou.h"
-#include "clue/disk/disk.h"
-#include "clue/list/list.h"
 #include "clue/base/base.h"
 
 namespace Clue {

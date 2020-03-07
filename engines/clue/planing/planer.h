@@ -26,7 +26,6 @@ namespace Clue {
 extern byte AnimCounter;
 extern bool PlanChanged;
 
-
 void plPlaner(uint32 objId);
 
 } // End of namespace Clue

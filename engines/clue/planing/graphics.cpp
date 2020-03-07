@@ -20,8 +20,6 @@
 
 #include "clue/base/base.h"
 
-#include "clue/planing/graphics.h"
-
 namespace Clue {
 
 void plPrintInfo(const char *person) {

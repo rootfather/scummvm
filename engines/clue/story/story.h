@@ -21,81 +21,13 @@
 #ifndef MODULE_STORY
 #define MODULE_STORY
 
-#include "clue/theclou.h"
-
-#ifndef MODULE_LIST
-#include "clue/list/list.h"
-#endif
-
-#ifndef MODULE_TEXT
 #include "clue/text/text.h"
-#endif
-
-#ifndef MODULE_INTERAC
 #include "clue/present/interac.h"
-#endif
-
-#ifndef MODULE_PRESENT
-#include "clue/present/present.h"
-#endif
-
-#ifndef MODULE_DIALOG
-#include "clue/dialog/dialog.h"
-#endif
-
-#ifndef MODULE_RELATION
-#include "clue/data/relation.h"
-#endif
-
-#ifndef MODULE_DATABASE
-#include "clue/data/database.h"
-#endif
-
-#ifndef MODULE_DATACALC
-#include "clue/data/datacalc.h"
-#endif
-
-#ifndef MODULE_DATAAPPL
 #include "clue/data/dataappl.h"
-#endif
-
-#include "clue/data/objstd/tcdata.h"
-
-#ifndef MODULE_SCENES
-#include "clue/scenes/scenes.h"
-#endif
-
-#ifndef MODULE_GAMEPLAY
-#include "clue/gameplay/gp.h"
-#endif
-
-#ifndef MODULE_GAMEPLAY_APP
-#include "clue/gameplay/gp_app.h"
-#endif
-
-#ifndef MODULE_GFX
-#include "clue/gfx/gfx.h"
-#endif
-
-#ifndef MODULE_ORGANISATION
 #include "clue/organisa/organisa.h"
-#endif
-
-#ifndef MODULE_PLANING_PLANER
 #include "clue/planing/planer.h"
-#endif
-
-#ifndef MODULE_PLANING_PLAYER
 #include "clue/planing/player.h"
-#endif
-
-#ifndef MODULE_LANDSCAP
-#include "clue/landscap/landscap.h"
-#endif
-
-#ifndef MODULE_FX
 #include "clue/sound/fx.h"
-#endif
 
 namespace Clue {
 

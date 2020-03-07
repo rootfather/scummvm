@@ -21,20 +21,8 @@
 #ifndef MODULE_EVIDENCE
 #define MODULE_EVIDENCE
 
-#include "clue/theclou.h"
-
-#include "clue/list/list.h"
 #include "clue/text/text.h"
-#include "clue/dialog/dialog.h"
-#include "clue/present/interac.h"
 #include "clue/present/present.h"
-
-#include "clue/data/objstd/tcdata.h"
-
-#include "clue/data/relation.h"
-#include "clue/data/database.h"
-#include "clue/data/datacalc.h"
-#include "clue/data/dataappl.h"
 
 namespace Clue {
 

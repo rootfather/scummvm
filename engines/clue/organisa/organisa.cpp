@@ -19,8 +19,6 @@
  ****************************************************************************/
 
 #include "clue/base/base.h"
-
-#include "clue/organisa/organisa.h"
 #include "clue/clue.h"
 
 namespace Clue {

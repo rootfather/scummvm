@@ -20,8 +20,6 @@
 
 #include "clue/base/base.h"
 
-#include "clue/planing/support.h"
-
 namespace Clue {
 
 /* loot support */

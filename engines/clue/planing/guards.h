@@ -21,8 +21,6 @@
 #ifndef MODULE_PLANING_GUARDS
 #define MODULE_PLANING_GUARDS
 
-#include <stdio.h>
-
 #include "clue/planing/main.h"
 
 namespace Clue {

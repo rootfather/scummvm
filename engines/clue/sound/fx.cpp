@@ -15,10 +15,6 @@
 #include "audio/decoders/raw.h"
 #include "audio/decoders/voc.h"
 
-#include "clue/sound/buffer.h"
-#include "clue/sound/fx.h"
-#include "clue/sound/hsc.h"
-
 namespace Clue {
 
 struct FXBase FXBase;

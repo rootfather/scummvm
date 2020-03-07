@@ -20,8 +20,6 @@
 
 #include "clue/base/base.h"
 
-#include "clue/planing/prepare.h"
-
 namespace Clue {
 
 LIST *PersonsList = NULL;

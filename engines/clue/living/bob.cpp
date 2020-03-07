@@ -6,7 +6,6 @@
   distribution.
  ****************************************************************************/
 
-#include "clue/gfx/gfx.h"
 #include "clue/living/living.h"
 
 namespace Clue {

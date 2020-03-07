@@ -22,24 +22,7 @@
 #define MODULE_TEXT
 
 /* includes */
-
-#ifndef __CTYPE_H
-#include <ctype.h>
-#endif
-
-#include "clue/theclou.h"
-
-#ifndef MODULE_ERROR
-#include "clue/error/error.h"
-#endif
-
-#ifndef MODULE_LIST
 #include "clue/list/list.h"
-#endif
-
-#ifndef MODULE_MEMORY
-#include "clue/memory/memory.h"
-#endif
 
 namespace Clue {
 

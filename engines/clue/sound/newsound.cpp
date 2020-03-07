@@ -7,7 +7,6 @@
  ****************************************************************************/
 #include "clue/disk/disk.h"
 #include "clue/sound/fx.h"
-#include "clue/sound/newsound.h"
 #include "clue/sound/hsc.h"
 
 #include "common/textconsole.h"

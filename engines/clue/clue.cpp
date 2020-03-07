@@ -22,13 +22,7 @@
 
 #include "clue/theclou.h"
 
-#include "common/error.h"
-#include "common/events.h"
-#include "common/system.h"
 #include "common/config-manager.h"
-
-#include "engines/engine.h"
-#include "engines/util.h"
 
 #include "clue/clue.h"
 #include "clue/base/base.h"

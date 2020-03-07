@@ -19,8 +19,6 @@
  ****************************************************************************/
 
 #include "clue/base/base.h"
-
-#include "clue/present/interac.h"
 #include "clue/present/interac_p.h"
 
 namespace Clue {

@@ -21,7 +21,6 @@
 #ifndef MODULE_RANDOM
 #define MODULE_RANDOM
 
-#include "clue/theclou.h"
 
 namespace Clue {
 

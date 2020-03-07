@@ -21,16 +21,7 @@
 #ifndef MODULE_SCENES
 #define MODULE_SCENES
 
-#include "clue/list/list.h"
-#include "clue/text/text.h"
-#include "clue/present/interac.h"
 #include "clue/present/present.h"
-#include "clue/dialog/dialog.h"
-#include "clue/data/relation.h"
-#include "clue/data/database.h"
-#include "clue/data/datacalc.h"
-#include "clue/data/dataappl.h"
-#include "clue/data/objstd/tcdata.h"
 #include "clue/gameplay/gp_app.h"
 #include "clue/landscap/raster.h"
 

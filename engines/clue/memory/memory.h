@@ -20,8 +20,6 @@
 #ifndef MODULE_MEMORY
 #define MODULE_MEMORY
 
-#include "clue/theclou.h"
-
 #include "clue/error/error.h"
 
 namespace Clue {

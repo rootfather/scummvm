@@ -21,17 +21,9 @@
 #ifndef MODULE_ORGANISATION
 #define MODULE_ORGANISATION
 
-
-#include "clue/theclou.h"
-#include "clue/list/list.h"
-#include "clue/memory/memory.h"
-#include "clue/text/text.h"
-#include "clue/gfx/gfx.h"
-
 namespace Clue {
 
 /* Display Areas */
-
 #define   ORG_DISP_ABILITIES   (1)
 #define   ORG_DISP_TOOLS       (1<<1)
 
