@@ -1312,9 +1312,9 @@ void ShowIntro(void) {
 
 			uint32 head;
 			dskRead_U32LE(fp, &head);
-			size_t size;
+			uint32 size;
 			dskRead_U32LE(fp, &size);
-			size_t rsize = Amg2Pc(size);
+			uint32 rsize = Amg2Pc(size);
 
 			dskRead(fp, XMSHandle, rsize);
 			dskClose(fp);
