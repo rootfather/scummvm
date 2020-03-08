@@ -20,8 +20,6 @@
 #ifndef MODULE_ERROR
 #define MODULE_ERROR
 
-#include <sys/stat.h>
-
 #include "clue/disk/disk.h"
 
 namespace Clue {

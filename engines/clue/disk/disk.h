@@ -9,8 +9,6 @@
 #ifndef TC_DISK_H
 #define TC_DISK_H
 
-#include <stdio.h>
-
 #include "clue/theclou.h"
 
 namespace Common {

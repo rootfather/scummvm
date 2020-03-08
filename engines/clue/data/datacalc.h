@@ -28,8 +28,6 @@
 
 #include "clue/theclou.h"
 
-#include <stdarg.h>
-
 #include "clue/list/list.h"
 #include "clue/random/random.h"
 

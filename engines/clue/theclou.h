@@ -19,8 +19,6 @@
  */
 #include "common/scummsys.h"
 #include "common/util.h"
-#include <string.h>
-#include <limits.h>
 
 namespace Clue {
 

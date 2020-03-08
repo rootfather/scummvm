@@ -6,6 +6,7 @@
   distribution.
  ****************************************************************************/
 
+#include <sys/stat.h>
 #include "clue/error/error.h"
 
 // HACK: Replace with proper streams
