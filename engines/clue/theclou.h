@@ -24,53 +24,12 @@ namespace Clue {
 
 #define EOS                     ((char)'\0')
 
-#define DIR_SEP                 "/"
 
 /*
  * some version defines
  */
 
-/* COMPUTER VERSION DEFINES */
-/* #define THECLOU_500_VERSION */
-/* define THECLOU_4000_VERSION */
-/* define THECLOU_PC_VERSION */
-/* define THECLOU_OS2_VERSION */
-#define THECLOU_SDL_VERSION
-
-/*  ADDITIONAL VERSION DEFINES */
-/* define THECLOU_CDROM_VERSION */
-#define THECLOU_PROFIDISK
-
-/* LANGUAGE DEFINES */
-#define THECLOU_VERSION_GERMAN
-/* define THECLOU_VERSION_ENGLISH */
-/* define THECLOU_VERSION_SLOWAKISCH */
-
-/* PASSWORD DEFINES */
-#define PASSWORD_BLOCKED
-#define PASSWORD_LEN             1118
-#define PASSWORD_POS            86096
-#define PASSWORD                   14
-
-/* SPECIALS DEFINES */
-#define THECLOU_JOYSTICK_DISABLED
 /* define THECLOU_DEBUG */
-
-/*  PROTECTION DEFINES */
-#ifdef THECLOU_OS2_VERSION
-#define PASSWORD_BLOCKED
-#endif
-
-#ifndef PASSWORD_BLOCKED
-#ifdef THECLOU_CDROM_VERSION
-#define THECLOU_CDPROTECTION
-#else
-#define THECLOU_CHKSUM
-#endif
-#endif
-
-
-#define THECLOU_NODE               50
 
 /*
  * Textdateien, die auch als Daten verwendet werden
@@ -106,24 +65,24 @@ namespace Clue {
  *
  */
 
-#define MENU_TXT         0
-#define OBJECTS_TXT      1
+#define MENU_TXT             0
+#define OBJECTS_TXT          1
 #define BUSINESS_TXT         2
 #define HOUSEDESC_TXT        3
-#define THECLOU_TXT      4
+#define THECLOU_TXT          4
 #define INVESTIGATIONS_TXT   5
-#define CDROM_TXT        6
+#define CDROM_TXT            6
 #define OBJECTS_ENUM_TXT     7
-#define ANIM_TXT         8
-#define PRESENT_TXT      9
-#define STORY_0_TXT     10
-#define PLAN_TXT        11
-#define TOOLS_TXT       12
-#define LOOK_TXT        13
-#define ABILITY_TXT     14
-#define STORY_1_TXT     15
-#define TALK_0_TXT      16
-#define TALK_1_TXT              17
+#define ANIM_TXT             8
+#define PRESENT_TXT          9
+#define STORY_0_TXT         10
+#define PLAN_TXT            11
+#define TOOLS_TXT           12
+#define LOOK_TXT            13
+#define ABILITY_TXT         14
+#define STORY_1_TXT         15
+#define TALK_0_TXT          16
+#define TALK_1_TXT          17
 
 /*
  * Disk Nr.
@@ -158,22 +117,12 @@ namespace Clue {
  *
  */
 
-#define ERR_OPEN_FUNC           fopen
-#define ERR_CLOSE_FUNC      fclose
-#define ERR_HANDLING_FUNC   ShowTheClouRequester
-
 uint32 ShowTheClouRequester(int32 error_class); /* siehe Base.c */
 
 /*
  * defines for Disk Module
  *
  */
-
-#define DISK_ALLOC_FUNC         TCAllocMem
-#define DISK_FREE_FUNC          TCFreeMem
-#define DISK_ERR_FUNC           ErrorMsg
-
-void ShowInsertDiskReq(uint16 disk_id);
 
 /*
  * some defines ...

@@ -14,6 +14,8 @@
 
 namespace Clue {
 
+#define DIR_SEP "/"
+
 char RootPathName[DSK_PATH_MAX];
 
 
