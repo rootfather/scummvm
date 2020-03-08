@@ -23,13 +23,11 @@
 namespace Clue {
 
 /* loot support */
-uint32 plGetNextLoot(void) {
+uint32 plGetNextLoot() {
 	for (int i = 0; i < PLANING_NR_LOOTS; i++) {
 		if (!Planing_Loot[i]) {
 			Planing_Loot[i] = 1;
-			return lsAddLootBag(livGetXPos(Planing_Name[CurrentPerson]),
-			                    livGetYPos(Planing_Name[CurrentPerson]) + 5,
-			                    i + 1);
+			return lsAddLootBag(livGetXPos(Planing_Name[CurrentPerson]), livGetYPos(Planing_Name[CurrentPerson]) + 5, i + 1);
 		}
 	}
 

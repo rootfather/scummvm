@@ -72,7 +72,6 @@ typedef enum {
 } DebugE;
 
 void ErrorMsg(ErrorE type, ErrorModuleE moduleId, uint32 errorId);
-void pcErrClose(void);
 void DebugMsg(DebugE type, ErrorModuleE moduleId, const char *format, ...);
 
 } // End of namespace Clue

@@ -55,14 +55,14 @@ extern void livInit(uint16 us_VisLScapeX, uint16 us_VisLScapeY,
                     uint16 us_TotalLScapeWidth, uint16 us_TotalLScapeHeight,
                     byte uch_FrameCount, uint32 ul_StartArea);
 
-extern void livDone(void);
+extern void livDone();
 
-extern void livSetAllInvisible(void);
+extern void livSetAllInvisible();
 
 extern void livSetPos(const char *uch_Name, uint16 XPos, uint16 YPos);
 extern void livSetPlayMode(uint32 playMode);
 extern void livSetActivAreaId(uint32 areaId);
-extern void livRefreshAll(void);
+extern void livRefreshAll();
 
 extern void livLivesInArea(const char *uch_Name, uint32 areaId);
 extern uint32 livWhereIs(const char *uch_Name);
@@ -84,11 +84,11 @@ extern void livSetSpeed(const char *uch_Name, int16 s_Speed);
 
 extern void livAnimate(const char *uch_Name, byte uch_Action, int16 s_XSpeed,
                        int16 s_YSpeed);
-extern void livPrepareAnims(void);
+extern void livPrepareAnims();
 extern void livDoAnims(byte uch_Play, byte uch_Move);
 
 #if 0
-extern void livStopAll(void);
+extern void livStopAll();
 extern byte livGetOldAction(const char *uch_Name);
 #endif
 

@@ -17,7 +17,7 @@
 
 namespace Clue {
 
-LIST *CreateList(void) {
+LIST *CreateList() {
 	LIST *list = (LIST *) TCAllocMem(sizeof(*list), true);
 
 	if (list) {

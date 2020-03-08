@@ -57,7 +57,7 @@ struct Handler *FindHandler(struct System *sys, uint32 id) {
 	return NULL;
 }
 
-struct System *InitSystem(void) {
+struct System *InitSystem() {
 	struct System *sys = (struct System *) TCAllocMem(sizeof(*sys), 0);
 
 	if (sys) {
@@ -640,11 +640,11 @@ void CorrectMem(LIST *l) {
 }
 
 #if 0
-void ResetMem(void) {
+void ResetMem() {
 	sysUsedMem = 0;
 }
 
-size_t plGetUsedMem(void) {
+size_t plGetUsedMem() {
 	return sysUsedMem;
 }
 #endif

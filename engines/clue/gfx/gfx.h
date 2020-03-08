@@ -164,13 +164,13 @@ extern MemRastPort LSRPInMem;
 extern struct Font *bubbleFont;
 extern struct Font *menuFont;
 
-extern void gfxInit(void);
-extern void gfxDone(void);
+extern void gfxInit();
+extern void gfxDone();
 
 extern void gfxSetVideoMode(byte uch_NewMode);
 
-extern void wfd(void);
-extern void wfr(void);
+extern void wfd();
+extern void wfr();
 
 void gfxSetRGB(GC *gc, uint8 color, uint8 r, uint8 g, uint8 b);
 
@@ -181,8 +181,8 @@ void gfxDraw(GC *gc, uint16 x, uint16 y);
 void gfxSetDrMd(GC *rp, GfxDrawModeE mode);
 void gfxSetFont(GC *gc, Font *font);
 
-extern void gfxPrepareRefresh(void);
-extern void gfxRefresh(void);
+extern void gfxPrepareRefresh();
+extern void gfxRefresh();
 
 extern void gfxClearArea(GC *gc);
 extern void gfxSetRect(uint16 us_X, uint16 us_Width);
@@ -211,9 +211,9 @@ extern struct Picture *gfxGetPicture(uint16 us_PictId);
 
 void gfxLoadILBM(const char *fileName);
 
-void gfxWaitTOF(void);
-void gfxWaitTOR(void);
-void gfxWaitTOS(void);
+void gfxWaitTOF();
+void gfxWaitTOR();
+void gfxWaitTOS();
 
 void gfxRAWBlit(uint8 *sp, uint8 *dp, const int x1, const int y1, const int x2,
                 const int y2, const int w, const int h, const int sw,
@@ -234,19 +234,19 @@ void MemBlit(MemRastPort *src, Rect *src_rect,
 
 void gfxRefreshArea(uint16 x, uint16 y, uint16 w, uint16 h);
 
-void gfxScreenFreeze(void);
+void gfxScreenFreeze();
 void gfxScreenThaw(GC *gc, uint16 x, uint16 y, uint16 w, uint16 h);
-void gfxScreenUnFreeze(void);
+void gfxScreenUnFreeze();
 
 void gfxGetMouseXY(GC *gc, uint16 *pMouseX, uint16 *pMouseY);
 
-void ShowIntro(void);
+void ShowIntro();
 
 #if 0
 extern int32 gfxGetILBMSize(struct Collection *coll);
 void gfxCollFromMem(uint16 collId);
 #define GFX_SIZE_OF_COLLECTION(c)   (gfxGetILBMSize(c) + GFX_COLORTABLE_SIZE)
-extern void gfxCorrectUpperRPBitmap(void);
+extern void gfxCorrectUpperRPBitmap();
 #endif
 } // End of namespace Clue
 

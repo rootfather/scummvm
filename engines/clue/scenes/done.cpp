@@ -22,7 +22,7 @@
 
 namespace Clue {
 
-void DoneTaxi(void) {
+void DoneTaxi() {
 	static byte i = 0;
 	LIST *locs = CreateList();
 
@@ -66,7 +66,7 @@ void DoneTaxi(void) {
 	gfxChangeColors(l_gc, 2L, GFX_FADE_OUT, 0L);
 }
 
-void DoneInsideHouse(void) {
+void DoneInsideHouse() {
 	LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
 
 	SceneArgs.ReturnValue = 0;
@@ -153,7 +153,7 @@ void DoneInsideHouse(void) {
 	RemoveList(menu);
 }
 
-void DoneTools(void) {
+void DoneTools() {
 	LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
 
 	SceneArgs.Ueberschrieben = 1;
@@ -189,7 +189,7 @@ void DoneTools(void) {
 	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
 }
 
-void DoneDealer(void) {
+void DoneDealer() {
 	LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
 
 	SceneArgs.Ueberschrieben = 1;
@@ -228,7 +228,7 @@ void DoneDealer(void) {
 	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
 }
 
-void DoneParking(void) {
+void DoneParking() {
 	LIST *bubble = txtGoKey(BUSINESS_TXT, "PARKING");
 	LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
 	Person marc = (Person)dbGetObject(Person_Marc_Smith);
@@ -288,7 +288,7 @@ void DoneParking(void) {
 	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
 }
 
-void DoneGarage(void) {
+void DoneGarage() {
 	LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
 	byte activ = 0;
 	Person marc = (Person)dbGetObject(Person_Marc_Smith);
@@ -331,7 +331,7 @@ void DoneGarage(void) {
 	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
 }
 
-void tcInitFahndung(void) {
+void tcInitFahndung() {
 	Player player = (Player)dbGetObject(Player_Player_1);
 
 	tcMattGoesTo(59);       /* Büro */
@@ -339,7 +339,7 @@ void tcInitFahndung(void) {
 	player->NrOfBurglaries++;
 }
 
-void tcDoneFahndung(void) {
+void tcDoneFahndung() {
 	if (tcStartEvidence()) {
 		tcDonePrison();
 		SceneArgs.ReturnValue = SCENE_NEW_GAME;
@@ -365,7 +365,7 @@ void tcDoneFahndung(void) {
  * und, .... die ganze Scheiße nur wegen den Knochen
  */
 
-void DoneHotelRoom(void) {
+void DoneHotelRoom() {
 	tcCheckForBones();
 
 	if (g_clue->getFeatures() & GF_PROFIDISK) {

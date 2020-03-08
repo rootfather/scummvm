@@ -1,6 +1,6 @@
 namespace Clue {
 
-void DemoDialog(void) {
+void DemoDialog() {
 	static first_time = 1;
 	byte choice = 0;
 	uint16 briggs = 56, tony = 57, matt = 7;

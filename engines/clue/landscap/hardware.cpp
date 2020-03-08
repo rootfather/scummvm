@@ -30,7 +30,7 @@ void lsBlitOneObject(MemRastPort *rp, uint16 offsetFact, uint16 dx, uint16 dy, u
 
 uint16 us_ScrollX, us_ScrollY;
 
-void lsShowEscapeCar(void) {
+void lsShowEscapeCar() {
 	Building b = (Building)dbGetObject(ls->ul_BuildingID);
 
 	livPrepareAnims();
@@ -301,14 +301,14 @@ void lsSetViewPort(uint16 x, uint16 y) {
 	gfxNCH4SetViewPort(x, y);
 }
 
-void lsInitGfx(void) {
+void lsInitGfx() {
 	gfxSetVideoMode(GFX_VIDEO_NCH4);
 
 	lsSetViewPort(0, 0);
 	gfxNCH4SetSplit(256);
 }
 
-void lsCloseGfx(void) {
+void lsCloseGfx() {
 	gfxSetVideoMode(GFX_VIDEO_MCGA);
 
 	tcSetPermanentColors();
@@ -326,7 +326,7 @@ void lsScrollCorrectData(int32 dx, int32 dy) {
 	livSetVisLScape(ls->us_WindowXPos, ls->us_WindowYPos);
 }
 
-void lsDoScroll(void) {
+void lsDoScroll() {
 	gfxNCH4Scroll(ls->us_RasInfoScrollX, ls->us_RasInfoScrollY);
 
 	ls->us_RasInfoScrollX = 0;

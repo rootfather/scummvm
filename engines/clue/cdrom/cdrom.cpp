@@ -14,7 +14,7 @@ unsigned int CDRomInstalled = 0;
 /*
 static SDL_CD *cdrom;
 */
-int CDROM_Install(void) {
+int CDROM_Install() {
 	/*
 	   if (SDL_InitSubSystem(SDL_INIT_CDROM) != 0) {
 	       printf("SDL_InitSubSystem: %s\n", SDL_GetError());
@@ -30,7 +30,7 @@ int CDROM_Install(void) {
 	return 1;
 }
 
-void CDROM_UnInstall(void) {
+void CDROM_UnInstall() {
 	/*
 	   CDRomInstalled = 0;
 
@@ -44,7 +44,7 @@ void CDROM_UnInstall(void) {
 	   }*/
 }
 
-void CDROM_WaitForMedia(void) {
+void CDROM_WaitForMedia() {
 	/*
 	   if (cdrom && CD_INDRIVE(SDL_CDStatus(cdrom))) {
 	   }*/
@@ -57,7 +57,7 @@ void CDROM_PlayAudioSequence(uint8 TrackNum, uint32 StartOffset, uint32 EndOffse
 	   }*/
 }
 
-void CDROM_StopAudioTrack(void) {
+void CDROM_StopAudioTrack() {
 	/*
 	   if (cdrom) {
 	       SDL_CDStop(cdrom);

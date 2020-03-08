@@ -41,10 +41,10 @@ protected:
 	virtual bool hasFeature(EngineFeature f) const;
 
 public:
-	ClueEngine(OSystem *syst, const ADGameDescription *gameDesc);
+ 	ClueEngine(OSystem *syst, const ADGameDescription *gameDesc);
 	~ClueEngine();
 
-	uint32 getFeatures() const;
+	uint32 getFeatures() const; 
 	Common::Language getLanguage() const;
 	char getTxtLanguage() const;
 	Common::Platform getPlatform() const;

@@ -230,7 +230,7 @@ void tcSellTool() {
 	RemoveList(tools);
 }
 
-void tcToolsShop(void) {
+void tcToolsShop() {
 	static byte choice1 = 0;
 
 	if (!(knows(Person_Matt_Stuvysunt, Person_Mary_Bolton)))

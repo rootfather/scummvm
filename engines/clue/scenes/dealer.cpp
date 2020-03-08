@@ -21,7 +21,7 @@
 
 namespace Clue {
 
-void tcDealerDlg(void) {
+void tcDealerDlg() {
 	uint32 locNr = GetObjNrOfLocation(GetLocation);
 	Person dealer = NULL;
 	byte dealerNr, choice = 0;

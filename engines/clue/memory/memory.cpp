@@ -47,7 +47,7 @@ void *TCAllocMem(size_t size, bool clear) {
 	return p;
 }
 
-ptrdiff_t memGetAllocatedMem(void) {
+ptrdiff_t memGetAllocatedMem() {
 	return MemControl.allocated;
 }
 

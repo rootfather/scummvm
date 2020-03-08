@@ -37,8 +37,8 @@ extern char txtTimer[20];
 extern char txtWeight[20];
 extern char txtSeconds[20];
 
-void plInit(void);
-void plDone(void);
+void plInit();
+void plDone();
 
 } // End of namespace Clue
 

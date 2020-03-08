@@ -23,7 +23,7 @@ static bool SfxChannelOn = false;
 static bool MusicChannelOn = true;
 
 
-void InitAudio(void) {
+void InitAudio() {
 	FXBase.us_AudioOk = 1;
 	if (!g_clue->_mixer->isReady()) {
 		DebugMsg(ERR_WARNING, ERROR_MODULE_SOUND, "Mixer error");
@@ -35,7 +35,7 @@ void InitAudio(void) {
 	FXBase.pMusicBuffer = sndCreateBuffer(SND_BUFFER_SIZE);
 }
 
-void RemoveAudio(void) {
+void RemoveAudio() {
 	g_clue->_mixer->stopAll();
 	FXBase.us_AudioOk = 0;
 }
@@ -43,13 +43,13 @@ void RemoveAudio(void) {
 Audio::SoundHandle sfx;
 Audio::AudioStream *sfxFile;
 
-void sndInitFX(void) {
+void sndInitFX() {
 	SfxChannelOn = false;
 	g_clue->_mixer->stopHandle(sfx);
 	sfxFile = NULL;
 }
 
-void sndDoneFX(void) {
+void sndDoneFX() {
 	SfxChannelOn = false;
 	g_clue->_mixer->stopHandle(sfx);
 	sfxFile = NULL;
@@ -69,7 +69,7 @@ void sndPrepareFX(const char *name) {
 	}
 }
 
-void sndPlayFX(void) {
+void sndPlayFX() {
 	SfxChannelOn = true;
 	if (sfxFile) {
 		g_clue->_mixer->playStream(Audio::Mixer::kSFXSoundType, &sfx, sfxFile);

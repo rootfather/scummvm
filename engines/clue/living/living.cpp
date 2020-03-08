@@ -52,7 +52,7 @@ void livInit(uint16 us_VisLScapeX, uint16 us_VisLScapeY,
 	livSetPlayMode(LIV_PM_NORMAL);
 }
 
-void livDone(void) {
+void livDone() {
 	if (sc) {
 		if (sc->p_Livings) {
 			for (NODE *node = (NODE *) LIST_HEAD(sc->p_Livings); NODE_SUCC(node);
@@ -90,11 +90,11 @@ void livLivesInArea(const char *uch_Name, uint32 areaId) {
 		liv->ul_LivesInAreaId = areaId;
 }
 
-void livRefreshAll(void) {
+void livRefreshAll() {
 	livDoAnims(0, 0);
 }
 
-void livSetAllInvisible(void) {
+void livSetAllInvisible() {
 	if (sc) {
 		for (struct Living *liv = (struct Living *) LIST_HEAD(sc->p_Livings); NODE_SUCC(liv);
 		        liv = (struct Living *) NODE_SUCC(liv))
@@ -173,7 +173,7 @@ static void livCorrectViewDirection(struct Living *liv) {
 	}
 }
 
-void livPrepareAnims(void) {
+void livPrepareAnims() {
 }
 
 void livDoAnims(byte uch_Play, byte uch_Move) {
@@ -239,7 +239,7 @@ byte livGetViewDirection(const char *uch_Name) {
 }
 
 #if 0
-void livStopAll(void) {
+void livStopAll() {
 	for (struct Living *liv = (struct Living *) LIST_HEAD(sc->p_Livings); NODE_SUCC(liv); liv = (struct Living *) NODE_SUCC(liv)) {
 		if (liv->uch_Status == LIV_ENABLED)
 			livAnimate(NODE_NAME(liv), ANM_STAND, 0, 0);
@@ -356,7 +356,7 @@ static void livRem(struct Living *liv) {
 	BobDone(liv->us_LivingNr);
 }
 
-static void livLoadTemplates(void) {
+static void livLoadTemplates() {
 	LIST *l = CreateList();
 
 	char pathname[DSK_PATH_MAX];
@@ -386,7 +386,7 @@ static void livRemTemplate(struct AnimTemplate *tlt) {
 	/* dummy function */
 }
 
-static void livLoadLivings(void) {
+static void livLoadLivings() {
 	LIST *l = CreateList();
 
 	char pathname[DSK_PATH_MAX];

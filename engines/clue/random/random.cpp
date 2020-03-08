@@ -25,11 +25,11 @@ namespace Clue {
 
 Common::RandomSource *rnd;
 
-void rndInit(void) {
+void rndInit() {
 	rnd = new Common::RandomSource("clue"); /* Zufallszahl über Timer initialiseren */
 }
 
-void rndDone(void) {
+void rndDone() {
 	delete rnd;
 }
 

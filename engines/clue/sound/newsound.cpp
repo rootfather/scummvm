@@ -14,13 +14,13 @@
 namespace Clue {
 char currSoundName[DSK_PATH_MAX];
 
-void sndInit(void) {
+void sndInit() {
 	currSoundName[0] = '\0';
 
 	hscInit();
 }
 
-void sndDone(void) {
+void sndDone() {
 	hscDone();
 }
 
@@ -36,7 +36,7 @@ void sndPlaySound(const char *name, uint32 mode) {
 	}
 }
 
-char *sndGetCurrSoundName(void) {
+char *sndGetCurrSoundName() {
 	return currSoundName;
 }
 

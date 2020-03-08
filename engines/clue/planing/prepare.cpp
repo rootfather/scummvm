@@ -61,7 +61,7 @@ void plCloseHandler(NODE *n) {
 }
 
 /* Preparation & Unpreparation functions */
-void plPrepareData(void) {
+void plPrepareData() {
 	for (uint i = 0; i < PLANING_NR_LOOTS; i++)
 		Planing_Loot[i] = 0;
 
@@ -166,7 +166,7 @@ void plPrepareGfx(uint32 objId, byte landscapMode, byte prepareMode) {
 	}
 }
 
-void plUnprepareGfx(void) {
+void plUnprepareGfx() {
 	gfxShow(CurrentBackground, GFX_NO_REFRESH | GFX_FADE_OUT, 5, -1, -1);
 	gfxClearArea(u_gc);
 
@@ -177,7 +177,7 @@ void plUnprepareGfx(void) {
 	gfxShow(CurrentBackground, GFX_NO_REFRESH | GFX_BLEND_UP, 0, -1, -1);
 }
 
-void plPrepareRel(void) {
+void plPrepareRel() {
 	consistsOfAll(Planing_BldId, OLF_PRIVATE_LIST, Object_LSArea);
 	LIST *areas = ObjectListPrivate;
 
@@ -195,12 +195,12 @@ void plPrepareRel(void) {
 		ErrorMsg(No_Mem, ERROR_MODULE_PLANING, 0);
 }
 
-void plUnprepareRel(void) {
+void plUnprepareRel() {
 	RemRelation(take_RelId);
 	RemRelation(hasLoot_Clone_RelId);
 }
 
-void plPrepareNames(void) {
+void plPrepareNames() {
 	for (int i = 0; i < PersonsNr; i++) {
 		if (dbIsObject(OL_NR(GetNthNode(PersonsList, i)), Object_Person))
 			sprintf(Planing_Name[i], "Person_%d", i + 1);
@@ -278,7 +278,7 @@ void plPrepareSys(uint32 currPer, uint32 objId, byte sysMode) {
 		SetActivHandler(plSys, OL_NR(GetNthNode(PersonsList, CurrentPerson)));
 }
 
-void plUnprepareSys(void) {
+void plUnprepareSys() {
 	plPrepareSys(0, 0, PLANING_HANDLER_CLOSE);
 
 	if (PersonsList)

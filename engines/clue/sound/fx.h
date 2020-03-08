@@ -26,13 +26,13 @@ struct FXBase {
 
 extern struct FXBase FXBase;
 
-extern void sndInitFX(void);
-extern void sndDoneFX(void);
+extern void sndInitFX();
+extern void sndDoneFX();
 extern void sndPrepareFX(const char *Name);
-extern void sndPlayFX(void);
+extern void sndPlayFX();
 
-extern void InitAudio(void);
-extern void RemoveAudio(void);
+extern void InitAudio();
+extern void RemoveAudio();
 
 } // End of namespace Clue
 

@@ -57,7 +57,7 @@ typedef struct List {
  * Prototypes *
  **************/
 
-LIST *CreateList(void);
+LIST *CreateList();
 void RemoveList(LIST *list);
 void FreeList(LIST *list);
 void *AddNode(LIST *list, void *node, void *predNode);

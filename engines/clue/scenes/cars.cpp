@@ -65,7 +65,7 @@ char *tcShowPriceOfCar(uint32 nr, uint32 type, void *data) {
 	return line;
 }
 
-void tcBuyCar(void) {
+void tcBuyCar() {
 	Person marc = (Person) dbGetObject(Person_Marc_Smith);
 
 	byte choice = 0, choice1 = 0;

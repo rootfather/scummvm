@@ -105,7 +105,7 @@ struct EventNode {
 /* Story */
 extern void NewStory(byte *name, uint32 StartZeit, uint32 StartOrt);
 extern void ChangeStory(uint32 StartZeit, uint32 StartOrt);
-extern void RemoveStory(void);
+extern void RemoveStory();
 extern void WriteStory(byte *filename);
 extern void ReadStory(byte *filename);
 
@@ -113,12 +113,12 @@ extern void ReadStory(byte *filename);
 extern void AddScene(struct NewScene *ns);
 extern void ChangeScene(byte *name, struct NewScene *ns);
 extern void RemoveScene(byte *name);
-extern void RemoveAllScenes(void);
+extern void RemoveAllScenes();
 
 /* Events */
 extern void AddEvent(struct NewEvent *ev);
 extern void RemoveEvent(byte *name);
-extern void RemoveAllEvents(void);
+extern void RemoveAllEvents();
 
 /* Specials */
 char *GetName(uint32 EventNr);

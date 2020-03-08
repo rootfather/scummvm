@@ -42,13 +42,13 @@ extern bool ChoiceOk(byte choice, byte exit, LIST *l);
 extern byte Bubble(LIST *bubble, byte activ, void (*func)(byte), uint32 waitTime);
 extern byte Menu(LIST *menu, uint32 possibility, byte activ, void (*func)(byte), uint32 waitTime);
 
-extern void RefreshMenu(void);
+extern void RefreshMenu();
 
 extern void SetBubbleType(uint16 type);
 extern void SetPictID(uint16 PictID);
-void SetMenuTimeOutFunc(void (*func)(void));
+void SetMenuTimeOutFunc(void (*func)());
 
-extern byte GetExtBubbleActionInfo(void);
+extern byte GetExtBubbleActionInfo();
 
 } // End of namespace Clue
 

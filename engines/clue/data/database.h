@@ -118,8 +118,8 @@ struct ObjectNode *dbAddObjectNode(LIST *objectList, uint32 nr, uint32 flags);
 void dbRemObjectNode(LIST *objectList, uint32 nr);
 
 /* public prototypes */
-void dbInit(void);
-void dbDone(void);
+void dbInit();
+void dbDone();
 
 #if 0
 void dbDeleteObject(uint32 nr);

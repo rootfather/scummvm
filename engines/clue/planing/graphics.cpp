@@ -89,7 +89,7 @@ void plDisplayTimer(uint32 time, byte doSpotsImmediatly) {
 	}
 }
 
-void plDisplayInfo(void) {
+void plDisplayInfo() {
 	char info[80];
 	dbGetObjectName(OL_NR(GetNthNode(PersonsList, CurrentPerson)), info);
 

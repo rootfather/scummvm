@@ -244,7 +244,7 @@ static void plPersonLearns(uint32 persId, uint32 toolId) {
 	}
 }
 
-static byte plCarTooFull(void) {
+static byte plCarTooFull() {
 	LIST *l = tcMakeLootList(Person_Matt_Stuvysunt, Relation_has);
 
 	CompleteLoot complete = (CompleteLoot) dbGetObject(CompleteLoot_LastLoot);
@@ -259,7 +259,7 @@ static byte plCarTooFull(void) {
 	return ret;
 }
 
-static void plPlayerAction(void) {
+static void plPlayerAction() {
 	byte patroCounter = 3;
 	byte DoScrolling = 0;
 

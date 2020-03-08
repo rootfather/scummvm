@@ -43,7 +43,7 @@ byte ExtBubbleActionInfo = 0;
 uint16 ActivPersonPictID = MATT_PICTID;
 uint16 MenuCoords[TXT_MAX_MENU_COLUMNS];
 
-void (*MenuTimeOutFunc)(void);
+void (*MenuTimeOutFunc)();
 
 /* refresh */
 LIST *refreshMenu = NULL;

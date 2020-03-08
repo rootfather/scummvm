@@ -24,11 +24,11 @@
 
 namespace Clue {
 
-void InitLocations(void);
-void FreeLocations(void);
+void InitLocations();
+void FreeLocations();
 
-void InitSceneInfo(void);
-void FreeSceneInfo(void);
+void InitSceneInfo();
+void FreeSceneInfo();
 
 void PrepareStory(const char *filename);
 void LoadSceneforStory(struct NewScene *dest, Common::Stream *file);
@@ -61,7 +61,7 @@ void InitStory(const char *story_filename) {
 	PatchStory();
 }
 
-void CloseStory(void) {
+void CloseStory() {
 	uint32 i;
 
 	if (film) {
@@ -89,7 +89,7 @@ void SetEnabledChoices(uint32 ChoiceMask) {
 	film->EnabledChoices = ChoiceMask;
 }
 
-void RefreshCurrScene(void) {
+void RefreshCurrScene() {
 	NODE *node = (NODE *)GetNthNode(film->loc_names, GetLocation);
 
 	tcRefreshLocationInTitle(GetLocation);
@@ -99,7 +99,7 @@ void RefreshCurrScene(void) {
 	RefreshMenu();
 }
 
-void InitLocations(void) {
+void InitLocations() {
 	LIST *l = CreateList();
 	char pathname[DSK_PATH_MAX];
 
@@ -111,7 +111,7 @@ void InitLocations(void) {
 		ErrorMsg(Disk_Defect, ERROR_MODULE_GAMEPLAY, 1);
 }
 
-void PatchStory(void) {
+void PatchStory() {
 	if (!(GamePlayMode & GP_DEMO)) {
 		GetScene(26214400L)->bed->Ort = 3;  /* 4th Burglary, Hotelzimmer */
 		GetScene(26738688L)->bed->Ort = 7;  /* Arrest, Polizei!          */
@@ -146,7 +146,7 @@ void PatchStory(void) {
 	}
 }
 
-uint32 PlayStory(void) {
+uint32 PlayStory() {
 	struct Scene *curr, *next = NULL;
 	struct Scene *story_scene = 0;
 	uint8 interr_allowed = 1, first = 1;
@@ -586,7 +586,7 @@ void SetCurrentScene(struct Scene *scene) {
 	film->act_scene = scene;
 }
 
-struct Scene *GetCurrentScene(void) {
+struct Scene *GetCurrentScene() {
 	return (film ? film->act_scene : NULL);
 }
 
@@ -658,13 +658,13 @@ char *BuildDate(uint32 days, char *date) {
 	return (date);
 }
 
-char *GetCurrLocName(void) {
+char *GetCurrLocName() {
 	uint32 index = GetCurrentScene()->LocationNr;
 	return (NODE_NAME(GetNthNode(film->loc_names, index)));
 }
 
 #if 0
-static uint32 GetAmountOfScenes(void) {
+static uint32 GetAmountOfScenes() {
 	/* for extern modules */
 	return (film ? film->AmountOfScenes : 0);
 }

@@ -172,7 +172,7 @@ void tcRefreshLocationInTitle(uint32 locNr) {
 	PrintStatus(line);
 }
 
-void StdInit(void) {
+void StdInit() {
 	struct Scene *sc = GetCurrentScene();
 	bool sameLocation = (sc->LocationNr == GetLocation);
 
@@ -463,7 +463,7 @@ uint32 StdHandle(uint32 choice) {
 	return (succ_eventnr);
 }
 
-void StdDone(void) {
+void StdDone() {
 	LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
 
 	SceneArgs.ReturnValue = 0L;
@@ -518,7 +518,7 @@ void StdDone(void) {
 }
 
 
-void InitTaxiLocations(void) {
+void InitTaxiLocations() {
 	RemRelation(Relation_taxi); /* alle Relationen löschen! */
 	AddRelation(Relation_taxi);
 
@@ -566,7 +566,7 @@ void InitTaxiLocations(void) {
 	}
 }
 
-void LinkScenes(void) {
+void LinkScenes() {
 	(GetLocScene(8))->Done = DoneTaxi;
 	(GetLocScene(51))->Done = DoneParking;
 	(GetLocScene(50))->Done = DoneGarage;
@@ -673,12 +673,12 @@ void LinkScenes(void) {
 	}
 }
 
-void SetFunc(struct Scene *sc, void (*init)(void), void (*done)(void)) {
+void SetFunc(struct Scene *sc, void (*init)(), void (*done)()) {
 	sc->Init = init;
 	sc->Done = done;
 }
 
-bool tcPersonIsHere(void) {
+bool tcPersonIsHere() {
 	uint32 locNr = GetObjNrOfLocation(GetLocation);
 
 // TODO: invert the check to return directly
@@ -708,7 +708,7 @@ bool tcPersonIsHere(void) {
 	return false;
 }
 
-void tcPersonGreetsMatt(void) {
+void tcPersonGreetsMatt() {
 	static uint32 upper = 4L;
 
 	if (CalcRandomNr(0L, upper) == 1) { /* alle upper mal wird Matt gegrüßt ! */
@@ -767,7 +767,7 @@ void tcCutName(char *Name, byte Sign, uint32 maxLength) {
 	strcpy(Name, Source);
 }
 
-void ShowMenuBackground(void) {
+void ShowMenuBackground() {
 	if (CurrentBackground != BGD_CLEAR) /* MOD */
 		gfxShow(CurrentBackground, GFX_ONE_STEP | GFX_NO_REFRESH, 0, -1, -1);
 	else

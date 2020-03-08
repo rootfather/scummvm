@@ -32,11 +32,11 @@ void SetPictID(uint16 PictID) {
 	ActivPersonPictID = PictID;
 }
 
-byte GetExtBubbleActionInfo(void) {
+byte GetExtBubbleActionInfo() {
 	return ExtBubbleActionInfo;
 }
 
-void SetMenuTimeOutFunc(void (*func)(void)) {
+void SetMenuTimeOutFunc(void (*func)()) {
 	MenuTimeOutFunc = func;
 }
 
@@ -142,7 +142,7 @@ static char SearchMouseActiv(uint32 possibility, byte max) {
 	return -1;
 }
 
-void RefreshMenu(void) {
+void RefreshMenu() {
 	if (refreshMenu) {
 		byte max = GetNrOfNodes(refreshMenu);
 

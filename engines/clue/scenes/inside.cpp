@@ -25,7 +25,7 @@ namespace Clue {
 uint32 CurrAreaId;
 LSObject CurrLSO;       /* for FadeObjectInside */
 
-static void FadeInsideObject(void) {
+static void FadeInsideObject() {
 	static byte status = 1;
 
 	lsFadeRasterObject(CurrAreaId, CurrLSO, (status++) % 2);

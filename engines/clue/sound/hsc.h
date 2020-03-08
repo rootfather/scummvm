@@ -13,12 +13,12 @@
 
 namespace Clue {
 
-void hscInit(void);
-void hscReset(void);
-void hscDone(void);
+void hscInit();
+void hscReset();
+void hscDone();
 bool hscLoad(const char *fileName);
 
-void hscMusicPlayer(void);
+void hscMusicPlayer();
 
 } // End of namespace Clue
 

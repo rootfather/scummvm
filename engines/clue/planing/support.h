@@ -41,7 +41,7 @@ namespace Clue {
 #define PLANING_CORRECT_TIME      3
 
 
-uint32 plGetNextLoot(void);
+uint32 plGetNextLoot();
 
 bool plLivingsPosAtCar(uint32 bldId);
 bool plAllInCar(uint32 bldId);

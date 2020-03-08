@@ -13,7 +13,7 @@ namespace Clue {
 
 struct RastPort;
 
-void BobInitLists(void);
+void BobInitLists();
 
 uint16 BobInit(uint16 width, uint16 height);
 void BobDone(uint16 BobID);

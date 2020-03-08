@@ -119,7 +119,7 @@ static LIST *ParseTalkText(LIST *origin, LIST *bubble, byte known) {
 
 		line[line_pos++] = EOS;
 
-		(void) CreateNode(bubble, 0L, line);
+		CreateNode(bubble, 0L, line);
 	}
 
 	return (keyWords);
@@ -236,7 +236,7 @@ void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode) {
 	RemoveList(bubble);
 }
 
-void PlayFromCDROM(void) {
+void PlayFromCDROM() {
 	if ((StartFrame != DLG_NO_SPEECH) && (EndFrame != DLG_NO_SPEECH)) {
 		sndFading(16);
 		CDROM_PlayAudioSequence(2, StartFrame, EndFrame);
@@ -299,7 +299,7 @@ byte Say(uint32 TextID, byte activ, uint16 person, const char *text) {
 }
 
 
-uint32 Talk(void) {
+uint32 Talk() {
 	inpTurnESC(0);
 
 	uint32 locNr = GetObjNrOfLocation(GetLocation);

@@ -1535,7 +1535,7 @@ int32 dbSortObjectList(LIST **objectList, int16(*processNode)(struct ObjectNode 
 
 
 /* public prototypes */
-void dbInit(void) {
+void dbInit() {
 	if (!(ObjectList = CreateList()))
 		ErrorMsg(No_Mem, ERROR_MODULE_DATABASE, 3);
 
@@ -1549,7 +1549,7 @@ void dbInit(void) {
 	DecodeKey = dbDecode;
 }
 
-void dbDone(void) {
+void dbDone() {
 	for (uint8 objHashValue = 0; objHashValue < OBJ_HASH_SIZE; objHashValue++) {
 		if (objHash[objHashValue])
 			RemoveList(objHash[objHashValue]);

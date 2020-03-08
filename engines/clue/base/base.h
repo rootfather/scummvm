@@ -21,7 +21,6 @@
 #define MODULE_BASE
 
 #include "clue/gameplay/gp.h"
-#include "clue/sound/hsc.h"
 
 namespace Clue {
 /*
@@ -37,8 +36,8 @@ namespace Clue {
 
 extern void *StdBuffer0, *StdBuffer1;
 
-extern void tcSetPermanentColors(void);
-void tcDone(void);
+extern void tcSetPermanentColors();
+void tcDone();
 int clue_main(const char *path);
 
 } // End of namespace Clue

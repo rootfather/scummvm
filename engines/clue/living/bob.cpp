@@ -32,9 +32,9 @@ struct Bob bob_zero;
 
 MemRastPort BobRP;
 
-void gfxNCH4Refresh(void);
+void gfxNCH4Refresh();
 
-void BobInitLists(void) {
+void BobInitLists() {
 	static bool init;
 
 	if (!init) {

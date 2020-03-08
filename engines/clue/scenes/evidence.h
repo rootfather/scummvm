@@ -74,7 +74,7 @@ struct Search {         /* wegen Arrays nicht in objects */
 };
 
 extern int32 tcCalcCarEscape(int32 timeLeft);
-extern void tcForgetGuys(void);
+extern void tcForgetGuys();
 
 extern struct Search Search;
 

@@ -98,8 +98,8 @@ static struct SpriteControl *sc = NULL;
 
 static struct Living *livGet(const char *uch_Name);
 
-static void livLoadTemplates(void);
-static void livLoadLivings(void);
+static void livLoadTemplates();
+static void livLoadLivings();
 static void livRemTemplate(struct AnimTemplate *tlt);
 static void livRem(struct Living *liv);
 static void livHide(struct Living *liv);

@@ -30,15 +30,15 @@ namespace Clue {
 
 struct RastPort;
 
-extern uint32 gfxNCH4GetCurrScrollOffset(void);
+extern uint32 gfxNCH4GetCurrScrollOffset();
 void gfxSetDarkness(byte value);
 
-void gfxNCH4Refresh(void);
+void gfxNCH4Refresh();
 
 extern void gfxNCH4SetViewPort(int x, int y);
 extern void gfxNCH4Scroll(int x, int y);
 extern void gfxNCH4SetSplit(uint16 line);
-void gfxLSInit(void);
+void gfxLSInit();
 
 void gfxLSPut(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, uint16 w, uint16 h);
 void gfxLSPutMsk(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, uint16 w, uint16 h);

@@ -60,20 +60,20 @@ static const byte cursorSprite[] = {
 #undef x
 #undef O
 
-void inpInitMouse(void) {
+void inpInitMouse() {
 	CursorMan.replaceCursor(cursorSprite, 11, 16, 0, 0, 255);
 	CursorMan.showMouse(true);
 }
 
 
-void gfxWaitTOF(void);
+void gfxWaitTOF();
 
 
-static void inpDoPseudoMultiTasking(void) {
+static void inpDoPseudoMultiTasking() {
 	animator();
 }
 
-void inpOpenAllInputDevs(void) {
+void inpOpenAllInputDevs() {
 	inpSetKeyRepeat((1 << 5) | 10);
 
 	IHandler.EscStatus = true;
@@ -88,14 +88,14 @@ void inpOpenAllInputDevs(void) {
 	inpClearKbBuffer();
 }
 
-void inpCloseAllInputDevs(void) {
+void inpCloseAllInputDevs() {
 }
 
-void inpMousePtrOn(void) {
+void inpMousePtrOn() {
 	//CursorMan.showMouse(true);
 }
 
-void inpMousePtrOff(void) {
+void inpMousePtrOff() {
 	//CursorMan.showMouse(false);
 }
 
@@ -288,7 +288,7 @@ void inpSetKeyRepeat(unsigned char rate) {
 	}
 }
 
-void inpClearKbBuffer(void) {
+void inpClearKbBuffer() {
 }
 
 } // End of namespace Clue

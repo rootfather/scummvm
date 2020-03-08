@@ -71,7 +71,7 @@ void lsSetVisibleWindow(uint16 x, uint16 y) {
 }
 
 #ifdef THECLOU_DEBUG
-static void lsShowRooms(void) {
+static void lsShowRooms() {
 	if (GamePlayMode & GP_SHOW_ROOMS) {
 		LIST *rooms = lsGetRoomsOfArea(ls->ul_AreaID);
 		NODE *room;
@@ -92,7 +92,7 @@ static void lsShowRooms(void) {
 }
 #endif
 
-void lsBuildScrollWindow(void) {
+void lsBuildScrollWindow() {
 	int32 i, j;
 	NODE *node;
 	LSArea area = (LSArea) dbGetObject(ls->ul_AreaID);
@@ -382,7 +382,7 @@ void lsRemLootBag(uint32 bagId) {
 	hasLootBagUnSet(ls->ul_AreaID, bagId);
 }
 
-void lsRefreshAllLootBags(void) {
+void lsRefreshAllLootBags() {
 	uint32 i;
 
 	livPrepareAnims();
@@ -451,10 +451,9 @@ void lsWalkThroughWindow(LSObject lso, uint16 us_LivXPos, uint16 us_LivYPos,
 		(*us_YPos) += deltaY;   /* horizontal */
 }
 
-void lsPatchObjects(void)
+void lsPatchObjects() {
 /* for some objects the LDesigner does not set the status bits correctly,
        so we need to patch them here at runtime */
-{
 	NODE *n;
 	LSObject lso;
 	Item item;

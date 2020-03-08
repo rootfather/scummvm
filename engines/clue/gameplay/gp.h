@@ -115,8 +115,8 @@ struct SceneArgs {
 struct Scene {
 	uint32 EventNr;
 
-	void (*Init)(void);
-	void (*Done)(void);
+	void (*Init)();
+	void (*Done)();
 
 	struct Bedingungen *bed;    /* damit das Ereignis eintritt */
 
@@ -148,33 +148,33 @@ struct TCEventNode {
 
 /* global functions */
 void InitStory(const char *story_filename);
-extern void CloseStory(void);
+extern void CloseStory();
 
-extern uint32 PlayStory(void);
-extern void PatchStory(void);
+extern uint32 PlayStory();
+extern void PatchStory();
 
 extern void SetEnabledChoices(uint32 ChoiceMask);
 
-extern void StdDone(void);
-extern void StdInit(void);
+extern void StdDone();
+extern void StdInit();
 
-extern void RefreshCurrScene(void);
+extern void RefreshCurrScene();
 extern void SetCurrentScene(struct Scene *scene);
 
-extern char *GetCurrLocName(void);
+extern char *GetCurrLocName();
 
 char *BuildDate(uint32 days, char *date);
 char *BuildTime(uint32 min, char *time);
 
 void FormatDigit(uint32 digit, char *s);
 
-extern struct Scene *GetCurrentScene(void);
+extern struct Scene *GetCurrentScene();
 extern struct Scene *GetLocScene(uint32 locNr);
 extern struct Scene *GetScene(uint32 EventNr);
 
 extern void AddVTime(uint32 Zeit);
 
-extern void LinkScenes(void);   /* Init und Done in jeder Scene Struktur setzen */
+extern void LinkScenes();   /* Init und Done in jeder Scene Struktur setzen */
 
 extern struct SceneArgs SceneArgs;
 extern struct Film *film;

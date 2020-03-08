@@ -30,24 +30,24 @@ struct Scene;
 
 extern void TCGamePause(byte activ);
 
-extern bool tcPersonIsHere(void);
+extern bool tcPersonIsHere();
 
-extern void tcPlaySound(void);
-extern void tcPlayStreetSound(void);
-extern void tcPersonGreetsMatt(void);
+extern void tcPlaySound();
+extern void tcPlayStreetSound();
+extern void tcPersonGreetsMatt();
 
 extern uint32 StdHandle(uint32 choice);
 
-extern void SetFunc(struct Scene *sc, void (*init)(void), void (*done)(void));
+extern void SetFunc(struct Scene *sc, void (*init)(), void (*done)());
 void PrintStatus(const char *text);
-extern void InitTaxiLocations(void);
-extern void LinkScenes(void);
+extern void InitTaxiLocations();
+extern void LinkScenes();
 
 extern void tcGetLastName(const char *Name, char *dest, uint32 maxLength);
 extern void tcCutName(char *Name, byte Sign, uint32 maxLength);
 
-extern bool tcLoadTheClou(void);
-extern void tcSaveTheClou(void);
+extern bool tcLoadTheClou();
+extern void tcSaveTheClou();
 extern uint32 tcBurglary(uint32 buildingID);
 
 extern bool tcLoadChangesInScenes(const char *fileName);
@@ -55,12 +55,12 @@ extern bool tcSaveChangesInScenes(const char *fileName);
 
 extern void tcRefreshLocationInTitle(uint32 locNr);
 extern void ShowTime(uint32 delay);
-extern void RefreshAfterDiskRequester(void);
+extern void RefreshAfterDiskRequester();
 
 extern bool tcLoadIt(char activ);
 extern void tcRefreshAfterLoad(bool loaded);
 
-extern void ShowMenuBackground(void);
+extern void ShowMenuBackground();
 
 } // End of namespace Clue
 

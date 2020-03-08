@@ -43,7 +43,7 @@ void gfxSetDarkness(uint8 value) {
 	gfxNCH4Refresh();
 }
 
-void gfxNCH4Refresh(void) {
+void gfxNCH4Refresh() {
 	gfxScreenFreeze();
 
 	gfxBlit(u_gc, &LSRPInMem, ScrX, ScrY, 0, 0,
@@ -72,7 +72,7 @@ void gfxNCH4Scroll(int x, int y) {
 void gfxNCH4SetSplit(uint16 line) {
 }
 
-void gfxLSInit(void) {
+void gfxLSInit() {
 	ScrX = 0;
 	ScrY = 0;
 

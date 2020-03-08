@@ -14,13 +14,13 @@ namespace Clue {
 
 extern unsigned int CDRomInstalled;
 
-int CDROM_Install(void);
-void CDROM_UnInstall(void);
+int CDROM_Install();
+void CDROM_UnInstall();
 
-void CDROM_WaitForMedia(void);
+void CDROM_WaitForMedia();
 
 void CDROM_PlayAudioSequence(uint8 TrackNum, uint32 StartOffset, uint32 EndOffset);
-void CDROM_StopAudioTrack(void);
+void CDROM_StopAudioTrack();
 
 } // End of namespace Clue
 

@@ -72,17 +72,17 @@ void plBuildHandler(NODE *n);
 void plClearHandler(NODE *n);
 void plCloseHandler(NODE *n);
 
-void plPrepareData(void);
+void plPrepareData();
 void plPrepareSprite(uint32 livNr, uint32 areaId);
-void plPrepareNames(void);
+void plPrepareNames();
 
 void plPrepareGfx(uint32 objId, byte landscapMode, byte prepareMode);
-void plPrepareRel(void);
+void plPrepareRel();
 void plPrepareSys(uint32 currPer, uint32 objId, byte sysMode);
 
-void plUnprepareGfx(void);
-void plUnprepareRel(void);
-void plUnprepareSys(void);
+void plUnprepareGfx();
+void plUnprepareRel();
+void plUnprepareSys();
 
 } // End of namespace Clue
 

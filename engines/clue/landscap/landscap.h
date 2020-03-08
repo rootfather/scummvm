@@ -87,7 +87,7 @@ namespace Clue {
 
 /* globale functions ! */
 extern void lsInitLandScape(uint32 bID, byte mode);
-extern void lsDoneLandScape(void);
+extern void lsDoneLandScape();
 
 extern void lsSetScrollSpeed(byte pixel);
 extern void lsSetActivLiving(const char *Name, uint16 x, uint16 y);
@@ -96,9 +96,9 @@ extern void lsRefreshObjectList(uint32 areaID);
 
 extern uint32 lsAddLootBag(uint16 x, uint16 y, byte bagNr); /* bagNr : 1 - 8! */
 extern void lsRemLootBag(uint32 bagId);
-extern void lsRefreshAllLootBags(void);
+extern void lsRefreshAllLootBags();
 
-extern void lsShowEscapeCar(void);
+extern void lsShowEscapeCar();
 
 extern void lsFastRefresh(LSObject lso);
 
@@ -112,13 +112,13 @@ extern void lsSetCollMode(byte collMode);
 extern LIST *lsGetRoomsOfArea(uint32 ul_AreaId);
 
 extern void lsSetObjectRetrievalList(uint32 ul_AreaId);
-extern uint32 lsGetCurrObjectRetrieval(void);
+extern uint32 lsGetCurrObjectRetrieval();
 
 extern uint32 lsGetObjectState(uint32 objID);
-extern uint16 lsGetObjectCount(void);
+extern uint16 lsGetObjectCount();
 extern byte lsGetLoudness(uint16 x, uint16 y);
 
-extern void lsDoScroll(void);
+extern void lsDoScroll();
 extern void lsScrollCorrectData(int32 dx, int32 dy);
 extern byte lsScrollLandScape(byte direction);
 extern byte lsInitScrollLandScape(byte direction, byte mode);
@@ -150,8 +150,8 @@ extern bool lsIsLSObjectInActivArea(LSObject lso);
 
 extern byte lsIsCollision(int32 x, int32 y, byte direction);    /* sprite needs it */
 
-extern uint32 lsGetCurrBuildingID(void);
-extern uint32 lsGetActivAreaID(void);
+extern uint32 lsGetCurrBuildingID();
+extern uint32 lsGetActivAreaID();
 
 extern void lsInitObjectDB(uint32 bld, uint32 areaID);
 extern void lsLoadGlobalData(uint32 bld, uint32 ul_AreaId);
@@ -166,17 +166,17 @@ extern void lsWalkThroughWindow(LSObject lso, uint16 us_LivXPos,
                                 uint16 *us_YPos);
 
 /* internal functions ! */
-extern void lsPatchObjects(void);
+extern void lsPatchObjects();
 
 extern void lsSetVisibleWindow(uint16 x, uint16 y);
 
 extern byte lsIsInside(LSObject lso, uint16 x, uint16 y, uint16 x1, uint16 y1);
 
-extern uint32 lsGetStartArea(void);
+extern uint32 lsGetStartArea();
 
-extern void lsInitObjects(void);
+extern void lsInitObjects();
 
-extern void lsBuildScrollWindow(void);
+extern void lsBuildScrollWindow();
 extern void lsShowAlarmAndPower(LSObject lso, uint32 x, uint32 y);
 
 extern bool lsShowOneObject(LSObject lso, int16 destx, int16 desty,
@@ -185,8 +185,8 @@ extern bool lsShowOneObject(LSObject lso, int16 destx, int16 desty,
 void  lsSafeRectFill(uint16 x0, uint16 y0, uint16 x1, uint16 y1, uint8 color);
 
 /* external functions */
-extern void lsInitGfx(void);
-extern void lsCloseGfx(void);
+extern void lsInitGfx();
+extern void lsCloseGfx();
 
 extern uint32 ConsistOfRelationID;
 extern uint32 hasLockRelationID;
@@ -196,10 +196,10 @@ extern uint32 hasLootRelationID;
 extern uint32 hasRoomRelationID;
 
 #if 0
-extern uint16 lsGetTotalXPos(void);
-extern uint16 lsGetTotalYPos(void);
-extern uint16 lsGetWindowXPos(void);
-extern uint16 lsGetWindowYPos(void);
+extern uint16 lsGetTotalXPos();
+extern uint16 lsGetTotalYPos();
+extern uint16 lsGetWindowXPos();
+extern uint16 lsGetWindowYPos();
 #endif
 } // End of namespace Clue
 

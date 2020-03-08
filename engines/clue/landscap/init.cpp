@@ -23,8 +23,8 @@
 
 namespace Clue {
 
-static void lsInitFloorSquares(void);
-static void lsLoadAllSpots(void);
+static void lsInitFloorSquares();
+static void lsLoadAllSpots();
 static void lsSetCurrFloorSquares(uint32 areaId);
 
 /*------------------------------------------------------------------------------
@@ -145,7 +145,7 @@ void lsSetRelations(uint32 areaID) {
 	hasRoomRelationID = area->ul_ObjectBaseNr + REL_HAS_ROOM_OFFSET;
 }
 
-void lsInitObjects(void) {
+void lsInitObjects() {
 	uint32 areaCount = 0;
 
 	/* alle Relationen erzeugen */
@@ -219,7 +219,7 @@ void lsInitObjectDB(uint32 bld, uint32 areaID) {
 }
 
 /* contrary to the Amiga version this loads all floor data into memory at once */
-static void lsInitFloorSquares(void) {
+static void lsInitFloorSquares() {
 	for (uint8 i = 0; i < 3; i++)
 		ls->p_AllFloors[i] = NULL;
 
@@ -256,7 +256,7 @@ static void lsInitFloorSquares(void) {
 	RemoveList(areas);
 }
 
-static void lsLoadAllSpots(void) {
+static void lsLoadAllSpots() {
 	consistsOfAll(ls->ul_BuildingID, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME, Object_LSArea);
 	LIST *areas = ObjectListPrivate;
 
@@ -283,7 +283,7 @@ static void lsSetCurrFloorSquares(uint32 areaId) {
  *------------------------------------------------------------------------------*/
 
 /* release all floor data */
-static void lsDoneFloorSquares(void) {
+static void lsDoneFloorSquares() {
 	for (int i = 0; i < 3; i++) {
 		if (ls->p_AllFloors[i]) {
 			int32 count = LS_FLOORS_PER_LINE * LS_FLOORS_PER_COLUMN;
@@ -311,7 +311,7 @@ void lsDoneObjectDB(uint32 areaID) {
 	AddRelation(Relation_StairConnects);
 }
 
-void lsDoneLandScape(void) {
+void lsDoneLandScape() {
 	if (ls) {
 		LIST *areas;
 

@@ -54,11 +54,11 @@ namespace Clue {
 
 /* global functions */
 
-extern void inpOpenAllInputDevs(void);
-extern void inpCloseAllInputDevs(void);
+extern void inpOpenAllInputDevs();
+extern void inpCloseAllInputDevs();
 
-extern void inpMousePtrOn(void);
-extern void inpMousePtrOff(void);
+extern void inpMousePtrOn();
+extern void inpMousePtrOff();
 
 extern int32 inpWaitFor(int32 l_Mask);  /* retourniert was passiert ist
                      * (siehe defines) */
@@ -71,7 +71,7 @@ void inpTurnMouse(bool us_NewStatus);       /* 0 means off, 1 means on */
 extern void inpDelay(int32 l_Ticks);
 extern void inpSetKeyRepeat(unsigned char rate);
 
-extern void inpClearKbBuffer(void);
+extern void inpClearKbBuffer();
 
 } // End of namespace Clue
 

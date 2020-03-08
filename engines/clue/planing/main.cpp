@@ -31,7 +31,7 @@ char txtSeconds[20];
 
 
 /* System functions */
-void plInit(void) {
+void plInit() {
 	/* Get texts */
 	LIST *l = txtGoKey(PLAN_TXT, "TXT_TOO_LOUD");
 	sprintf(txtTooLoud, "%s", NODE_NAME(LIST_HEAD(l)));
@@ -52,7 +52,7 @@ void plInit(void) {
 	plSys = InitSystem();
 }
 
-void plDone(void) {
+void plDone() {
 	CloseSystem(plSys);
 }
 

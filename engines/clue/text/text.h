@@ -44,7 +44,7 @@ typedef enum {
 
 /* public prototypes - TEXT */
 void txtInit(char lang);
-void txtDone(void);
+void txtDone();
 
 void txtLoad(uint32 textId);
 void txtUnLoad(uint32 textId);

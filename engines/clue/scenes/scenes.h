@@ -33,11 +33,11 @@ extern uint16 CurrentBackground;
 /* standard scene functions - look at scenes.c */
 
 extern uint32 Go(LIST *succ);
-extern uint32 tcTelefon(void);
+extern uint32 tcTelefon();
 
 extern void Look(uint32 locNr);
-extern void Information(void);
-extern void tcWait(void);
+extern void Information();
+extern void tcWait();
 
 /* taxi functions */
 
@@ -46,16 +46,16 @@ extern void RemTaxiLocation(uint32 locNr);
 
 /* Done Funktionen */
 
-void DoneHotelRoom(void);
-void DoneTaxi(void);
-void DoneGarage(void);
-void DoneParking(void);
-void DoneTools(void);
-void DoneDealer(void);
-void DoneInsideHouse(void);
+void DoneHotelRoom();
+void DoneTaxi();
+void DoneGarage();
+void DoneParking();
+void DoneTools();
+void DoneDealer();
+void DoneInsideHouse();
 
-void tcInitFahndung(void);
-void tcDoneFahndung(void);
+void tcInitFahndung();
+void tcDoneFahndung();
 
 /* Hilfsfunktionen */
 
@@ -67,7 +67,7 @@ void tcSellCar(uint32 ObjectID);
 void tcColorCar(Car car);
 void tcRepairCar(Car car, const char *repairWhat);
 void tcCarGeneralOverhoul(Car car);
-void tcToolsShop(void);
+void tcToolsShop();
 
 int32 tcEscapeFromBuilding(uint32 escBits);
 int32 tcEscapeByCar(uint32 escBits, int32 timeLeft);
@@ -82,16 +82,16 @@ char *tcShowPriceOfTool(uint32 nr, uint32 type, void *data);
 void tcDealerSays(Person dealer, byte textNr, int32 perc);
 void tcDealerOffer(Person dealer, byte which);
 
-void tcBuyCar(void);
+void tcBuyCar();
 void tcCarInGarage(uint32 carID);
 
 byte tcBuyTool(byte choice);
-void tcSellTool(void);
+void tcSellTool();
 byte tcShowTool(byte choice);
 byte tcDescTool(byte choice);
-void tcDealerDlg(void);
+void tcDealerDlg();
 
-uint32 tcStartEvidence(void);
+uint32 tcStartEvidence();
 uint32 tcGoInsideOfHouse(uint32 buildingID);
 
 void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc);

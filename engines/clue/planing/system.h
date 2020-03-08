@@ -33,7 +33,7 @@ struct System {
 	NODE *ActivHandler;
 };
 
-struct System *InitSystem(void);    /* Initialize system for use */
+struct System *InitSystem();    /* Initialize system for use */
 void CloseSystem(struct System *sys);   /* Close all system immedietly */
 void SetActivHandler(struct System *sys, uint32 id);
 
@@ -194,8 +194,8 @@ uint32 GetMaxTimer(struct System *sys);
 void CorrectMem(LIST *l);
 
 #if 0
-void ResetMem(void);
-size_t plGetUsedMem(void);
+void ResetMem();
+size_t plGetUsedMem();
 #endif
 } // End of namespace Clue
 

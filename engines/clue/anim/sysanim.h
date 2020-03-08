@@ -34,17 +34,17 @@
 namespace Clue {
 
 /* global functions */
-extern void InitAnimHandler(void);
-extern void CloseAnimHandler(void);
+extern void InitAnimHandler();
+extern void CloseAnimHandler();
 
 extern void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode);    /* -> docs from 16.08.92 ! */
-extern void StopAnim(void);
+extern void StopAnim();
 
 extern void GetAnim(const char *AnimID, char *Dest);
-extern void animator(void);
+extern void animator();
 
-extern void SuspendAnim(void);
-extern void ContinueAnim(void);
+extern void SuspendAnim();
+extern void ContinueAnim();
 
 } // End of namespace Clue
 

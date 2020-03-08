@@ -85,9 +85,6 @@ static void ErrDebugMsg(DebugE type, const char *moduleName, const char *txt) {
 	}
 }
 
-void pcErrClose(void) {
-}
-
 void DebugMsg(DebugE type, ErrorModuleE moduleId, const char *format, ...) {
 	va_list arglist;
 	char txt[512];

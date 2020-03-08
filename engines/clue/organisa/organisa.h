@@ -40,8 +40,8 @@ struct Organisation {
 
 extern struct Organisation Organisation;
 
-extern uint32 tcOrganisation(void);
-extern void tcResetOrganisation(void);
+extern uint32 tcOrganisation();
+extern void tcResetOrganisation();
 
 } // End of namespace Clue
 

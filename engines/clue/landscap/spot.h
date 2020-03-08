@@ -71,8 +71,8 @@ struct Spot {
 	struct SpotPosition *p_CurrPos; /* for fast access */
 };
 
-extern void lsInitSpots(void);
-extern void lsDoneSpots(void);
+extern void lsInitSpots();
+extern void lsDoneSpots();
 
 extern void lsMoveAllSpots(uint32 time);
 extern void lsShowAllSpots(uint32 time, uint32 mode);
@@ -87,10 +87,10 @@ extern void lsSetSpotStatus(uint32 CtrlObjId, byte uch_Status);
 extern void lsAddSpotPosition(struct Spot *spot, uint16 us_XPos, uint16 us_YPos);
 extern void lsLoadSpots(uint32 bldId, char *uch_FileName);
 extern void lsWriteSpots(const char *uch_FileName);
-extern void lsFreeAllSpots(void);
+extern void lsFreeAllSpots();
 extern void lsRemSpot(struct Spot *spot);
 
-extern LIST *lsGetSpotList(void);
+extern LIST *lsGetSpotList();
 extern struct Spot *lsAddSpot(uint16 us_Size, uint16 us_Speed, uint32 ul_CtrlObjId);
 
 #if 0

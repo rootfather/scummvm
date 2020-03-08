@@ -41,7 +41,7 @@ struct SpotControl {
 
 static struct SpotControl *sc = NULL;
 
-void lsInitSpots(void) {
+void lsInitSpots() {
 	if (sc)
 		lsDoneSpots();
 
@@ -54,7 +54,7 @@ void lsInitSpots(void) {
 	lsLoadSpotBitMap(&sc->RP);
 }
 
-void lsDoneSpots(void) {
+void lsDoneSpots() {
 	if (sc) {
 		lsFreeAllSpots();
 
@@ -345,13 +345,13 @@ void lsLoadSpots(uint32 bldId, char *uch_FileName) {
 	dskClose(file);
 }
 
-void lsFreeAllSpots(void) {
+void lsFreeAllSpots() {
 	for (struct Spot *spot = (struct Spot *) LIST_HEAD(sc->p_spots); NODE_SUCC(spot);
 	        spot = (struct Spot *) NODE_SUCC(spot))
 		RemoveList(spot->p_positions);
 }
 
-LIST *lsGetSpotList(void) {
+LIST *lsGetSpotList() {
 	return sc->p_spots;
 }
 

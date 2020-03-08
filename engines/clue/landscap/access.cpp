@@ -41,7 +41,7 @@ void lsSetObjectRetrievalList(uint32 ul_AreaId) {
 			ls->p_ObjectRetrieval = ls->p_ObjectRetrievalLists[i];
 }
 
-uint32 lsGetCurrObjectRetrieval(void) {
+uint32 lsGetCurrObjectRetrieval() {
 	int32 i;
 
 	for (i = 0; i < 3; i++)
@@ -141,7 +141,7 @@ bool lsIsObjectAnAddOn(LSObject lso) {
 	return false;
 }
 
-uint16 lsGetObjectCount(void) {
+uint16 lsGetObjectCount() {
 	return ((uint16) GetNrOfNodes(ls->p_ObjectRetrieval));
 }
 
@@ -182,7 +182,7 @@ uint32 lsGetObjectState(uint32 objID) {
 	return (lsGetNewState(obj));
 }
 
-uint32 lsGetStartArea(void) {
+uint32 lsGetStartArea() {
 	uint32 areaID;          /* attention, planing has to be changed to! */
 
 	startsWithAll(ls->ul_BuildingID, OLF_NORMAL, Object_LSArea);
@@ -249,11 +249,11 @@ void lsSetCollMode(byte collMode) {
 	ls->uch_CollMode = collMode;
 }
 
-uint32 lsGetCurrBuildingID(void) {
+uint32 lsGetCurrBuildingID() {
 	return ls->ul_BuildingID;
 }
 
-uint32 lsGetActivAreaID(void) {
+uint32 lsGetActivAreaID() {
 	return (ls->ul_AreaID);
 }
 
@@ -281,19 +281,19 @@ LIST *lsGetRoomsOfArea(uint32 ul_AreaId) {
 }
 
 #if 0
-uint16 lsGetWindowXPos(void) {
+uint16 lsGetWindowXPos() {
 	return (ls->us_WindowXPos);
 }
 
-uint16 lsGetWindowYPos(void) {
+uint16 lsGetWindowYPos() {
 	return (ls->us_WindowYPos);
 }
 
-uint16 lsGetTotalXPos(void) {
+uint16 lsGetTotalXPos() {
 	return (uint16)(ls->us_WindowXPos + ls->us_PersonXPos);
 }
 
-uint16 lsGetTotalYPos(void) {
+uint16 lsGetTotalYPos() {
 	return (uint16)(ls->us_WindowYPos + ls->us_PersonYPos);
 }
 #endif 

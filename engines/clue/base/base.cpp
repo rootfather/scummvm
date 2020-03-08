@@ -20,13 +20,15 @@
 
 #include "clue/base/base.h"
 #include "clue/clue.h"
+#include "clue/sound/hsc.h"
+
 
 namespace Clue {
 
 void *StdBuffer0 = NULL;
 void *StdBuffer1 = NULL;
 
-void tcDone(void) {
+void tcDone() {
 	static bool inprogress;
 
 	if (!inprogress) {
@@ -50,27 +52,20 @@ void tcDone(void) {
 			}
 		}
 
-		if (StdBuffer1) {
+		if (StdBuffer1)
 			TCFreeMem(StdBuffer1, STD_BUFFER1_SIZE);
-		}
 
-		if (StdBuffer0) {
+		if (StdBuffer0)
 			TCFreeMem(StdBuffer0, STD_BUFFER0_SIZE);
-		}
 
-		if (memGetAllocatedMem()) {
-			DebugMsg(ERR_DEBUG, ERROR_MODULE_BASE,
-			         "Attention: dirty mem: %ld bytes!!!",
-			         memGetAllocatedMem());
-		} else {
+		if (memGetAllocatedMem())
+			DebugMsg(ERR_DEBUG, ERROR_MODULE_BASE, "Attention: dirty mem: %ld bytes!!!", memGetAllocatedMem());
+		else
 			DebugMsg(ERR_DEBUG, ERROR_MODULE_BASE, "all mem returned to pool");
-		}
-
-		pcErrClose();
 	}
 }
 
-static bool tcInit(void) {
+static bool tcInit() {
 	InitAudio();
 
 	StdBuffer1 = TCAllocMem(STD_BUFFER1_SIZE, true);
@@ -118,7 +113,7 @@ static bool tcInit(void) {
 	return true;
 }
 
-static void InitData(void) {
+static void InitData() {
 	char MainData [DSK_PATH_MAX];
 	char BuildData[DSK_PATH_MAX];
 	char MainRel  [DSK_PATH_MAX];
@@ -148,12 +143,12 @@ static void InitData(void) {
 		ErrorMsg(Disk_Defect, ERROR_MODULE_BASE, 1);
 }
 
-static void CloseData(void) {
+static void CloseData() {
 	RemRelations(0L, 0L);
 	dbDeleteAllObjects(0L, 0L);
 }
 
-void tcSetPermanentColors(void) {
+void tcSetPermanentColors() {
 	uint8 palette[GFX_PALETTE_SIZE];
 
 	palette[248 * 3 + 0] = 116;
@@ -188,7 +183,7 @@ void tcSetPermanentColors(void) {
 	gfxChangeColors(NULL, 0, GFX_BLEND_UP, palette);
 }
 
-static void SetFullEnviroment(void) {
+static void SetFullEnviroment() {
 	hasSetP(Person_Matt_Stuvysunt, Ability_Elektronik, 251);
 	hasSetP(Person_Matt_Stuvysunt, Ability_Schloesser, 210);
 	hasSetP(Person_Matt_Stuvysunt, Ability_Aufpassen, 180);
@@ -381,7 +376,7 @@ static void SetFullEnviroment(void) {
 	}
 }
 
-static byte StartupMenu(void) {
+static byte StartupMenu() {
 	LIST *menu = txtGoKey(MENU_TXT, "STARTUP_MENU");
 	uint32 activ;
 	char line[TXT_KEY_LENGTH];

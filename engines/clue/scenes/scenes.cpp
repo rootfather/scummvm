@@ -121,7 +121,7 @@ uint32 Go(LIST *succ) {
 }
 
 
-void Information(void) {
+void Information() {
 	inpTurnESC(1);
 
 	byte choice = 0;
@@ -316,7 +316,7 @@ void Look(uint32 locNr) {
 	}
 }
 
-uint32 tcTelefon(void) {
+uint32 tcTelefon() {
 	// CHECME: Always returns 0
 
 	uint32 eventNr = 0L;
@@ -363,7 +363,7 @@ uint32 tcTelefon(void) {
 	return (eventNr);
 }
 
-void tcWait(void) {
+void tcWait() {
 	uint32 locNr = GetObjNrOfLocation(GetLocation);
 
 	inpTurnESC(0);

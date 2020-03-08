@@ -10,14 +10,14 @@
 
 namespace Clue {
 
-void sndInit(void);
-void sndDone(void);
+void sndInit();
+void sndDone();
 
 void sndPlaySound(const char *name, uint32 mode);
 void sndStopSound(uint8 dummy);
 void sndFading(short int targetVol);
 
-char *sndGetCurrSoundName(void);
+char *sndGetCurrSoundName();
 
 } // End of namespace Clue
 

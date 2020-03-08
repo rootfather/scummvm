@@ -27,7 +27,7 @@ namespace Clue {
 
 #define   ORG_PICT_ID                 3
 
-static void RefreshDisplayConfig(void) {
+static void RefreshDisplayConfig() {
 	gfxScreenFreeze();
 
 	gfxSetGC(l_gc);
@@ -39,20 +39,20 @@ static void RefreshDisplayConfig(void) {
 	ShowMenuBackground();
 }
 
-void tcInitDisplayOrganisation(void) {
+void tcInitDisplayOrganisation() {
 	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
 	gfxClearArea(l_gc);
 
 	RefreshDisplayConfig();
 }
 
-void tcDoneDisplayOrganisation(void) {
+void tcDoneDisplayOrganisation() {
 	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
 	gfxClearArea(l_gc);
 	gfxSetPens(m_gc, GFX_SAME_PEN, GFX_SAME_PEN, 0);
 }
 
-void tcDisplayOrganisation(void) {
+void tcDisplayOrganisation() {
 	gfxScreenFreeze();
 
 	tcDisplayCommon();
@@ -61,7 +61,7 @@ void tcDisplayOrganisation(void) {
 	gfxScreenThaw(l_gc, 0, 0, 320, 140);
 }
 
-void tcDisplayCommon(void) {
+void tcDisplayCommon() {
 	LIST *texts = txtGoKey(BUSINESS_TXT, "PLAN_COMMON_DATA");
 
 	gfxSetGC(l_gc);

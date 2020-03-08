@@ -672,7 +672,7 @@ int32 tcGetToolLoudness(uint32 persId, uint32 toolId, uint32 itemId) {
  * berechnet die Lautstärke vom Gehen
  */
 
-int32 tcGetWalkLoudness(void) {
+int32 tcGetWalkLoudness() {
 	int32 loudness = tcWALK_LOUDNESS;
 
 	if (has(Person_Matt_Stuvysunt, Tool_Schuhe))
@@ -857,7 +857,7 @@ int32 tcGetGuyState(uint32 persId) {
 	return state;
 }
 
-int32 tcCalcMattsPart(void) {
+int32 tcCalcMattsPart() {
 	LIST *guys;
 	NODE *node;
 	int32 count = 0, part = 0;

@@ -62,7 +62,7 @@ void gfxRealRefreshArea(uint16 x, uint16 y, uint16 w, uint16 h);
  * inits & dons
  */
 
-void gfxInit(void) {
+void gfxInit() {
 	ScreenFormat = Graphics::PixelFormat::createFormatCLUT8();
 	initGraphics(SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -125,7 +125,7 @@ void gfxInit(void) {
 	gfxSetVideoMode(GFX_VIDEO_MCGA);    /* after rastports !! */
 }
 
-void gfxDone(void) {
+void gfxDone() {
 	if (PictureList) {
 		RemoveList(PictureList);
 		PictureList = NULL;
@@ -193,7 +193,7 @@ void gfxSetVideoMode(byte uch_NewMode) {
  * lists
  */
 
-static void gfxInitCollList(void) {
+static void gfxInitCollList() {
 	LIST *tempList = CreateList();
 	CollectionList = CreateList();
 
@@ -220,7 +220,7 @@ static void gfxInitCollList(void) {
 	RemoveList(tempList);
 }
 
-static void gfxInitPictList(void) {
+static void gfxInitPictList() {
 	LIST *tempList = CreateList();
 	PictureList = CreateList();
 
@@ -742,12 +742,12 @@ void gfxPrint(GC *gc, const char *txt, uint16 y, uint32 mode) {
  */
 
 /* kopiert aktuelles Bild in den RefreshRP */
-void gfxPrepareRefresh(void) {
+void gfxPrepareRefresh() {
 	memcpy(RefreshRPInMem.pixels, Screen->getPixels(), SCREEN_SIZE);
 }
 
 /* kopiert aktuellen Inhalt des RefreshRP in den Bildschirmspeicher */
-void gfxRefresh(void) {
+void gfxRefresh() {
 	memcpy(Screen->getPixels(), RefreshRPInMem.pixels, SCREEN_SIZE);
 
 	gfxRefreshArea(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -798,15 +798,15 @@ static uint32 timeLeft(uint32 interval) {
 }
 
 
-void gfxWaitTOF(void) {
+void gfxWaitTOF() {
 	g_system->delayMillis(timeLeft(40));
 }
 
-void gfxWaitTOR(void) {
+void gfxWaitTOR() {
 	g_system->delayMillis(timeLeft(20));
 }
 
-void gfxWaitTOS(void) {
+void gfxWaitTOS() {
 	const uint32 interval = 250;
 	uint32 now = g_system->getMillis();
 
@@ -1278,7 +1278,7 @@ static void ProcessAnimation(uint8 *dp, uint8 *sp) {
 	}
 }
 
-void ShowIntro(void) {
+void ShowIntro() {
 	XMSHandle = (uint8 *)malloc(818 * 1024);
 
 	/******************************** Init Gfx ********************************/
@@ -1594,7 +1594,7 @@ void gfxRefreshArea(uint16 x, uint16 y, uint16 w, uint16 h) {
 	}
 }
 
-void gfxScreenFreeze(void) {
+void gfxScreenFreeze() {
 	screen_freeze_count++;
 }
 
@@ -1735,7 +1735,7 @@ void gfxGetMouseXY(GC *gc, uint16 *pMouseX, uint16 *pMouseY) {
 }
 
 #if 0
-void gfxCorrectUpperRPBitmap(void) {
+void gfxCorrectUpperRPBitmap() {
 /* should be called after each scrolling (and before displaying a bubble) */
 	/*
 	    NCH4UpperRP.p_BitMap = (void *) ((uint32) GfxBoardBase + gfxNCH4GetCurrScrollOffset());

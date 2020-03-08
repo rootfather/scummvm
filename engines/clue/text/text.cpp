@@ -100,7 +100,7 @@ void txtInit(char lang) {
 	}
 }
 
-void txtDone(void) {
+void txtDone() {
 	if (txtBase) {
 		uint32 nr = GetNrOfNodes(txtBase->tc_Texts);
 

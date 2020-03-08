@@ -47,7 +47,7 @@ extern uint32 tcGetItemID(uint32 itemType);
 #endif
 extern uint32 tcGetPersOffer(Person person, uint8 persCount);
 
-extern int32 tcCalcEscapeTime(void);
+extern int32 tcCalcEscapeTime();
 extern bool tcKillTheGuard(uint32 guyId, uint32 buildingId);
 extern bool tcAlarmByPowerLoss(uint32 powerId);
 extern bool tcAlarmByTouch(uint32 lsoId);
@@ -55,7 +55,7 @@ extern bool tcGuardDetectsGuy(LIST *roomsList, uint16 us_XPos, uint16 us_YPos,
                               uint8 uch_ViewDirection, char *puch_GuardName,
                               char *puch_LivingName);
 extern int32 tcGetCarStrike(Car car);
-extern int32 tcCalcEscapeOfTeam(void);
+extern int32 tcCalcEscapeOfTeam();
 extern uint32 tcGuyTellsAll(Person p);
 extern uint32 tcGuyCanEscape(Person p);
 extern int32 tcGetCarTraderOffer(Car car);
@@ -66,7 +66,7 @@ extern int32 tcIsPlanPerfect(uint32 timer);
 extern int32 tcGetTrail(Person p, uint8 which);
 extern int32 tcGetDanger(uint32 persId, uint32 toolId, uint32 itemId);
 extern int32 tcGetToolLoudness(uint32 persId, uint32 toolId, uint32 itemId);
-extern int32 tcGetWalkLoudness(void);
+extern int32 tcGetWalkLoudness();
 extern int32 tcGetTotalLoudness(int32 loudp0, int32 loudp1, int32 loudp2, int32 loudp3);
 extern bool tcAlarmByLoudness(Building b, int32 totalLoudness);
 extern bool tcAlarmByRadio(Building b);
@@ -80,9 +80,9 @@ extern bool tcIsCarRecognised(Car car, uint32 time);
 extern bool tcGuardChecksObject(LSObject lso);
 extern bool tcCheckTimeClocks(uint32 builId);
 
-extern int32 tcCalcMattsPart(void);
+extern int32 tcCalcMattsPart();
 
-extern uint32 tcGuyEscapes(void);
+extern uint32 tcGuyEscapes();
 extern uint32 tcGuyUsesTool(uint32 persId, Building b, uint32 toolId, uint32 itemId);
 extern uint32 tcGuyUsesToolInPlayer(uint32 persId, Building b, uint32 toolId, uint32 itemId,
                                     uint32 neededTime);

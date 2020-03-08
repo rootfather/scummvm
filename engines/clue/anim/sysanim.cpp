@@ -87,20 +87,20 @@ void LoadAnim(const char *AnimID);
  * init & dones
  */
 
-void InitAnimHandler(void) {
+void InitAnimHandler() {
 	Handler.RunningAnimID = RunningAnimLine;
 	Handler.RunningAnimID[0] = '\0';
 }
 
-void CloseAnimHandler(void) {
+void CloseAnimHandler() {
 	StopAnim();
 }
 
-void SuspendAnim(void) {
+void SuspendAnim() {
 	Handler.AnimatorState |= ANIM_STATE_SUSPENDED;
 }
 
-void ContinueAnim(void) {
+void ContinueAnim() {
 	Handler.AnimatorState &= (0xff - ANIM_STATE_SUSPENDED);
 }
 
@@ -214,7 +214,7 @@ void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode) {
 	}
 }
 
-void StopAnim(void) {
+void StopAnim() {
 	if (Handler.RunningAnimID) {    /* anim currently playing */
 		if (Handler.RunningAnimID[0] != '\0') {
 			char pict_list[TXT_KEY_LENGTH];
@@ -256,7 +256,7 @@ void GetAnim(const char *AnimID, char *Dest) {
  * Animator
  */
 
-void animator(void) {
+void animator() {
 	uint16 destX = Handler.destX;
 	uint16 destY = Handler.destY;
 

@@ -22,7 +22,7 @@
 
 namespace Clue {
 
-void tcSaveTheClou(void) {
+void tcSaveTheClou() {
 	LIST *games = CreateList();
 	Player player = (Player)dbGetObject(Player_Player_1);
 
@@ -152,7 +152,7 @@ bool tcLoadIt(char activ) {
 	return loaded;
 }
 
-bool tcLoadTheClou(void) {
+bool tcLoadTheClou() {
 	char pathname1[DSK_PATH_MAX];
 	char pathname2[DSK_PATH_MAX];
 	dskBuildPathName(DISK_CHECK_FILE, DATADISK, GAMES_LIST_TXT, pathname1);

@@ -24,8 +24,8 @@
 
 namespace Clue {
 
-extern void rndInit(void);
-extern void rndDone(void);
+extern void rndInit();
+extern void rndDone();
 
 extern uint32 CalcRandomNr(uint32 l_limit, uint32 u_limit);
 

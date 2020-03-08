@@ -90,7 +90,7 @@ static uint32 tcATraitor(uint32 traitorId) {
 	return 1;           /* gefangen! */
 }
 
-static uint32 tcIsThereATraitor(void) {
+static uint32 tcIsThereATraitor() {
 	Player player = (Player)dbGetObject(Player_Player_1);
 	Person matt = (Person)dbGetObject(Person_Matt_Stuvysunt);
 	uint32 traitorId = 0, caught = 0;
@@ -119,7 +119,7 @@ static uint32 tcIsThereATraitor(void) {
 	return caught;
 }
 
-uint32 tcStartEvidence(void) {
+uint32 tcStartEvidence() {
 	Evidence evidence = (Evidence)dbGetObject(Evidence_Evidence_1); /* just for presentation */
 
 	if ((!(Search.EscapeBits & FAHN_ALARM)) && (!(Search.EscapeBits & FAHN_QUIET_ALARM)))
@@ -359,7 +359,7 @@ uint32 tcStartEvidence(void) {
 	return caught;
 }
 
-void tcForgetGuys(void) {
+void tcForgetGuys() {
 	joined_byAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST, Object_Person);
 	LIST *guys = ObjectListPrivate;
 

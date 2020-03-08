@@ -83,7 +83,7 @@ static uint32 UseObject;
 
 
 /* action support functions */
-static bool plRemLastAction(void) {
+static bool plRemLastAction() {
 	if (!IsHandlerCleared(plSys)) {
 		plSync(PLANING_ANIMATE_NO,
 		       GetMaxTimer(plSys) - CurrentAction(plSys)->TimeNeeded,
@@ -102,7 +102,7 @@ static bool plRemLastAction(void) {
 }
 
 /* actions */
-static void plActionGo(void) {
+static void plActionGo() {
 	struct Action *action = CurrentAction(plSys);
 
 	plMessage("WALK", PLANING_MSG_REFRESH);
@@ -183,7 +183,7 @@ static void plActionGo(void) {
 	inpTurnFunctionKey(1);
 }
 
-static void plActionWait(void) {
+static void plActionWait() {
 	LIST *menu = txtGoKey(PLAN_TXT, "MENU_4");
 	byte activ = 0;
 	uint32 choice1 = 0L, choice2 = 0L, bitset;
@@ -522,7 +522,7 @@ static void plActionOpenClose(uint16 what) {
 	RemoveList(actionList);
 }
 
-static void plActionTake(void) {
+static void plActionTake() {
 	LIST *actionList = plGetObjectsList(CurrentPerson, 1);
 
 	if (LIST_EMPTY(actionList))
@@ -802,7 +802,7 @@ static void plCorrectToolsList(uint32 flags) {
 	dbRemObjectNode(ObjectList, Tool_Schutzanzug);
 }
 
-static void plActionUse(void) {
+static void plActionUse() {
 	LIST *actionList = plGetObjectsList(CurrentPerson, 0);
 
 	if (CurrentPerson < BurglarsNr) {
@@ -1235,7 +1235,7 @@ static void plActionUse(void) {
 	RemoveList(actionList);
 }
 
-static void plAction(void) {
+static void plAction() {
 	LIST *menu = NULL;
 	if (CurrentPerson < BurglarsNr)
 		menu = txtGoKey(PLAN_TXT, "MENU_2");
@@ -1492,7 +1492,7 @@ static void plAction(void) {
 	RemoveList(menu);
 }
 
-static void plNoteBook(void) {
+static void plNoteBook() {
 	LIST *bubble = txtGoKey(PLAN_TXT, "MENU_6");
 	char exp[TXT_KEY_LENGTH];
 
@@ -1567,7 +1567,7 @@ static void plNoteBook(void) {
 	RemoveList(bubble);
 }
 
-static void plLook(void) {
+static void plLook() {
 	LIST *menu = txtGoKey(PLAN_TXT, "MENU_7");
 	byte activ = 0, choice;
 	uint32 timer = 0L, maxTimer = GetMaxTimer(plSys), realCurrentPerson =

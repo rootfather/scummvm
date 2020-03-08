@@ -27,27 +27,27 @@ uint32 tcChooseDestBuilding(uint32);
 uint32 tcChooseEscapeCar(uint32);
 uint32 tcChooseDriver(uint32);
 
-void tcChooseAccomplice(void);
-void tcSpreadTools(void);
-void tcChooseTime(void);
-void tcChooseGuys(void);
-void tcCheckGuyCount(void);
-void tcAddGuyToParty(void);
-void tcRemGuyFromParty(void);
+void tcChooseAccomplice();
+void tcSpreadTools();
+void tcChooseTime();
+void tcChooseGuys();
+void tcCheckGuyCount();
+void tcAddGuyToParty();
+void tcRemGuyFromParty();
 
-void tcAddToolToGuy(void);
-void tcRemToolFromGuy(void);
+void tcAddToolToGuy();
+void tcRemToolFromGuy();
 
-bool tcCheckOrganisation(void);
+bool tcCheckOrganisation();
 
 /* display functions */
 
-void tcInitDisplayOrganisation(void);
-void tcDoneDisplayOrganisation(void);
+void tcInitDisplayOrganisation();
+void tcDoneDisplayOrganisation();
 
-void tcDisplayOrganisation(void);
+void tcDisplayOrganisation();
 
-void tcDisplayCommon(void);
+void tcDisplayCommon();
 void tcDisplayPerson(uint32 displayMode);
 void tcDisplayAbilities(uint32 personNr, uint32 displayData);
 void tcDisplayTools(uint32 personNr, uint32 displayData);
@@ -60,7 +60,7 @@ struct Organisation Organisation;
 
 namespace Clue {
 
-void tcResetOrganisation(void) {
+void tcResetOrganisation() {
 	Organisation.CarID = 0;
 	Organisation.DriverID = 0;
 	Organisation.BuildingID = 0;
@@ -68,12 +68,12 @@ void tcResetOrganisation(void) {
 	Organisation.PlacesInCar = 0;
 }
 
-static void tcOrganisationSetBuilding(void) {
+static void tcOrganisationSetBuilding() {
 	hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Building);
 	Organisation.BuildingID = OL_NR(LIST_HEAD(ObjectList));
 }
 
-static void tcOrganisationSetCar(void) {
+static void tcOrganisationSetCar() {
 	hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Car);
 
 	Organisation.CarID = OL_NR(LIST_HEAD(ObjectList));
@@ -83,7 +83,7 @@ static void tcOrganisationSetCar(void) {
 	Organisation.PlacesInCar = car->PlacesInCar;
 }
 
-static byte tcMakeCarOk(void) {
+static byte tcMakeCarOk() {
 	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_INSERT_STAR,
 	             Object_Person);
 
@@ -117,7 +117,7 @@ static byte tcMakeCarOk(void) {
 	return 1;
 }
 
-uint32 tcOrganisation(void) {
+uint32 tcOrganisation() {
 	LIST *menu = txtGoKey(MENU_TXT, "ORGANISATION");
 	byte activ = 0, ende = 0;
 	char line[TXT_KEY_LENGTH];
@@ -241,7 +241,7 @@ uint32 tcOrganisation(void) {
 	return ((ende - 1) * Organisation.BuildingID);
 }
 
-bool tcCheckOrganisation(void) {
+bool tcCheckOrganisation() {
 	Player player = (Player)dbGetObject(Player_Player_1);
 	bool check = false;
 
@@ -396,7 +396,7 @@ uint32 tcChooseEscapeCar(uint32 objID) {
 	return (objID);
 }
 
-void tcChooseGuys(void) {
+void tcChooseGuys() {
 	Person matt = (Person) dbGetObject(Person_Matt_Stuvysunt);
 
 	joinAll(Person_Matt_Stuvysunt,
@@ -443,7 +443,7 @@ void tcChooseGuys(void) {
 	RemoveList(list);
 }
 
-void tcAddGuyToParty(void) {
+void tcAddGuyToParty() {
 	joinAll(Person_Matt_Stuvysunt,
 	        OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
 	        Object_Person);
@@ -490,7 +490,7 @@ void tcAddGuyToParty(void) {
 	RemoveList(l1);
 }
 
-void tcRemGuyFromParty(void) {
+void tcRemGuyFromParty() {
 	Person matt = (Person) dbGetObject(Person_Matt_Stuvysunt);
 
 	joined_byAll(Person_Matt_Stuvysunt,

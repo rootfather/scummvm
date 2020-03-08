@@ -379,12 +379,12 @@ static void hsc_process_row() {
 /* Generic audio & audio mixing functions */
 static int16 MusicStream[HSC_BUFFER_SIZE];
 
-void hscMusicPlayer(void) {
+void hscMusicPlayer() {
 	if (OPL_Ok)
 		hsc_process_row();
 }
 
-void hscReset(void) {
+void hscReset() {
 	if (!OPL_Ok)
 		return;
 
@@ -488,7 +488,7 @@ private:
 	const FuncType _func;
 };
 
-void hscInit(void) {
+void hscInit() {
 	opl = OPL::Config::create();
 	if (!opl || !opl->init()) {
 		OPL_Ok = false;
@@ -499,7 +499,7 @@ void hscInit(void) {
 	}
 }
 
-void hscDone(void) {
+void hscDone() {
 	delete opl;
 	opl = nullptr;
 	OPL_Ok = false;
