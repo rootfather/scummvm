@@ -214,7 +214,7 @@ void dskWrite_S32LE(Common::Stream *fp, int32 *x) {
 	}
 }
 
-void dskRead(Common::Stream *fp, void *dest, size_t size) {
+void dskRead(Common::Stream *fp, void *dest, uint32 size) {
 	Common::ReadStream *stream = dynamic_cast<Common::ReadStream *>(fp);
 	stream->read(dest, size);
 	if (stream->err()) {
