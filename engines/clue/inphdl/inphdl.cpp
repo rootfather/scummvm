@@ -282,7 +282,7 @@ void inpSetKeyRepeat(unsigned char rate) {
 	Common::Event ev;
 	while (g_system->getEventManager()->pollEvent(ev)) {
 		/* do nothing. */
-		// TODO: sleep()
+		g_system->delayMillis(10);
 	}
 }
 
