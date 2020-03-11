@@ -18,6 +18,7 @@
   distribution.
  ****************************************************************************/
 #include "clue/scenes/scenes.h"
+#include "clue/clue.h"
 
 namespace Clue {
 
@@ -343,7 +344,7 @@ uint32 tcTelefon() {
 					Say(BUSINESS_TXT, 0, ben->PictID, "ALREADY_PHONING");
 
 				if (livesIn(London_London_1, persID)) {
-					if (CalcRandomNr(0L, 9L) == 3)
+					if (g_clue->calcRandomNr(0L, 9L) == 3)
 						Say(BUSINESS_TXT, 0, ben->PictID, "OCCUPIED");
 					else {
 						inpTurnESC(0);

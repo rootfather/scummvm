@@ -120,7 +120,7 @@ void Investigate(const char *location) {
 		if ((GetMinute % patrolCount) == 0)
 			choice = tcShowPatrol(bubble_l, c_time, patr, first++, bui, raise);
 
-		if (CalcRandomNr(0L, 6L) == 1)
+		if (g_clue->calcRandomNr(0L, 6L) == 1)
 			tcAddBuildStrike(bui, 1);
 	}
 
@@ -163,7 +163,7 @@ void Investigate(const char *location) {
 		}
 
 		/* Zeit erhöhen und nach dem Spieler sehen ! */
-		if (CalcRandomNr(0L, 6L) == 1)
+		if (g_clue->calcRandomNr(0L, 6L) == 1)
 			tcAddBuildStrike(bui, 1);
 
 		AddVTime(1L);

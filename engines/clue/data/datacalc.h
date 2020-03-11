@@ -27,13 +27,14 @@
 #define MODULE_DATACALC
 
 #include "clue/theclou.h"
+#include "clue/clue.h"
 
 #include "clue/list/list.h"
 #include "clue/random/random.h"
 
 namespace Clue {
 
-#define   tcDerivation(min,max)          (CalcRandomNr(min,max))
+#define   tcDerivation(min,max)          (g_clue->calcRandomNr(min,max))
 
 int32 Round(int32 v, int32 p);
 int32 CalcValue(int32 value, int32 min, int32 max, int32 fact, int32 perc);

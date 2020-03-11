@@ -19,6 +19,7 @@
  ****************************************************************************/
 
 #include "clue/landscap/raster.h"
+#include "common/util.h"
 
 namespace Clue {
 

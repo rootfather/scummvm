@@ -327,10 +327,10 @@ void tcPersonLearns(uint32 pId) {
 	if (pers->OldHealth)
 		pers->Health = pers->OldHealth; /* Verletzung ist kuriert */
 
-	tcImprovePanic(pers, (1 + CalcRandomNr(4, 6))); /* 25 bis 16 % besser ! */
+	tcImprovePanic(pers, (1 + g_clue->calcRandomNr(4, 6))); /* 25 bis 16 % besser ! */
 
 	/* XXX: casted some stuff just in case... */
-	growth = MAX(int32((int32) pers->Known / (1 + CalcRandomNr(8, 10))), 20);
+	growth = MAX(int32((int32) pers->Known / (1 + g_clue->calcRandomNr(8, 10))), 20);
 	tcImproveKnown(pers, (int32) pers->Known + ((growth * pers->Known) / 100)); /* 10 bis 12 % */
 }
 
@@ -338,7 +338,7 @@ uint32 tcGetBuildValues(Building bui) {
 	uint32 x = (255 - bui->Exactlyness) / 3;
 
 	/* XXX: reordered some stuff just in case... */
-	uint32 v = CalcValue(bui->Values, 0, 500000L + bui->Values, CalcRandomNr(0, 255),
+	uint32 v = CalcValue(bui->Values, 0, 500000L + bui->Values, g_clue->calcRandomNr(0, 255),
 	              x);
 
 	return ((uint32)(Round(v, 3)));
@@ -375,7 +375,7 @@ int32 tcGetTeamMood(uint32 *guyId, uint32 timer) {
 int32 tcGuyInAction(uint32 persId, int32 exhaustion) {
 	int32 state = tcGetGuyState(persId);
 
-	if (CalcRandomNr(0, 15) == 1)
+	if (g_clue->calcRandomNr(0, 15) == 1)
 		state = (255 - state) / 90; /* Erschöpfungszuwachs = Invers von Zustand */
 	else
 		state = 0;
@@ -392,7 +392,7 @@ int32 tcGuyInAction(uint32 persId, int32 exhaustion) {
 int32 tcGuyIsWaiting(uint32 persId, int32 exhaustion) {
 	int32 state = tcGetGuyState(persId);
 
-	if (CalcRandomNr(0, 4) == 1)
+	if (g_clue->calcRandomNr(0, 4) == 1)
 		state = state / 10; /* Erschöpfungsabnahme */
 	else
 		state = 0;
@@ -512,8 +512,8 @@ uint32 tcGuyUsesToolInPlayer(uint32 persId, Building b, uint32 toolId, uint32 it
 	uint32 time = tcGuyUsesTool(persId, b, toolId, itemId);
 	uint32 ability = tcGetNecessaryAbility(persId, toolId);
 
-	if (ability < (CalcRandomNr(0, 230)))
-		if (CalcRandomNr(0, ability / 20) == 1)
+	if (ability < (g_clue->calcRandomNr(0, 230)))
+		if (g_clue->calcRandomNr(0, ability / 20) == 1)
 			time = CalcValue(time, 0, time * 4, ability / 2, 10);
 
 	if (time < needTime)
@@ -641,8 +641,8 @@ int32 tcGetDanger(uint32 persId, uint32 toolId, uint32 itemId) {
 	danger = CalcValue(danger, 0, 255, 255 - p->Stamina, 10);
 	danger = CalcValue(danger, 0, 255, p->Panic, 5);
 
-	if (danger > CalcRandomNr(40, 255)) {   /* Verletzt ! */
-		if (CalcRandomNr(0, 10) == 1) { /* ...oder vielleicht doch nicht */
+	if (danger > g_clue->calcRandomNr(40, 255)) {   /* Verletzt ! */
+		if (g_clue->calcRandomNr(0, 10) == 1) { /* ...oder vielleicht doch nicht */
 			p->OldHealth = p->Health;
 			p->Health = CalcValue(p->Health, 0, 255, 127 - danger, 90);
 		} else
@@ -712,7 +712,7 @@ bool tcAlarmByLoudness(Building b, int32 totalLoudness) {
 
 /* nach jedem Funkspruch aufrufen */
 bool tcAlarmByRadio(Building b) {
-	int32 random = CalcRandomNr(0, 2500) + CalcRandomNr(0, 2500);   /* 10 mal funken bei Guarding = 250 -> Alarm */
+	int32 random = g_clue->calcRandomNr(0, 2500) + g_clue->calcRandomNr(0, 2500);   /* 10 mal funken bei Guarding = 250 -> Alarm */
 
 	return (random < b->RadioGuarding);
 }
@@ -803,11 +803,11 @@ bool tcWatchDogWarning(uint32 persId) {
 	int32 watch = hasGet(persId, Ability_Aufpassen);
 	int32 random;
 
-	random = CalcRandomNr(0, 200) + /* Joe soll nicht gleich in der ersten */
-	         CalcRandomNr(0, 200) +  /* Sekunde etwas bemerken!             */
-	         CalcRandomNr(0, 200);   /* Risiko wird durch Addition GRÖßER!! */
+	random = g_clue->calcRandomNr(0, 200) + /* Joe soll nicht gleich in der ersten */
+			g_clue->calcRandomNr(0, 200) +  /* Sekunde etwas bemerken!             */
+		g_clue->calcRandomNr(0, 200);   /* Risiko wird durch Addition GRÖßER!! */
 
-	if ((watch > random) && (CalcRandomNr(0, 40) == 1))
+	if ((watch > random) && (g_clue->calcRandomNr(0, 40) == 1))
 		return true;
 
 	return false;
@@ -821,8 +821,8 @@ bool tcWatchDogWarning(uint32 persId) {
 bool tcWrongWatchDogWarning(uint32 persId) {
 	uint32 watch = hasGet(persId, Ability_Aufpassen);
 
-	if (CalcRandomNr(0, 255) > watch) { /* Irrtum */
-		if (CalcRandomNr(0, watch * 50) == 1)   /* umso besser, umso kleiner Wahrscheinlichkeit */
+	if (g_clue->calcRandomNr(0, 255) > watch) { /* Irrtum */
+		if (g_clue->calcRandomNr(0, watch * 50) == 1)   /* umso besser, umso kleiner Wahrscheinlichkeit */
 			return true;
 	}
 
@@ -840,7 +840,7 @@ bool tcIsCarRecognised(Car car, uint32 time) {
 	strike = CalcValue(strike, 0, 255, weight, 100);
 
 	if ((strike > 220)
-	        || ((strike > (CalcRandomNr(10, 220) + CalcRandomNr(20, 220)))))
+	        || ((strike > (g_clue->calcRandomNr(10, 220) + g_clue->calcRandomNr(20, 220)))))
 		return true;
 	else
 		return false;

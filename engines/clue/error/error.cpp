@@ -20,6 +20,7 @@
 #define ERR_EXIT_ERROR      20L
 #define ERR_EXIT_SHUTDOWN   30L
 
+#include "clue/clue.h"
 #include "clue/base/base.h"
 #include "common/debug.h"
 #include "common/textconsole.h"

@@ -38,7 +38,6 @@ extern void *StdBuffer0, *StdBuffer1;
 
 extern void tcSetPermanentColors();
 void tcDone();
-int clue_main(const char *path);
 
 } // End of namespace Clue
 

@@ -44,11 +44,11 @@ namespace Clue {
 #define ACTION_EXHAUST  1000
 
 /* derivation defines */
-#define PLANING_DERI_ALARM              (PD.realTime / CalcRandomNr(1, 3))
-#define PLANING_DERI_WATCHDOG           (PD.realTime / CalcRandomNr(6, 10))
+#define PLANING_DERI_ALARM              (PD.realTime / g_clue->calcRandomNr(1, 3))
+#define PLANING_DERI_WATCHDOG           (PD.realTime / g_clue->calcRandomNr(6, 10))
 #define PLANING_DERI_UNABLE_TO_WORK     3
-#define PLANING_DERI_IGNORE_ACTION      (PD.realTime / CalcRandomNr(15, 20))
-#define PLANING_DERI_GUARD_ESCAPED      (PD.realTime / CalcRandomNr(4, 8))
+#define PLANING_DERI_IGNORE_ACTION      (PD.realTime / g_clue->calcRandomNr(15, 20))
+#define PLANING_DERI_GUARD_ESCAPED      (PD.realTime / g_clue->calcRandomNr(4, 8))
 
 /* sound system */
 #define PLANING_MUSIC_PLAYER_BEGIN_KASERNE   "final.bk"
@@ -301,7 +301,7 @@ static void plPlayerAction() {
 
 	if (!(PD.timer % patroCounter)) {
 #ifndef PLAN_IS_PERFECT
-		if ((CalcRandomNr(0, 30 * (270 - tcRGetGRate(PD.bldObj) / 2 + 1))) == 0) {
+		if ((g_clue->calcRandomNr(0, 30 * (270 - tcRGetGRate(PD.bldObj) / 2 + 1))) == 0) {
 			plSay("PLAYER_PATROL", 0);
 			inpSetWaitTicks(INP_AS_FAST_AS_POSSIBLE);
 
@@ -1378,7 +1378,7 @@ static void plPlayerAction() {
 								                    (PD.action,
 								                     struct ActionOpen *)->
 								                    ItemId))->Type == Item_WC)
-								        && (CalcRandomNr(0, 3) == 1)) {
+								        && (g_clue->calcRandomNr(0, 3) == 1)) {
 									sndPrepareFX("wc.voc");
 									sndPlayFX();
 								}

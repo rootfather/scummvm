@@ -40,7 +40,7 @@ void tcAsDaysGoBy(uint32 day, uint32 stepSize) {
 	while (GetDay < day) {
 		inpDelay(3);
 
-		uint32 add = CalcRandomNr(stepSize - stepSize / 30, stepSize + stepSize / 30);
+		uint32 add = g_clue->calcRandomNr(stepSize - stepSize / 30, stepSize + stepSize / 30);
 
 		SetDay(GetDay + add);
 
@@ -69,9 +69,9 @@ void tcMovePersons(uint32 personCount, uint32 time) {
 		uint32 persID;
 
 		if (g_clue->getFeatures() & GF_PROFIDISK) {
-			persID = CalcRandomNr(Person_Paul_O_Conner, Person_Pere_Ubu + 1);
+			persID = g_clue->calcRandomNr(Person_Paul_O_Conner, Person_Pere_Ubu + 1);
 		} else {
-			persID = CalcRandomNr(Person_Paul_O_Conner, Person_Red_Stanson + 1);
+			persID = g_clue->calcRandomNr(Person_Paul_O_Conner, Person_Red_Stanson + 1);
 		}
 
 		if (livesIn(London_London_1, persID)) {
@@ -299,9 +299,9 @@ void tcPlayStreetSound() {
 			noStreetMusic = true;
 
 		if (!counter || noStreetMusic) {
-			counter = CalcRandomNr(7, 13);
+			counter = g_clue->calcRandomNr(7, 13);
 
-			switch (CalcRandomNr(0, 3)) {
+			switch (g_clue->calcRandomNr(0, 3)) {
 			case 0:
 				sndPlaySound("street1.bk", 0);
 				break;
@@ -390,7 +390,7 @@ uint32 StdHandle(uint32 choice) {
 		ShowTime(0);
 		break;
 	case CALL_TAXI:
-		if (CalcRandomNr(0, 10) == 1) {
+		if (g_clue->calcRandomNr(0, 10) == 1) {
 			sndPrepareFX("taxi.voc");
 			sndPlayFX();
 		}
@@ -711,8 +711,8 @@ bool tcPersonIsHere() {
 void tcPersonGreetsMatt() {
 	static uint32 upper = 4L;
 
-	if (CalcRandomNr(0L, upper) == 1) { /* alle upper mal wird Matt gegrüßt ! */
-		if (CalcRandomNr(0L, 4L) == 1)  /* alle 4 mal */
+	if (g_clue->calcRandomNr(0L, upper) == 1) { /* alle upper mal wird Matt gegrüßt ! */
+		if (g_clue->calcRandomNr(0L, 4L) == 1)  /* alle 4 mal */
 			upper += 2;     /* wahrscheinlichkeit wird kleiner ! */
 
 		uint32 locNr = GetObjNrOfLocation(GetLocation);

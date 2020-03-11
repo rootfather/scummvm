@@ -85,7 +85,6 @@ void inpOpenAllInputDevs() {
 	IHandler.JoyExists = false;
 
 	inpInitMouse();
-	inpClearKbBuffer();
 }
 
 void inpCloseAllInputDevs() {
@@ -229,7 +228,6 @@ int32 inpWaitFor(int32 l_Mask) {
 			}
 		}
 
-		inpClearKbBuffer();
 		inpDoPseudoMultiTasking();
 	}
 
@@ -286,9 +284,6 @@ void inpSetKeyRepeat(unsigned char rate) {
 		/* do nothing. */
 		// TODO: sleep()
 	}
-}
-
-void inpClearKbBuffer() {
 }
 
 } // End of namespace Clue

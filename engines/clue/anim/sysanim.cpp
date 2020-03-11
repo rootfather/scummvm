@@ -19,6 +19,7 @@
  ****************************************************************************/
 
 #include "clue/inphdl/inphdl.h"
+#include "clue/clue.h"
 
 namespace Clue {
 
@@ -265,7 +266,7 @@ void animator() {
 			if (Handler.RepeatationCount <= Handler.Repeatation) {
 				if ((--Handler.WaitCounter) == 0) {
 					Handler.WaitCounter =
-					    Handler.PictureRate + CalcRandomNr(0, 3);
+					    Handler.PictureRate + g_clue->calcRandomNr(0, 3);
 
 					if (Handler.CurrPictNr == 0) {
 						Handler.RepeatationCount++;

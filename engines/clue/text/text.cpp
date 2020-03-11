@@ -28,6 +28,8 @@
 #include "clue/text/text_e.h"
 #include "clue/text/text_p.h"
 
+#include "common/util.h"
+
 namespace Clue {
 
 /* private globals declaration */

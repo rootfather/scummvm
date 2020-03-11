@@ -18,6 +18,7 @@
  ****************************************************************************/
 
 #include "clue/scenes/scenes.h"
+#include "common/util.h"
 
 namespace Clue {
 

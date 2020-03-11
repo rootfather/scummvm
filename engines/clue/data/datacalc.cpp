@@ -17,6 +17,7 @@
  ****************************************************************************/
 
 #include "clue/data/datacalc.h"
+#include "common/util.h"
 
 namespace Clue {
 

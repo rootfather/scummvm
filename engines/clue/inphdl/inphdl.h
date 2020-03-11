@@ -71,8 +71,6 @@ void inpTurnMouse(bool us_NewStatus);       /* 0 means off, 1 means on */
 extern void inpDelay(int32 l_Ticks);
 extern void inpSetKeyRepeat(unsigned char rate);
 
-extern void inpClearKbBuffer();
-
 } // End of namespace Clue
 
 #endif

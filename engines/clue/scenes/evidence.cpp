@@ -41,7 +41,7 @@ static bool tcCarFound(Car car, uint32 time) {
 		if (tcIsCarRecognised(car, time)) { /* Wagen wird erkannt! */
 			Say(BUSINESS_TXT, 0, john->PictID, "CAR_RECOG");
 
-			int32 hours = CalcRandomNr(2L, 5L);
+			int32 hours = g_clue->calcRandomNr(2L, 5L);
 			int32 i = 0;
 
 			while ((i++) < hours) {
@@ -52,7 +52,7 @@ static bool tcCarFound(Car car, uint32 time) {
 
 			if (!tcIsCarRecognised(car, time)) {    /* Wagen wird nicht gefunden */
 				Say(BUSINESS_TXT, 0, john->PictID, "CAR_NOT_FOUND");
-				car->Strike = CalcRandomNr(200, 255);
+				car->Strike = g_clue->calcRandomNr(200, 255);
 			} else {        /* Wagen wird gefunden! */
 				found = true;
 				Say(BUSINESS_TXT, 0, john->PictID, "CAR_FOUND");
@@ -95,8 +95,8 @@ static uint32 tcIsThereATraitor() {
 	Person matt = (Person)dbGetObject(Person_Matt_Stuvysunt);
 	uint32 traitorId = 0, caught = 0;
 
-	if (player->JobOfferCount > 50 + CalcRandomNr(0, 20)) { /* ein Verrat?! */
-		if (CalcRandomNr(0, 255) < matt->Popularity) {  /* Verrat ! */
+	if (player->JobOfferCount > 50 + g_clue->calcRandomNr(0, 20)) { /* ein Verrat?! */
+		if (g_clue->calcRandomNr(0, 255) < matt->Popularity) {  /* Verrat ! */
 			joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME,
 			             Object_Person);
 
@@ -187,7 +187,7 @@ uint32 tcStartEvidence() {
 		MyEvidence[i][5] =
 		    (p[i]->KnownToPolice * (MAX(1, guarded))) / (div * 3);
 		MyEvidence[i][6] =
-		    ChangeAbs(0, (int32) CalcRandomNr(200, 255) * (int32) Search.SpotTouchCount[i], 0, 255);
+		    ChangeAbs(0, (int32)g_clue->calcRandomNr(200, 255) * (int32) Search.SpotTouchCount[i], 0, 255);
 
 		for (uint32 j = 0; j < 7; j++) /* jeden Betrag != 0 AUFRUNDEN auf 1% ! */
 			if (MyEvidence[i][j])
@@ -199,7 +199,7 @@ uint32 tcStartEvidence() {
 		/* im Fluchtfall viele Gehspuren! */
 		if (Search.EscapeBits & FAHN_ESCAPE)
 			MyEvidence[i][0] =
-			    CalcValue(MyEvidence[i][0], CalcRandomNr(80, 120), 255, 255,
+			    CalcValue(MyEvidence[i][0], g_clue->calcRandomNr(80, 120), 255, 255,
 			              50);
 
 		totalEvidence[i] =
@@ -223,12 +223,12 @@ uint32 tcStartEvidence() {
 		if (shown) {
 			ShowTime(0);
 			inpDelay(35L);
-			AddVTime(CalcRandomNr(1, 11));
+			AddVTime(g_clue->calcRandomNr(1, 11));
 
 			shown = 0;
 		}
 
-		byte guyNr = CalcRandomNr(0, guyCount);
+		byte guyNr = g_clue->calcRandomNr(0, guyCount);
 
 		/* wer ist den noch nicht fertig? */
 		while ((1 << guyNr) & guyReady)
@@ -239,7 +239,7 @@ uint32 tcStartEvidence() {
 		 */
 
 		/* zufällig eine Spurenart auswählen */
-		byte evidenceNr = CalcRandomNr(0, 7);
+		byte evidenceNr = g_clue->calcRandomNr(0, 7);
 
 		/* wenn diese Spurenart schon angzeigt wurde, eine freie
 		 * Spur suchen
@@ -402,7 +402,7 @@ uint32 tcPersonWanted(uint32 persId) {
 	livesInUnSet(London_London_1, persId);
 	tcMoveAPerson(persId, Location_Nirvana);
 
-	uint32 hours = CalcRandomNr(4L, 7L);
+	uint32 hours = g_clue->calcRandomNr(4L, 7L);
 
 	uint32 i = 0;
 	while ((i++) < hours) {
@@ -412,7 +412,7 @@ uint32 tcPersonWanted(uint32 persId) {
 	}
 
 	uint32 caught = 0;
-	if (tcGuyCanEscape((Person)dbGetObject(persId)) > CalcRandomNr(100, 255)) { /* Flucht gelingt */
+	if (tcGuyCanEscape((Person)dbGetObject(persId)) > g_clue->calcRandomNr(100, 255)) { /* Flucht gelingt */
 		Say(BUSINESS_TXT, 0, john->PictID, "ESCAPED");
 		livesInSet(London_Escape, persId);
 	} else {            /* nicht */
@@ -432,7 +432,7 @@ bool tcPersonQuestioning(Person person) {
 	Person miles = (Person)dbGetObject(Person_Miles_Chickenwing);
 
 	if (person != dbGetObject(Person_Matt_Stuvysunt)) {
-		if (tcGuyTellsAll(person) > CalcRandomNr(0, 180)) { /* er spricht */
+		if (tcGuyTellsAll(person) > g_clue->calcRandomNr(0, 180)) { /* er spricht */
 			Say(BUSINESS_TXT, 0, john->PictID, "ER_GESTEHT");
 			Say(BUSINESS_TXT, 0, miles->PictID, "GUTE_ARBEIT");
 			caught = true;
@@ -623,12 +623,12 @@ int32 tcCalcCarEscape(int32 timeLeft) {
 		/* Einheit = m pro Schleifendurchlauf */
 		int32 unrealSpeed = (kmh * kmhWeight[wayType] + ps * psWeight[wayType]) / 100;
 
-		unrealSpeed = unrealSpeed + 5 - (int32)(CalcRandomNr(0, 10));
+		unrealSpeed = unrealSpeed + 5 - (int32)(g_clue->calcRandomNr(0, 10));
 
 		if (unrealSpeed <= 0)
 			unrealSpeed = 5;
 
-		policeSpeed[wayType] = policeSpeed[wayType] + 5 - CalcRandomNr(0, 10);
+		policeSpeed[wayType] = policeSpeed[wayType] + 5 - g_clue->calcRandomNr(0, 10);
 		policeSpeed[wayType] =
 		    CalcValue(policeSpeed[wayType], 0, 255, build->GRate, 25);
 

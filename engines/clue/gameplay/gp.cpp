@@ -267,7 +267,7 @@ struct Scene *GetStoryScene(struct Scene *curr) {
 			struct Scene *sc = &film->gameplay[i];
 
 			if (sc != curr) {
-				uint32 j = CalcRandomNr(0L, 255L);
+				uint32 j = g_clue->calcRandomNr(0L, 255L);
 
 				if (j <= (uint32)(sc->Probability))
 					if (CheckConditions(sc))

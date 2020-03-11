@@ -18,18 +18,10 @@
  * verwendete Typen
  */
 #include "common/scummsys.h"
-#include "common/util.h"
 
 namespace Clue {
 
 #define EOS                     ((char)'\0')
-
-
-/*
- * some version defines
- */
-
-/* define THECLOU_DEBUG */
 
 /*
  * Textdateien, die auch als Daten verwendet werden

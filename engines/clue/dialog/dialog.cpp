@@ -42,7 +42,7 @@ static LIST *PrepareQuestions(LIST *keyWords, uint32 talkBits, byte textID) {
 
 	char question[TXT_KEY_LENGTH];
 	for (NODE *n = (NODE *) LIST_HEAD(keyWords); NODE_SUCC((NODE *) n); n = (NODE *) NODE_SUCC(n)) {
-		byte r = (byte) CalcRandomNr(0L, 6L);
+		byte r = (byte)g_clue->calcRandomNr(0L, 6L);
 		sprintf(question, NODE_NAME(GetNthNode(questionList, r)), NODE_NAME((NODE *) n));
 		CreateNode(preparedList, 0L, question);
 	}

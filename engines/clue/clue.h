@@ -26,8 +26,11 @@
 #include "engines/engine.h"
 #include "engines/advancedDetector.h"
 
-namespace Clue {
+#include "common/random.h"
+#include "common/system.h"
 
+namespace Clue {
+	
 enum ClueGameFeatures {
 	GF_PROFIDISK = (1 << 0), // Expansion pack
 	GF_CDAUDIO   = (1 << 1)  // TODO: Might not be a feature flag
@@ -48,8 +51,20 @@ public:
 	Common::Language getLanguage() const;
 	char getTxtLanguage() const;
 	Common::Platform getPlatform() const;
+	uint32 calcRandomNr(uint32 lowLimit, uint32 highLimit);
 
 	const ADGameDescription *_gameDescription;
+
+
+private:
+	Common::RandomSource* rnd;
+
+private:
+	byte startupMenu();
+	bool tcInit();
+	void setFullEnviroment();
+	void closeData();
+
 };
 
 extern ClueEngine *g_clue;

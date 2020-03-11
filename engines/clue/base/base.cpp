@@ -43,7 +43,6 @@ void tcDone() {
 		txtDone();
 		inpCloseAllInputDevs();
 		gfxDone();
-		rndDone();
 
 		if (g_clue->getFeatures() & GF_CDAUDIO) {
 			if (CDRomInstalled) {
@@ -65,7 +64,7 @@ void tcDone() {
 	}
 }
 
-static bool tcInit() {
+bool ClueEngine::tcInit() {
 	InitAudio();
 
 	StdBuffer1 = TCAllocMem(STD_BUFFER1_SIZE, true);
@@ -143,7 +142,7 @@ static void InitData() {
 		ErrorMsg(Disk_Defect, ERROR_MODULE_BASE, 1);
 }
 
-static void CloseData() {
+void ClueEngine::closeData() {
 	RemRelations(0L, 0L);
 	dbDeleteAllObjects(0L, 0L);
 }
@@ -183,7 +182,7 @@ void tcSetPermanentColors() {
 	gfxChangeColors(NULL, 0, GFX_BLEND_UP, palette);
 }
 
-static void SetFullEnviroment() {
+void ClueEngine::setFullEnviroment() {
 	hasSetP(Person_Matt_Stuvysunt, Ability_Elektronik, 251);
 	hasSetP(Person_Matt_Stuvysunt, Ability_Schloesser, 210);
 	hasSetP(Person_Matt_Stuvysunt, Ability_Aufpassen, 180);
@@ -376,7 +375,7 @@ static void SetFullEnviroment() {
 	}
 }
 
-static byte StartupMenu() {
+byte ClueEngine::startupMenu() {
 	LIST *menu = txtGoKey(MENU_TXT, "STARTUP_MENU");
 	uint32 activ;
 	char line[TXT_KEY_LENGTH];
@@ -481,65 +480,5 @@ static void parseOptions(int argc, char *argv[]) {
 #endif
 
 /**********************************************************/
-int clue_main(const char *path) {
-	bool demoFl = g_clue->getFeatures() & ADGF_DEMO;
-	if (demoFl)
-		GamePlayMode |= GP_DEMO | GP_STORY_OFF;
-
-	rndInit();
-
-	/* delete KB buffer */
-	inpClearKbBuffer();
-
-	/* set path for BuildPathName! */
-	dskSetRootPath(path);
-
-	if (tcInit()) {
-		uint32 sceneId = SCENE_NEW_GAME;
-
-		gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
-		gfxChangeColors(m_gc, 0, GFX_FADE_OUT, 0);
-
-		tcSetPermanentColors();
-
-		/* to blend the menu colours once: */
-		gfxShow(CurrentBackground, GFX_ONE_STEP | GFX_NO_REFRESH | GFX_BLEND_UP, 0,
-			-1, -1);
-
-		/* mouse to white - assume we need to set 15 and 16 */
-		gfxSetRGB(NULL, 15, 255, 255, 255);
-		gfxSetRGB(NULL, 16, 255, 255, 255);
-
-		SetBubbleType(SPEAK_BUBBLE);
-
-		ShowMenuBackground();
-
-		while (sceneId == SCENE_NEW_GAME) {
-			byte ret = 0;
-
-			if (!(GamePlayMode & GP_DEMO))
-				InitStory(STORY_DAT);
-			else
-				InitStory(STORY_DAT_DEMO);
-
-			while (!ret)
-				ret = StartupMenu();
-
-			if (ret != 2) {
-				if (GamePlayMode & GP_FULL_ENV)
-					SetFullEnviroment();
-
-				sceneId = PlayStory();
-			} else
-				sceneId = SCENE_THE_END;
-
-			CloseData();
-			CloseStory();
-		}
-	}
-
-	tcDone();
-	return 0;
-}
 
 } // End of namespace Clue

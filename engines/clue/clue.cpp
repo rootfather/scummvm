@@ -33,31 +33,75 @@ ClueEngine *g_clue = NULL;
 
 ClueEngine::ClueEngine(OSystem *syst, const ADGameDescription *gameDesc) : Engine(syst), _gameDescription(gameDesc) {
 	g_clue = this;
+	rnd = new Common::RandomSource("clue");
 }
 
 ClueEngine::~ClueEngine() {
 	g_clue = NULL;
+	delete rnd;
 }
 
+uint32 ClueEngine::calcRandomNr(uint32 lowLimit, uint32 highLimit) {
+	return rnd->getRandomNumberRng(lowLimit, highLimit - 1);
+}
+	
 Common::Error ClueEngine::run() {
-	// Game entry point
-	clue_main(ConfMan.get("path").c_str());
-	quitGame();
+	const char* path = ConfMan.get("path").c_str();
 
-	/*
-	// Run a dummy loop
-	Common::Event event;
+	if (getFeatures() & ADGF_DEMO)
+		GamePlayMode |= GP_DEMO | GP_STORY_OFF;
 
-	while (!shouldQuit()) {
-		while (g_system->getEventManager()->pollEvent(event)) {
-			if (event.type == Common::EVENT_KEYDOWN && event.kbd.keycode == Common::KEYCODE_ESCAPE)
-				quitGame();
+	/* set path for BuildPathName! */
+	dskSetRootPath(path);
+
+	if (tcInit()) {
+		uint32 sceneId = SCENE_NEW_GAME;
+
+		gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
+		gfxChangeColors(m_gc, 0, GFX_FADE_OUT, 0);
+
+		tcSetPermanentColors();
+
+		/* to blend the menu colours once: */
+		gfxShow(CurrentBackground, GFX_ONE_STEP | GFX_NO_REFRESH | GFX_BLEND_UP, 0,
+			-1, -1);
+
+		/* mouse to white - assume we need to set 15 and 16 */
+		gfxSetRGB(NULL, 15, 255, 255, 255);
+		gfxSetRGB(NULL, 16, 255, 255, 255);
+
+		SetBubbleType(SPEAK_BUBBLE);
+
+		ShowMenuBackground();
+
+		while (sceneId == SCENE_NEW_GAME) {
+			byte ret = 0;
+
+			if (!(GamePlayMode & GP_DEMO))
+				InitStory(STORY_DAT);
+			else
+				InitStory(STORY_DAT_DEMO);
+
+			while (!ret)
+				ret = startupMenu();
+
+			if (ret != 2) {
+				if (GamePlayMode & GP_FULL_ENV)
+					setFullEnviroment();
+
+				sceneId = PlayStory();
+			}
+			else
+				sceneId = SCENE_THE_END;
+
+			closeData();
+			CloseStory();
 		}
-
-		g_system->delayMillis(10);
 	}
-	*/
 
+	tcDone();
+
+	quitGame();
 	return Common::kNoError;
 }
 
