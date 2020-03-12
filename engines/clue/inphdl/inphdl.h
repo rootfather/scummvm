@@ -55,7 +55,6 @@ namespace Clue {
 /* global functions */
 
 extern void inpOpenAllInputDevs();
-extern void inpCloseAllInputDevs();
 
 extern void inpMousePtrOn();
 extern void inpMousePtrOff();

@@ -87,9 +87,6 @@ void inpOpenAllInputDevs() {
 	inpInitMouse();
 }
 
-void inpCloseAllInputDevs() {
-}
-
 void inpMousePtrOn() {
 	//CursorMan.showMouse(true);
 }

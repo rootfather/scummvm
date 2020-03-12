@@ -41,7 +41,6 @@ void tcDone() {
 		dbDone();
 		CloseAnimHandler();
 		txtDone();
-		inpCloseAllInputDevs();
 		gfxDone();
 
 		if (g_clue->getFeatures() & GF_CDAUDIO) {
