@@ -230,16 +230,16 @@ void StopAnim() {
  */
 
 void GetAnim(const char *AnimID, char *Dest) {
-	int i;
-	char ID[TXT_KEY_LENGTH];
+	char id[TXT_KEY_LENGTH];
 
-	strcpy(ID, AnimID);
+	strcpy(id, AnimID);
 
-	for (i = 0; ID[i] != '\0'; i++)
-		if (ID[i] == ',')
-			ID[i] = '_';
+	for (int i = 0; id[i] != '\0'; i++) {
+		if (id[i] == ',')
+			id[i] = '_';
+	}
 
-	g_clue->_txtMgr->getNthString(ANIM_TXT, ID, 0, Dest);
+	g_clue->_txtMgr->getFirstLine(ANIM_TXT, id, Dest);
 }
 
 /*
@@ -273,20 +273,11 @@ void animator() {
 					}
 
 					if (Handler.RepeatationCount <= Handler.Repeatation) {
-						uint16 sourceX;
-						uint16 sourceY;
-
-						sourceX =
-						    ((Handler.width +
-						      Handler.offset) * Handler.CurrPictNr) %
-						    (Handler.totalWidth);
+						uint16 sourceX = ((Handler.width + Handler.offset) * Handler.CurrPictNr) % (Handler.totalWidth);
+						uint16 sourceY = 0;
 
 						if (Handler.pictsPerRow != 0)
-							sourceY =
-							    (Handler.CurrPictNr / Handler.pictsPerRow) *
-							    (Handler.height + Y_OFFSET);
-						else
-							sourceY = 0;
+							sourceY = (Handler.CurrPictNr / Handler.pictsPerRow) * (Handler.height + Y_OFFSET);
 
 						/* sicherstellen, daß Animframes immer vorhanden sind */
 

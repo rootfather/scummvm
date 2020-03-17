@@ -53,10 +53,10 @@ private:
 	struct TextControl *_txtBase;
 
 	char _keyBuffer[TXT_KEY_LENGTH];
-	char* getLine(struct Text *txt, uint8 lineNr);
+	char *getLine(struct Text *txt, uint8 lineNr);
 
 public:
-	ClueEngine* _vm;
+	ClueEngine *_vm;
 	/* public prototypes - TEXT */
 	void init(char lang);
 
