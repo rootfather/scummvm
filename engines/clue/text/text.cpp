@@ -121,7 +121,7 @@ void TextMgr::load(uint32 textId) {
 			char txtFile[DSK_PATH_MAX];
 			char txtPath[DSK_PATH_MAX];
 
-			sprintf(txtFile, "%s%c%s", NODE_NAME(txt), _txtBase->_language, TXT_SUFFIX);
+			snprintf(txtFile, TXT_KEY_LENGTH, "%s%c%s", NODE_NAME(txt), _txtBase->_language, TXT_SUFFIX);
 			dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, txtFile, txtPath);
 
 			size_t length = dskFileLength(txtPath);

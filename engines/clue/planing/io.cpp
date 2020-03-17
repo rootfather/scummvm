@@ -108,7 +108,7 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 
 		char name2[TXT_KEY_LENGTH];
 		/* MOD 25-04-94 HG - new paths on pc */
-		sprintf(name2, "%s%s", name1, PLANING_PLAN_LIST_EXTENSION);
+		snprintf(name2, TXT_KEY_LENGTH, "%s%s", name1, PLANING_PLAN_LIST_EXTENSION);
 
 		char pllPath[DSK_PATH_MAX];
 		dskBuildPathName(DISK_CHECK_FILE, DATADISK, name2, pllPath);
@@ -122,7 +122,7 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 			dskClose(pllFh);
 
 			if ((mode == PLANING_OPEN_WRITE_PLAN) || pllData) {
-				sprintf(name2, "MODE_%d", mode);
+				snprintf(name2, TXT_KEY_LENGTH, "MODE_%d", mode);
 				plMessage(name2, PLANING_MSG_REFRESH);
 
 				LIST *PlanList = CreateList();
@@ -144,16 +144,14 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 								g_clue->_txtMgr->getFirstLine(PLAN_TXT, "ATTENTION_2", exp);
 						}
 
-						sprintf(name2, "*%s Plan %d    %s", name1, i + 1, exp);
+						snprintf(name2, TXT_KEY_LENGTH, "*%s Plan %d    %s", name1, i + 1, exp);
 
-						if ((data =
-						            (IOData *)CreateNode(PlanList, sizeof(struct IOData),
-						                                 name2)))
+						if ((data = (IOData *)CreateNode(PlanList, sizeof(struct IOData), name2)))
 							data->io_Data = i;
 					}
 				}
 
-				sprintf(name2, "EXPAND_MODE_%d", mode);
+				snprintf(name2, TXT_KEY_LENGTH, "EXPAND_MODE_%d", mode);
 				g_clue->_txtMgr->getFirstLine(PLAN_TXT, name2, exp);
 				ExpandObjectList(PlanList, exp);
 
@@ -168,7 +166,7 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 					dbGetObjectName(lsGetActivAreaID(), name1);
 					name1[strlen(name1) - 1] = '\0';
 
-					sprintf(name2, "%s%d%s", name1, i + 1, PLANING_PLAN_EXTENSION);
+					snprintf(name2, TXT_KEY_LENGTH, "%s%d%s", name1, i + 1, PLANING_PLAN_EXTENSION);
 
 					char pllPath2[DSK_PATH_MAX];
 					dskBuildPathName(DISK_CHECK_FILE, DATADISK, name2, pllPath2);
