@@ -43,33 +43,6 @@ namespace Clue {
 
 #define TXT_XOR_VALUE               0x75
 
-
-/* private structures */
-struct TextControl {
-	LIST *tc_Texts;
-
-	char tc_Language;
-};
-
-struct Text {
-	NODE txt_Link;
-
-	char *txt_Handle;
-	char *txt_LastMark;
-
-	size_t length;
-};
-
-
-/* private gobals definition */
-extern const char *txtLanguageMark[];
-extern struct TextControl *txtBase;
-extern char keyBuffer[];
-
-
-/* private prototypes - LINE */
-static char *txtGetLine(struct Text *txt, uint8 lineNr);
-
 } // End of namespace Clue
 
 #endif

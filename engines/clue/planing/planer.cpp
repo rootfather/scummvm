@@ -184,7 +184,7 @@ static void plActionGo() {
 }
 
 static void plActionWait() {
-	LIST *menu = txtGoKey(PLAN_TXT, "MENU_4");
+	LIST *menu = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "MENU_4");
 	byte activ = 0;
 	uint32 choice1 = 0L, choice2 = 0L, bitset;
 
@@ -338,7 +338,7 @@ static void plActionWait() {
 }
 
 static void plLevelDesigner(LSObject lso) {
-	LIST *menu = txtGoKey(PLAN_TXT, "MENU_8");
+	LIST *menu = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "MENU_8");
 	byte ende = 0, activ = 0;
 	uint16 originX = lso->us_DestX, originY = lso->us_DestY;
 	uint32 area = lsGetActivAreaID();
@@ -1238,9 +1238,9 @@ static void plActionUse() {
 static void plAction() {
 	LIST *menu = NULL;
 	if (CurrentPerson < BurglarsNr)
-		menu = txtGoKey(PLAN_TXT, "MENU_2");
+		menu = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "MENU_2");
 	else
-		menu = txtGoKey(PLAN_TXT, "MENU_5");
+		menu = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "MENU_5");
 
 	byte activ = 0;
 
@@ -1341,9 +1341,9 @@ static void plAction() {
 				RemoveList(menu);
 
 				if (CurrentPerson < BurglarsNr)
-					menu = txtGoKey(PLAN_TXT, "MENU_2");
+					menu = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "MENU_2");
 				else
-					menu = txtGoKey(PLAN_TXT, "MENU_5");
+					menu = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "MENU_5");
 			}
 			break;
 
@@ -1493,7 +1493,7 @@ static void plAction() {
 }
 
 static void plNoteBook() {
-	LIST *bubble = txtGoKey(PLAN_TXT, "MENU_6");
+	LIST *bubble = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "MENU_6");
 	char exp[TXT_KEY_LENGTH];
 
 	uint32 choice1 = 0;
@@ -1568,7 +1568,7 @@ static void plNoteBook() {
 }
 
 static void plLook() {
-	LIST *menu = txtGoKey(PLAN_TXT, "MENU_7");
+	LIST *menu = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "MENU_7");
 	byte activ = 0, choice;
 	uint32 timer = 0L, maxTimer = GetMaxTimer(plSys), realCurrentPerson =
 	                                  CurrentPerson, choice1;
@@ -1711,7 +1711,7 @@ static void plLook() {
 
 /* Planer */
 void plPlaner(uint32 objId) {
-	LIST *menu = txtGoKey(PLAN_TXT, "MENU_1");
+	LIST *menu = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "MENU_1");
 	byte activ = 0;
 	uint32 bitset;
 

@@ -117,7 +117,7 @@ byte tcDescTool(byte choice) {
 			char line[TXT_KEY_LENGTH];
 			dbGetObjectName(OL_NR(GetNthNode(tools, (uint32) choice)), line);
 
-			desc = txtGoKey(TOOLS_TXT, line);
+			desc = g_clue->_txtMgr->txtGoKey(TOOLS_TXT, line);
 
 			SetPictID(mary->PictID);
 			Bubble(desc, 0, 0L, 0L);
@@ -199,13 +199,13 @@ void tcSellTool() {
 			Tool tool = (Tool) dbGetObject(toolID);
 			uint32 price = tcGetToolTraderOffer(tool);
 
-			LIST *bubble = txtGoKeyAndInsert(BUSINESS_TXT, "ANGEBOT_WERKZ", price);
+			LIST *bubble = g_clue->_txtMgr->txtGoKeyAndInsert(BUSINESS_TXT, "ANGEBOT_WERKZ", price);
 
 			SetPictID(mary->PictID);
 			Bubble(bubble, 0, 0L, 0L);
 			RemoveList(bubble);
 
-			bubble = txtGoKey(BUSINESS_TXT, "VERKAUF");
+			bubble = g_clue->_txtMgr->txtGoKey(BUSINESS_TXT, "VERKAUF");
 
 			if (ChoiceOk(choice2 = Bubble(bubble, choice2, 0L, 0L), GET_OUT, bubble)) {
 				if (choice2 == 0) {

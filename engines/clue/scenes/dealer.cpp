@@ -108,9 +108,9 @@ void tcDealerOffer(Person dealer, byte which) {
 }
 
 void tcDealerSays(Person dealer, byte textNr, int32 perc) {
-	LIST *lootNames = txtGoKey(OBJECTS_ENUM_TXT, "enum_LootE");
-	LIST *specialLoot = txtGoKey(OBJECTS_ENUM_TXT, "enum_LootNameE");
-	LIST *dealerText = txtGoKey(BUSINESS_TXT, "DEALER_OFFER");
+	LIST *lootNames = g_clue->_txtMgr->txtGoKey(OBJECTS_ENUM_TXT, "enum_LootE");
+	LIST *specialLoot = g_clue->_txtMgr->txtGoKey(OBJECTS_ENUM_TXT, "enum_LootNameE");
+	LIST *dealerText = g_clue->_txtMgr->txtGoKey(BUSINESS_TXT, "DEALER_OFFER");
 	LIST *dealerOffer = CreateList();
 	Player player = (Player)dbGetObject(Player_Player_1);
 
@@ -197,8 +197,8 @@ void tcDealerSays(Person dealer, byte textNr, int32 perc) {
 
 LIST *tcMakeLootList(uint32 containerID, uint32 relID) {
 	CompleteLoot comp = (CompleteLoot)dbGetObject(CompleteLoot_LastLoot);
-	LIST *lootE = txtGoKey(OBJECTS_ENUM_TXT, "enum_LootE");
-	LIST *lootNameE = txtGoKey(OBJECTS_ENUM_TXT, "enum_LootNameE");
+	LIST *lootE = g_clue->_txtMgr->txtGoKey(OBJECTS_ENUM_TXT, "enum_LootE");
+	LIST *lootNameE = g_clue->_txtMgr->txtGoKey(OBJECTS_ENUM_TXT, "enum_LootNameE");
 	LIST *out = CreateList();
 
 	/* Listen initialisieren */

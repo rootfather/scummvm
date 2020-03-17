@@ -118,7 +118,7 @@ static byte tcMakeCarOk() {
 }
 
 uint32 tcOrganisation() {
-	LIST *menu = txtGoKey(MENU_TXT, "ORGANISATION");
+	LIST *menu = g_clue->_txtMgr->txtGoKey(MENU_TXT, "ORGANISATION");
 	byte activ = 0, ende = 0;
 	char line[TXT_KEY_LENGTH];
 
@@ -410,7 +410,7 @@ void tcChooseGuys() {
 		SetBubbleType(THINK_BUBBLE);
 		Say(BUSINESS_TXT, 0, matt->PictID, "PLAN_WITHOUT_GUYS");
 	} else {
-		LIST *menu = txtGoKey(MENU_TXT, "ORG_KOMPLIZEN");
+		LIST *menu = g_clue->_txtMgr->txtGoKey(MENU_TXT, "ORG_KOMPLIZEN");
 		char line[TXT_KEY_LENGTH];
 		byte activ = 0;
 

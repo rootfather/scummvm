@@ -47,7 +47,7 @@ void plSaveTools(Common::Stream *fh) {
 }
 
 LIST *plLoadTools(Common::Stream *fh) {
-	LIST *l = txtGoKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_1");
+	LIST *l = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_1");
 	byte foundAll = 1, canGet = 2, toolsNr = 0;
 
 	char buffer[64];
@@ -79,12 +79,12 @@ LIST *plLoadTools(Common::Stream *fh) {
 		LIST *extList = NULL;
 
 		if (canGet == 2)
-			extList = txtGoKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_3");
+			extList = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_3");
 		else if ((toolsNr - canGet) > 1)
-			extList = txtGoKeyAndInsert(PLAN_TXT, "SYSTEM_TOOLS_MISSING_2",
+			extList = g_clue->_txtMgr->txtGoKeyAndInsert(PLAN_TXT, "SYSTEM_TOOLS_MISSING_2",
 				                      (uint32)(toolsNr - canGet));
 		else if (toolsNr - canGet)
-			extList = txtGoKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_4");
+			extList = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_4");
 
 		if (extList) {
 			for (NODE *n = LIST_HEAD(extList); NODE_SUCC(n); n = NODE_SUCC(n))
@@ -226,7 +226,7 @@ void plSave(uint32 objId) {
 
 void plSaveChanged(uint32 objId) {
 	if (PlanChanged) {
-		LIST *l = txtGoKey(PLAN_TXT, "PLAN_CHANGED");
+		LIST *l = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "PLAN_CHANGED");
 
 		inpTurnESC(0);
 

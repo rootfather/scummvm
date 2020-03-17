@@ -119,7 +119,7 @@ bool tcLoadIt(char activ) {
 
 	/* neue Daten laden ! */
 
-	txtReset(OBJECTS_TXT);
+	g_clue->_txtMgr->txtReset(OBJECTS_TXT);
 
 	sprintf(line, "%s%d%s", MAIN_DATA_NAME, (int) activ, GAME_DATA_EXT);
 	char pathname[DSK_PATH_MAX];

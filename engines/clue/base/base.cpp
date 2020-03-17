@@ -40,7 +40,10 @@ void tcDone() {
 		RemoveAudio();
 		dbDone();
 		CloseAnimHandler();
-		txtDone();
+
+		delete g_clue->_txtMgr;
+		g_clue->_txtMgr = nullptr;
+
 		gfxDone();
 
 		if (g_clue->getFeatures() & GF_CDAUDIO) {
@@ -97,7 +100,7 @@ bool ClueEngine::tcInit() {
 	/* Start game. */
 	inpOpenAllInputDevs();
 
-	txtInit(g_clue->getTxtLanguage());
+	g_clue->_txtMgr->txtInit(g_clue->getTxtLanguage());
 
 	InitAnimHandler();
 
@@ -126,7 +129,7 @@ static void InitData() {
 	dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, MAIN_DATA_NAME GAME_REL_EXT, MainRel);
 	dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, BUILD_DATA_NAME GAME_REL_EXT, BuildRel);
 
-	txtReset(OBJECTS_TXT);
+	g_clue->_txtMgr->txtReset(OBJECTS_TXT);
 
 	if (dbLoadAllObjects(MainData, 0))
 		if (dbLoadAllObjects(BuildData, 0))
@@ -375,7 +378,7 @@ void ClueEngine::setFullEnviroment() {
 }
 
 byte ClueEngine::startupMenu() {
-	LIST *menu = txtGoKey(MENU_TXT, "STARTUP_MENU");
+	LIST *menu = g_clue->_txtMgr->txtGoKey(MENU_TXT, "STARTUP_MENU");
 	uint32 activ;
 	char line[TXT_KEY_LENGTH];
 	byte ret = 0;
@@ -415,7 +418,7 @@ byte ClueEngine::startupMenu() {
 		break;
 
 	case 1:
-		txtReset(OBJECTS_TXT);
+		g_clue->_txtMgr->txtReset(OBJECTS_TXT);
 
 		if (tcLoadTheClou()) {
 			film->StartScene = SceneArgs.ReturnValue;

@@ -464,7 +464,7 @@ uint32 StdHandle(uint32 choice) {
 }
 
 void StdDone() {
-	LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
+	LIST *menu = g_clue->_txtMgr->txtGoKey(MENU_TXT, "Mainmenu");
 
 	SceneArgs.ReturnValue = 0L;
 

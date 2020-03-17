@@ -1595,7 +1595,7 @@ static void plPlayerAction() {
 
 int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32)) {
 	Common::Stream *fh = NULL;
-	LIST *menu = txtGoKey(PLAN_TXT, "PLAYER_MENU");
+	LIST *menu = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "PLAYER_MENU");
 	byte activ = 0;
 	uint32 timeLeft = 0, bitset, choice1, choice2;
 	int32 ret = 0;
@@ -1764,7 +1764,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 						break;
 
 					case PLANING_PLAYER_RADIO_ALL:
-						l = txtGoKey(PLAN_TXT, "PLAYER_RADIO_1");
+						l = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "PLAYER_RADIO_1");
 
 						plMessage("PLAYER_RADIO_ALL", PLANING_MSG_REFRESH);
 
@@ -1821,7 +1821,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 							    OL_NR(GetNthNode(BurglarsList, 1));
 
 						if (choice1 != GET_OUT) {
-							l = txtGoKey(PLAN_TXT, "PLAYER_RADIO_2");
+							l = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "PLAYER_RADIO_2");
 							SetPictID(((Person)
 							           dbGetObject(OL_NR
 							                       (GetNthNode

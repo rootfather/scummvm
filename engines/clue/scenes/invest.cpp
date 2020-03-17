@@ -58,7 +58,7 @@ void Investigate(const char *location) {
 
 	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		if (buiID == Building_Buckingham_Palace) {
-			bubble_l = txtGoKey(INVESTIGATIONS_TXT, "BuckinghamBeobachtet");
+			bubble_l = g_clue->_txtMgr->txtGoKey(INVESTIGATIONS_TXT, "BuckinghamBeobachtet");
 			SetBubbleType(THINK_BUBBLE);
 			Bubble(bubble_l, 0, 0L, 0L);
 			RemoveList(bubble_l);
@@ -84,7 +84,7 @@ void Investigate(const char *location) {
 	gfxPrint(m_gc, line, 24, GFX_PRINT_CENTER);
 
 	/* Beobachtungstexte von Disk lesen */
-	origin = txtGoKey(INVESTIGATIONS_TXT, location);
+	origin = g_clue->_txtMgr->txtGoKey(INVESTIGATIONS_TXT, location);
 	bubble_l = CreateList();
 	count = GetNrOfNodes(origin);
 	guarding = (uint32) tcRGetGRate(bui);
@@ -177,7 +177,7 @@ void Investigate(const char *location) {
 	RemoveList(bubble_l);
 
 	if (minutes >= 1440) {  /* wurde 24 Stunden lang beobachtet ? */
-		bubble_l = txtGoKey(INVESTIGATIONS_TXT, "24StundenBeobachtet");
+		bubble_l = g_clue->_txtMgr->txtGoKey(INVESTIGATIONS_TXT, "24StundenBeobachtet");
 		SetBubbleType(THINK_BUBBLE);
 		Bubble(bubble_l, 0, 0L, 0L);
 		RemoveList(bubble_l);

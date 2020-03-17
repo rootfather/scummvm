@@ -203,18 +203,18 @@ static void gfxInitCollList() {
 
 	for (NODE *n = (NODE *) LIST_HEAD(tempList); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n)) {
 		struct Collection *coll = (Collection *)CreateNode(CollectionList, sizeof(struct Collection),
-		                             txtGetKey(2, NODE_NAME(n)));
+			g_clue->_txtMgr->txtGetKey(2, NODE_NAME(n)));
 
-		coll->us_CollId = (uint16) txtGetKeyAsULONG(1, NODE_NAME(n));
+		coll->us_CollId = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG(1, NODE_NAME(n));
 
 		coll->puch_Filename = NODE_NAME(coll);
 		coll->prepared = NULL;
 
-		coll->us_TotalWidth = (uint16) txtGetKeyAsULONG(3, NODE_NAME(n));
-		coll->us_TotalHeight = (uint16) txtGetKeyAsULONG(4, NODE_NAME(n));
+		coll->us_TotalWidth = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG(3, NODE_NAME(n));
+		coll->us_TotalHeight = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG(4, NODE_NAME(n));
 
-		coll->uch_ColorRangeStart = (uint16) txtGetKeyAsULONG(5, NODE_NAME(n));
-		coll->uch_ColorRangeEnd = (uint16) txtGetKeyAsULONG(6, NODE_NAME(n));
+		coll->uch_ColorRangeStart = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG(5, NODE_NAME(n));
+		coll->uch_ColorRangeEnd = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG(6, NODE_NAME(n));
 	}
 
 	RemoveList(tempList);
@@ -231,17 +231,17 @@ static void gfxInitPictList() {
 	for (NODE *n = LIST_HEAD(tempList); NODE_SUCC(n); n = NODE_SUCC(n)) {
 		struct Picture *pict = (Picture *)CreateNode(PictureList, sizeof(*pict), NULL);
 
-		pict->us_PictId = (uint16) txtGetKeyAsULONG(1, NODE_NAME(n));
-		pict->us_CollId = (uint16) txtGetKeyAsULONG(2, NODE_NAME(n));
+		pict->us_PictId = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG(1, NODE_NAME(n));
+		pict->us_CollId = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG(2, NODE_NAME(n));
 
-		pict->us_XOffset = (uint16) txtGetKeyAsULONG(3, NODE_NAME(n));
-		pict->us_YOffset = (uint16) txtGetKeyAsULONG(4, NODE_NAME(n));
+		pict->us_XOffset = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG(3, NODE_NAME(n));
+		pict->us_YOffset = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG(4, NODE_NAME(n));
 
-		pict->us_Width = (uint16) txtGetKeyAsULONG(5, NODE_NAME(n));
-		pict->us_Height = (uint16) txtGetKeyAsULONG(6, NODE_NAME(n));
+		pict->us_Width = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG(5, NODE_NAME(n));
+		pict->us_Height = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG(6, NODE_NAME(n));
 
-		pict->us_DestX = (uint16) txtGetKeyAsULONG(7, NODE_NAME(n));
-		pict->us_DestY = (uint16) txtGetKeyAsULONG(8, NODE_NAME(n));
+		pict->us_DestX = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG(7, NODE_NAME(n));
+		pict->us_DestY = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG(8, NODE_NAME(n));
 	}
 
 	RemoveList(tempList);

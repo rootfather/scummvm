@@ -35,7 +35,7 @@ static byte tcDisplayInfoAboutPerson(uint32 objID) {
 
 	char name[TXT_KEY_LENGTH];
 	dbGetObjectName(objID, name);
-	LIST *bubble = txtGoKey(LOOK_TXT, name);
+	LIST *bubble = g_clue->_txtMgr->txtGoKey(LOOK_TXT, name);
 
 	SetBubbleType(THINK_BUBBLE);
 	Bubble(bubble, 0, 0L, 0L);
@@ -129,7 +129,7 @@ void Information() {
 	byte ret = 0;
 	while ((choice != 6) && (ret != GET_OUT)) {
 		SetBubbleType(THINK_BUBBLE);
-		LIST *bubble = txtGoKey(THECLOU_TXT, "INFORMATION");
+		LIST *bubble = g_clue->_txtMgr->txtGoKey(THECLOU_TXT, "INFORMATION");
 		choice = Bubble(bubble, choice, 0L, 0L);
 		RemoveList(bubble);
 
@@ -259,7 +259,7 @@ void Look(uint32 locNr) {
 
 	byte choice = 0;
 	while (choice != 2) {
-		LIST *menu = txtGoKey(THECLOU_TXT, "UMSEHEN");
+		LIST *menu = g_clue->_txtMgr->txtGoKey(THECLOU_TXT, "UMSEHEN");
 
 		SetBubbleType(THINK_BUBBLE);
 		choice = Bubble(menu, 0, 0L, 0L);
@@ -269,7 +269,7 @@ void Look(uint32 locNr) {
 
 		switch (choice) {
 		case 0: {
-			LIST *bubble = txtGoKey(HOUSEDESC_TXT,
+			LIST *bubble = g_clue->_txtMgr->txtGoKey(HOUSEDESC_TXT,
 			                  NODE_NAME(GetNthNode(film->loc_names, (locNr))));
 
 			SetBubbleType(THINK_BUBBLE);

@@ -23,6 +23,7 @@
 
 /* public header(s) */
 #include "clue/text/text.h"
+#include "clue/clue.h"
 
 /* private header(s) */
 #include "clue/text/text_e.h"
@@ -37,12 +38,26 @@ const char *txtLanguageMark[TXT_LANG_LAST] = {
 	"d", "e", "f", "s", "d"
 };
 
-struct TextControl *txtBase = NULL;
-char keyBuffer[TXT_KEY_LENGTH];
+TextMgr::TextMgr(ClueEngine* vm, char lang) : _vm(vm) {
+	_txtBase = nullptr;
+	_keyBuffer[0] = '\0';
+	txtInit(lang);
+}
 
+TextMgr::~TextMgr() {
+	if (_txtBase) {
+		uint32 nr = GetNrOfNodes(_txtBase->tc_Texts);
 
+		for (uint32 i = 0; i < nr; i++)
+			txtUnLoad(i);
+
+		RemoveList(_txtBase->tc_Texts);
+		TCFreeMem(_txtBase, sizeof(*_txtBase));
+	}
+}
+	
 /* private functions */
-static char *txtGetLine(struct Text *txt, uint8 lineNr) {
+char *TextMgr::txtGetLine(struct Text *txt, uint8 lineNr) {
 	char *line = nullptr;
 	if (txt && txt->txt_LastMark && lineNr) {
 		line = txt->txt_LastMark;
@@ -82,16 +97,16 @@ static char *txtGetLine(struct Text *txt, uint8 lineNr) {
 }
 
 /*  public functions - TEXT */
-void txtInit(char lang) {
-	if ((txtBase = (TextControl *)TCAllocMem(sizeof(*txtBase), 0))) {
-		txtBase->tc_Texts = CreateList();
-		txtBase->tc_Language = lang;
+void TextMgr::txtInit(char lang) {
+	if ((_txtBase = (TextControl *)TCAllocMem(sizeof(*_txtBase), 0))) {
+		_txtBase->tc_Texts = CreateList();
+		_txtBase->tc_Language = lang;
 
 		char txtListPath[DSK_PATH_MAX];
 		dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, TXT_LIST, txtListPath);
 
-		if (ReadList(txtBase->tc_Texts, sizeof(struct Text), txtListPath)) {
-			uint32 nr = GetNrOfNodes(txtBase->tc_Texts);
+		if (ReadList(_txtBase->tc_Texts, sizeof(struct Text), txtListPath)) {
+			uint32 nr = GetNrOfNodes(_txtBase->tc_Texts);
 			for (uint32 i = 0; i < nr; i++)
 				txtLoad(i);
 		} else {
@@ -102,20 +117,8 @@ void txtInit(char lang) {
 	}
 }
 
-void txtDone() {
-	if (txtBase) {
-		uint32 nr = GetNrOfNodes(txtBase->tc_Texts);
-
-		for (uint32 i = 0; i < nr; i++)
-			txtUnLoad(i);
-
-		RemoveList(txtBase->tc_Texts);
-		TCFreeMem(txtBase, sizeof(*txtBase));
-	}
-}
-
-void txtLoad(uint32 textId) {
-	struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
+void TextMgr::txtLoad(uint32 textId) {
+	struct Text *txt = (Text *)GetNthNode(_txtBase->tc_Texts, textId);
 
 	if (txt) {
 		if (!txt->txt_Handle) {
@@ -126,7 +129,7 @@ void txtLoad(uint32 textId) {
 
 			sprintf(txtFile, "%s%c%s",
 			        NODE_NAME(txt),
-			        txtBase->tc_Language,
+			        _txtBase->tc_Language,
 			        TXT_SUFFIX);
 
 			dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, txtFile, txtPath);
@@ -168,8 +171,8 @@ void txtLoad(uint32 textId) {
 	}
 }
 
-void txtUnLoad(uint32 textId) {
-	struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
+void TextMgr::txtUnLoad(uint32 textId) {
+	struct Text *txt = (Text *)GetNthNode(_txtBase->tc_Texts, textId);
 
 	if (txt) {
 		if (txt->txt_Handle) {
@@ -182,8 +185,8 @@ void txtUnLoad(uint32 textId) {
 	}
 }
 
-void txtPrepare(uint32 textId) {
-	struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
+void TextMgr::txtPrepare(uint32 textId) {
+	struct Text *txt = (Text *)GetNthNode(_txtBase->tc_Texts, textId);
 
 	if (txt) {
 		memcpy(TXT_BUFFER_WORK, txt->txt_Handle, txt->length);
@@ -191,8 +194,8 @@ void txtPrepare(uint32 textId) {
 	}
 }
 
-void txtReset(uint32 textId) {
-	struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
+void TextMgr::txtReset(uint32 textId) {
+	struct Text *txt = (Text *)GetNthNode(_txtBase->tc_Texts, textId);
 
 	if (txt)
 		txt->txt_LastMark = (char *)TXT_BUFFER_WORK;
@@ -200,7 +203,7 @@ void txtReset(uint32 textId) {
 
 
 /* public functions - KEY */
-char *txtGetKey(uint16 keyNr, const char *key) {
+char *TextMgr::txtGetKey(uint16 keyNr, const char *key) {
 	if (!key)
 		return NULL;
 
@@ -222,13 +225,13 @@ char *txtGetKey(uint16 keyNr, const char *key) {
 
 	uint16 i;
 	for (i = 0; (i < TXT_KEY_LENGTH) && *key && (*key != TXT_CHAR_KEY_SEPERATOR); i++)
-		keyBuffer[i] = *key++;
+		_keyBuffer[i] = *key++;
 
-	keyBuffer[i] = TXT_CHAR_EOS;
-	return keyBuffer;
+	_keyBuffer[i] = TXT_CHAR_EOS;
+	return _keyBuffer;
 }
 
-uint32 txtGetKeyAsULONG(uint16 keyNr, const char *key) {
+uint32 TextMgr::txtGetKeyAsULONG(uint16 keyNr, const char *key) {
 	char *res = txtGetKey(keyNr, key);
 
 	if (res)
@@ -237,10 +240,10 @@ uint32 txtGetKeyAsULONG(uint16 keyNr, const char *key) {
 		return ((uint32) - 1);
 }
 
-LIST *txtGoKey(uint32 textId, const char *key) {
+LIST * TextMgr::txtGoKey(uint32 textId, const char *key) {
 	LIST *txtList = NULL;
 
-	struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
+	struct Text *txt = (Text *)GetNthNode(_txtBase->tc_Texts, textId);
 	if (txt) {
 		char *LastMark = NULL;
 
@@ -296,7 +299,7 @@ LIST *txtGoKey(uint32 textId, const char *key) {
 	return txtList;
 }
 
-LIST *txtGoKeyAndInsert(uint32 textId, const char *key, ...) {
+LIST * TextMgr::txtGoKeyAndInsert(uint32 textId, const char *key, ...) {
 	LIST *txtList = CreateList();
 
 	va_list argument;
@@ -325,9 +328,9 @@ LIST *txtGoKeyAndInsert(uint32 textId, const char *key, ...) {
 	return txtList;
 }
 
-bool txtKeyExists(uint32 textId, const char *key) {
+bool TextMgr::txtKeyExists(uint32 textId, const char *key) {
 	bool found = false;
-	struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
+	struct Text *txt = (Text *)GetNthNode(_txtBase->tc_Texts, textId);
 
 	if (txt && key) {
 		txtPrepare(textId);
@@ -350,7 +353,7 @@ bool txtKeyExists(uint32 textId, const char *key) {
 	return found;
 }
 
-uint32 txtCountKey(const char *key) {
+uint32 TextMgr::txtCountKey(const char *key) {
 	uint32 i = strlen(key);
 	uint32 j, k;
 
@@ -364,7 +367,7 @@ uint32 txtCountKey(const char *key) {
 
 
 /* functions - STRING */
-char *txtGetNthString(uint32 textId, const char *key, uint32 nth, char *dest) {
+char * TextMgr::txtGetNthString(uint32 textId, const char *key, uint32 nth, char *dest) {
 	LIST *txtList = txtGoKey(textId, key);
 	void *src = GetNthNode(txtList, nth);
 
@@ -377,13 +380,13 @@ char *txtGetNthString(uint32 textId, const char *key, uint32 nth, char *dest) {
 	return dest;
 }
 
-void txtPutCharacter(LIST *list, uint16 pos, uint8 c) {
+void TextMgr::txtPutCharacter(LIST *list, uint16 pos, uint8 c) {
 	for (NODE *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node))
 		NODE_NAME(node)[pos] = c;
 }
 
 #if 0
-void txtUnPrepare(uint32 textId) {
+void TextMgr::txtUnPrepare(uint32 textId) {
 	struct Text *txt = (Text *)GetNthNode(txtBase->tc_Texts, textId);
 
 	if (txt)

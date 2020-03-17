@@ -30,7 +30,7 @@ void tcJobOffer(Person p) {
 
 	byte choice = Say(BUSINESS_TXT, 0, MATT_PICTID, "PERS_ANZ");
 	int32 part = tcGetPersOffer(p, (choice + 2));
-	LIST *bubble = txtGoKeyAndInsert(BUSINESS_TXT, "JOB_ANSWER", (uint32) part, NULL);
+	LIST *bubble = g_clue->_txtMgr->txtGoKeyAndInsert(BUSINESS_TXT, "JOB_ANSWER", (uint32) part, NULL);
 
 	SetPictID(p->PictID);
 	Bubble(bubble, 0, 0L, 0L);
@@ -50,7 +50,7 @@ void tcJobOffer(Person p) {
 
 void tcMyJobAnswer(Person p) {
 	LIST *bubble = CreateList();
-	LIST *jobs = txtGoKey(OBJECTS_ENUM_TXT, "enum_JobE");
+	LIST *jobs = g_clue->_txtMgr->txtGoKey(OBJECTS_ENUM_TXT, "enum_JobE");
 	char line[TXT_KEY_LENGTH], job[TXT_KEY_LENGTH];
 
 	strcpy(job, NODE_NAME(GetNthNode(jobs, p->Job)));
@@ -72,7 +72,7 @@ void tcMyJobAnswer(Person p) {
 
 void tcPrisonAnswer(Person p) {
 	LIST *bubble = CreateList();
-	LIST *source = txtGoKey(BUSINESS_TXT, "IN_PRISON_ANSWER");
+	LIST *source = g_clue->_txtMgr->txtGoKey(BUSINESS_TXT, "IN_PRISON_ANSWER");
 	char line[TXT_KEY_LENGTH];
 
 	strcpy(line, NODE_NAME(GetNthNode(source, p->KnownToPolice / 52)));
@@ -90,7 +90,7 @@ void tcAbilityAnswer(uint32 personID) {
 	Person p = (Person)dbGetObject(personID);
 
 	dbGetObjectName(personID, name);
-	LIST *bubble = txtGoKey(ABILITY_TXT, name);
+	LIST *bubble = g_clue->_txtMgr->txtGoKey(ABILITY_TXT, name);
 	SetPictID(p->PictID);
 	Bubble(bubble, 0, 0, 0);
 

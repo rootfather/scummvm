@@ -67,7 +67,7 @@ void DoneTaxi() {
 }
 
 void DoneInsideHouse() {
-	LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
+	LIST *menu = g_clue->_txtMgr->txtGoKey(MENU_TXT, "Mainmenu");
 
 	SceneArgs.ReturnValue = 0;
 	SceneArgs.Ueberschrieben = 1;
@@ -154,7 +154,7 @@ void DoneInsideHouse() {
 }
 
 void DoneTools() {
-	LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
+	LIST *menu = g_clue->_txtMgr->txtGoKey(MENU_TXT, "Mainmenu");
 
 	SceneArgs.Ueberschrieben = 1;
 
@@ -190,7 +190,7 @@ void DoneTools() {
 }
 
 void DoneDealer() {
-	LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
+	LIST *menu = g_clue->_txtMgr->txtGoKey(MENU_TXT, "Mainmenu");
 
 	SceneArgs.Ueberschrieben = 1;
 	SceneArgs.ReturnValue = 0L;
@@ -229,8 +229,8 @@ void DoneDealer() {
 }
 
 void DoneParking() {
-	LIST *bubble = txtGoKey(BUSINESS_TXT, "PARKING");
-	LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
+	LIST *bubble = g_clue->_txtMgr->txtGoKey(BUSINESS_TXT, "PARKING");
+	LIST *menu = g_clue->_txtMgr->txtGoKey(MENU_TXT, "Mainmenu");
 	Person marc = (Person)dbGetObject(Person_Marc_Smith);
 
 	SceneArgs.Ueberschrieben = 1;
@@ -289,7 +289,7 @@ void DoneParking() {
 }
 
 void DoneGarage() {
-	LIST *menu = txtGoKey(MENU_TXT, "Mainmenu");
+	LIST *menu = g_clue->_txtMgr->txtGoKey(MENU_TXT, "Mainmenu");
 	byte activ = 0;
 	Person marc = (Person)dbGetObject(Person_Marc_Smith);
 

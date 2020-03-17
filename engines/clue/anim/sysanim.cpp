@@ -117,35 +117,24 @@ static void PrepareAnim(const char *AnimID)
 
 	GetAnim(AnimID, pict_list);
 
-	if ((uint32)(txtCountKey(pict_list)) > PIC_1_ID_POS) {
-		coll =
-		    gfxGetCollection(txtGetKeyAsULONG(ANIM_COLL_ID_POS, pict_list));
+	if ((uint32)(g_clue->_txtMgr->txtCountKey(pict_list)) > PIC_1_ID_POS) {
+		coll = gfxGetCollection(g_clue->_txtMgr->txtGetKeyAsULONG(ANIM_COLL_ID_POS, pict_list));
+		Handler.frameCount = g_clue->_txtMgr->txtGetKeyAsULONG(PIC_COUNT_POS, pict_list);
 
-		Handler.frameCount = txtGetKeyAsULONG(PIC_COUNT_POS, pict_list);
+		Handler.width = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG(PHASE_WIDTH_POS, pict_list);
+		Handler.height = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG(PHASE_HEIGHT_POS, pict_list);
 
-		Handler.width =
-		    (uint16) txtGetKeyAsULONG(PHASE_WIDTH_POS, pict_list);
-		Handler.height =
-		    (uint16) txtGetKeyAsULONG(PHASE_HEIGHT_POS, pict_list);
-
-		Handler.offset =
-		    (uint16) txtGetKeyAsULONG(PHASE_OFFSET_POS, pict_list);
-
-		Handler.destX =
-		    (uint16) txtGetKeyAsULONG(X_DEST_OFFSET_POS, pict_list);
-		Handler.destY =
-		    (uint16) txtGetKeyAsULONG(Y_DEST_OFFSET_POS, pict_list);
+		Handler.offset = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG(PHASE_OFFSET_POS, pict_list);
+		Handler.destX = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG(X_DEST_OFFSET_POS, pict_list);
+		Handler.destY = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG(Y_DEST_OFFSET_POS, pict_list);
 
 		/* need to add an offset for total width! Example:
 		 * 3 images with Width = 80, Offset = 2 -> TotalWidth = 244
 		 * but 244 / 3 is only 2, even though there are 3 images in
 		     * this row!
 		 */
-		Handler.pictsPerRow =
-		    (coll->us_TotalWidth + Handler.offset) / (Handler.width +
-		            Handler.offset);
+		Handler.pictsPerRow = (coll->us_TotalWidth + Handler.offset) / (Handler.width + Handler.offset);
 		Handler.totalWidth = coll->us_TotalWidth;
-
 		Handler.AnimCollection = coll->us_CollId;
 
 		/* jetzt die Animphasen vorbereiten und ins Mem kopieren */
@@ -173,16 +162,16 @@ void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode) {
 
 		if (!(mode & GFX_DONT_SHOW_FIRST_PIC)) {
 			if (!mode)
-				mode = (uint32) txtGetKeyAsULONG((uint16) PIC_MODE_POS, pict_list);
+				mode = g_clue->_txtMgr->txtGetKeyAsULONG((uint16) PIC_MODE_POS, pict_list);
 
-			pict_id = (uint16) txtGetKeyAsULONG((uint16) PIC_1_ID_POS, pict_list);
+			pict_id = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG((uint16) PIC_1_ID_POS, pict_list);
 		}
 
 		if (pict_id)
 			gfxShow(pict_id, mode, 2, -1L, -1L);
 
-		if ((uint32)(txtCountKey(pict_list)) > PIC_1_ID_POS) {
-			rate = (uint16) txtGetKeyAsULONG((uint16) PIC_P_SEC_POS, pict_list);
+		if (g_clue->_txtMgr->txtCountKey(pict_list) > PIC_1_ID_POS) {
+			rate = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG((uint16) PIC_P_SEC_POS, pict_list);
 
 			/* ZZZZZZXXXZZZZZ NOTE: UHHHHHHHHHHHHHHH? WTF???
 			   LOOK AT 'texts/animd.txt! WTF?'
@@ -222,13 +211,13 @@ void StopAnim() {
 			GetAnim(Handler.RunningAnimID, pict_list);
 
 			/* "unprepare" pictures for the sake of completeness */
-			struct Picture *pict = gfxGetPicture((uint16) txtGetKeyAsULONG((uint16) PIC_1_ID_POS, pict_list));
+			struct Picture *pict = gfxGetPicture((uint16)g_clue->_txtMgr->txtGetKeyAsULONG((uint16) PIC_1_ID_POS, pict_list));
 
 			if (pict)
 				gfxUnPrepareColl((uint16) pict->us_CollId);
 
-			if (txtCountKey(pict_list) > PIC_1_ID_POS)
-				gfxUnPrepareColl((uint16) txtGetKeyAsULONG((uint16) ANIM_COLL_ID_POS, pict_list));
+			if (g_clue->_txtMgr->txtCountKey(pict_list) > PIC_1_ID_POS)
+				gfxUnPrepareColl((uint16)g_clue->_txtMgr->txtGetKeyAsULONG((uint16) ANIM_COLL_ID_POS, pict_list));
 
 			Handler.RunningAnimID[0] = '\0';
 		}
@@ -250,7 +239,7 @@ void GetAnim(const char *AnimID, char *Dest) {
 		if (ID[i] == ',')
 			ID[i] = '_';
 
-	txtGetNthString(ANIM_TXT, ID, 0, Dest);
+	g_clue->_txtMgr->txtGetNthString(ANIM_TXT, ID, 0, Dest);
 }
 
 /*

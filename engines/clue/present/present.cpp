@@ -115,7 +115,7 @@ uint8 Present(uint32 nr, const char *presentationText, void (*initPresentation)(
 
 	gfxShow((uint16) BIG_SHEET, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);   /* nur die Farben ! */
 
-	list = txtGoKey(PRESENT_TXT, presentationText);
+	list = g_clue->_txtMgr->txtGoKey(PRESENT_TXT, presentationText);
 
 	if (list)
 		initPresentation(nr, presentationData, list);

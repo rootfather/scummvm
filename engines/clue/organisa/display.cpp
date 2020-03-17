@@ -62,7 +62,7 @@ void tcDisplayOrganisation() {
 }
 
 void tcDisplayCommon() {
-	LIST *texts = txtGoKey(BUSINESS_TXT, "PLAN_COMMON_DATA");
+	LIST *texts = g_clue->_txtMgr->txtGoKey(BUSINESS_TXT, "PLAN_COMMON_DATA");
 
 	gfxSetGC(l_gc);
 	gfxShow(ORG_PICT_ID, GFX_ONE_STEP | GFX_NO_REFRESH, 0, -1, -1);
@@ -143,7 +143,7 @@ void tcDisplayCommon() {
 	strcpy(line, NODE_NAME(GetNthNode(texts, 3L)));
 
 	if (Organisation.BuildingID) {
-		LIST *enums = txtGoKey(OBJECTS_ENUM_TXT, "enum_RouteE");
+		LIST *enums = g_clue->_txtMgr->txtGoKey(OBJECTS_ENUM_TXT, "enum_RouteE");
 
 		strcpy(name, NODE_NAME(GetNthNode(enums, building->EscapeRoute)));
 		strcat(line, name);

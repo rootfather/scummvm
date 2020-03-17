@@ -174,16 +174,16 @@ void tcColorCar(Car car) {
 	Person marc = (Person) dbGetObject(Person_Marc_Smith);
 	uint32 costs = (uint32)tcColorCosts(car);
 
-	LIST *bubble = txtGoKeyAndInsert(BUSINESS_TXT, "LACKIEREN", (uint32) costs, NULL);
+	LIST *bubble = g_clue->_txtMgr->txtGoKeyAndInsert(BUSINESS_TXT, "LACKIEREN", (uint32) costs, NULL);
 
 	SetPictID(marc->PictID);
 	Bubble(bubble, 0, 0L, 0L);
 	RemoveList(bubble);
 
 	if (Say(BUSINESS_TXT, 0, MATT_PICTID, "LACKIEREN_ANT") == 0) {
-		LIST *colors = txtGoKey(OBJECTS_ENUM_TXT, "enum_ColorE");
+		LIST *colors = g_clue->_txtMgr->txtGoKey(OBJECTS_ENUM_TXT, "enum_ColorE");
 
-		txtPutCharacter(colors, 0, '*');
+		g_clue->_txtMgr->txtPutCharacter(colors, 0, '*');
 
 		if (tcSpendMoney(costs, 1)) {
 			char exp[TXT_KEY_LENGTH];
@@ -225,9 +225,9 @@ void tcSellCar(uint32 ObjectID) {
 
 	LIST *bubble;
 	if (tcRGetCarAge(car) < 1)
-		bubble = txtGoKeyAndInsert(BUSINESS_TXT, "ANGEBOT_1", tcRGetCarValue(car), offer, NULL);
+		bubble = g_clue->_txtMgr->txtGoKeyAndInsert(BUSINESS_TXT, "ANGEBOT_1", tcRGetCarValue(car), offer, NULL);
 	else
-		bubble = txtGoKeyAndInsert(BUSINESS_TXT, "ANGEBOT", tcRGetCarValue(car), tcRGetCarAge(car), offer, NULL);
+		bubble = g_clue->_txtMgr->txtGoKeyAndInsert(BUSINESS_TXT, "ANGEBOT", tcRGetCarValue(car), tcRGetCarAge(car), offer, NULL);
 
 	SetPictID(marc->PictID);
 	Bubble(bubble, 0, 0L, 0L);
@@ -271,7 +271,7 @@ void tcRepairCar(Car car, const char *repairWhat) {
 	if (!(enough = tcSpendMoney(costs, 0)))
 		return;
 
-	list = txtGoKey(PRESENT_TXT, repairWhat);
+	list = g_clue->_txtMgr->txtGoKey(PRESENT_TXT, repairWhat);
 
 	gfxPrepareRefresh();
 	gfxShow((uint16) BIG_SHEET, GFX_NO_REFRESH | GFX_OVERLAY, 0L, -1L, -1L);
@@ -393,7 +393,7 @@ void tcCarGeneralOverhoul(Car car) {
 
 	SetPictID(marc->PictID);
 
-	LIST *bubble = txtGoKeyAndInsert(BUSINESS_TXT, "GENERAL_OVERHOUL",
+	LIST *bubble = g_clue->_txtMgr->txtGoKeyAndInsert(BUSINESS_TXT, "GENERAL_OVERHOUL",
 	                      (uint32)((tcCostsPerTotalRepair(car) * 255) / 8), NULL);
 	Bubble(bubble, 0, 0L, 0L);
 	RemoveList(bubble);

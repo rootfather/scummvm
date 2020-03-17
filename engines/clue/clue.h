@@ -36,8 +36,9 @@ enum ClueGameFeatures {
 	GF_CDAUDIO   = (1 << 1)  // TODO: Might not be a feature flag
 };
 
+class TextMgr;
+	
 class ClueEngine : public Engine {
-
 protected:
 	// Engine APIs
 	virtual Common::Error run();
@@ -55,6 +56,7 @@ public:
 
 	const ADGameDescription *_gameDescription;
 
+	TextMgr* _txtMgr;
 
 private:
 	Common::RandomSource* rnd;

@@ -32,7 +32,7 @@ static void FadeInsideObject() {
 }
 
 uint32 tcGoInsideOfHouse(uint32 buildingID) {
-	LIST *menu = txtGoKey(MENU_TXT, "INSIDE_MENU"), *areas;
+	LIST *menu = g_clue->_txtMgr->txtGoKey(MENU_TXT, "INSIDE_MENU"), *areas;
 	uint32 areaID = 0;
 
 	consistsOfAll(buildingID, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME,
@@ -72,7 +72,7 @@ uint32 tcGoInsideOfHouse(uint32 buildingID) {
 
 void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 	LSArea area = (LSArea)dbGetObject(areaID);
-	LIST *menu = txtGoKey(MENU_TXT, "LookMenu");
+	LIST *menu = g_clue->_txtMgr->txtGoKey(MENU_TXT, "LookMenu");
 
 	char alarm[TXT_KEY_LENGTH], power[TXT_KEY_LENGTH];
 	txtGetFirstLine(BUSINESS_TXT, "PROTECTED", alarm);

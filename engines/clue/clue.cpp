@@ -26,6 +26,7 @@
 
 #include "clue/clue.h"
 #include "clue/base/base.h"
+#include "clue/text/text.h"
 
 namespace Clue {
 
@@ -34,10 +35,14 @@ ClueEngine *g_clue = NULL;
 ClueEngine::ClueEngine(OSystem *syst, const ADGameDescription *gameDesc) : Engine(syst), _gameDescription(gameDesc) {
 	g_clue = this;
 	rnd = new Common::RandomSource("clue");
+	const char* path = ConfMan.get("path").c_str();
+	dskSetRootPath(path);
+	_txtMgr = new TextMgr(g_clue, g_clue->getTxtLanguage());
 }
 
 ClueEngine::~ClueEngine() {
-	g_clue = NULL;
+	g_clue = nullptr;
+	delete _txtMgr;
 	delete rnd;
 }
 
@@ -46,13 +51,9 @@ uint32 ClueEngine::calcRandomNr(uint32 lowLimit, uint32 highLimit) {
 }
 	
 Common::Error ClueEngine::run() {
-	const char* path = ConfMan.get("path").c_str();
 
 	if (getFeatures() & ADGF_DEMO)
 		GamePlayMode |= GP_DEMO | GP_STORY_OFF;
-
-	/* set path for BuildPathName! */
-	dskSetRootPath(path);
 
 	if (tcInit()) {
 		uint32 sceneId = SCENE_NEW_GAME;
