@@ -14,6 +14,7 @@
 #ifndef MODULE_RELATION
 #define MODULE_RELATION
 
+#include <limits.h>
 #include "clue/memory/memory.h"
 
 namespace Clue {
