@@ -46,7 +46,7 @@ uint32 ShowTheClouRequester(int32 error_class) {
 
 		ShowMenuBackground();
 
-		menu = g_clue->_txtMgr->txtGoKey(MENU_TXT, "ESCMenu_STD");
+		menu = g_clue->_txtMgr->goKey(MENU_TXT, "ESCMenu_STD");
 
 		inpTurnFunctionKey(0);
 

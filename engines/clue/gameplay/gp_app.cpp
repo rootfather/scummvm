@@ -353,7 +353,7 @@ uint32 StdHandle(uint32 choice) {
 						ShowMenuBackground();
 
 						char line[TXT_KEY_LENGTH];
-						txtGetFirstLine(THECLOU_TXT, "No_Entry", line);
+						g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "No_Entry", line);
 
 						PrintStatus(line);
 						inpWaitFor(INP_LBUTTONP);
@@ -464,7 +464,7 @@ uint32 StdHandle(uint32 choice) {
 }
 
 void StdDone() {
-	LIST *menu = g_clue->_txtMgr->txtGoKey(MENU_TXT, "Mainmenu");
+	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 
 	SceneArgs.ReturnValue = 0L;
 

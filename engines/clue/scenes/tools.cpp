@@ -28,7 +28,7 @@ char *tcShowPriceOfTool(uint32 nr, uint32 type, void *data) {
 	char line1[TXT_KEY_LENGTH];
 	Tool tool = (Tool) data;
 
-	txtGetFirstLine(BUSINESS_TXT, "PRICE_AND_MONEY", line1);
+	g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "PRICE_AND_MONEY", line1);
 	sprintf(line, line1, tool->Value);
 
 	return line;
@@ -49,7 +49,7 @@ byte tcBuyTool(byte choice) {
 	ObjectListWidth = 0;
 
 	char exp[TXT_KEY_LENGTH];
-	txtGetFirstLine(BUSINESS_TXT, "THANKS", exp);
+	g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "THANKS", exp);
 	ExpandObjectList(tools, exp);
 
 	SetBubbleType(THINK_BUBBLE);
@@ -102,7 +102,7 @@ byte tcDescTool(byte choice) {
 	ObjectListSuccString = NULL;
 
 	char exp[TXT_KEY_LENGTH];
-	txtGetFirstLine(BUSINESS_TXT, "THANKS", exp);
+	g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "THANKS", exp);
 	ExpandObjectList(tools, exp);
 
 	choice = MIN((uint32)choice, (GetNrOfNodes(tools) - 1));
@@ -117,7 +117,7 @@ byte tcDescTool(byte choice) {
 			char line[TXT_KEY_LENGTH];
 			dbGetObjectName(OL_NR(GetNthNode(tools, (uint32) choice)), line);
 
-			desc = g_clue->_txtMgr->txtGoKey(TOOLS_TXT, line);
+			desc = g_clue->_txtMgr->goKey(TOOLS_TXT, line);
 
 			SetPictID(mary->PictID);
 			Bubble(desc, 0, 0L, 0L);
@@ -147,7 +147,7 @@ byte tcShowTool(byte choice) {
 	ObjectListWidth = 0;
 
 	char exp[TXT_KEY_LENGTH];
-	txtGetFirstLine(BUSINESS_TXT, "THANKS", exp);
+	g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "THANKS", exp);
 	ExpandObjectList(tools, exp);
 
 	choice = MIN((uint32)choice, (GetNrOfNodes(tools) - 1));
@@ -187,7 +187,7 @@ void tcSellTool() {
 	while ((choice != GET_OUT) && (!LIST_EMPTY(tools))) {
 		char exp[TXT_KEY_LENGTH];
 
-		txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
+		g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
 		ExpandObjectList(tools, exp);
 
 		SetPictID(MATT_PICTID);
@@ -199,13 +199,13 @@ void tcSellTool() {
 			Tool tool = (Tool) dbGetObject(toolID);
 			uint32 price = tcGetToolTraderOffer(tool);
 
-			LIST *bubble = g_clue->_txtMgr->txtGoKeyAndInsert(BUSINESS_TXT, "ANGEBOT_WERKZ", price);
+			LIST *bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "ANGEBOT_WERKZ", price);
 
 			SetPictID(mary->PictID);
 			Bubble(bubble, 0, 0L, 0L);
 			RemoveList(bubble);
 
-			bubble = g_clue->_txtMgr->txtGoKey(BUSINESS_TXT, "VERKAUF");
+			bubble = g_clue->_txtMgr->goKey(BUSINESS_TXT, "VERKAUF");
 
 			if (ChoiceOk(choice2 = Bubble(bubble, choice2, 0L, 0L), GET_OUT, bubble)) {
 				if (choice2 == 0) {

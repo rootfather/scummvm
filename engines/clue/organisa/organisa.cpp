@@ -118,7 +118,7 @@ static byte tcMakeCarOk() {
 }
 
 uint32 tcOrganisation() {
-	LIST *menu = g_clue->_txtMgr->txtGoKey(MENU_TXT, "ORGANISATION");
+	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "ORGANISATION");
 	byte activ = 0, ende = 0;
 	char line[TXT_KEY_LENGTH];
 
@@ -173,7 +173,7 @@ uint32 tcOrganisation() {
 	tcInitDisplayOrganisation();
 	tcDisplayOrganisation();
 
-	txtGetFirstLine(THECLOU_TXT, "ORGANISATION", line);
+	g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "ORGANISATION", line);
 
 	while (!ende) {
 		inpTurnESC(0);
@@ -291,7 +291,7 @@ uint32 tcChooseDriver(uint32 persID) {
 	} else {
 		char exp[TXT_KEY_LENGTH];
 
-		txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
+		g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
 		ExpandObjectList(list, exp);
 
 		byte choice = Bubble(list, 0, 0L, 0L);
@@ -328,7 +328,7 @@ uint32 tcChooseDestBuilding(uint32 objID) {
 
 	LIST *list = ObjectListPrivate;
 	char exp[TXT_KEY_LENGTH];
-	txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
+	g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
 	ExpandObjectList(list, exp);
 
 	byte choice = Bubble(list, 0, 0L, 0L);
@@ -360,7 +360,7 @@ uint32 tcChooseEscapeCar(uint32 objID) {
 
 	if (!LIST_EMPTY(l1)) {
 		char exp[TXT_KEY_LENGTH];
-		txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
+		g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
 		ExpandObjectList(l1, exp);
 
 		byte choice = Bubble(l1, 0, 0L, 0L);
@@ -410,13 +410,13 @@ void tcChooseGuys() {
 		SetBubbleType(THINK_BUBBLE);
 		Say(BUSINESS_TXT, 0, matt->PictID, "PLAN_WITHOUT_GUYS");
 	} else {
-		LIST *menu = g_clue->_txtMgr->txtGoKey(MENU_TXT, "ORG_KOMPLIZEN");
+		LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "ORG_KOMPLIZEN");
 		char line[TXT_KEY_LENGTH];
 		byte activ = 0;
 
 		ShowMenuBackground();
 
-		txtGetFirstLine(THECLOU_TXT, "KOMPLIZEN", line);
+		g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "KOMPLIZEN", line);
 		PrintStatus(line);
 
 		while (activ != 2) {
@@ -460,7 +460,7 @@ void tcAddGuyToParty() {
 		if (!LIST_EMPTY(l1)) {
 			char exp[TXT_KEY_LENGTH];
 
-			txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
+			g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
 			ExpandObjectList(l1, exp);
 
 			byte choice = Bubble(l1, 0, 0L, 0L);
@@ -505,7 +505,7 @@ void tcRemGuyFromParty() {
 		Say(BUSINESS_TXT, 0, matt->PictID, "PLAN_TO_FEW_GUYS");
 	} else {
 		char exp[TXT_KEY_LENGTH];
-		txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
+		g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
 		ExpandObjectList(list, exp);
 
 		byte choice = Bubble(list, 0, 0L, 0L);

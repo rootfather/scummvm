@@ -108,7 +108,7 @@ void SaveSystem(Common::Stream *fh, struct System *sys) {
 }
 
 LIST *LoadSystem(Common::Stream *fh, struct System *sys) {
-	LIST *l = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "SYSTEM_GUYS_MISSING_1");
+	LIST *l = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_GUYS_MISSING_1");
 	bool foundAll = true;
 	uint8 knowsSomebody = 1, handlerNr = 0;
 
@@ -144,11 +144,11 @@ LIST *LoadSystem(Common::Stream *fh, struct System *sys) {
 		LIST *extList = NULL;
 
 		if (knowsSomebody == 1)
-			extList = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "SYSTEM_GUYS_MISSING_3");
+			extList = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_GUYS_MISSING_3");
 		else if ((handlerNr - knowsSomebody) > 1)
-			extList = g_clue->_txtMgr->txtGoKeyAndInsert(PLAN_TXT, "SYSTEM_GUYS_MISSING_2", (uint32)(handlerNr - knowsSomebody));
+			extList = g_clue->_txtMgr->goKeyAndInsert(PLAN_TXT, "SYSTEM_GUYS_MISSING_2", (uint32)(handlerNr - knowsSomebody));
 		else if (handlerNr - knowsSomebody)
-			extList = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "SYSTEM_GUYS_MISSING_4");
+			extList = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_GUYS_MISSING_4");
 
 		if (extList) {
 			for (NODE *n = LIST_HEAD(extList); NODE_SUCC(n); n = NODE_SUCC(n))

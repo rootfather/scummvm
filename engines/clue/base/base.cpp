@@ -100,7 +100,7 @@ bool ClueEngine::tcInit() {
 	/* Start game. */
 	inpOpenAllInputDevs();
 
-	g_clue->_txtMgr->txtInit(g_clue->getTxtLanguage());
+	g_clue->_txtMgr->init(g_clue->getTxtLanguage());
 
 	InitAnimHandler();
 
@@ -129,7 +129,7 @@ static void InitData() {
 	dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, MAIN_DATA_NAME GAME_REL_EXT, MainRel);
 	dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, BUILD_DATA_NAME GAME_REL_EXT, BuildRel);
 
-	g_clue->_txtMgr->txtReset(OBJECTS_TXT);
+	g_clue->_txtMgr->reset(OBJECTS_TXT);
 
 	if (dbLoadAllObjects(MainData, 0))
 		if (dbLoadAllObjects(BuildData, 0))
@@ -378,7 +378,7 @@ void ClueEngine::setFullEnviroment() {
 }
 
 byte ClueEngine::startupMenu() {
-	LIST *menu = g_clue->_txtMgr->txtGoKey(MENU_TXT, "STARTUP_MENU");
+	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "STARTUP_MENU");
 	uint32 activ;
 	char line[TXT_KEY_LENGTH];
 	byte ret = 0;
@@ -387,18 +387,18 @@ byte ClueEngine::startupMenu() {
 
 	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		if (g_clue->getFeatures() & ADGF_CD) {
-			PrintStatus(txtGetFirstLine(THECLOU_TXT,
+			PrintStatus(g_clue->_txtMgr->getFirstLine(THECLOU_TXT,
 			                            "BITTE_WARTEN_PC_CD_ROM_PROFI", line));
 		} else {
-			PrintStatus(txtGetFirstLine(THECLOU_TXT,
+			PrintStatus(g_clue->_txtMgr->getFirstLine(THECLOU_TXT,
 			                            "BITTE_WARTEN_PC_PROFI", line));
 		}
 	} else {
 		if (g_clue->getFeatures() & ADGF_CD) {
-			PrintStatus(txtGetFirstLine(THECLOU_TXT,
+			PrintStatus(g_clue->_txtMgr->getFirstLine(THECLOU_TXT,
 			                            "BITTE_WARTEM_PC_CD_ROM", line));
 		} else {
-			PrintStatus(txtGetFirstLine(THECLOU_TXT,
+			PrintStatus(g_clue->_txtMgr->getFirstLine(THECLOU_TXT,
 			                            "BITTE_WARTEN_PC", line));
 		}
 	}
@@ -418,7 +418,7 @@ byte ClueEngine::startupMenu() {
 		break;
 
 	case 1:
-		g_clue->_txtMgr->txtReset(OBJECTS_TXT);
+		g_clue->_txtMgr->reset(OBJECTS_TXT);
 
 		if (tcLoadTheClou()) {
 			film->StartScene = SceneArgs.ReturnValue;

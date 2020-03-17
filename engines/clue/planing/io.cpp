@@ -47,7 +47,7 @@ void plSaveTools(Common::Stream *fh) {
 }
 
 LIST *plLoadTools(Common::Stream *fh) {
-	LIST *l = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_1");
+	LIST *l = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_1");
 	byte foundAll = 1, canGet = 2, toolsNr = 0;
 
 	char buffer[64];
@@ -79,12 +79,12 @@ LIST *plLoadTools(Common::Stream *fh) {
 		LIST *extList = NULL;
 
 		if (canGet == 2)
-			extList = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_3");
+			extList = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_3");
 		else if ((toolsNr - canGet) > 1)
-			extList = g_clue->_txtMgr->txtGoKeyAndInsert(PLAN_TXT, "SYSTEM_TOOLS_MISSING_2",
+			extList = g_clue->_txtMgr->goKeyAndInsert(PLAN_TXT, "SYSTEM_TOOLS_MISSING_2",
 				                      (uint32)(toolsNr - canGet));
 		else if (toolsNr - canGet)
-			extList = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_4");
+			extList = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_4");
 
 		if (extList) {
 			for (NODE *n = LIST_HEAD(extList); NODE_SUCC(n); n = NODE_SUCC(n))
@@ -139,9 +139,9 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 
 						if (mode == PLANING_OPEN_WRITE_PLAN) {
 							if (pllData & (1L << i))
-								txtGetFirstLine(PLAN_TXT, "ATTENTION_1", exp);
+								g_clue->_txtMgr->getFirstLine(PLAN_TXT, "ATTENTION_1", exp);
 							else
-								txtGetFirstLine(PLAN_TXT, "ATTENTION_2", exp);
+								g_clue->_txtMgr->getFirstLine(PLAN_TXT, "ATTENTION_2", exp);
 						}
 
 						sprintf(name2, "*%s Plan %d    %s", name1, i + 1, exp);
@@ -154,7 +154,7 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 				}
 
 				sprintf(name2, "EXPAND_MODE_%d", mode);
-				txtGetFirstLine(PLAN_TXT, name2, exp);
+				g_clue->_txtMgr->getFirstLine(PLAN_TXT, name2, exp);
 				ExpandObjectList(PlanList, exp);
 
 				int i = Bubble(PlanList, 0, NULL, 0L);
@@ -226,7 +226,7 @@ void plSave(uint32 objId) {
 
 void plSaveChanged(uint32 objId) {
 	if (PlanChanged) {
-		LIST *l = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "PLAN_CHANGED");
+		LIST *l = g_clue->_txtMgr->goKey(PLAN_TXT, "PLAN_CHANGED");
 
 		inpTurnESC(0);
 

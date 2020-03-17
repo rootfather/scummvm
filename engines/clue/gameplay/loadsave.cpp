@@ -29,7 +29,7 @@ void tcSaveTheClou() {
 	/* in welche Datei ?? */
 	ShowMenuBackground();
 	char line[TXT_KEY_LENGTH];
-	txtGetFirstLine(THECLOU_TXT, "SaveGame", line);
+	g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "SaveGame", line);
 
 	player->CurrScene = film->act_scene->EventNr;
 	player->CurrDay = GetDay;
@@ -67,7 +67,7 @@ void tcSaveTheClou() {
 			ReplaceNode(games, NODE_NAME(GetNthNode(games, activ)), game);
 
 			ShowMenuBackground();
-			txtGetFirstLine(THECLOU_TXT, "SAVING", line);
+			g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "SAVING", line);
 			PrintStatus(line);
 
 			WriteList(games, pathname);
@@ -104,7 +104,7 @@ void tcSaveTheClou() {
 bool tcLoadIt(char activ) {
 	ShowMenuBackground();
 	char line[TXT_KEY_LENGTH];
-	txtGetFirstLine(THECLOU_TXT, "LOADING", line);
+	g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "LOADING", line);
 	PrintStatus(line);
 
 	/* alte Daten löschen */
@@ -119,7 +119,7 @@ bool tcLoadIt(char activ) {
 
 	/* neue Daten laden ! */
 
-	g_clue->_txtMgr->txtReset(OBJECTS_TXT);
+	g_clue->_txtMgr->reset(OBJECTS_TXT);
 
 	sprintf(line, "%s%d%s", MAIN_DATA_NAME, (int) activ, GAME_DATA_EXT);
 	char pathname[DSK_PATH_MAX];
@@ -164,7 +164,7 @@ bool tcLoadTheClou() {
 	if (ReadList(games, 0L, pathname1) && ReadList(origin, 0L, pathname2)) {
 		ShowMenuBackground();
 		char line[TXT_KEY_LENGTH];
-		txtGetFirstLine(THECLOU_TXT, "LoadAGame", line);
+		g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "LoadAGame", line);
 
 		inpTurnFunctionKey(0);
 		inpTurnESC(1);
@@ -177,7 +177,7 @@ bool tcLoadTheClou() {
 		} else {
 			ShowMenuBackground();
 
-			txtGetFirstLine(THECLOU_TXT, "NOT_LOADING", line);
+			g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "NOT_LOADING", line);
 			PrintStatus(line);
 			inpWaitFor(INP_LBUTTONP);
 

@@ -62,7 +62,7 @@ void tcDisplayOrganisation() {
 }
 
 void tcDisplayCommon() {
-	LIST *texts = g_clue->_txtMgr->txtGoKey(BUSINESS_TXT, "PLAN_COMMON_DATA");
+	LIST *texts = g_clue->_txtMgr->goKey(BUSINESS_TXT, "PLAN_COMMON_DATA");
 
 	gfxSetGC(l_gc);
 	gfxShow(ORG_PICT_ID, GFX_ONE_STEP | GFX_NO_REFRESH, 0, -1, -1);
@@ -143,7 +143,7 @@ void tcDisplayCommon() {
 	strcpy(line, NODE_NAME(GetNthNode(texts, 3L)));
 
 	if (Organisation.BuildingID) {
-		LIST *enums = g_clue->_txtMgr->txtGoKey(OBJECTS_ENUM_TXT, "enum_RouteE");
+		LIST *enums = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_RouteE");
 
 		strcpy(name, NODE_NAME(GetNthNode(enums, building->EscapeRoute)));
 		strcat(line, name);
@@ -241,11 +241,10 @@ void tcDisplayAbilities(uint32 personNr, uint32 displayData) {
 	} else {
 		char line[TXT_KEY_LENGTH];
 
-		txtGetFirstLine(BUSINESS_TXT, "PLAN_NO_CAPABILITY", line);
+		g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "PLAN_NO_CAPABILITY", line);
 		gfxSetRect(ORG_DISP_GUY_WIDTH + 5, ORG_DISP_GUY_WIDTH - 5);
 		gfxSetDrMd(l_gc, GFX_JAM_1);
-		gfxPrint(l_gc, line, ORG_DISP_ABILITIES_Y + ORG_DISP_LINE,
-		         GFX_PRINT_LEFT);
+		gfxPrint(l_gc, line, ORG_DISP_ABILITIES_Y + ORG_DISP_LINE, GFX_PRINT_LEFT);
 	}
 
 	RemoveList(abilities);

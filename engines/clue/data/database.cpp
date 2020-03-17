@@ -1171,7 +1171,7 @@ bool dbLoadAllObjects(const char *fileName, uint16 diskId) {
 				uint32 localSize;
 
 				if (ObjectLoadMode) {
-					if ((list = g_clue->_txtMgr->txtGoKey(OBJECTS_TXT, NULL)))   /* MOD: old version GoNextKey */
+					if ((list = g_clue->_txtMgr->goKey(OBJECTS_TXT, NULL)))   /* MOD: old version GoNextKey */
 						name = NODE_NAME(LIST_HEAD(list));
 				}
 

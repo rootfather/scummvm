@@ -373,12 +373,12 @@ static void livLoadTemplates() {
 
 		struct AnimTemplate *tlt = (struct AnimTemplate *) CreateNode(sc->p_Template,
 		        sizeof(struct AnimTemplate),
-				g_clue->_txtMgr->txtGetKey(1, line));
+				g_clue->_txtMgr->getKey(1, line));
 
-		tlt->us_Width = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG(2, line);
-		tlt->us_Height = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG(3, line);
+		tlt->us_Width = (uint16)g_clue->_txtMgr->getKeyAsUint32(2, line);
+		tlt->us_Height = (uint16)g_clue->_txtMgr->getKeyAsUint32(3, line);
 
-		tlt->us_FrameOffsetNr = (uint16)g_clue->_txtMgr->txtGetKeyAsULONG(4, line);
+		tlt->us_FrameOffsetNr = (uint16)g_clue->_txtMgr->getKeyAsUint32(4, line);
 	}
 
 	RemoveList(l);
@@ -402,15 +402,15 @@ static void livLoadLivings() {
 		char name[TXT_KEY_LENGTH], templateName[TXT_KEY_LENGTH];
 		char *line = NODE_NAME(GetNthNode(l, i));
 
-		strcpy(name, g_clue->_txtMgr->txtGetKey(1, line));
-		strcpy(templateName, g_clue->_txtMgr->txtGetKey(2, line));
+		strcpy(name, g_clue->_txtMgr->getKey(1, line));
+		strcpy(templateName, g_clue->_txtMgr->getKey(2, line));
 
 		livAdd(name,
 		       templateName,
-		       (byte)g_clue->_txtMgr->txtGetKeyAsULONG(3, line),
-		       (byte)g_clue->_txtMgr->txtGetKeyAsULONG(4, line),
-		       (int16)g_clue->_txtMgr->txtGetKeyAsULONG(5, line),
-		       (int16)g_clue->_txtMgr->txtGetKeyAsULONG(6, line));
+		       (byte)g_clue->_txtMgr->getKeyAsUint32(3, line),
+		       (byte)g_clue->_txtMgr->getKeyAsUint32(4, line),
+		       (int16)g_clue->_txtMgr->getKeyAsUint32(5, line),
+		       (int16)g_clue->_txtMgr->getKeyAsUint32(6, line));
 	}
 
 	RemoveList(l);

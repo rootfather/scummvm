@@ -66,7 +66,7 @@ static bool tcCarFound(Car car, uint32 time) {
 }
 
 static uint32 tcATraitor(uint32 traitorId) {
-	LIST *bubble = g_clue->_txtMgr->txtGoKey(BUSINESS_TXT, "A_TRAITOR");
+	LIST *bubble = g_clue->_txtMgr->goKey(BUSINESS_TXT, "A_TRAITOR");
 	LIST *newList = CreateList();
 	Person john = (Person)dbGetObject(Person_John_Gludo);
 
@@ -135,7 +135,7 @@ uint32 tcStartEvidence() {
 	dbSortObjectList(&guys, dbStdCompareObjects);
 
 	byte guyCount = (byte) GetNrOfNodes(guys);
-	LIST *spuren = g_clue->_txtMgr->txtGoKey(BUSINESS_TXT, "SPUREN");
+	LIST *spuren = g_clue->_txtMgr->goKey(BUSINESS_TXT, "SPUREN");
 
 	Person p[4];
 	p[0] = p[1] = p[2] = p[3] = NULL;
@@ -216,7 +216,7 @@ uint32 tcStartEvidence() {
 
 	byte guyReady = 0;
 	char line[TXT_KEY_LENGTH];
-	txtGetFirstLine(BUSINESS_TXT, "FAHNDUNG", line);
+	g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "FAHNDUNG", line);
 
 	byte shown = 0;
 	while (guyReady != ((1 << guyCount) - 1)) {
@@ -381,12 +381,12 @@ void tcForgetGuys() {
 uint32 tcPersonWanted(uint32 persId) {
 	Person john = (Person)dbGetObject(Person_John_Gludo);
 	Person miles = (Person)dbGetObject(Person_Miles_Chickenwing);
-	LIST *jobs = g_clue->_txtMgr->txtGoKey(OBJECTS_ENUM_TXT, "enum_JobE");
+	LIST *jobs = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_JobE");
 
 	char name[TXT_KEY_LENGTH];
 	dbGetObjectName(persId, name);
 
-	LIST *bubble = g_clue->_txtMgr->txtGoKey(BUSINESS_TXT, "BURGLAR_RECOG");
+	LIST *bubble = g_clue->_txtMgr->goKey(BUSINESS_TXT, "BURGLAR_RECOG");
 
 	char line[TXT_KEY_LENGTH];
 	sprintf(line, "%s %s.", NODE_NAME(GetNthNode(bubble, 3)), name);
@@ -644,7 +644,7 @@ int32 tcCalcCarEscape(int32 timeLeft) {
 
 		/* Bildschirmdarstellung */
 		char line[TXT_KEY_LENGTH];
-		txtGetFirstLine(BUSINESS_TXT, "FLUCHT", line);
+		g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "FLUCHT", line);
 		ShowMenuBackground();
 		PrintStatus(line);
 

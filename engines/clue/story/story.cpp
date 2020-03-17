@@ -1407,7 +1407,7 @@ void tcDoneSouthhamptonSabienUnknown() {
 }
 
 static void tcDoneFirstTimeLonelyInSouth() {
-	LIST *menu = g_clue->_txtMgr->txtGoKey(MENU_TXT, "SouthhamptonMenu");
+	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "SouthhamptonMenu");
 	Environment Env = (Environment)dbGetObject(Environment_TheClou);
 	Person Herb = (Person)dbGetObject(Person_Herbert_Briggs);
 
@@ -1506,7 +1506,7 @@ static void tcDoneFirstTimeLonelyInSouth() {
 }
 
 void tcDoneSouthhampton() {
-	LIST *menu = g_clue->_txtMgr->txtGoKey(MENU_TXT, "SouthhamptonMenu");
+	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "SouthhamptonMenu");
 	Environment Env = (Environment)dbGetObject(Environment_TheClou);
 
 	SceneArgs.Ueberschrieben = 1;
@@ -1726,7 +1726,7 @@ void tcDoneMafia() {
 void tcDoneKaserne() {
 	Environment Env = (Environment)dbGetObject(Environment_TheClou);
 	Car car = (Car)dbGetObject(Car_Cadillac_Club_1952);
-	LIST *menu = g_clue->_txtMgr->txtGoKey(MENU_TXT, "KaserneMenu");
+	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "KaserneMenu");
 
 	joined_bySet(Person_Matt_Stuvysunt, Person_Matt_Stuvysunt);
 	joined_bySet(Person_Matt_Stuvysunt, Person_Herbert_Briggs);

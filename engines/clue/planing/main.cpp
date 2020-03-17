@@ -35,19 +35,19 @@ char txtSeconds[20];
 /* System functions */
 void plInit() {
 	/* Get texts */
-	LIST *l = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "TXT_TOO_LOUD");
+	LIST *l = g_clue->_txtMgr->goKey(PLAN_TXT, "TXT_TOO_LOUD");
 	sprintf(txtTooLoud, "%s", NODE_NAME(LIST_HEAD(l)));
 	RemoveList(l);
 
-	l = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "TXT_TIMER");
+	l = g_clue->_txtMgr->goKey(PLAN_TXT, "TXT_TIMER");
 	sprintf(txtTimer, "%s", NODE_NAME(LIST_HEAD(l)));
 	RemoveList(l);
 
-	l = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "TXT_WEIGHT");
+	l = g_clue->_txtMgr->goKey(PLAN_TXT, "TXT_WEIGHT");
 	sprintf(txtWeight, "%s", NODE_NAME(LIST_HEAD(l)));
 	RemoveList(l);
 
-	l = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "TXT_SECONDS");
+	l = g_clue->_txtMgr->goKey(PLAN_TXT, "TXT_SECONDS");
 	sprintf(txtSeconds, "%s", NODE_NAME(LIST_HEAD(l)));
 	RemoveList(l);
 

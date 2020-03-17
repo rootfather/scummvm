@@ -37,8 +37,8 @@ struct DynDlgNode {
 
 static LIST *PrepareQuestions(LIST *keyWords, uint32 talkBits, byte textID) {
 	LIST *preparedList = CreateList();
-	LIST *stdQuestionList = g_clue->_txtMgr->txtGoKey(BUSINESS_TXT, "STD_QUEST");
-	LIST *questionList = g_clue->_txtMgr->txtGoKey((uint32) textID, "QUESTIONS");
+	LIST *stdQuestionList = g_clue->_txtMgr->goKey(BUSINESS_TXT, "STD_QUEST");
+	LIST *questionList = g_clue->_txtMgr->goKey((uint32) textID, "QUESTIONS");
 
 	char question[TXT_KEY_LENGTH];
 	for (NODE *n = (NODE *) LIST_HEAD(keyWords); NODE_SUCC((NODE *) n); n = (NODE *) NODE_SUCC(n)) {
@@ -54,7 +54,7 @@ static LIST *PrepareQuestions(LIST *keyWords, uint32 talkBits, byte textID) {
 		}
 	}
 
-	txtGetFirstLine(BUSINESS_TXT, "Bye_says_Matt", question);
+	g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "Bye_says_Matt", question);
 	CreateNode(preparedList, 0L, question);
 
 	RemoveList(stdQuestionList);
@@ -156,7 +156,7 @@ void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode) {
 	else
 		textID = TALK_0_TXT;
 
-	if (!(g_clue->_txtMgr->txtKeyExists(textID, key))) {
+	if (!(g_clue->_txtMgr->keyExists(textID, key))) {
 		const char *Standard = "STANDARD";
 		strcpy(key, Standard);
 		strcat(key, Extension[known]);
@@ -165,7 +165,7 @@ void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode) {
 	uint8 quit, gencount;
 	uint8 choice = 0, max = 1, stdcount = 0;
 	do {
-		LIST *origin = g_clue->_txtMgr->txtGoKey(textID, key);
+		LIST *origin = g_clue->_txtMgr->goKey(textID, key);
 		LIST *keyWords = ParseTalkText(origin, bubble, p2->Known);
 		LIST *questions = PrepareQuestions(keyWords, p2->TalkBits, textID);
 
@@ -246,7 +246,7 @@ void PlayFromCDROM() {
 byte Say(uint32 TextID, byte activ, uint16 person, const char *text) {
 	byte choice;
 	if (g_clue->getFeatures() & ADGF_CD) {
-		LIST *bubble = g_clue->_txtMgr->txtGoKey(TextID, text);
+		LIST *bubble = g_clue->_txtMgr->goKey(TextID, text);
 
 		if (person != (uint16) - 1)
 			SetPictID(person);
@@ -256,15 +256,15 @@ byte Say(uint32 TextID, byte activ, uint16 person, const char *text) {
 		   (neither pictures or text, nor any other directory) or
 		   speech would be interrupted */
 
-		if (g_clue->_txtMgr->txtKeyExists(CDROM_TXT, text)) {
+		if (g_clue->_txtMgr->keyExists(CDROM_TXT, text)) {
 			char keys[TXT_KEY_LENGTH];
 
-			txtGetFirstLine(CDROM_TXT, text, keys);
+			g_clue->_txtMgr->getFirstLine(CDROM_TXT, text, keys);
 
-			StartFrame = (g_clue->_txtMgr->txtGetKeyAsULONG(1, keys) * 60L +
-					g_clue->_txtMgr->txtGetKeyAsULONG(2, keys)) * 75L + g_clue->_txtMgr->txtGetKeyAsULONG(3, keys);
-			EndFrame = (g_clue->_txtMgr->txtGetKeyAsULONG(4, keys) * 60L +
-					g_clue->_txtMgr->txtGetKeyAsULONG(5, keys)) * 75L + g_clue->_txtMgr->txtGetKeyAsULONG(6, keys);
+			StartFrame = (g_clue->_txtMgr->getKeyAsUint32(1, keys) * 60L +
+					g_clue->_txtMgr->getKeyAsUint32(2, keys)) * 75L + g_clue->_txtMgr->getKeyAsUint32(3, keys);
+			EndFrame = (g_clue->_txtMgr->getKeyAsUint32(4, keys) * 60L +
+					g_clue->_txtMgr->getKeyAsUint32(5, keys)) * 75L + g_clue->_txtMgr->getKeyAsUint32(6, keys);
 
 			choice = Bubble(bubble, activ, NULL, 0L);
 		} else {
@@ -284,7 +284,7 @@ byte Say(uint32 TextID, byte activ, uint16 person, const char *text) {
 
 		RemoveList(bubble);
 	} else {
-		LIST *bubble = g_clue->_txtMgr->txtGoKey(TextID, text);
+		LIST *bubble = g_clue->_txtMgr->goKey(TextID, text);
 
 		if (person != (uint16) - 1)
 			SetPictID(person);
@@ -310,7 +310,7 @@ uint32 Talk() {
 			inpTurnESC(1);
 
 			char helloFriends[TXT_KEY_LENGTH];
-			txtGetFirstLine(BUSINESS_TXT, "NO_CHOICE", helloFriends);
+			g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE", helloFriends);
 			ExpandObjectList(bubble, helloFriends);
 
 			byte choice = Bubble(bubble, 0, 0L, 0L);

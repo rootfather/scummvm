@@ -184,7 +184,7 @@ static void plActionGo() {
 }
 
 static void plActionWait() {
-	LIST *menu = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "MENU_4");
+	LIST *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_4");
 	byte activ = 0;
 	uint32 choice1 = 0L, choice2 = 0L, bitset;
 
@@ -294,7 +294,7 @@ static void plActionWait() {
 					                            (BurglarsList, CurrentPerson)),
 					                    &help);
 
-					txtGetFirstLine(PLAN_TXT, "EXPAND_RADIO", exp);
+					g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_RADIO", exp);
 					ExpandObjectList(BurglarsList, exp);
 
 					choice1 = Bubble(BurglarsList, 0, NULL, 0L);
@@ -338,7 +338,7 @@ static void plActionWait() {
 }
 
 static void plLevelDesigner(LSObject lso) {
-	LIST *menu = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "MENU_8");
+	LIST *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_8");
 	byte ende = 0, activ = 0;
 	uint16 originX = lso->us_DestX, originY = lso->us_DestY;
 	uint32 area = lsGetActivAreaID();
@@ -446,10 +446,10 @@ static void plActionOpenClose(uint16 what) {
 		char exp[TXT_KEY_LENGTH];
 		if (what == ACTION_OPEN) {
 			plMessage("OPEN", PLANING_MSG_REFRESH);
-			txtGetFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
+			g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
 		} else {
 			plMessage("CLOSE", PLANING_MSG_REFRESH);
-			txtGetFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
+			g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
 		}
 
 		ExpandObjectList(actionList, exp);
@@ -577,7 +577,7 @@ static void plActionTake() {
 			          PictID);
 
 			char exp[TXT_KEY_LENGTH];
-			txtGetFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
+			g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
 			ExpandObjectList(takeableList, exp);
 
 			uint32 choice = Bubble(takeableList, 0, NULL, 0L);
@@ -828,7 +828,7 @@ static void plActionUse() {
 				                         CurrentPerson))))->PictID);
 
 				char exp[TXT_KEY_LENGTH];
-				txtGetFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
+				g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
 				ExpandObjectList(actionList, exp);
 
 				uint32 choice1 = Bubble(actionList, 0, NULL, 0L);
@@ -883,7 +883,7 @@ static void plActionUse() {
 								                OLF_INCLUDE_NAME |
 								                OLF_INSERT_STAR);
 
-							txtGetFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
+							g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
 							ExpandObjectList(objList, exp);
 
 							plMessage("USE_4", PLANING_MSG_REFRESH);
@@ -982,8 +982,7 @@ static void plActionUse() {
 									ObjectListSuccString = NULL;
 									UseObject = 0L;
 
-									txtGetFirstLine(PLAN_TXT, "EXPAND_ALL",
-									                exp);
+									g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
 									ExpandObjectList(ObjectList, exp);
 
 									SetPictID(((Person)
@@ -1208,7 +1207,7 @@ static void plActionUse() {
 			          PictID);
 
 			char exp[TXT_KEY_LENGTH];
-			txtGetFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
+			g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
 			ExpandObjectList(actionList, exp);
 
 			uint32 choice1 = Bubble(actionList, 0, NULL, 0L);
@@ -1238,9 +1237,9 @@ static void plActionUse() {
 static void plAction() {
 	LIST *menu = NULL;
 	if (CurrentPerson < BurglarsNr)
-		menu = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "MENU_2");
+		menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_2");
 	else
-		menu = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "MENU_5");
+		menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_5");
 
 	byte activ = 0;
 
@@ -1341,9 +1340,9 @@ static void plAction() {
 				RemoveList(menu);
 
 				if (CurrentPerson < BurglarsNr)
-					menu = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "MENU_2");
+					menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_2");
 				else
-					menu = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "MENU_5");
+					menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_5");
 			}
 			break;
 
@@ -1380,7 +1379,7 @@ static void plAction() {
 				                        (BurglarsList,
 				                         CurrentPerson))))->PictID);
 
-				txtGetFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
+				g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
 				ExpandObjectList(ObjectList, exp);
 
 				choice1 = Bubble(ObjectList, 0, NULL, 0L);
@@ -1450,7 +1449,7 @@ static void plAction() {
 					                            (BurglarsList, CurrentPerson)),
 					                    &help);
 
-					txtGetFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
+					g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
 					ExpandObjectList(BurglarsList, exp);
 
 					choice1 = Bubble(BurglarsList, 0, NULL, 0L);
@@ -1493,7 +1492,7 @@ static void plAction() {
 }
 
 static void plNoteBook() {
-	LIST *bubble = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "MENU_6");
+	LIST *bubble = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_6");
 	char exp[TXT_KEY_LENGTH];
 
 	uint32 choice1 = 0;
@@ -1510,7 +1509,7 @@ static void plNoteBook() {
 
 		case PLANING_NOTE_TEAM:
 			while (choice2 != GET_OUT) {
-				txtGetFirstLine(PLAN_TXT, "EXPAND_NOTEBOOK", exp);
+				g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_NOTEBOOK", exp);
 				ExpandObjectList(BurglarsList, exp);
 
 				SetBubbleType(THINK_BUBBLE);
@@ -1538,7 +1537,7 @@ static void plNoteBook() {
 			LIST *l = ObjectListPrivate;
 
 			if (!LIST_EMPTY(l)) {
-				txtGetFirstLine(PLAN_TXT, "EXPAND_NOTEBOOK", exp);
+				g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_NOTEBOOK", exp);
 				ExpandObjectList(l, exp);
 
 				while (choice2 != GET_OUT) {
@@ -1568,7 +1567,7 @@ static void plNoteBook() {
 }
 
 static void plLook() {
-	LIST *menu = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "MENU_7");
+	LIST *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_7");
 	byte activ = 0, choice;
 	uint32 timer = 0L, maxTimer = GetMaxTimer(plSys), realCurrentPerson =
 	                                  CurrentPerson, choice1;
@@ -1711,7 +1710,7 @@ static void plLook() {
 
 /* Planer */
 void plPlaner(uint32 objId) {
-	LIST *menu = g_clue->_txtMgr->txtGoKey(PLAN_TXT, "MENU_1");
+	LIST *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_1");
 	byte activ = 0;
 	uint32 bitset;
 

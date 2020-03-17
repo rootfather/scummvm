@@ -25,89 +25,61 @@
 #include "clue/list/list.h"
 
 namespace Clue {
+/* public defines */
+#define TXT_KEY_LENGTH     256
+
 class ClueEngine;
 
 /* private structures */
 struct TextControl {
-	LIST* tc_Texts;
-
-	char tc_Language;
+	LIST *_textList;
+	char _language;
 };
 
 struct Text {
 	NODE txt_Link;
 
-	char* txt_Handle;
-	char* txt_LastMark;
-
-	size_t length;
+	char *_handle;
+	char *_lastMark;
+	size_t _length;
 };
-
-
-/* private gobals definition */
-/*
-extern const char* txtLanguageMark[];
-extern struct TextControl* txtBase;
-extern char keyBuffer[];
-*/
-
-/* private prototypes - LINE */
-static char* txtGetLine(struct Text* txt, uint8 lineNr);
-
-/* public defines */
-typedef enum {
-	TXT_LANG_GERMAN,
-	TXT_LANG_ENGLISH,
-	TXT_LANG_FRENCH,
-	TXT_LANG_SPANISH,
-	TXT_LANG_SLOWAKISCH,
-	TXT_LANG_LAST
-} TxtLanguageE;
-
-#define TXT_KEY_LENGTH     256
-#define txtGetFirstLine(id, key, dest) (g_clue->_txtMgr->txtGetNthString(id, key, 0, dest))
 
 class TextMgr {
 public:
-	TextMgr(ClueEngine* vm, char lang);
+	TextMgr(ClueEngine *vm, char lang);
 	~TextMgr();
 
 private:
-	struct TextControl* _txtBase;
-	char _keyBuffer[TXT_KEY_LENGTH];
+	struct TextControl *_txtBase;
 
-	char* txtGetLine(struct Text* txt, uint8 lineNr);
+	char _keyBuffer[TXT_KEY_LENGTH];
+	char* getLine(struct Text *txt, uint8 lineNr);
 
 public:
 	ClueEngine* _vm;
 	/* public prototypes - TEXT */
-	void txtInit(char lang);
-	void txtDone();
+	void init(char lang);
 
-	void txtLoad(uint32 textId);
-	void txtUnLoad(uint32 textId);
+	void load(uint32 textId);
+	void unLoad(uint32 textId);
 
-	void txtPrepare(uint32 textId);
-	void txtReset(uint32 textId);
+	void prepare(uint32 textId);
+	void reset(uint32 textId);
 
 	/* public prototypes - KEY */
-	char* txtGetKey(uint16 keyNr, const char* key);
-	uint32 txtGetKeyAsULONG(uint16 keyNr, const char* key);
+	char* getKey(uint16 keyNr, const char *key);
+	uint32 getKeyAsUint32(uint16 keyNr, const char *key);
 
-	LIST* txtGoKey(uint32 textId, const char* key);
-	LIST* txtGoKeyAndInsert(uint32 textId, const char* key, ...);
+	LIST* goKey(uint32 textId, const char *key);
+	LIST* goKeyAndInsert(uint32 textId, const char *key, ...);
 
-	bool txtKeyExists(uint32 textId, const char* key);
-	uint32 txtCountKey(const char* key);
+	bool keyExists(uint32 textId, const char *key);
+	uint32 countKey(const char *key);
 
 	/* public prototypes - STRING */
-	char* txtGetString(uint32 textId, const char* key, char* dest);
-	char* txtGetNthString(uint32 textId, const char* key, uint32 nth, char* dest);
-	void txtPutCharacter(LIST* list, uint16 pos, uint8 c);
-
-#if 0
-	void txtUnPrepare(uint32 textId);
-#endif
+	char *getNthString(uint32 textId, const char *key, uint32 nth, char *dest);
+	char *getFirstLine(uint32 textId, const char *key, char *dest);
+	void putCharacter(LIST *list, uint16 pos, uint8 c);
 };
 	
 } // End of namespace Clue
