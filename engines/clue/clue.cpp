@@ -26,7 +26,7 @@
 
 #include "clue/clue.h"
 #include "clue/base/base.h"
-#include "clue/text/text.h"
+#include "clue/text.h"
 
 namespace Clue {
 

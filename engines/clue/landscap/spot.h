@@ -23,7 +23,7 @@
 
 #include "clue/theclou.h"
 #include "clue/list/list.h"
-#include "clue/text/text.h"
+#include "clue/text.h"
 #include "clue/gfx/gfx.h"
 #include "clue/memory/memory.h"
 #include "clue/disk/disk.h"

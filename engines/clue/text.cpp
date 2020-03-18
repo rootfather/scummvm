@@ -1,34 +1,41 @@
-/*
-**  $Filename: text\text.c
-**  $Release:  1
-**  $Revision: 0
-**  $Date:     10-03-94
-**
-**  text implementation for "Der Clou!"
-**
-** (c) 1994 ...and avoid panic by, Kaweh Kazemi
-**  All Rights Reserved.
-**
-*/
-/****************************************************************************
-  Portions copyright (c) 2005 Vasco Alexandre da Silva Costa
+/* ScummVM - Graphic Adventure Engine
+ *
+ * ScummVM is the legal property of its developers, whose names
+ * are too numerous to list here. Please refer to the COPYRIGHT
+ * file distributed with this source distribution.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ */
 
-  Please read the license terms contained in the LICENSE and
-  publiclicensecontract.doc files which should be contained with this
-  distribution.
- ****************************************************************************/
+/*
+ * This code is based on :
+ * - original source code of The Clue!
+ *	Copyright (c) 1994 ...and avoid panic by, Kaweh Kazemi
+ * - Costa's DerClou! SDL port
+ *	Copright (c) 2005-2017 Vasco Alexandre da Silva Costa
+ */
 
 #ifndef MODULE_TXT
 #define MODULE_TXT
 
-/* public header(s) */
-#include "clue/text/text.h"
+#include "clue/base/base.h"
+#include "clue/error/error.h"
+#include "clue/memory/memory.h"
+#include "clue/text.h"
 #include "clue/clue.h"
-
-/* private header(s) */
-#include "clue/text/text_e.h"
-#include "clue/text/text_p.h"
-
 #include "common/util.h"
 
 namespace Clue {

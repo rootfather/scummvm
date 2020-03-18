@@ -21,7 +21,7 @@
 #ifndef MODULE_STORY
 #define MODULE_STORY
 
-#include "clue/text/text.h"
+#include "clue/text.h"
 #include "clue/present/interac.h"
 #include "clue/data/dataappl.h"
 #include "clue/organisa/organisa.h"

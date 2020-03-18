@@ -79,20 +79,6 @@ void dskSave(const char *Pathname, void *src, size_t size) {
 }
 #endif
 
-static void strUpper(char *s) {
-	while (*s != '\0') {
-		*s = toupper(*s);
-		s++;
-	}
-}
-
-static void strLower(char *s) {
-	while (*s != '\0') {
-		*s = tolower(*s);
-		s++;
-	}
-}
-
 bool dskBuildPathName(DiskCheckE check, const char *Directory, const char *Filename, char *Result) {
 	int step = 0;
 

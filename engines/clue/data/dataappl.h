@@ -21,7 +21,7 @@
 
 #include "clue/theclou.h"
 #include "clue/list/list.h"
-#include "clue/text/text.h"
+#include "clue/text.h"
 #include "clue/data/relation.h"
 #include "clue/data/database.h"
 #include "clue/data/datacalc.h"

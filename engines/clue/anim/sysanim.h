@@ -28,7 +28,7 @@
 #ifndef MODULE_ANIM
 #define MODULE_ANIM
 
-#include "clue/text/text.h"
+#include "clue/text.h"
 #include "clue/random/random.h"
 
 namespace Clue {

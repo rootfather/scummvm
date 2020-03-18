@@ -21,7 +21,7 @@
 #ifndef MODULE_EVIDENCE
 #define MODULE_EVIDENCE
 
-#include "clue/text/text.h"
+#include "clue/text.h"
 #include "clue/present/present.h"
 
 namespace Clue {

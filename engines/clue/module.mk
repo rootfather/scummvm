@@ -3,6 +3,7 @@ MODULE := engines/clue
 MODULE_OBJS = \
 	clue.o \
 	detection.o \
+	text.o \
 	anim/sysanim.o \
 	base/base.o \
 	cdrom/cdrom.o \
@@ -58,8 +59,7 @@ MODULE_OBJS = \
 	sound/fx.o \
 	sound/newsound.o \
 	sound/hsc.o \
-	story/story.o \
-	text/text.o
+	story/story.o
 
 # This module can be built as a plugin
 ifeq ($(CLUE), DYNAMIC_PLUGIN)
