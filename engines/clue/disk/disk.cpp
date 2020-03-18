@@ -96,48 +96,44 @@ static void strLower(char *s) {
 bool dskBuildPathName(DiskCheckE check, const char *Directory, const char *Filename, char *Result) {
 	int step = 0;
 
-	char Dir [DSK_PATH_MAX];
-	char File[DSK_PATH_MAX];
+	Common::String Dir;
+	Common::String File;
 	struct stat status;
 
 	do {
 		switch (step++) {
 		case 0:
-			strcpy(Dir, Directory);
-			strcpy(File, Filename);
+			Dir = Common::String(Directory);
+			File = Common::String(Filename);
 			break;
 
 		case 1:
-			strUpper(Dir);
-			strUpper(File);
+			Dir.toUppercase();
+			Dir.toUppercase();
 			break;
 
 		case 2:
-			strLower(Dir);
-			strLower(File);
+			Dir.toLowercase();
+			File.toLowercase();
 			break;
 
 		case 3:
-			sprintf(Result, "%s" DIR_SEP "%s" DIR_SEP "%s",
-			        RootPathName, Directory, Filename);
-
-			DebugMsg(ERR_DEBUG, ERROR_MODULE_DISK,
-			         "Path failure: %s", Result);
+			sprintf(Result, "%s" DIR_SEP "%s" DIR_SEP "%s", RootPathName, Directory, Filename);
+			DebugMsg(ERR_DEBUG, ERROR_MODULE_DISK, "Path failure: %s", Result);
 			return false;
 		}
 
 		if (check == DISK_CHECK_FILE) {
-			sprintf(Result, "%s" DIR_SEP "%s" DIR_SEP "%s",
-			        RootPathName, Dir, File);
+			sprintf(Result, "%s" DIR_SEP "%s" DIR_SEP "%s", RootPathName, Dir.c_str(), File.c_str());
 		} else {
-			sprintf(Result, "%s" DIR_SEP "%s", RootPathName, Dir);
+			sprintf(Result, "%s" DIR_SEP "%s", RootPathName, Dir.c_str());
 		}
 
 	} while (stat(Result, &status) == -1);
 
 	if (check == DISK_CHECK_DIR) {
 		strcat(Result, DIR_SEP);
-		strcat(Result, File);
+		strcat(Result, File.c_str());
 	}
 
 	return true;
