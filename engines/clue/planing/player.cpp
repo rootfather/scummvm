@@ -61,7 +61,7 @@ namespace Clue {
 
 /* Player data structure */
 static struct {
-	struct Action *action;
+	Action *action;
 
 	byte handlerEnded[PLANING_NR_PERSONS];
 	byte guardKO[PLANING_NR_GUARDS];
@@ -490,9 +490,7 @@ static void plPlayerAction() {
 						if (Search.Exhaust[i] > PLANING_EXHAUST_MAX)
 							UnableToWork(i, ACTION_EXHAUST);
 						else {
-							plMove(i,
-							       ActionData(PD.action,
-							                  struct ActionGo *)->Direction);
+							plMove(i, ActionData(PD.action, ActionGo *)->Direction);
 
 							if (livCanWalk(Planing_Name[i])) {
 								PD.currLoudness[i] = tcGetWalkLoudness();
@@ -507,7 +505,7 @@ static void plPlayerAction() {
 								if (i == CurrentPerson) {
 									lsInitScrollLandScape(ActionData
 									                      (PD.action,
-									                       struct ActionGo *)->
+									                       ActionGo *)->
 									                      Direction,
 									                      LS_SCROLL_PREPARE);
 									DoScrolling = 1;
@@ -521,7 +519,7 @@ static void plPlayerAction() {
 					} else
 						plMove(i,
 						       ActionData(PD.action,
-						                  struct ActionGo *)->Direction);
+						                  ActionGo *)->Direction);
 					break;
 
 				case ACTION_WAIT:
@@ -538,7 +536,7 @@ static void plPlayerAction() {
 
 							InitSignal(plSys, OL_NR(GetNthNode(PersonsList, i)),
 							           ActionData(PD.action,
-							                      struct ActionSignal *)->
+							                      ActionSignal *)->
 							           ReceiverId);
 
 #ifndef PLAN_IS_PERFECT
@@ -549,11 +547,11 @@ static void plPlayerAction() {
 						}
 
 						if (ActionEnded(plSys)) {
-							struct plSignal *sig =
+							plSignal *sig =
 							    IsSignal(plSys,
 							             OL_NR(GetNthNode(PersonsList, i)),
 							             ActionData(PD.action,
-							                        struct ActionSignal *)->
+							                        ActionSignal *)->
 							             ReceiverId);
 
 							if (sig)
@@ -564,10 +562,10 @@ static void plPlayerAction() {
 
 				case ACTION_WAIT_SIGNAL:
 					if (i < BurglarsNr) {
-						struct plSignal *sig =
+						plSignal *sig =
 						    IsSignal(plSys,
 						             ActionData(PD.action,
-						                        struct ActionWaitSignal *)->
+						                        ActionWaitSignal *)->
 						             SenderId,
 						             OL_NR(GetNthNode(PersonsList, i)));
 
@@ -588,7 +586,7 @@ static void plPlayerAction() {
 
 						if (ActionStarted(plSys)) {
 							if (plIsStair
-							        (ActionData(PD.action, struct ActionUse *)->
+							        (ActionData(PD.action, ActionUse *)->
 							         ItemId))
 								livLivesInArea(Planing_Name[i],
 								               StairConnectsGet(ActionData
@@ -607,12 +605,12 @@ static void plPlayerAction() {
 								uint32 realTime = 0L;
 
 								if (dbIsObject
-								        (ActionData(PD.action, struct ActionUse *)->
+								        (ActionData(PD.action, ActionUse *)->
 								         ItemId, Object_Police)) {
 									if (plObjectInReach
 									        (i,
 									         ActionData(PD.action,
-									                    struct ActionUse *)->
+									                    ActionUse *)->
 									         ItemId)) {
 										PD.currLoudness[i] =
 										    tcGetToolLoudness(OL_NR
@@ -667,7 +665,7 @@ static void plPlayerAction() {
 									        (lsGetObjectState
 									         (ActionData
 									          (PD.action,
-									           struct ActionUse *)->ItemId),
+									           ActionUse *)->ItemId),
 									         Const_tcLOCK_UNLOCK_BIT))
 										PD.currLoudness[i] =
 										    tcGetToolLoudness(OL_NR
@@ -690,7 +688,7 @@ static void plPlayerAction() {
 									else if ((((LSObject)
 									           dbGetObject(ActionData
 									                       (PD.action,
-									                        struct ActionUse
+									                        ActionUse
 									                        *)->ItemId))->
 									          Type == Item_Fenster))
 										PD.currLoudness[i] =
@@ -698,7 +696,7 @@ static void plPlayerAction() {
 									else if (!plIgnoreLock
 									         (ActionData
 									          (PD.action,
-									           struct ActionUse *)->ItemId)) {
+									           ActionUse *)->ItemId)) {
 										Search.DeriTime +=
 										    PLANING_DERI_IGNORE_ACTION;
 										IgnoreAction(plSys);
@@ -713,11 +711,11 @@ static void plPlayerAction() {
 									if (tcGetDanger
 									        (OL_NR(GetNthNode(PersonsList, i)),
 									         ActionData(PD.action,
-									                    struct ActionUse *)->ToolId,
+									                    ActionUse *)->ToolId,
 									         ((LSObject)
 									          dbGetObject(ActionData
 									                      (PD.action,
-									                       struct ActionUse *)->
+									                       ActionUse *)->
 									                      ItemId))->Type))
 										PD.handlerEnded[i] = 2;
 #endif
@@ -758,7 +756,7 @@ static void plPlayerAction() {
 								plPersonLearns(OL_NR
 								               (GetNthNode(PersonsList, i)),
 								               ActionData(PD.action,
-								                          struct ActionUse *)->
+								                          ActionUse *)->
 								               ToolId);
 							}
 						}
@@ -767,7 +765,7 @@ static void plPlayerAction() {
 						        &&
 						        tcAlarmByTouch(ActionData
 						                       (PD.action,
-						                        struct ActionUse *)->ItemId)) {
+						                        ActionUse *)->ItemId)) {
 							Search.DeriTime += PLANING_DERI_ALARM;
 							Search.EscapeBits |= FAHN_ALARM | FAHN_ALARM_ALARM;
 							plSay("PLAYER_ALARM", i);
@@ -777,16 +775,16 @@ static void plPlayerAction() {
 
 						if (ActionEnded(plSys)) {
 							if (!plIgnoreLock
-							        (ActionData(PD.action, struct ActionUse *)->
+							        (ActionData(PD.action, ActionUse *)->
 							         ItemId)) {
 								if (plIsStair
-								        (ActionData(PD.action, struct ActionUse *)->
+								        (ActionData(PD.action, ActionUse *)->
 								         ItemId)) {
 									if (i == CurrentPerson) {
 										uint32 newAreaId =
 										    StairConnectsGet(ActionData
 										                     (PD.action,
-										                      struct ActionUse
+										                      ActionUse
 										                      *)->ItemId,
 										                     ActionData(PD.
 										                                action,
@@ -812,7 +810,7 @@ static void plPlayerAction() {
 								} else if (dbIsObject
 								           (ActionData
 								            (PD.action,
-								             struct ActionUse *)->ItemId,
+								             ActionUse *)->ItemId,
 								            Object_Police)) {
 									if (tcKillTheGuard
 									        (OL_NR(GetNthNode(PersonsList, i)),
@@ -832,7 +830,7 @@ static void plPlayerAction() {
 											      ((Police)
 											       dbGetObject(ActionData
 											                   (PD.action,
-											                    struct ActionUse
+											                    ActionUse
 											                    *)->ItemId))->
 											      LivingID);
 											inpSetWaitTicks
@@ -857,13 +855,13 @@ static void plPlayerAction() {
 									        (lsGetObjectState
 									         (ActionData
 									          (PD.action,
-									           struct ActionUse *)->ItemId),
+									           ActionUse *)->ItemId),
 									         Const_tcLOCK_UNLOCK_BIT)) {
 										PD.changeCount++;
 
 										lsSetObjectState(ActionData
 										                 (PD.action,
-										                  struct ActionUse *)->
+										                  ActionUse *)->
 										                 ItemId,
 										                 Const_tcLOCK_UNLOCK_BIT,
 										                 1);
@@ -871,12 +869,12 @@ static void plPlayerAction() {
 										if (((Tool)
 										        dbGetObject(ActionData
 										                    (PD.action,
-										                     struct ActionUse *)->
+										                     ActionUse *)->
 										                    ToolId))->
 										        Effect & Const_tcTOOL_OPENS) {
 											lsSetObjectState(ActionData
 											                 (PD.action,
-											                  struct ActionUse
+											                  ActionUse
 											                  *)->ItemId,
 											                 Const_tcOPEN_CLOSE_BIT,
 											                 1);
@@ -884,13 +882,13 @@ static void plPlayerAction() {
 											                dbGetObject
 											                (ActionData
 											                 (PD.action,
-											                  struct ActionUse
+											                  ActionUse
 											                  *)->ItemId), 1);
 										}
 
 										if (ActionData
 										        (PD.action,
-										         struct ActionUse *)->ToolId ==
+										         ActionUse *)->ToolId ==
 										        Tool_Stechkarte)
 											tcRefreshTimeClock(PD.bldId,
 											                   ActionData(PD.
@@ -903,7 +901,7 @@ static void plPlayerAction() {
 										if ((((LSObject)
 										        dbGetObject(ActionData
 										                    (PD.action,
-										                     struct ActionUse *)->
+										                     ActionUse *)->
 										                    ItemId))->Type ==
 										        Item_Fenster)) {
 											uint16 xpos, ypos;
@@ -933,35 +931,35 @@ static void plPlayerAction() {
 								uint32 state =
 								    lsGetObjectState(ActionData
 								                     (PD.action,
-								                      struct ActionUse *)->
+								                      ActionUse *)->
 								                     ItemId);
 
 								if (CHECK_STATE(state, Const_tcON_OFF)) {
-									lsSetObjectState(ActionData(PD.action, struct ActionUse *)->ItemId, Const_tcON_OFF, 0); /* on setzen  */
+									lsSetObjectState(ActionData(PD.action, ActionUse *)->ItemId, Const_tcON_OFF, 0); /* on setzen  */
 
 									PD.changeCount--;
 
 									if (plIgnoreLock
 									        (ActionData
 									         (PD.action,
-									          struct ActionUse *)->ItemId) ==
+									          ActionUse *)->ItemId) ==
 									        PLANING_POWER) {
 										lsSetSpotStatus(ActionData
 										                (PD.action,
-										                 struct ActionUse *)->
+										                 ActionUse *)->
 										                ItemId, LS_SPOT_ON);
 										lsShowAllSpots(PD.realTime,
 										               LS_ALL_VISIBLE_SPOTS);
 									}
 								} else {
-									lsSetObjectState(ActionData(PD.action, struct ActionUse *)->ItemId, Const_tcON_OFF, 1); /* off setzen */
+									lsSetObjectState(ActionData(PD.action, ActionUse *)->ItemId, Const_tcON_OFF, 1); /* off setzen */
 
 									PD.changeCount++;
 
 									switch (plIgnoreLock
 									        (ActionData
 									         (PD.action,
-									          struct ActionUse *)->ItemId)) {
+									          ActionUse *)->ItemId)) {
 									case PLANING_ALARM_TOP3:
 										if (PD.alarmTimer)
 											PD.alarmTimer =
@@ -974,7 +972,7 @@ static void plPlayerAction() {
 									case PLANING_POWER:
 										lsSetSpotStatus(ActionData
 										                (PD.action,
-										                 struct ActionUse *)->
+										                 ActionUse *)->
 										                ItemId, LS_SPOT_OFF);
 										lsShowAllSpots(PD.realTime,
 										               LS_ALL_INVISIBLE_SPOTS);
@@ -986,7 +984,7 @@ static void plPlayerAction() {
 										        &&
 										        tcAlarmByPowerLoss(ActionData
 										                           (PD.action,
-										                            struct ActionUse
+										                            ActionUse
 										                            *)->ItemId)) {
 											Search.EscapeBits |=
 											    FAHN_ALARM | FAHN_ALARM_POWER;
@@ -1003,7 +1001,7 @@ static void plPlayerAction() {
 							}
 
 							plRefresh(ActionData
-							          (PD.action, struct ActionUse *)->ItemId);
+							          (PD.action, ActionUse *)->ItemId);
 							plDisplayInfo();
 						}
 					}
@@ -1021,18 +1019,18 @@ static void plPlayerAction() {
 
 						if (Ask
 						        (dbGetObject
-						         (ActionData(PD.action, struct ActionTake *)->
+						         (ActionData(PD.action, ActionTake *)->
 						          ItemId), hasLoot(i),
 						         dbGetObject(ActionData
 						                     (PD.action,
-						                      struct ActionTake *)->LootId))
+						                      ActionTake *)->LootId))
 						        && plObjectInReach(i,
 						                           ActionData(PD.action,
-						                                      struct ActionTake *)->
+						                                      ActionTake *)->
 						                           ItemId)) {
 							lsSetObjectState(ActionData
 							                 (PD.action,
-							                  struct ActionTake *)->ItemId,
+							                  ActionTake *)->ItemId,
 							                 Const_tcIN_PROGRESS_BIT, 1);
 
 #ifndef PLAN_IS_PERFECT
@@ -1040,7 +1038,7 @@ static void plPlayerAction() {
 							        &&
 							        tcAlarmByTouch(ActionData
 							                       (PD.action,
-							                        struct ActionUse *)->ItemId)) {
+							                        ActionUse *)->ItemId)) {
 								Search.DeriTime += PLANING_DERI_ALARM;
 								Search.EscapeBits |=
 								    FAHN_ALARM | FAHN_ALARM_ALARM;
@@ -1054,55 +1052,55 @@ static void plPlayerAction() {
 								    GetP(dbGetObject
 								         (ActionData
 								          (PD.action,
-								           struct ActionTake *)->ItemId),
+								           ActionTake *)->ItemId),
 								         hasLoot(i),
 								         dbGetObject(ActionData
 								                     (PD.action,
-								                      struct ActionTake *)->
+								                      ActionTake *)->
 								                     LootId));
 
 								Planing_Weight[i] +=
 								    ((Loot)
 								     dbGetObject(ActionData
 								                 (PD.action,
-								                  struct ActionTake *)->
+								                  ActionTake *)->
 								                 LootId))->Weight;
 								Planing_Volume[i] +=
 								    ((Loot)
 								     dbGetObject(ActionData
 								                 (PD.action,
-								                  struct ActionTake *)->
+								                  ActionTake *)->
 								                 LootId))->Volume;
 
 								lsSetObjectState(ActionData
 								                 (PD.action,
-								                  struct ActionTake *)->ItemId,
+								                  ActionTake *)->ItemId,
 								                 Const_tcIN_PROGRESS_BIT, 0);
 
 								if ((ActionData
 								        (PD.action,
-								         struct ActionTake *)->ItemId >= 9701)
+								         ActionTake *)->ItemId >= 9701)
 								        &&
 								        (ActionData
 								         (PD.action,
-								          struct ActionTake *)->ItemId <= 9708)) {
+								          ActionTake *)->ItemId <= 9708)) {
 									lsRemLootBag(ActionData
 									             (PD.action,
-									              struct ActionTake *)->ItemId);
+									              ActionTake *)->ItemId);
 									Planing_Loot[ActionData
 									             (PD.action,
-									              struct ActionTake *)->ItemId -
+									              ActionTake *)->ItemId -
 									             9701] = 0;
 								} else {
 									if (CHECK_STATE
 									        (lsGetObjectState
 									         (ActionData
 									          (PD.action,
-									           struct ActionTake *)->ItemId),
+									           ActionTake *)->ItemId),
 									         Const_tcTAKE_BIT)) {
 										lsSetObjectState(ActionData
 										                 (PD.action,
-										                  struct ActionTake *)->
+										                  ActionTake *)->
 										                 ItemId,
 										                 Const_tcACCESS_BIT, 0);
 										lsTurnObject((LSObject)
@@ -1119,11 +1117,11 @@ static void plPlayerAction() {
 								UnSet(dbGetObject
 								      (ActionData
 								       (PD.action,
-								        struct ActionTake *)->ItemId),
+								        ActionTake *)->ItemId),
 								      hasLoot(i),
 								      dbGetObject(ActionData
 								                  (PD.action,
-								                   struct ActionTake *)->
+								                   ActionTake *)->
 								                  LootId));
 
 								if (Ask
@@ -1132,7 +1130,7 @@ static void plPlayerAction() {
 								         take_RelId,
 								         dbGetObject(ActionData
 								                     (PD.action,
-								                      struct ActionTake *)->
+								                      ActionTake *)->
 								                     LootId))) {
 									uint32 oldValue =
 									    GetP(dbGetObject
@@ -1141,7 +1139,7 @@ static void plPlayerAction() {
 									         take_RelId,
 									         dbGetObject(ActionData
 									                     (PD.action,
-									                      struct ActionTake *)->
+									                      ActionTake *)->
 									                     LootId));
 
 									SetP(dbGetObject
@@ -1149,7 +1147,7 @@ static void plPlayerAction() {
 									     take_RelId,
 									     dbGetObject(ActionData
 									                 (PD.action,
-									                  struct ActionTake *)->
+									                  ActionTake *)->
 									                 LootId),
 									     oldValue + newValue);
 								} else
@@ -1158,12 +1156,12 @@ static void plPlayerAction() {
 									     take_RelId,
 									     dbGetObject(ActionData
 									                 (PD.action,
-									                  struct ActionTake *)->
+									                  ActionTake *)->
 									                 LootId), newValue);
 
 								plRefresh(ActionData
 								          (PD.action,
-								           struct ActionTake *)->ItemId);
+								           ActionTake *)->ItemId);
 								plDisplayInfo();
 							}
 						} else {
@@ -1191,10 +1189,10 @@ static void plPlayerAction() {
 						         take_RelId,
 						         dbGetObject(ActionData
 						                     (PD.action,
-						                      struct ActionDrop *)->LootId))) {
+						                      ActionDrop *)->LootId))) {
 							lsSetObjectState(ActionData
 							                 (PD.action,
-							                  struct ActionDrop *)->ItemId,
+							                  ActionDrop *)->ItemId,
 							                 Const_tcIN_PROGRESS_BIT, 1);
 
 							if (ActionEnded(plSys)) {
@@ -1204,49 +1202,49 @@ static void plPlayerAction() {
 								         take_RelId,
 								         dbGetObject(ActionData
 								                     (PD.action,
-								                      struct ActionDrop *)->
+								                      ActionDrop *)->
 								                     LootId));
 
 								Planing_Weight[i] -=
 								    ((Loot)
 								     dbGetObject(ActionData
 								                 (PD.action,
-								                  struct ActionDrop *)->
+								                  ActionDrop *)->
 								                 LootId))->Weight;
 								Planing_Volume[i] -=
 								    ((Loot)
 								     dbGetObject(ActionData
 								                 (PD.action,
-								                  struct ActionDrop *)->
+								                  ActionDrop *)->
 								                 LootId))->Volume;
 
 								lsSetObjectState(ActionData
 								                 (PD.action,
-								                  struct ActionDrop *)->ItemId,
+								                  ActionDrop *)->ItemId,
 								                 Const_tcIN_PROGRESS_BIT, 1);
 
 								if ((ActionData
 								        (PD.action,
-								         struct ActionDrop *)->ItemId >= 9701)
+								         ActionDrop *)->ItemId >= 9701)
 								        &&
 								        (ActionData
 								         (PD.action,
-								          struct ActionDrop *)->ItemId <= 9708)) {
+								          ActionDrop *)->ItemId <= 9708)) {
 									lsAddLootBag(livGetXPos(Planing_Name[i]),
 									             livGetYPos(Planing_Name[i]),
 									             ActionData(PD.action,
-									                        struct ActionDrop
+									                        ActionDrop
 									                        *)->ItemId - 9700);
 									Planing_Loot[ActionData
 									             (PD.action,
-									              struct ActionDrop *)->ItemId -
+									              ActionDrop *)->ItemId -
 									             9701] = 1;
 								} else {
 									if (CHECK_STATE
 									        (lsGetObjectState
 									         (ActionData
 									          (PD.action,
-									           struct ActionTake *)->ItemId),
+									           ActionTake *)->ItemId),
 									         Const_tcTAKE_BIT))
 										lsTurnObject((LSObject)
 										             dbGetObject(ActionData
@@ -1260,23 +1258,23 @@ static void plPlayerAction() {
 
 								SetP(dbGetObject
 								     (ActionData
-								      (PD.action, struct ActionDrop *)->ItemId),
+								      (PD.action, ActionDrop *)->ItemId),
 								     hasLoot(i),
 								     dbGetObject(ActionData
 								                 (PD.action,
-								                  struct ActionDrop *)->LootId),
+								                  ActionDrop *)->LootId),
 								     newValue);
 								UnSet(dbGetObject
 								      (OL_NR(GetNthNode(PersonsList, i))),
 								      take_RelId,
 								      dbGetObject(ActionData
 								                  (PD.action,
-								                   struct ActionDrop *)->
+								                   ActionDrop *)->
 								                  LootId));
 
 								plRefresh(ActionData
 								          (PD.action,
-								           struct ActionDrop *)->ItemId);
+								           ActionDrop *)->ItemId);
 								plDisplayInfo();
 							}
 						} else {
@@ -1294,7 +1292,7 @@ static void plPlayerAction() {
 #ifndef PLAN_IS_PERFECT
 							if (CHECK_STATE
 							        (lsGetObjectState
-							         (ActionData(PD.action, struct ActionOpen *)->
+							         (ActionData(PD.action, ActionOpen *)->
 							          ItemId), Const_tcOPEN_CLOSE_BIT)) {
 								if (!(Search.EscapeBits & FAHN_ALARM_GUARD)) {
 									plSay("PLAYER_GUARD_ALARM_3", i);
@@ -1320,22 +1318,22 @@ static void plPlayerAction() {
 					if ((i >= BurglarsNr)
 					        ||
 					        plIgnoreLock(ActionData
-					                     (PD.action, struct ActionOpen *)->ItemId)
+					                     (PD.action, ActionOpen *)->ItemId)
 					        ||
 					        CHECK_STATE(lsGetObjectState
 					                    (ActionData
-					                     (PD.action, struct ActionOpen *)->ItemId),
+					                     (PD.action, ActionOpen *)->ItemId),
 					                    Const_tcLOCK_UNLOCK_BIT)) {
 						if ((i >= BurglarsNr)
 						        ||
 						        plIgnoreLock(ActionData
 						                     (PD.action,
-						                      struct ActionOpen *)->ItemId)
+						                      ActionOpen *)->ItemId)
 						        ||
 						        !CHECK_STATE(lsGetObjectState
 						                     (ActionData
 						                      (PD.action,
-						                       struct ActionOpen *)->ItemId),
+						                       ActionOpen *)->ItemId),
 						                     Const_tcOPEN_CLOSE_BIT)) {
 							if (i < BurglarsNr) {
 								PD.currLoudness[i] =
@@ -1343,7 +1341,7 @@ static void plPlayerAction() {
 								Search.WorkTime[i]++;
 								lsSetObjectState(ActionData
 								                 (PD.action,
-								                  struct ActionOpen *)->ItemId,
+								                  ActionOpen *)->ItemId,
 								                 Const_tcIN_PROGRESS_BIT, 1);
 
 #ifndef PLAN_IS_PERFECT
@@ -1351,7 +1349,7 @@ static void plPlayerAction() {
 								        &&
 								        tcAlarmByTouch(ActionData
 								                       (PD.action,
-								                        struct ActionUse *)->
+								                        ActionUse *)->
 								                       ItemId)) {
 									Search.DeriTime += PLANING_DERI_ALARM;
 									Search.EscapeBits |=
@@ -1367,7 +1365,7 @@ static void plPlayerAction() {
 									PD.changeCount++;
 									lsSetObjectState(ActionData
 									                 (PD.action,
-									                  struct ActionOpen *)->
+									                  ActionOpen *)->
 									                 ItemId,
 									                 Const_tcIN_PROGRESS_BIT,
 									                 0);
@@ -1376,7 +1374,7 @@ static void plPlayerAction() {
 								if ((((LSObject)
 								        dbGetObject(ActionData
 								                    (PD.action,
-								                     struct ActionOpen *)->
+								                     ActionOpen *)->
 								                    ItemId))->Type == Item_WC)
 								        && (g_clue->calcRandomNr(0, 3) == 1)) {
 									sndPrepareFX("wc.voc");
@@ -1385,18 +1383,18 @@ static void plPlayerAction() {
 
 								lsSetObjectState(ActionData
 								                 (PD.action,
-								                  struct ActionOpen *)->ItemId,
+								                  ActionOpen *)->ItemId,
 								                 Const_tcOPEN_CLOSE_BIT, 1);
 
 								plCorrectOpened((LSObject)
 								                dbGetObject(ActionData
 								                            (PD.action,
-								                             struct ActionOpen
+								                             ActionOpen
 								                             *)->ItemId), 1);
 
 								plRefresh(ActionData
 								          (PD.action,
-								           struct ActionOpen *)->ItemId);
+								           ActionOpen *)->ItemId);
 								plDisplayInfo();
 							}
 						} else {
@@ -1418,7 +1416,7 @@ static void plPlayerAction() {
 #ifndef PLAN_IS_PERFECT
 							if (!CHECK_STATE
 							        (lsGetObjectState
-							         (ActionData(PD.action, struct ActionOpen *)->
+							         (ActionData(PD.action, ActionOpen *)->
 							          ItemId), Const_tcOPEN_CLOSE_BIT)) {
 								if (!(Search.EscapeBits & FAHN_ALARM_GUARD)) {
 									plSay("PLAYER_GUARD_ALARM_4", i);
@@ -1444,22 +1442,22 @@ static void plPlayerAction() {
 					if ((i >= BurglarsNr)
 					        ||
 					        plIgnoreLock(ActionData
-					                     (PD.action, struct ActionClose *)->ItemId)
+					                     (PD.action, ActionClose *)->ItemId)
 					        ||
 					        CHECK_STATE(lsGetObjectState
 					                    (ActionData
-					                     (PD.action, struct ActionOpen *)->ItemId),
+					                     (PD.action, ActionOpen *)->ItemId),
 					                    Const_tcLOCK_UNLOCK_BIT)) {
 						if ((i >= BurglarsNr)
 						        ||
 						        plIgnoreLock(ActionData
 						                     (PD.action,
-						                      struct ActionClose *)->ItemId)
+						                      ActionClose *)->ItemId)
 						        ||
 						        CHECK_STATE(lsGetObjectState
 						                    (ActionData
 						                     (PD.action,
-						                      struct ActionClose *)->ItemId),
+						                      ActionClose *)->ItemId),
 						                    Const_tcOPEN_CLOSE_BIT)) {
 							if (i < BurglarsNr) {
 								PD.currLoudness[i] =
@@ -1467,7 +1465,7 @@ static void plPlayerAction() {
 								Search.WorkTime[i]++;
 								lsSetObjectState(ActionData
 								                 (PD.action,
-								                  struct ActionClose *)->ItemId,
+								                  ActionClose *)->ItemId,
 								                 Const_tcIN_PROGRESS_BIT, 1);
 
 #ifndef PLAN_IS_PERFECT
@@ -1475,7 +1473,7 @@ static void plPlayerAction() {
 								        &&
 								        tcAlarmByTouch(ActionData
 								                       (PD.action,
-								                        struct ActionUse *)->
+								                        ActionUse *)->
 								                       ItemId)) {
 									Search.DeriTime += PLANING_DERI_ALARM;
 									Search.EscapeBits |=
@@ -1491,7 +1489,7 @@ static void plPlayerAction() {
 									PD.changeCount--;
 									lsSetObjectState(ActionData
 									                 (PD.action,
-									                  struct ActionClose *)->
+									                  ActionClose *)->
 									                 ItemId,
 									                 Const_tcIN_PROGRESS_BIT,
 									                 0);
@@ -1499,18 +1497,18 @@ static void plPlayerAction() {
 
 								lsSetObjectState(ActionData
 								                 (PD.action,
-								                  struct ActionClose *)->ItemId,
+								                  ActionClose *)->ItemId,
 								                 Const_tcOPEN_CLOSE_BIT, 0);
 
 								plCorrectOpened((LSObject)
 								                dbGetObject(ActionData
 								                            (PD.action,
-								                             struct ActionClose
+								                             ActionClose
 								                             *)->ItemId), 0);
 
 								plRefresh(ActionData
 								          (PD.action,
-								           struct ActionClose *)->ItemId);
+								           ActionClose *)->ItemId);
 								plDisplayInfo();
 							}
 						} else {
@@ -1530,7 +1528,7 @@ static void plPlayerAction() {
 					        ((LSObject)
 					         dbGetObject(ActionData
 					                     (PD.action,
-					                      struct ActionControl *)->ItemId))) {
+					                      ActionControl *)->ItemId))) {
 						if (!(Search.EscapeBits & FAHN_ALARM_GUARD)) {
 							plSay("PLAYER_GUARD_ALARM_2", i);
 							inpSetWaitTicks(INP_AS_FAST_AS_POSSIBLE);
@@ -1546,11 +1544,11 @@ static void plPlayerAction() {
 #endif
 
 					if (((LSObject)
-					        dbGetObject(ActionData(PD.action, struct ActionUse *)->
+					        dbGetObject(ActionData(PD.action, ActionUse *)->
 					                    ItemId))->Type == Item_Stechuhr)
 						tcRefreshTimeClock(PD.bldId,
 						                   ActionData(PD.action,
-						                              struct ActionUse *)->
+						                              ActionUse *)->
 						                   ItemId);
 					break;
 				}

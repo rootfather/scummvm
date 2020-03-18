@@ -132,7 +132,7 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 				for (uint32 i = 0; i < PLANING_NR_PLANS; i++) {
 					if ((mode == PLANING_OPEN_WRITE_PLAN)
 					        || (pllData & (1L << i))) {
-						struct IOData *data;
+						IOData *data;
 
 						if (mode == PLANING_OPEN_WRITE_PLAN) {
 							if (pllData & (1L << i))
@@ -143,7 +143,7 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 
 						snprintf(name2, TXT_KEY_LENGTH, "*%s Plan %d    %s", name1, i + 1, exp);
 
-						if ((data = (IOData *)CreateNode(PlanList, sizeof(struct IOData), name2)))
+						if ((data = (IOData *)CreateNode(PlanList, sizeof(IOData), name2)))
 							data->io_Data = i;
 					}
 				}
@@ -155,7 +155,7 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 				int i = Bubble(PlanList, 0, NULL, 0L);
 
 				if (ChoiceOk(i, GET_OUT, PlanList)) {
-					struct IOData *data;
+					IOData *data;
 
 					if ((data = (IOData *)GetNthNode(PlanList, i)))
 						i = data->io_Data;

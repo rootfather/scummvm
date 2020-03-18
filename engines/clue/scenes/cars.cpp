@@ -91,12 +91,12 @@ void tcBuyCar() {
 			ShowMenuBackground();
 
 			if (ChoiceOk(choice = Bubble(bubble, 0, 0L, 0L), GET_OUT, bubble)) {
-				Car matts_car = (Car) dbGetObject(((struct ObjectNode *)GetNthNode(bubble, (uint32) choice))->nr);
+				Car matts_car = (Car) dbGetObject(((ObjectNode *)GetNthNode(bubble, (uint32) choice))->nr);
 
 				SetCarColors((byte) matts_car->ColorIndex);
 				gfxShow((uint16) matts_car->PictID, GFX_NO_REFRESH | GFX_OVERLAY, 0L, -1L, -1L);
 
-				if (Present(((struct ObjectNode *) GetNthNode(bubble, (uint32) choice))->nr, "Car", InitCarPresent)) {
+				if (Present(((ObjectNode *) GetNthNode(bubble, (uint32) choice))->nr, "Car", InitCarPresent)) {
 					choice1 = Say(BUSINESS_TXT, 0, MATT_PICTID, "AUTOKAUF");
 
 					AddVTime(7);
@@ -106,7 +106,7 @@ void tcBuyCar() {
 
 						if (tcSpendMoney(price, 0)) {
 							uint32 carID =
-							    ((struct ObjectNode *)
+							    ((ObjectNode *)
 							     GetNthNode(bubble, (uint32) choice))->nr;
 
 							hasSet(Person_Matt_Stuvysunt, carID);

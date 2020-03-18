@@ -91,7 +91,7 @@ uint32 Go(LIST *succ) {
 
 		for (TCEventNode *node = (TCEventNode *) LIST_HEAD(succ); NODE_SUCC(node);
 		        node = (TCEventNode *) NODE_SUCC(node)) {
-			struct Scene *sc = GetScene(node->EventNr);
+			Scene *sc = GetScene(node->EventNr);
 			NODE *location = (NODE *)GetNthNode(film->loc_names, sc->LocationNr);
 
 			NODE_NAME(node) = NODE_NAME(location);
@@ -155,7 +155,7 @@ void Information() {
 				while (ChoiceOk((choice1 = Bubble(list, choice1, 0L, 0L)), GET_OUT, list)) {
 					SetBubbleType(THINK_BUBBLE);
 
-					uint32 objID = (uint32)(((struct ObjectNode *) GetNthNode(list, (uint32) choice1))->nr);
+					uint32 objID = (uint32)(((ObjectNode *) GetNthNode(list, (uint32) choice1))->nr);
 					ret = Present(objID, "Car", InitCarPresent);
 				}
 			} else
@@ -180,7 +180,7 @@ void Information() {
 				while (ChoiceOk((choice1 = Bubble(list, choice1, 0L, 0L)), GET_OUT, list)) {
 					SetBubbleType(THINK_BUBBLE);
 
-					uint32 objID = (uint32)(((struct ObjectNode *) GetNthNode(list, (uint32) choice1))->nr);
+					uint32 objID = (uint32)(((ObjectNode *) GetNthNode(list, (uint32) choice1))->nr);
 					ret = tcDisplayInfoAboutPerson(objID);
 				}
 			} else
@@ -205,7 +205,7 @@ void Information() {
 				while (ChoiceOk((choice1 = Bubble(list, choice1, 0L, 0L)), GET_OUT, list)) {
 					SetBubbleType(THINK_BUBBLE);
 
-					uint32 objID = (uint32)(((struct ObjectNode *) GetNthNode(list, (uint32) choice1))->nr);
+					uint32 objID = (uint32)(((ObjectNode *) GetNthNode(list, (uint32) choice1))->nr);
 					ret = Present(objID, "Tool", InitToolPresent);
 				}
 			} else
@@ -230,7 +230,7 @@ void Information() {
 				while (ChoiceOk((choice1 = Bubble(list, choice1, 0L, 0L)), GET_OUT, list)) {
 					SetBubbleType(THINK_BUBBLE);
 
-					uint32 objID = (uint32)(((struct ObjectNode *)GetNthNode(list, (uint32) choice1))->nr);
+					uint32 objID = (uint32)(((ObjectNode *)GetNthNode(list, (uint32) choice1))->nr);
 					ret = Present(objID, "Building", InitBuildingPresent);
 				}
 			} else
@@ -290,14 +290,8 @@ void Look(uint32 locNr) {
 
 					SetBubbleType(THINK_BUBBLE);
 
-					while (ChoiceOk
-					        ((choice1 =
-					              Bubble(bubble, choice1, 0L, 0L)), GET_OUT,
-					         bubble)) {
-						objID =
-						    ((struct ObjectNode *)
-						     GetNthNode(bubble, (uint32) choice1))->nr;
-
+					while (ChoiceOk((choice1 = Bubble(bubble, choice1, 0L, 0L)), GET_OUT, bubble)) {
+						objID = ((ObjectNode *) GetNthNode(bubble, (uint32) choice1))->nr;
 						tcDisplayInfoAboutPerson(objID);
 					}
 				} else
@@ -336,7 +330,7 @@ uint32 tcTelefon() {
 
 		if (choice != GET_OUT) {
 			if (ChoiceOk((choice = Bubble(ObjectList, 0, 0L, 0L)), GET_OUT, ObjectList)) {
-				uint32 persID = (uint32)(((struct ObjectNode *) GetNthNode(ObjectList, (uint32) choice))->nr);
+				uint32 persID = (uint32)(((ObjectNode *) GetNthNode(ObjectList, (uint32) choice))->nr);
 
 				if (persID == Person_Ben_Riggley)
 					Say(BUSINESS_TXT, 0, ben->PictID, "ALREADY_PHONING");

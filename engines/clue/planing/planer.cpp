@@ -103,7 +103,7 @@ static bool plRemLastAction() {
 
 /* actions */
 static void plActionGo() {
-	struct Action *action = CurrentAction(plSys);
+	Action *action = CurrentAction(plSys);
 
 	plMessage("WALK", PLANING_MSG_REFRESH);
 
@@ -151,7 +151,7 @@ static void plActionGo() {
 						}
 					}
 
-					if (ActionData(action, struct ActionGo *)->Direction ==
+					if (ActionData(action, ActionGo *)->Direction ==
 					        (uint16) direction)
 						IncCurrentTimer(plSys, 1, 1);
 					else {
@@ -541,7 +541,7 @@ static void plActionTake() {
 					ObjectNode *h2 = (ObjectNode *) LIST_HEAD(ObjectList);
 
 					ObjectNode *h = (ObjectNode *) CreateNode(takeableList,
-					                         sizeof(struct ObjectNode), OL_NAME(h2));
+					                         sizeof(ObjectNode), OL_NAME(h2));
 					h->nr = OL_NR(h2);  /* Loot */
 					h->type = OL_NR(n); /* Original */
 					h->data = NULL;

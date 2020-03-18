@@ -84,7 +84,7 @@ private:
 	TextControl *_txtBase;
 	char _keyBuffer[TXT_KEY_LENGTH];
 
-	char *getLine(struct Text *txt, uint8 lineNr);
+	char *getLine(Text *txt, uint8 lineNr);
 
 public:
 	/* public prototypes - TEXT */

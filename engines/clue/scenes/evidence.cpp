@@ -146,7 +146,7 @@ uint32 tcStartEvidence() {
 
 	int32 radio = (int32)((Building) dbGetObject(Search.BuildingId))->RadioGuarding;
 
-	struct ObjectNode *n;
+	ObjectNode *n;
 	int i= 0;
 	int32 MyEvidence[4][7];
 	uint32 totalEvidence[7];

@@ -202,7 +202,7 @@ static void gfxInitCollList() {
 	ReadList(tempList, 0, pathname);
 
 	for (NODE *n = LIST_HEAD(tempList); NODE_SUCC(n); n = NODE_SUCC(n)) {
-		struct Collection *coll = (Collection *)CreateNode(CollectionList, sizeof(struct Collection),
+		Collection *coll = (Collection *)CreateNode(CollectionList, sizeof(Collection),
 			g_clue->_txtMgr->getKey(2, NODE_NAME(n)));
 
 		coll->us_CollId = (uint16)g_clue->_txtMgr->getKeyAsUint32(1, NODE_NAME(n));
@@ -229,7 +229,7 @@ static void gfxInitPictList() {
 	ReadList(tempList, 0, pathname);
 
 	for (NODE *n = LIST_HEAD(tempList); NODE_SUCC(n); n = NODE_SUCC(n)) {
-		struct Picture *pict = (Picture *)CreateNode(PictureList, sizeof(*pict), NULL);
+		Picture *pict = (Picture *)CreateNode(PictureList, sizeof(*pict), NULL);
 
 		pict->us_PictId = (uint16)g_clue->_txtMgr->getKeyAsUint32(1, NODE_NAME(n));
 		pict->us_CollId = (uint16)g_clue->_txtMgr->getKeyAsUint32(2, NODE_NAME(n));
@@ -510,11 +510,11 @@ uint16 gfxTextWidth(GC *gc, const char *txt, size_t len) {
  * access & calc functions
  */
 
-struct Collection *gfxGetCollection(uint16 us_CollId) {
+Collection *gfxGetCollection(uint16 us_CollId) {
 	return (Collection *)GetNthNode(CollectionList, (uint32)(us_CollId - 1));
 }
 
-struct Picture *gfxGetPicture(uint16 us_PictId) {
+Picture *gfxGetPicture(uint16 us_PictId) {
 	return (Picture *)GetNthNode(PictureList, (uint32)(us_PictId - 1));
 }
 
@@ -535,7 +535,7 @@ static int32 gfxGetRealDestY(GC *gc, int32 destY) {
 
 /* nach dieser Funktion befindet sich im ScratchRP die entpackte Collection */
 void gfxPrepareColl(uint16 collId) {
-	struct Collection *coll = gfxGetCollection(collId);
+	Collection *coll = gfxGetCollection(collId);
 	if (!coll) {
 		DebugMsg(ERR_DEBUG, ERROR_MODULE_GFX, "gfxPrepareColl");
 		return;
@@ -580,7 +580,7 @@ void gfxCollToMem(uint16 collId, MemRastPort *rp) {
 	 * nun aus dem MemRastPort "entfernt"
 	 */
 	if (rp->collId != GFX_NO_COLL_IN_MEM && collId != rp->collId) {
-		struct Collection *oldColl = gfxGetCollection(rp->collId);
+		Collection *oldColl = gfxGetCollection(rp->collId);
 		if (oldColl)
 			oldColl->prepared = NULL;
 	}
@@ -589,7 +589,7 @@ void gfxCollToMem(uint16 collId, MemRastPort *rp) {
 	gfxScratchToMem(rp);
 
 	/* enter the MemRastPort in the new collection */
-	struct Collection *coll = gfxGetCollection(collId);
+	Collection *coll = gfxGetCollection(collId);
 	if (coll)
 		coll->prepared = rp;
 
@@ -932,11 +932,11 @@ void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette) {
 
 
 void gfxShow(uint16 us_PictId, uint32 ul_Mode, int32 l_Delay, int32 l_XPos, int32 l_YPos) {
-	struct Picture *pict = gfxGetPicture(us_PictId);
+	Picture *pict = gfxGetPicture(us_PictId);
 	if (!pict)
 		return;
 
-	struct Collection *coll = gfxGetCollection(pict->us_CollId);
+	Collection *coll = gfxGetCollection(pict->us_CollId);
 	if (!coll)
 		return;
 
@@ -1745,7 +1745,7 @@ void gfxCorrectUpperRPBitmap() {
 void gfxCollFromMem(uint16 collId) {
 	MemRastPort *rp;
 
-	struct Collection *coll = gfxGetCollection(collId);
+	Collection *coll = gfxGetCollection(collId);
 	if (coll && (rp = coll->prepared)) {
 		gfxScratchFromMem(rp);
 	}
@@ -1768,7 +1768,7 @@ void gfxRAWBlit(uint8 *sp, uint8 *dp, const int x1, const int y1, const int x2,
 		}
 }
 
-int32 gfxGetILBMSize(struct Collection *coll) {
+int32 gfxGetILBMSize(Collection *coll) {
 	uint16 w = coll->us_TotalWidth;
 	uint16 h = coll->us_TotalHeight;
 

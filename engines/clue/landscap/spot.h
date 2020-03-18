@@ -68,7 +68,7 @@ struct Spot {
 
 	LIST *p_positions;
 
-	struct SpotPosition *p_CurrPos; /* for fast access */
+	SpotPosition *p_CurrPos; /* for fast access */
 };
 
 extern void lsInitSpots();
@@ -76,25 +76,24 @@ extern void lsDoneSpots();
 
 extern void lsMoveAllSpots(uint32 time);
 extern void lsShowAllSpots(uint32 time, uint32 mode);
-extern void lsShowSpot(struct Spot *s, uint32 time);
-extern void lsHideSpot(struct Spot *s);
+extern void lsShowSpot(Spot *s, uint32 time);
+extern void lsHideSpot(Spot *s);
 
-extern void lsBlitSpot(uint16 us_Size, uint16 us_XPos, uint16 us_YPos,
-                       byte visible);
+extern void lsBlitSpot(uint16 us_Size, uint16 us_XPos, uint16 us_YPos, byte visible);
 
 extern void lsSetSpotStatus(uint32 CtrlObjId, byte uch_Status);
 
-extern void lsAddSpotPosition(struct Spot *spot, uint16 us_XPos, uint16 us_YPos);
+extern void lsAddSpotPosition(Spot *spot, uint16 us_XPos, uint16 us_YPos);
 extern void lsLoadSpots(uint32 bldId, char *uch_FileName);
 extern void lsWriteSpots(const char *uch_FileName);
 extern void lsFreeAllSpots();
-extern void lsRemSpot(struct Spot *spot);
+extern void lsRemSpot(Spot *spot);
 
 extern LIST *lsGetSpotList();
-extern struct Spot *lsAddSpot(uint16 us_Size, uint16 us_Speed, uint32 ul_CtrlObjId);
+extern Spot *lsAddSpot(uint16 us_Size, uint16 us_Speed, uint32 ul_CtrlObjId);
 
 #if 0
-extern struct Spot *lsGetSpot(const char *uch_Name);
+extern Spot *lsGetSpot(const char *uch_Name);
 #endif
 } // End of namespace Clue
 

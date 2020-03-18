@@ -154,7 +154,7 @@ extern void StdDone();
 extern void StdInit();
 
 extern void RefreshCurrScene();
-extern void SetCurrentScene(struct Scene *scene);
+extern void SetCurrentScene(Scene *scene);
 
 extern char *GetCurrLocName();
 
@@ -163,16 +163,16 @@ char *BuildTime(uint32 min, char *time);
 
 void FormatDigit(uint32 digit, char *s);
 
-extern struct Scene *GetCurrentScene();
-extern struct Scene *GetLocScene(uint32 locNr);
-extern struct Scene *GetScene(uint32 EventNr);
+extern Scene *GetCurrentScene();
+extern Scene *GetLocScene(uint32 locNr);
+extern Scene *GetScene(uint32 EventNr);
 
 extern void AddVTime(uint32 Zeit);
 
 extern void LinkScenes();   /* Init und Done in jeder Scene Struktur setzen */
 
-extern struct SceneArgs _sceneArgs;
-extern struct Film *film;
+extern SceneArgs _sceneArgs;
+extern Film *film;
 extern uint32 GamePlayMode;
 extern byte RefreshMode;
 

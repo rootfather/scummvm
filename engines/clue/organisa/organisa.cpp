@@ -453,7 +453,7 @@ void tcAddGuyToParty() {
 
 	LIST *l2 = ObjectListPrivate;
 	if (GetNrOfNodes(l2) < Organisation.PlacesInCar) {
-		for (struct ObjectNode *n = (ObjectNode *) LIST_HEAD(l2); NODE_SUCC(n); n = (ObjectNode *) NODE_SUCC(n))
+		for (ObjectNode *n = (ObjectNode *) LIST_HEAD(l2); NODE_SUCC(n); n = (ObjectNode *) NODE_SUCC(n))
 			dbRemObjectNode(l1, OL_NR(n));
 
 		if (!LIST_EMPTY(l1)) {

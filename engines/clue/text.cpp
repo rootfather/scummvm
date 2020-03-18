@@ -60,7 +60,7 @@ TextMgr::~TextMgr() {
 }
 	
 /* private functions */
-char *TextMgr::getLine(struct Text *txt, uint8 lineNr) {
+char *TextMgr::getLine(Text *txt, uint8 lineNr) {
 	char *line = nullptr;
 	if (txt && txt->_lastMark && lineNr) {
 		line = txt->_lastMark;
@@ -108,7 +108,7 @@ void TextMgr::init(char lang) {
 		char txtListPath[DSK_PATH_MAX];
 		dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, TXT_LIST, txtListPath);
 
-		if (ReadList(_txtBase->_textList, sizeof(struct Text), txtListPath)) {
+		if (ReadList(_txtBase->_textList, sizeof(Text), txtListPath)) {
 			uint32 nr = GetNrOfNodes(_txtBase->_textList);
 			for (uint32 i = 0; i < nr; i++)
 				load(i);
@@ -121,7 +121,7 @@ void TextMgr::init(char lang) {
 }
 
 void TextMgr::load(uint32 textId) {
-	struct Text *txt = (Text *)GetNthNode(_txtBase->_textList, textId);
+	Text *txt = (Text *)GetNthNode(_txtBase->_textList, textId);
 
 	if (txt) {
 		if (!txt->_handle) {
@@ -169,7 +169,7 @@ void TextMgr::load(uint32 textId) {
 }
 
 void TextMgr::unLoad(uint32 textId) {
-	struct Text *txt = (Text *)GetNthNode(_txtBase->_textList, textId);
+	Text *txt = (Text *)GetNthNode(_txtBase->_textList, textId);
 
 	if (txt) {
 		if (txt->_handle) {
@@ -183,7 +183,7 @@ void TextMgr::unLoad(uint32 textId) {
 }
 
 void TextMgr::prepare(uint32 textId) {
-	struct Text *txt = (Text *)GetNthNode(_txtBase->_textList, textId);
+	Text *txt = (Text *)GetNthNode(_txtBase->_textList, textId);
 
 	if (txt) {
 		memcpy(TXT_BUFFER_WORK, txt->_handle, txt->_length);
@@ -192,7 +192,7 @@ void TextMgr::prepare(uint32 textId) {
 }
 
 void TextMgr::reset(uint32 textId) {
-	struct Text *txt = (Text *)GetNthNode(_txtBase->_textList, textId);
+	Text *txt = (Text *)GetNthNode(_txtBase->_textList, textId);
 
 	if (txt)
 		txt->_lastMark = (char *)TXT_BUFFER_WORK;
@@ -240,7 +240,7 @@ uint32 TextMgr::getKeyAsUint32(uint16 keyNr, const char *key) {
 LIST * TextMgr::goKey(uint32 textId, const char *key) {
 	LIST *txtList = NULL;
 
-	struct Text *txt = (Text *)GetNthNode(_txtBase->_textList, textId);
+	Text *txt = (Text *)GetNthNode(_txtBase->_textList, textId);
 	if (txt) {
 		char *LastMark = NULL;
 
@@ -327,7 +327,7 @@ LIST * TextMgr::goKeyAndInsert(uint32 textId, const char *key, ...) {
 
 bool TextMgr::keyExists(uint32 textId, const char *key) {
 	bool found = false;
-	struct Text *txt = (Text *)GetNthNode(_txtBase->_textList, textId);
+	Text *txt = (Text *)GetNthNode(_txtBase->_textList, textId);
 
 	if (txt && key) {
 		prepare(textId);

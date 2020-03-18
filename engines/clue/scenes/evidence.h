@@ -76,7 +76,7 @@ struct Search {         /* wegen Arrays nicht in objects */
 extern int32 tcCalcCarEscape(int32 timeLeft);
 extern void tcForgetGuys();
 
-extern struct Search Search;
+extern Search Search;
 
 } // End of namespace Clue
 
