@@ -50,13 +50,13 @@ public:
 	~TextMgr();
 
 private:
-	struct TextControl *_txtBase;
-
+	ClueEngine *_vm;
+	TextControl *_txtBase;
 	char _keyBuffer[TXT_KEY_LENGTH];
+
 	char *getLine(struct Text *txt, uint8 lineNr);
 
 public:
-	ClueEngine *_vm;
 	/* public prototypes - TEXT */
 	void init(char lang);
 
