@@ -157,8 +157,8 @@ uint32 GetNrOfNodes(LIST *list) {
 	NODE *node = NULL;
 	uint32 i = 0;
 
-	for (i = 0, node = LIST_HEAD(list); NODE_SUCC(node);
-	        i++, node = NODE_SUCC(node));
+	for (i = 0, node = LIST_HEAD(list); NODE_SUCC(node); i++, node = NODE_SUCC(node))
+		;
 
 	return i;
 }
@@ -209,7 +209,6 @@ void ReplaceNode(LIST *list, const char *name, NODE *newNode) {
 }
 
 uint32 ReadList(LIST *list, size_t size, char *fileName) {
-
 	uint32 i = 0;
 	Common::Stream *fh = dskOpen(fileName, 0);
 	if (fh) {

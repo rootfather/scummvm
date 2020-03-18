@@ -46,7 +46,7 @@ bool tcSpendMoney(uint32 money, uint8 breakAnim) {
 	} else
 		tcSetPlayerMoney(tcGetPlayerMoney - money);
 
-	return (enough);
+	return enough;
 }
 
 /* berechnet Auswirkung eines Funkspruches
@@ -94,7 +94,7 @@ void tcCalcCallValue(uint32 callNr, uint32 timer, uint32 persId) {
 			break;
 		}
 
-		if ((good > 0))
+		if (good > 0)
 			guy->Known = CalcValue(guy->Known, 0, 255, 0, 6);
 	} else {
 		assert(0);
@@ -107,10 +107,10 @@ void tcCalcCallValue(uint32 callNr, uint32 timer, uint32 persId) {
 /* basiert alleine auf den Koordinaten */
 /* vernachlässigt Stockwerke und Personen */
 int32 tcCalcEscapeTime() {
-	int32 time = 0, i;
+	int32 time = 0;
 	Building build = (Building)dbGetObject(Search.BuildingId);
 
-	for (i = 0; i < 4; i++) {
+	for (int32 i = 0; i < 4; i++) {
 		if ((Search.GuyXPos[i] != -1) && (Search.GuyYPos[i] != -1)) {
 			int32 distance = abs((int32) Search.GuyXPos[i] - (int32) build->CarXPos);
 
@@ -137,10 +137,9 @@ bool tcKillTheGuard(uint32 guyId, uint32 buildingId) {
 
 	if (power >= b->GuardStrength)
 		return true;
-	else {
-		p->OldHealth = p->Health;
-		p->Health = CalcValue(p->Health, 0, 255, 0, 90);
-	}
+
+	p->OldHealth = p->Health;
+	p->Health = CalcValue(p->Health, 0, 255, 0, 90);
 
 	return false;
 }
@@ -149,7 +148,7 @@ int32 tcGetCarStrike(Car car) {
 	uint32 strike = car->Strike;
 
 	/* XXX: had to reoder & cast some stuff to stop underflow bugs... */
-	strike += ((((int32) car->ColorIndex - 5) * 9 * strike) / 255);
+	strike += (((int32) car->ColorIndex - 5) * 9 * strike) / 255;
 	strike = CalcValue(strike, 0, 255, 127 + abs(127 - car->BodyWorkState), 30);
 
 	return strike;
@@ -166,9 +165,7 @@ uint32 tcGuyCanEscape(Person p) {
 }
 
 uint32 tcGuyTellsAll(Person p) {
-	uint32 v;
-
-	v = abs(512 - p->Loyality - p->Known) / 2;
+	uint32 v = abs(512 - p->Loyality - p->Known) / 2;
 
 	return v;           /* the higher the worser */
 }
@@ -186,15 +183,11 @@ int32 tcGetCarTraderOffer(Car car) {
 #if 0
 // TODO: Check and remove if unused
 uint32 tcGetItemID(uint32 itemType) {
-	struct dbObject *obj;
-	Item item;
-	short objHashValue;
-
-	for (objHashValue = 0; objHashValue < OBJ_HASH_SIZE; objHashValue++) {
-		for (obj = (struct dbObject *) LIST_HEAD(objHash[objHashValue]);
-		        NODE_SUCC(obj); obj = (struct dbObject *) NODE_SUCC(obj)) {
+	for (short objHashValue = 0; objHashValue < OBJ_HASH_SIZE; objHashValue++) {
+		for (dbObject* obj = (dbObject*)LIST_HEAD(objHash[objHashValue]);
+		        NODE_SUCC(obj); obj = (dbObject *) NODE_SUCC(obj)) {
 			if (obj->type == Object_Item) {
-				item = (Item)((void *)(obj + 1));
+				Item item = (Item)((void*)(obj + 1));
 
 				if (item->Type == itemType)
 					return (obj->nr);
@@ -202,14 +195,14 @@ uint32 tcGetItemID(uint32 itemType) {
 		}
 	}
 
-	return (0L);
+	return 0L;
 }
 #endif
 
 uint32 GetObjNrOfLocation(uint32 LocNr) {
-	for (short objHashValue = 0; objHashValue < OBJ_HASH_SIZE; objHashValue++) {
-		for (struct dbObject *obj = (struct dbObject *) LIST_HEAD(objHash[objHashValue]);
-		        NODE_SUCC(obj); obj = (struct dbObject *) NODE_SUCC(obj)) {
+	for (uint8 objHashValue = 0; objHashValue < OBJ_HASH_SIZE; objHashValue++) {
+		for (dbObject *obj = (dbObject *) LIST_HEAD(objHash[objHashValue]);
+		        NODE_SUCC(obj); obj = (dbObject *) NODE_SUCC(obj)) {
 			if (obj->type == Object_Location) {
 				Location loc = (Location)((void *)(obj + 1));
 
@@ -219,36 +212,31 @@ uint32 GetObjNrOfLocation(uint32 LocNr) {
 		}
 	}
 
-	return (0L);
+	return 0L;
 }
 
 uint32 GetObjNrOfBuilding(uint32 LocNr) {
-	struct dbObject *obj;
-	Building bui;
-	short objHashValue;
-
-	for (objHashValue = 0; objHashValue < OBJ_HASH_SIZE; objHashValue++) {
-		for (obj = (struct dbObject *) LIST_HEAD(objHash[objHashValue]);
-		        NODE_SUCC(obj); obj = (struct dbObject *) NODE_SUCC(obj)) {
+	for (short objHashValue = 0; objHashValue < OBJ_HASH_SIZE; objHashValue++) {
+		for (dbObject* obj = (dbObject*)LIST_HEAD(objHash[objHashValue]);
+		        NODE_SUCC(obj); obj = (dbObject *) NODE_SUCC(obj)) {
 			if (obj->type == Object_Building) {
-				bui = (Building)((void *)(obj + 1));
+				Building bui = (Building)((void*)(obj + 1));
 
 				if (bui->LocationNr == LocNr)
-					return (obj->nr);
+					return obj->nr;
 			}
 		}
 	}
 
-	return (0L);
+	return 0L;
 }
 
 uint32 tcGetPersOffer(Person person, uint8 persCount) {
 	uint32 persCapability = 1, mattCapability = 1;
 	uint32 persID = dbGetObjectNr(person);
-	uint32 assesment, offer, i;
-	Person Pers;
+	uint32 i;
 
-	Pers = (Person) dbGetObject(persID);
+	Person Pers = (Person)dbGetObject(persID);
 
 	/* Fähigkeiten der Person */
 	if ((i = hasGet(persID, Ability_Autos)) != NO_PARAMETER)
@@ -267,8 +255,7 @@ uint32 tcGetPersOffer(Person person, uint8 persCount) {
 	/* Fähigkeiten von Matt */
 	if ((i = hasGet(Person_Matt_Stuvysunt, Ability_Autos)) != NO_PARAMETER)
 		mattCapability += i;
-	if ((i =
-	            hasGet(Person_Matt_Stuvysunt, Ability_Sprengstoff)) != NO_PARAMETER)
+	if ((i = hasGet(Person_Matt_Stuvysunt, Ability_Sprengstoff)) != NO_PARAMETER)
 		mattCapability += i;
 	if ((i = hasGet(Person_Matt_Stuvysunt, Ability_Safes)) != NO_PARAMETER)
 		mattCapability += i;
@@ -280,10 +267,10 @@ uint32 tcGetPersOffer(Person person, uint8 persCount) {
 		mattCapability += i;
 
 	/* wieviel Prozent Leistung er bringt (Matt = 100 %) */
-	assesment = (persCapability * 100) / mattCapability;
+	uint32 assesment = (persCapability * 100) / mattCapability;
 
 	/* MOD 18-02-04 HG 92 statt 100 (Marx Testspielempfehlung) */
-	offer = 100 / persCount;    /* sein Anteil bei gleichen Teilen */
+	uint32 offer = 100 / persCount;    /* sein Anteil bei gleichen Teilen */
 	offer = (offer * assesment) / 92;   /* ... gewichtet mit Fähigkeiten   */
 
 	/* Beispiel zu oben: 2 Personen -> offer = 50, assesment = 200 */
@@ -292,7 +279,7 @@ uint32 tcGetPersOffer(Person person, uint8 persCount) {
 	offer = CalcValue(offer, 1, 90, Pers->Avarice, 20);
 	offer = CalcValue(offer, 1, 90, 255 - Pers->Known, 10);
 
-	return (offer);
+	return offer;
 }
 
 void tcPersonLearns(uint32 pId) {
@@ -302,7 +289,7 @@ void tcPersonLearns(uint32 pId) {
 	/* Abilites */
 	hasAll(pId, OLF_NORMAL, Object_Ability);
 
-	for (struct ObjectNode *n = (struct ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n); n = (struct ObjectNode *) NODE_SUCC(n)) {
+	for (ObjectNode *n = (ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n); n = (ObjectNode *) NODE_SUCC(n)) {
 		int32 ability = hasGet(pId, OL_NR(n));    /* Jetztzustand der Fähigkeit */
 
 		if (learned(pId, OL_NR(n))) {   /* er hat dazugelernt ! */
@@ -449,7 +436,7 @@ int32 tcGetTrail(Person p, uint8 which) {
 		trail = CalcValue(trail, 0, 255, 255 - p->Health, 15);
 		trail = CalcValue(trail, 0, 255, 255 - p->Strength, 5);
 
-		if (!(has(Person_Matt_Stuvysunt, Tool_Handschuhe)))
+		if (!has(Person_Matt_Stuvysunt, Tool_Handschuhe))
 			trail = CalcValue(trail, 0, 255, 255, 50);  /* um 50 % mehr ! */
 		break;
 
@@ -507,14 +494,14 @@ static uint32 tcGetNecessaryAbility(uint32 persId, uint32 toolId) {
  * Berechnet Zeit, die Einbrecher für eine Aktion benötigt
  */
 
-uint32 tcGuyUsesToolInPlayer(uint32 persId, Building b, uint32 toolId, uint32 itemId,
-                             uint32 needTime) {
+uint32 tcGuyUsesToolInPlayer(uint32 persId, Building b, uint32 toolId, uint32 itemId, uint32 needTime) {
 	uint32 time = tcGuyUsesTool(persId, b, toolId, itemId);
 	uint32 ability = tcGetNecessaryAbility(persId, toolId);
 
-	if (ability < (g_clue->calcRandomNr(0, 230)))
+	if (ability < g_clue->calcRandomNr(0, 230)) {
 		if (g_clue->calcRandomNr(0, ability / 20) == 1)
 			time = CalcValue(time, 0, time * 4, ability / 2, 10);
+	}
 
 	if (time < needTime)
 		time = needTime;
@@ -597,11 +584,8 @@ uint32 tcGuyUsesTool(uint32 persId, Building b, uint32 toolId, uint32 itemId)
 			break;
 		}
 
-		time =
-		    CalcValue(time, 0, origin * 4,
-		              127 +
-		              ((255 - (tcGetNecessaryAbility(persId, toolId))) / 2),
-		              50);
+		time = CalcValue(time, 0, origin * 4,
+		              127 + ((255 - tcGetNecessaryAbility(persId, toolId)) / 2), 50);
 
 		switch (itemId) {   /* Alarmanglagen bonus! */
 		case Item_Alarmanlage_Z3:
@@ -616,9 +600,7 @@ uint32 tcGuyUsesTool(uint32 persId, Building b, uint32 toolId, uint32 itemId)
 			break;
 		}
 
-		time =
-		    CalcValue(time, 0, origin * 4, 120 + (255 - b->Exactlyness) / 2,
-		              20);
+		time = CalcValue(time, 0, origin * 4, 120 + (255 - b->Exactlyness) / 2, 20);
 		time = CalcValue(time, 0, origin * 4, 127 + (p->Panic / 2), 10);
 
 		time = MAX(origin, time);   /* Schneller kann man nicht sein! */
@@ -722,8 +704,8 @@ bool tcAlarmByPatrol(uint16 objChangedCount, uint16 totalCount, uint8 patrolCoun
 
 	if (((totalCount * tcPATROL_ALARM) / (125 * patrolCount)) < objChangedCount)
 		return true;
-	else
-		return false;
+
+	return false;
 }
 
 /* für jedes Objekt, das vom Wächter kontrolliert wird, aufrufen! */
@@ -735,48 +717,46 @@ bool tcGuardChecksObject(LSObject lso) {
 	if ((lso->ul_Status & (1 << Const_tcIN_PROGRESS_BIT)) ||
 	        (lso->ul_Status & (1 << Const_tcLOCK_UNLOCK_BIT)))
 		return true;
-	else {
+
+	switch (lso->Type) {
+	case Item_Alarmanlage_Z3:
+	case Item_Alarmanlage_X3:
+	case Item_Alarmanlage_Top:
+	case Item_Steuerkasten:
+		/* hier darf NICHT das OPEN_CLOSE_BIT geprüft werden */
+		/* sonst schlägt der Wächter Alarm, wenn er es öffnet! */
+		if (lso->ul_Status & (1 << Const_tcON_OFF))
+			return true;
+		break;
+	case Item_Bild:
+	case Item_Vase:
+	case Item_Gemaelde:
+	case Item_Statue:
+		if (lso->uch_Visible == 0)
+			return true;
+		break;
+	default:
+		break;
+	}
+
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		switch (lso->Type) {
-		case Item_Alarmanlage_Z3:
-		case Item_Alarmanlage_X3:
-		case Item_Alarmanlage_Top:
-		case Item_Steuerkasten:
-			/* hier darf NICHT das OPEN_CLOSE_BIT geprüft werden */
-			/* sonst schlägt der Wächter Alarm, wenn er es öffnet! */
-			if (lso->ul_Status & (1 << Const_tcON_OFF))
-				return true;
-			break;
-		case Item_Bild:
-		case Item_Vase:
-		case Item_Gemaelde:
-		case Item_Statue:
+		case Item_Heiligenstatue:
+		case Item_Kerzenstaender:
+		case Item_Kirchenkreuz:
+		case Item_Hottentotten_Figur:
+		case Item_Batman_Figur:
+		case Item_Dicker_Man:
+		case Item_Unbekannter:
+		case Item_Jack_the_Ripper_Figur:
+		case Item_Koenigs_Figur:
+		case Item_Wache_Figur:
+		case Item_Miss_World_1952:
 			if (lso->uch_Visible == 0)
 				return true;
 			break;
 		default:
 			break;
-		}
-
-		if (g_clue->getFeatures() & GF_PROFIDISK) {
-			switch (lso->Type) {
-			case Item_Heiligenstatue:
-			case Item_Kerzenstaender:
-			case Item_Kirchenkreuz:
-
-			case Item_Hottentotten_Figur:
-			case Item_Batman_Figur:
-			case Item_Dicker_Man:
-			case Item_Unbekannter:
-			case Item_Jack_the_Ripper_Figur:
-			case Item_Koenigs_Figur:
-			case Item_Wache_Figur:
-			case Item_Miss_World_1952:
-				if (lso->uch_Visible == 0)
-					return true;
-				break;
-			default:
-				break;
-			}
 		}
 	}
 
@@ -801,10 +781,9 @@ bool tcAlarmByMicro(uint16 us_XPos, uint16 us_YPos, int32 loudness) {
 
 bool tcWatchDogWarning(uint32 persId) {
 	int32 watch = hasGet(persId, Ability_Aufpassen);
-	int32 random;
 
-	random = g_clue->calcRandomNr(0, 200) + /* Joe soll nicht gleich in der ersten */
-			g_clue->calcRandomNr(0, 200) +  /* Sekunde etwas bemerken!             */
+	int32 random = g_clue->calcRandomNr(0, 200) + /* Joe soll nicht gleich in der ersten */
+		g_clue->calcRandomNr(0, 200) + /* Sekunde etwas bemerken!             */
 		g_clue->calcRandomNr(0, 200);   /* Risiko wird durch Addition GRÖßER!! */
 
 	if ((watch > random) && (g_clue->calcRandomNr(0, 40) == 1))
@@ -831,26 +810,23 @@ bool tcWrongWatchDogWarning(uint32 persId) {
 
 bool tcIsCarRecognised(Car car, uint32 time) {
 	uint32 strike = tcGetCarStrike(car);
-	uint32 weight;
 
 	/* Zeit spielt eine Rolle ! */
 	/* nach einer Viertelstunde mit Alarm, ist Strike == 255 */
 
-	weight = 127 + CalcValue(time / 8, 0, 127, 0, 0);   /* nur wegen Bereichsüberprüfung */
+	uint32 weight = 127 + CalcValue(time / 8, 0, 127, 0, 0);   /* nur wegen Bereichsüberprüfung */
 	strike = CalcValue(strike, 0, 255, weight, 100);
 
-	if ((strike > 220)
-	        || ((strike > (g_clue->calcRandomNr(10, 220) + g_clue->calcRandomNr(20, 220)))))
+	if ((strike > 220) || (strike > g_clue->calcRandomNr(10, 220) + g_clue->calcRandomNr(20, 220)))
 		return true;
-	else
-		return false;
+
+	return false;
 }
 
 int32 tcGetGuyState(uint32 persId) {
 	Person p = (Person)dbGetObject(persId);
-	int32 state;
 
-	state = tcGetPersHealth(p);
+	int32 state = tcGetPersHealth(p);
 	state = CalcValue(state, 0, 255, p->Stamina, 50);
 	state = CalcValue(state, 0, 255, p->Strength, 15);
 
@@ -858,18 +834,15 @@ int32 tcGetGuyState(uint32 persId) {
 }
 
 int32 tcCalcMattsPart() {
-	LIST *guys;
-	NODE *node;
 	int32 count = 0, part = 0;
 
 	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST,
 	             Object_Person);
-	guys = ObjectListPrivate;
+	LIST* guys = ObjectListPrivate;
 
 	count = GetNrOfNodes(guys);
 
-	for (node = LIST_HEAD(guys); NODE_SUCC(node);
-	        node = NODE_SUCC(node)) {
+	for (NODE* node = LIST_HEAD(guys); NODE_SUCC(node); node = NODE_SUCC(node)) {
 		if (OL_NR(node) != Person_Matt_Stuvysunt)
 			part += tcGetPersOffer((Person)(OL_DATA(node)), count);
 	}
@@ -895,7 +868,6 @@ void tcRefreshTimeClock(uint32 buildId, uint32 timerId) {
  */
 
 bool tcCheckTimeClocks(uint32 buildId) {
-	NODE *n;
 	bool alarm = false;
 
 	/* alle Stechuhren holen */
@@ -904,8 +876,7 @@ bool tcCheckTimeClocks(uint32 buildId) {
 
 	/* und kontrollieren, ob die Zeit abgelaufen ist */
 
-	for (n = LIST_HEAD(ObjectList); NODE_SUCC(n);
-	        n = NODE_SUCC(n)) {
+	for (NODE* n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
 		uint32 timerId = OL_NR(n);
 		int32 time = (int32) ClockTimerGet(timerId, timerId);
 
@@ -922,13 +893,10 @@ bool tcCheckTimeClocks(uint32 buildId) {
 
 static bool tcInsideSameRoom(LIST *roomsList, int16 polX, int16 polY, int16 livX,
                              int16 livY) {
-	NODE *node;
 	bool detected = false;
-	LSRoom room;
 
-	for (node = LIST_HEAD(roomsList); NODE_SUCC(node) && detected == 0;
-	        node = NODE_SUCC(node)) {
-		room = (LSRoom)OL_DATA(node);
+	for (NODE* node = LIST_HEAD(roomsList); NODE_SUCC(node) && detected == 0; node = NODE_SUCC(node)) {
+		LSRoom room = (LSRoom)OL_DATA(node);
 
 		if ((polX >= room->us_LeftEdge)
 		        && (polX <= room->us_LeftEdge + room->us_Width)
@@ -975,9 +943,8 @@ bool tcGuardDetectsGuy(LIST *roomsList, uint16 us_XPos, uint16 us_YPos,
 bool tcAlarmByTouch(uint32 lsoId) {
 	LSObject lso = (LSObject)dbGetObject(lsoId);
 
-	if (lso->uch_Chained & Const_tcCHAINED_TO_ALARM)
-		if (tcIsConnectedWithEnabledAlarm(lsoId))
-			return true;
+	if ((lso->uch_Chained & Const_tcCHAINED_TO_ALARM) && tcIsConnectedWithEnabledAlarm(lsoId))
+		return true;
 
 	return false;
 }
@@ -989,26 +956,21 @@ bool tcAlarmByTouch(uint32 lsoId) {
  */
 
 bool tcAlarmByPowerLoss(uint32 powerId) {
-	LIST *friendlyList;
-	NODE *n;
-
 	/* alle Objekte, mit denen diese Stromversorgung verbunden ist */
 
 	SetObjectListAttr(OLF_PRIVATE_LIST, Object_LSObject);
 	AskAll(dbGetObject(powerId), hasPowerRelationID, BuildObjectList);
-	friendlyList = ObjectListPrivate;
+	LIST* friendlyList = ObjectListPrivate;
 
 	/* eine davon mit einer Alarmanlage verbunden? */
 
-	for (n = LIST_HEAD(friendlyList); NODE_SUCC(n);
-	        n = NODE_SUCC(n)) {
+	for (NODE* n = LIST_HEAD(friendlyList); NODE_SUCC(n); n = NODE_SUCC(n)) {
 		LSObject lso = (LSObject)OL_DATA(n);
 
-		if (lso->ul_Status & Const_tcCHAINED_TO_ALARM)
-			if (tcIsConnectedWithEnabledAlarm(OL_NR(n))) {
-				RemoveList(friendlyList);
-				return true;
-			}
+		if ((lso->ul_Status & Const_tcCHAINED_TO_ALARM) && tcIsConnectedWithEnabledAlarm(OL_NR(n))) {
+			RemoveList(friendlyList);
+			return true;
+		}
 	}
 
 	RemoveList(friendlyList);
@@ -1016,8 +978,6 @@ bool tcAlarmByPowerLoss(uint32 powerId) {
 }
 
 static bool tcIsConnectedWithEnabledAlarm(uint32 lsoId) {
-	NODE *n;
-
 	/* alle Alarmanlagen, mit denen dieser Gegenstand verbunden ist */
 
 	SetObjectListAttr(OLF_NORMAL, Object_LSObject);
@@ -1025,8 +985,7 @@ static bool tcIsConnectedWithEnabledAlarm(uint32 lsoId) {
 
 	/* ist eine davon eingeschalten? */
 
-	for (n = LIST_HEAD(ObjectList); NODE_SUCC(n);
-	        n = NODE_SUCC(n)) {
+	for (NODE* n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
 		LSObject alarm = (LSObject)OL_DATA(n);
 
 		if (!(alarm->ul_Status & (1L << Const_tcON_OFF)))
@@ -1037,27 +996,25 @@ static bool tcIsConnectedWithEnabledAlarm(uint32 lsoId) {
 }
 
 static int32 tcGetWeightOfNerves(int32 teamMood) {
-	return (255 - teamMood);
+	return 255 - teamMood;
 }
 
 void tcInsertGuard(LIST *list, LIST *roomsList, uint16 x, uint16 y, uint16 width,
                    uint16 height, uint32 guardId, uint8 livId, uint32 areaId) {
 	char name[TXT_KEY_LENGTH];
-	uint16 gx, gy;
 	uint32 guardedArea = isGuardedbyGet(lsGetCurrBuildingID(), guardId);
 
 	sprintf(name, "Police_%d", livId);
 
-	gx = livGetXPos(name);
-	gy = livGetYPos(name);
+	uint16 gx = livGetXPos(name);
+	uint16 gy = livGetYPos(name);
 
-	if (guardedArea == areaId)
-		if ((x <= (gx + 16)) && ((x + width) >= gx) && (y <= (gy + 23))
-		        && ((y + height) >= gy))
-			if (tcInsideSameRoom
-			        (roomsList, gx + tcX_HOTSPOT, gy, x + tcX_HOTSPOT, y))
-				dbAddObjectNode(list, guardId,
-				                OLF_INCLUDE_NAME | OLF_INSERT_STAR);
+	if (guardedArea == areaId) {
+		if ((x <= gx + 16) && (x + width >= gx) && (y <= gy + 23) && (y + height >= gy)) {
+			if (tcInsideSameRoom(roomsList, gx + tcX_HOTSPOT, gy, x + tcX_HOTSPOT, y))
+				dbAddObjectNode(list, guardId, OLF_INCLUDE_NAME | OLF_INSERT_STAR);
+		}
+	}
 }
 
 } // End of namespace Clue

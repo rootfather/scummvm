@@ -50,7 +50,7 @@ int dbCompare(KEY key1, KEY key2) {
 }
 
 char *dbDecode(KEY key) {
-	struct dbObject *obj = dbGetObjectReal(key);
+	dbObject *obj = dbGetObjectReal(key);
 
 	sprintf(decodeStr, "%u", obj->nr);
 
@@ -71,8 +71,8 @@ KEY dbEncode(char *key) {
 
 struct dbObject *dbFindRealObject(uint32 realNr, uint32 offset, uint32 size) {
 	for (uint8 objHashValue = 0; objHashValue < OBJ_HASH_SIZE; objHashValue++) {
-		for (struct dbObject *obj = (struct dbObject *) LIST_HEAD(objHash[objHashValue]);
-		        NODE_SUCC(obj); obj = (struct dbObject *) NODE_SUCC(obj)) {
+		for (dbObject *obj = (dbObject *) LIST_HEAD(objHash[objHashValue]);
+		        NODE_SUCC(obj); obj = (dbObject *) NODE_SUCC(obj)) {
 			if (obj->nr > offset) {
 				if (size && (obj->nr > offset + size))
 					continue;
@@ -196,11 +196,10 @@ static uint32 dbGetProfiDskSize(uint32 type) {
 }
 
 static uint32 dbGetDskSize(uint32 type) {
-	if (g_clue->getFeatures() & GF_PROFIDISK) {
+	if (g_clue->getFeatures() & GF_PROFIDISK)
 		return dbGetProfiDskSize(type);
-	} else {
-		return dbGetStdDskSize(type);
-	}
+	
+	return dbGetStdDskSize(type);
 }
 
 
@@ -1239,12 +1238,12 @@ bool dbSaveAllObjects(const char *fileName, uint32 offset, uint32 size, uint16 d
 
 void dbDeleteAllObjects(uint32 offset, uint32 size) {
 	for (uint8 objHashValue = 0; objHashValue < OBJ_HASH_SIZE; objHashValue++) {
-		for (struct dbObject *obj = (struct dbObject *) LIST_HEAD(objHash[objHashValue]); NODE_SUCC(obj); obj = (struct dbObject *) NODE_SUCC(obj)) {
+		for (dbObject *obj = (dbObject *) LIST_HEAD(objHash[objHashValue]); NODE_SUCC(obj); obj = (dbObject *) NODE_SUCC(obj)) {
 			if (obj->nr > offset) {
 				if (size && (obj->nr > offset + size))
 					continue;
 
-				struct dbObject *pred = (struct dbObject *) NODE_PRED(obj);
+				dbObject *pred = (dbObject *) NODE_PRED(obj);
 				RemNode(obj);   /* MOD: old version Remove */
 				FreeNode(obj);
 				obj = pred;
@@ -1257,9 +1256,9 @@ uint32 dbGetObjectCountOfDB(uint32 offset, uint32 size) {
 	uint32 count = 0;
 
 	for (uint8 i = 0; i < OBJ_HASH_SIZE; i++) {
-		for (struct dbObject *obj = (struct dbObject *) LIST_HEAD(objHash[i]); NODE_SUCC(obj);
-		        obj = (struct dbObject *) NODE_SUCC(obj)) {
-			if ((obj->nr > offset) && (obj->nr < (offset + size)))
+		for (dbObject *obj = (dbObject *) LIST_HEAD(objHash[i]); NODE_SUCC(obj);
+		        obj = (dbObject *) NODE_SUCC(obj)) {
+			if ((obj->nr > offset) && (obj->nr < offset + size))
 				count++;
 		}
 	}
@@ -1271,7 +1270,7 @@ uint32 dbGetObjectCountOfDB(uint32 offset, uint32 size) {
 /* public functions - OBJECT */
 void *dbNewObject(uint32 nr, uint32 type, uint32 size, char *name, uint32 realNr) {
 	uint8 objHashValue = dbGetObjectHashNr(nr);
-	struct dbObject *obj = (struct dbObject *) CreateNode(objHash[objHashValue], sizeof(struct dbObject) + size, name);
+	dbObject *obj = (dbObject *) CreateNode(objHash[objHashValue], sizeof(dbObject) + size, name);
 
 	if (!obj)
 		return NULL;
@@ -1286,8 +1285,8 @@ void *dbNewObject(uint32 nr, uint32 type, uint32 size, char *name, uint32 realNr
 void *dbGetObject(uint32 nr) {
 	uint8 objHashValue = dbGetObjectHashNr(nr);
 
-	for (struct dbObject *obj = (struct dbObject *) LIST_HEAD(objHash[objHashValue]);
-	        NODE_SUCC(obj); obj = (struct dbObject *) NODE_SUCC(obj)) {
+	for (dbObject *obj = (dbObject *) LIST_HEAD(objHash[objHashValue]);
+	        NODE_SUCC(obj); obj = (dbObject *) NODE_SUCC(obj)) {
 		if (obj->nr == nr)
 			return dbGetObjectKey(obj);
 	}
@@ -1302,8 +1301,8 @@ uint32 dbGetObjectNr(void *key) {
 char *dbGetObjectName(uint32 nr, char *objName) {
 	uint8 objHashValue = dbGetObjectHashNr(nr);
 
-	for (struct dbObject *obj = (struct dbObject *) LIST_HEAD(objHash[objHashValue]);
-	        NODE_SUCC(obj); obj = (struct dbObject *) NODE_SUCC(obj)) {
+	for (dbObject *obj = (dbObject *) LIST_HEAD(objHash[objHashValue]);
+	        NODE_SUCC(obj); obj = (dbObject *) NODE_SUCC(obj)) {
 		if (obj->nr == nr) {
 			strcpy(objName, NODE_NAME(obj));
 			return objName;
@@ -1316,8 +1315,8 @@ char *dbGetObjectName(uint32 nr, char *objName) {
 void *dbIsObject(uint32 nr, uint32 type) {
 	uint8 objHashValue = dbGetObjectHashNr(nr);
 
-	for (struct dbObject *obj = (struct dbObject *) LIST_HEAD(objHash[objHashValue]);
-	        NODE_SUCC(obj); obj = (struct dbObject *) NODE_SUCC(obj)) {
+	for (dbObject *obj = (dbObject *) LIST_HEAD(objHash[objHashValue]);
+	        NODE_SUCC(obj); obj = (dbObject *) NODE_SUCC(obj)) {
 		if (obj->nr == nr) {
 			if (obj->type == type)
 				return dbGetObjectKey(obj);
@@ -1331,8 +1330,8 @@ void *dbIsObject(uint32 nr, uint32 type) {
 
 /* public prototypes - OBJECTNODE */
 struct ObjectNode *dbAddObjectNode(LIST *objectList, uint32 nr, uint32 flags) {
-	struct ObjectNode *n = NULL;
-	struct dbObject *obj = dbGetObjectReal(dbGetObject(nr));
+	ObjectNode *n = NULL;
+	dbObject *obj = dbGetObjectReal(dbGetObject(nr));
 	char name[TXT_KEY_LENGTH], *namePtr;
 
 	name[0] = EOS;
@@ -1344,24 +1343,21 @@ struct ObjectNode *dbAddObjectNode(LIST *objectList, uint32 nr, uint32 flags) {
 		char *succString = NULL;
 
 		if ((flags & OLF_ADD_PREV_STRING) && ObjectListPrevString)
-			strcat(name,
-			       ObjectListPrevString(obj->nr, obj->type,
-			                            dbGetObjectKey(obj)));
+			strcat(name, ObjectListPrevString(obj->nr, obj->type, dbGetObjectKey(obj)));
 
 		strcat(name, NODE_NAME(obj));
 		namePtr = name;
 
 		if ((flags & OLF_ADD_SUCC_STRING) && ObjectListSuccString)
-			succString =
-			    ObjectListSuccString(obj->nr, obj->type, dbGetObjectKey(obj));
+			succString = ObjectListSuccString(obj->nr, obj->type, dbGetObjectKey(obj));
 
 		if ((flags & (OLF_ADD_SUCC_STRING | OLF_ALIGNED)) && ObjectListWidth) {
-			uint8 i, len = strlen(name) + strlen(succString);
+			uint8 len = strlen(name) + strlen(succString);
 
 			if (flags & OLF_INSERT_STAR)
 				len--;
 
-			for (i = len; i < ObjectListWidth; i++)
+			for (uint8 i = len; i < ObjectListWidth; i++)
 				strcat(name, " ");
 		}
 
@@ -1370,7 +1366,7 @@ struct ObjectNode *dbAddObjectNode(LIST *objectList, uint32 nr, uint32 flags) {
 	} else
 		namePtr = NULL;
 
-	if ((n = (struct ObjectNode *) CreateNode(objectList, sizeof(*n), namePtr))) {
+	if ((n = (ObjectNode *) CreateNode(objectList, sizeof(*n), namePtr))) {
 		n->nr = obj->nr;
 		n->type = obj->type;
 		n->data = dbGetObjectKey(obj);
@@ -1380,7 +1376,7 @@ struct ObjectNode *dbAddObjectNode(LIST *objectList, uint32 nr, uint32 flags) {
 }
 
 void dbRemObjectNode(LIST *objectList, uint32 nr) {
-	struct ObjectNode *n = dbHasObjectNode(objectList, nr);
+	ObjectNode *n = dbHasObjectNode(objectList, nr);
 
 	if (n) {
 		RemNode(n);
@@ -1389,8 +1385,8 @@ void dbRemObjectNode(LIST *objectList, uint32 nr) {
 }
 
 struct ObjectNode *dbHasObjectNode(LIST *objectList, uint32 nr) {
-	for (struct ObjectNode *n = (struct ObjectNode *) LIST_HEAD(objectList); NODE_SUCC(n);
-	        n = (struct ObjectNode *) NODE_SUCC(n)) {
+	for (ObjectNode *n = (ObjectNode *) LIST_HEAD(objectList); NODE_SUCC(n);
+	        n = (ObjectNode *) NODE_SUCC(n)) {
 		if (OL_NR(n) == nr)
 			return n;
 	}
@@ -1411,7 +1407,7 @@ void SetObjectListAttr(uint32 flags, uint32 type) {
 }
 
 void BuildObjectList(void *key) {
-	struct dbObject *obj = dbGetObjectReal(key);
+	dbObject *obj = dbGetObjectReal(key);
 
 	if (!ObjectListType || (obj->type == ObjectListType)) {
 		LIST *list;
@@ -1425,7 +1421,7 @@ void BuildObjectList(void *key) {
 }
 
 void ExpandObjectList(LIST *objectList, char *expandItem) {
-	struct ObjectNode *objNode = (struct ObjectNode *) CreateNode(objectList, sizeof(*objNode), expandItem);
+	ObjectNode *objNode = (ObjectNode *) CreateNode(objectList, sizeof(*objNode), expandItem);
 
 	if (!objNode)
 		ErrorMsg(Internal_Error, ERROR_MODULE_DATABASE, 2);
@@ -1448,26 +1444,24 @@ int16 dbStdCompareObjects(struct ObjectNode *obj1, struct ObjectNode *obj2) {
 
 void dbSortPartOfList(LIST *l, struct ObjectNode *start,
                       struct ObjectNode *end,
-                      int16(*processNode)(struct ObjectNode *,
-                              struct ObjectNode *)) {
+                      int16(*processNode)(ObjectNode *, ObjectNode *)) {
 	LIST *newList = CreateList();
 	struct ObjectNode *n1, *startPred;
 
-	if (start == (struct ObjectNode *) LIST_HEAD(l))
+	if (start == (ObjectNode *) LIST_HEAD(l))
 		startPred = 0L;
 	else
-		startPred = (struct ObjectNode *) NODE_PRED(start);
+		startPred = (ObjectNode *) NODE_PRED(start);
 
-	struct ObjectNode *n;
+	ObjectNode *n;
 	int32 i;
-	for (n = start, i = 1; n != end;
-	        n = (struct ObjectNode *) NODE_SUCC(n), i++);
+	for (n = start, i = 1; n != end; n = (ObjectNode *) NODE_SUCC(n), i++);
 
 	n = start;
 
 	for (int32 j = 0; j < i; j++) {
 		n1 = n;
-		n = (struct ObjectNode *) NODE_SUCC(n);
+		n = (ObjectNode *) NODE_SUCC(n);
 
 		RemNode(n1);
 		AddHeadNode(newList, n1);
@@ -1475,9 +1469,9 @@ void dbSortPartOfList(LIST *l, struct ObjectNode *start,
 
 	dbSortObjectList(&newList, processNode);
 
-	for (n = (struct ObjectNode *) LIST_HEAD(newList); NODE_SUCC(n);) {
+	for (n = (ObjectNode *) LIST_HEAD(newList); NODE_SUCC(n);) {
 		n1 = n;
-		n = (struct ObjectNode *) NODE_SUCC(n);
+		n = (ObjectNode *) NODE_SUCC(n);
 
 		RemNode(n1);
 		AddNode(l, n1, startPred);
@@ -1494,28 +1488,27 @@ int32 dbSortObjectList(LIST **objectList, int16(*processNode)(struct ObjectNode 
 	if (!LIST_EMPTY(*objectList)) {
 		LIST *newList = CreateList();
 
-		for (struct ObjectNode *n1 = (struct ObjectNode *) LIST_HEAD(*objectList); NODE_SUCC(n1);
-		        n1 = (struct ObjectNode *) NODE_SUCC(n1), i++) {
-			struct ObjectNode *pred = 0;
+		for (ObjectNode *n1 = (ObjectNode *) LIST_HEAD(*objectList); NODE_SUCC(n1);
+		        n1 = (ObjectNode *) NODE_SUCC(n1), i++) {
+			 ObjectNode *pred = 0;
 
 			if (!LIST_EMPTY(newList)) {
-				for (struct ObjectNode *n2 = (struct ObjectNode *) LIST_HEAD(newList);
+				for (ObjectNode *n2 = (ObjectNode *) LIST_HEAD(newList);
 				        !pred && NODE_SUCC(n2);
-				        n2 = (struct ObjectNode *) NODE_SUCC(n2)) {
+				        n2 = (ObjectNode *) NODE_SUCC(n2)) {
 					if (processNode(n1, n2) >= 0)
 						pred = n2;
 				}
 			}
 
-			struct ObjectNode *newNode =
-			    (struct ObjectNode *) CreateNode(NULL, sizeof(*newNode),
-			                                     NODE_NAME(n1));
+			ObjectNode *newNode =
+			    (ObjectNode *) CreateNode(NULL, sizeof(*newNode), NODE_NAME(n1));
 			newNode->nr = n1->nr;
 			newNode->type = n1->type;
 			newNode->data = n1->data;
 
 			if (pred) {
-				if (pred == (struct ObjectNode *) LIST_HEAD(newList))
+				if (pred == (ObjectNode *) LIST_HEAD(newList))
 					AddHeadNode(newList, newNode);
 				else
 					AddNode(newList, newNode, NODE_PRED(pred));
@@ -1692,20 +1685,19 @@ static uint32 getKeyProfi(KeyConflictE key) {
 }
 
 uint32 getKey(KeyConflictE key) {
-	if (g_clue->getFeatures() & GF_PROFIDISK) {
+	if (g_clue->getFeatures() & GF_PROFIDISK)
 		return getKeyProfi(key);
-	} else {
-		return getKeyStd(key);
-	}
+	
+	return getKeyStd(key);
 }
 
 #if 0
 void dbDeleteObject(uint32 nr) {
-	struct dbObject *obj = NULL;
+	dbObject *obj = NULL;
 	uint8 objHashValue = dbGetObjectHashNr(nr);
 
-	for (obj = (struct dbObject *) LIST_HEAD(objHash[objHashValue]);
-		NODE_SUCC(obj); obj = (struct dbObject *) NODE_SUCC(obj)) {
+	for (obj = (dbObject *) LIST_HEAD(objHash[objHashValue]);
+		NODE_SUCC(obj); obj = (dbObject *) NODE_SUCC(obj)) {
 			if (obj->nr == nr) {
 				UnSetAll((KEY)(obj + 1), NULL);
 				RemNode(obj);

@@ -214,14 +214,12 @@ static void lsExtendGetList(LIST *list, uint32 nr, uint32 type, void *data) {
 
 LIST *lsGetObjectsByList(uint16 x, uint16 y, uint16 width, uint16 height,
                          byte showInvisible, byte addLootBags) {
-	struct ObjectNode *node;
 	LIST *list = CreateList();
-	uint32 i;
 
 	/* diverse Objekte eintragen */
-	for (node = (struct ObjectNode *) LIST_HEAD(ls->p_ObjectRetrieval);
+	for (ObjectNode* node = (ObjectNode*)LIST_HEAD(ls->p_ObjectRetrieval);
 	        NODE_SUCC((NODE *) node);
-	        node = (struct ObjectNode *) NODE_SUCC((NODE *) node)) {
+	        node = (ObjectNode *) NODE_SUCC((NODE *) node)) {
 		LSObject lso = (LSObject) OL_DATA(node);
 
 		if ((lso->ul_Status & (1L << Const_tcACCESS_BIT))
@@ -233,7 +231,7 @@ LIST *lsGetObjectsByList(uint16 x, uint16 y, uint16 width, uint16 height,
 
 	/* Ausnahme: Beutesack eintragen! */
 	if (addLootBags) {
-		for (i = 9701; i <= 9708; i++) {
+		for (uint32 i = 9701; i <= 9708; i++) {
 			LSObject lso = (LSObject)dbGetObject(i);
 
 			if (lso->uch_Visible == LS_OBJECT_VISIBLE)
@@ -242,7 +240,7 @@ LIST *lsGetObjectsByList(uint16 x, uint16 y, uint16 width, uint16 height,
 		}
 	}
 
-	return (list);
+	return list;
 }
 
 void lsSetCollMode(byte collMode) {
@@ -266,8 +264,7 @@ LIST *lsGetRoomsOfArea(uint32 ul_AreaId) {
 	AskAll(area, roomRelId, BuildObjectList);
 
 
-	for (room = LIST_HEAD(ObjectListPrivate); NODE_SUCC(room);
-	        room = NODE_SUCC(room)) {
+	for (room = LIST_HEAD(ObjectListPrivate); NODE_SUCC(room); room = NODE_SUCC(room)) {
 		LSRoom myroom = (LSRoom)OL_DATA(room);
 
 		if ((int16) myroom->us_LeftEdge < 0)

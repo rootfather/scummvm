@@ -40,9 +40,9 @@ void lsShowRaster(uint32 areaID, byte perc) {
 		struct ObjectNode *node;
 		int32 i;
 
-		for (node = (struct ObjectNode *) LIST_HEAD(objects), i = 0;
+		for (node = (ObjectNode *) LIST_HEAD(objects), i = 0;
 		        (NODE_SUCC((NODE *) node)) && (i < count);
-		        node = (struct ObjectNode *) NODE_SUCC((NODE *) node), i++) {
+		        node = (ObjectNode *) NODE_SUCC((NODE *) node), i++) {
 			LSObject lso = (LSObject)OL_DATA(node);
 
 			switch (lso->Type) {
@@ -56,9 +56,9 @@ void lsShowRaster(uint32 areaID, byte perc) {
 			}
 		}
 
-		for (node = (struct ObjectNode *) LIST_HEAD(objects), i = 0;
+		for (node = (ObjectNode *) LIST_HEAD(objects), i = 0;
 		        (NODE_SUCC((NODE *) node)) && (i < count);
-		        node = (struct ObjectNode *) NODE_SUCC((NODE *) node), i++) {
+		        node = (ObjectNode *) NODE_SUCC((NODE *) node), i++) {
 			LSObject lso = (LSObject)OL_DATA(node);
 
 			switch (lso->Type) {
@@ -84,7 +84,7 @@ NODE *lsGetSuccObject(NODE *start) {
 		LSObject lso = (LSObject) OL_DATA(n);
 
 		if (lso->ul_Status & (1L << Const_tcACCESS_BIT))
-			return (n);
+			return n;
 
 		n = (NODE *) NODE_SUCC(n);
 	}
@@ -99,7 +99,7 @@ NODE *lsGetPredObject(NODE *start) {
 		LSObject lso = (LSObject) OL_DATA(n);
 
 		if (lso->ul_Status & (1L << Const_tcACCESS_BIT))
-			return (n);
+			return n;
 
 		n = (NODE *) NODE_PRED(n);
 	}
@@ -109,21 +109,20 @@ NODE *lsGetPredObject(NODE *start) {
 
 
 void lsFadeRasterObject(uint32 areaID, LSObject lso, byte status) {
-	uint32 rasterXSize, rasterYSize, rasterSize, col;
+	uint32 col;
+	uint32 rasterXSize = lsGetRasterXSize(areaID);
+	uint32 rasterYSize = lsGetRasterYSize(areaID);
+
+	uint32 rasterSize = MIN(rasterXSize, rasterYSize);
+
 	uint16 xStart, yStart, xEnd, yEnd;
-
-	rasterXSize = lsGetRasterXSize(areaID);
-	rasterYSize = lsGetRasterYSize(areaID);
-
-	rasterSize = MIN(rasterXSize, rasterYSize);
-
 	lsCalcExactSize(lso, &xStart, &yStart, &xEnd, &yEnd);
 
-	xStart = ((xStart) * rasterSize) / LS_RASTER_X_SIZE;
-	yStart = ((yStart) * rasterSize) / LS_RASTER_Y_SIZE;
+	xStart = (xStart * rasterSize) / LS_RASTER_X_SIZE;
+	yStart = (yStart * rasterSize) / LS_RASTER_Y_SIZE;
 
-	xEnd = ((xEnd) * rasterSize) / LS_RASTER_X_SIZE;
-	yEnd = ((yEnd) * rasterSize) / LS_RASTER_Y_SIZE;
+	xEnd = (xEnd * rasterSize) / LS_RASTER_X_SIZE;
+	yEnd = (yEnd * rasterSize) / LS_RASTER_Y_SIZE;
 
 	xEnd = MAX(uint16(xStart + 3), xEnd);
 	yEnd = MAX(uint16(yStart + 3), yEnd);
