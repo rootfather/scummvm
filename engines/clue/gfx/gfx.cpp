@@ -201,7 +201,7 @@ static void gfxInitCollList() {
 	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, COLL_LIST_TXT, pathname);
 	ReadList(tempList, 0, pathname);
 
-	for (NODE *n = (NODE *) LIST_HEAD(tempList); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n)) {
+	for (NODE *n = LIST_HEAD(tempList); NODE_SUCC(n); n = NODE_SUCC(n)) {
 		struct Collection *coll = (Collection *)CreateNode(CollectionList, sizeof(struct Collection),
 			g_clue->_txtMgr->getKey(2, NODE_NAME(n)));
 

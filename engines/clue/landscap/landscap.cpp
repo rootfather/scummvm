@@ -46,10 +46,10 @@ void lsSafeRectFill(uint16 x0, uint16 y0, uint16 x1, uint16 y1, uint8 color) {
 }
 
 void lsSetVisibleWindow(uint16 x, uint16 y) {
-	int16 halfX, halfY, wX, wY;
+	int16 wX, wY;
 
-	halfX = LS_VISIBLE_X_SIZE / 2;
-	halfY = LS_VISIBLE_Y_SIZE / 2;
+	int16 halfX = LS_VISIBLE_X_SIZE / 2;
+	int16 halfY = LS_VISIBLE_Y_SIZE / 2;
 
 	if ((wX = x - halfX) < 0)
 		wX = 0;
@@ -93,7 +93,7 @@ static void lsShowRooms() {
 #endif
 
 void lsBuildScrollWindow() {
-	int32 i, j;
+	int32 i;
 	NODE *node;
 	LSArea area = (LSArea) dbGetObject(ls->ul_AreaID);
 	uint8 palette[GFX_PALETTE_SIZE];
@@ -103,7 +103,7 @@ void lsBuildScrollWindow() {
 
 	/* Boden aufbauen */
 	for (i = 0; i < LS_FLOORS_PER_COLUMN; i++) {
-		for (j = 0; j < LS_FLOORS_PER_LINE; j++) {
+		for (int32 j = 0; j < LS_FLOORS_PER_LINE; j++) {
 			/* if no floor is available fill with collision colour */
 
 			if (LS_NO_FLOOR
@@ -116,8 +116,7 @@ void lsBuildScrollWindow() {
 	}
 
 	/* Objekte setzen - zuerst Wände */
-	for (node = (NODE *) LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node);
-	        node = (NODE *) NODE_SUCC(node)) {
+	for (node = LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node); node = NODE_SUCC(node)) {
 		LSObject lso = (LSObject)OL_DATA(node);
 
 		if (lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_WALL))
@@ -126,8 +125,7 @@ void lsBuildScrollWindow() {
 	}
 
 	/* dann andere */
-	for (node = (NODE *) LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node);
-	        node = (NODE *) NODE_SUCC(node)) {
+	for (node = LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node); node = NODE_SUCC(node)) {
 		LSObject lso = (LSObject)OL_DATA(node);
 
 		if (lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_OTHER_0))
@@ -135,8 +133,7 @@ void lsBuildScrollWindow() {
 	}
 
 	/* jetzt noch ein paar Sondefälle (Kassa, Vase, ...) */
-	for (node = (NODE *) LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node);
-	        node = (NODE *) NODE_SUCC(node)) {
+	for (node = LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node); node = NODE_SUCC(node)) {
 		LSObject lso = (LSObject)OL_DATA(node);
 
 		if (lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_OTHER_1))
@@ -149,8 +146,7 @@ void lsBuildScrollWindow() {
 	}
 
 	/* now refresh all doors and special objects */
-	for (node = (NODE *) LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node);
-	        node = (NODE *) NODE_SUCC(node)) {
+	for (node = LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node); node = NODE_SUCC(node)) {
 		LSObject lso = (LSObject)OL_DATA(node);
 
 		if (lsIsObjectADoor(lso))
@@ -160,16 +156,14 @@ void lsBuildScrollWindow() {
 	}
 
 	/* finally build the doors and specials on the PC */
-	for (node = (NODE *) LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node);
-	        node = (NODE *) NODE_SUCC(node)) {
+	for (node = LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node); node = NODE_SUCC(node)) {
 		LSObject lso = (LSObject)OL_DATA(node);
 
 		if (lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_SPECIAL))
 			lsTurnObject(lso, lso->uch_Visible, LS_COLLISION);
 	}
 
-	for (node = (NODE *) LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node);
-	        node = (NODE *) NODE_SUCC(node)) {
+	for (node = LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node); node = NODE_SUCC(node)) {
 		LSObject lso = (LSObject)OL_DATA(node);
 
 		if (lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_DOOR)) {
@@ -204,13 +198,13 @@ void lsBuildScrollWindow() {
 
 	gfxChangeColors(NULL, 5, GFX_BLEND_UP, palette);
 
-	/* now show colours of the maxis */
+	/* now show colors of the maxis */
 	gfxPrepareColl(137);
 	gfxGetPalette(137, palette);
 	gfxSetColorRange(128, 191);
 	gfxChangeColors(NULL, 0, GFX_BLEND_UP, palette);
 
-	/* and just to be safe also set the menu colours */
+	/* and just to be safe also set the menu colors */
 	tcSetPermanentColors();
 
 #ifdef THECLOU_DEBUG
@@ -224,9 +218,7 @@ void lsSetDarkness(byte value) {
 
 
 void lsTurnObject(LSObject lso, byte status, byte Collis) {
-	uint16 floorIndex;
-
-	floorIndex = lsGetFloorIndex(lso->us_DestX, lso->us_DestY);
+	uint16 floorIndex = lsGetFloorIndex(lso->us_DestX, lso->us_DestY);
 
 	lso->uch_Visible = status;
 
@@ -244,8 +236,8 @@ byte lsIsInside(LSObject lso, uint16 x, uint16 y, uint16 x1, uint16 y1) {
 
 	if ((lsoX <= x1) && (lsoX1 >= x) && (lsoY <= y1) && (lsoY1 >= y))
 		return (1);
-	else
-		return (0);
+
+	return (0);
 }
 
 void lsSetActivLiving(const char *Name, uint16 x, uint16 y) {
@@ -279,66 +271,58 @@ void lsSetObjectState(uint32 objID, byte bitNr, byte value) {
 }
 
 static int16 lsSortByXCoord(struct ObjectNode *n1, struct ObjectNode *n2) {
-	LSObject lso1, lso2;
-
-	lso1 = (LSObject)OL_DATA(n1);
-	lso2 = (LSObject)OL_DATA(n2);
+	LSObject lso1 = (LSObject)OL_DATA(n1);
+	LSObject lso2 = (LSObject)OL_DATA(n2);
 
 	if (lso1->us_DestX > lso2->us_DestX)
 		return (1);
-	else
-		return ((int16) - 1);
+
+	return ((int16) - 1);
 }
 
 static int16 lsSortByYCoord(struct ObjectNode *n1, struct ObjectNode *n2) {
-	LSObject lso1, lso2;
-
-	lso1 = (LSObject)OL_DATA(n1);
-	lso2 = (LSObject)OL_DATA(n2);
+	LSObject lso1 = (LSObject)OL_DATA(n1);
+	LSObject lso2 = (LSObject)OL_DATA(n2);
 
 	if (lso1->us_DestY < lso2->us_DestY)
 		return (1);
-	else
-		return ((int16) - 1);
+
+	return ((int16) - 1);
 }
 
 static void lsSortObjectList(LIST **l) {
 	LSObject lso1, lso2;
-	NODE *node, *node1, *next;
 	byte lastNode = 0;
 
-	if (!(LIST_EMPTY((*l)))) {
+	if (!LIST_EMPTY(*l)) {
 		dbSortObjectList(l, lsSortByYCoord);
 
-		for (node = (NODE *) LIST_HEAD((*l));
-		        (!(lastNode)) && NODE_SUCC(NODE_SUCC(node));) {
-			node1 = node;
+		for (NODE* node = LIST_HEAD(*l); (!lastNode) && NODE_SUCC(NODE_SUCC(node));) {
+			NODE* node1 = node;
 
 			do {
-				node1 = (NODE *) NODE_SUCC(node1);
+				node1 = NODE_SUCC(node1);
 				lso1 = (LSObject)OL_DATA(node);
 				lso2 = (LSObject)OL_DATA(node1);
-			} while ((lso1->us_DestY == lso2->us_DestY)
-			         && NODE_SUCC(NODE_SUCC(node1)));
+			} while ((lso1->us_DestY == lso2->us_DestY) && NODE_SUCC(NODE_SUCC(node1)));
 
-			next = node1;
+			NODE* next = node1;
 
 			/* wenn Abbruch wegen NODE_SUCC(NODE_SUCC(.. erflogte, darf
 			 * nicht der NODE_PRED(node1) genomen werden!
 			 * nach dem Sortieren ist außerdem Schluß!
 			 */
 
-			if ((lso1->us_DestY != lso2->us_DestY))
-				node1 = (NODE *) NODE_PRED(node1);
+			if (lso1->us_DestY != lso2->us_DestY)
+				node1 = NODE_PRED(node1);
 			else
 				lastNode = 1;
 
 			if (node != node1) {
-				dbSortPartOfList((*l), (struct ObjectNode *) node,
-				                 (struct ObjectNode *) node1, lsSortByXCoord);
+				dbSortPartOfList(*l, (struct ObjectNode *) node, (struct ObjectNode *) node1, lsSortByXCoord);
 				node = next;
 			} else
-				node = (NODE *) NODE_SUCC(node);
+				node = NODE_SUCC(node);
 		}
 	}
 }
@@ -401,25 +385,21 @@ void lsRefreshAllLootBags() {
 
 void lsGuyInsideSpot(uint16 *us_XPos, uint16 *us_YPos, uint32 *areaId) {
 	LIST *spots = lsGetSpotList();
-	struct Spot *s;
-	int32 i;
 
-	for (s = (struct Spot *) LIST_HEAD(spots); NODE_SUCC(s);
-	        s = (struct Spot *) NODE_SUCC(s)) {
+	for (struct Spot* s = (Spot*)LIST_HEAD(spots); NODE_SUCC(s); s = (Spot *) NODE_SUCC(s)) {
 		if (s->uch_Status & LS_SPOT_ON) {
-			for (i = 0; i < 4; i++) {
+			for (int32 i = 0; i < 4; i++) {
 				if ((us_XPos[i] != (uint16) - 1) && (us_YPos[i] != (uint16) - 1)) {
 					if (areaId[i] == s->ul_AreaId) {
-						if (((struct Spot *) s)->p_CurrPos) {
+						if (((Spot *) s)->p_CurrPos) {
 							int32 x = s->p_CurrPos->us_XPos;    /* linke, obere */
 							int32 y = s->p_CurrPos->us_YPos;    /* Ecke des Spot! */
 							int32 size = s->us_Size - 4;
 
-							if ((us_XPos[i] < x + size - 2)
-							        && (us_XPos[i] > x + 2))
-								if ((us_YPos[i] < y + size - 2)
-								        && (us_YPos[i] > y + 2))
+							if ((us_XPos[i] < x + size - 2) && (us_XPos[i] > x + 2)) {
+								if ((us_YPos[i] < y + size - 2) && (us_YPos[i] > y + 2))
 									Search.SpotTouchCount[i]++;
+							}
 						}
 					}
 				}
@@ -428,8 +408,7 @@ void lsGuyInsideSpot(uint16 *us_XPos, uint16 *us_YPos, uint32 *areaId) {
 	}
 }
 
-void lsWalkThroughWindow(LSObject lso, uint16 us_LivXPos, uint16 us_LivYPos,
-                         uint16 *us_XPos, uint16 *us_YPos) {
+void lsWalkThroughWindow(LSObject lso, uint16 us_LivXPos, uint16 us_LivYPos, uint16 *us_XPos, uint16 *us_YPos) {
 	int16 deltaX, deltaY;
 
 	(*us_XPos) = us_LivXPos;
@@ -452,19 +431,12 @@ void lsWalkThroughWindow(LSObject lso, uint16 us_LivXPos, uint16 us_LivYPos,
 }
 
 void lsPatchObjects() {
-/* for some objects the LDesigner does not set the status bits correctly,
-       so we need to patch them here at runtime */
-	NODE *n;
-	LSObject lso;
-	Item item;
-
 	((Item) dbGetObject(Item_Fenster))->OffsetFact = 16;
 
-	for (n = (NODE *) LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(n);
-	        n = (NODE *) NODE_SUCC(n)) {
-		lso = (LSObject)OL_DATA(n);
+	for (NODE* n = LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(n); n = NODE_SUCC(n)) {
+		LSObject lso = (LSObject)OL_DATA(n);
 
-		item = (Item)dbGetObject(lso->Type);
+		Item item = (Item)dbGetObject(lso->Type);
 
 		lso->uch_Size = item->Size; /* sizes are the same everywhere! */
 
@@ -515,8 +487,7 @@ void lsPatchObjects() {
 	}
 }
 
-void lsCalcExactSize(LSObject lso, uint16 *x0, uint16 *y0, uint16 *x1,
-                     uint16 *y1) {
+void lsCalcExactSize(LSObject lso, uint16 *x0, uint16 *y0, uint16 *x1, uint16 *y1) {
 	Item item = (Item)dbGetObject(lso->Type);
 	byte vertical = 0;
 
@@ -549,7 +520,6 @@ void lsInitDoorRefresh(uint32 ObjId)
 /* copies a background that is covered by a door into a mem buffer */
 {
 	LSObject lso = (LSObject)dbGetObject(ObjId);
-	uint16 width, height, destX, destY;
 	struct LSDoorRefreshNode *drn;
 	byte found = 0;
 
@@ -559,11 +529,11 @@ void lsInitDoorRefresh(uint32 ObjId)
 			found = 1;
 
 	if (!found) {
-		width = lso->uch_Size;
-		height = lso->uch_Size;
+		uint16 width = lso->uch_Size;
+		uint16 height = lso->uch_Size;
 
-		destX = ls->us_DoorXOffset;
-		destY = ls->us_DoorYOffset;
+		uint16 destX = ls->us_DoorXOffset;
+		uint16 destY = ls->us_DoorYOffset;
 
 		{
 			Rect srcR, dstR;
@@ -582,8 +552,7 @@ void lsInitDoorRefresh(uint32 ObjId)
 			        GFX_ROP_BLIT);
 		}
 
-		drn = (struct LSDoorRefreshNode *)
-		      CreateNode(ls->p_DoorRefreshList, sizeof(*drn), NULL);
+		drn = (LSDoorRefreshNode *) CreateNode(ls->p_DoorRefreshList, sizeof(*drn), NULL);
 
 		drn->lso = lso;
 
@@ -604,15 +573,14 @@ void lsDoDoorRefresh(LSObject lso)
 /* restore the background of a door from a mem buffer */
 {
 	struct LSDoorRefreshNode *drn;
-	uint16 width, height;
 
-	for (drn = (struct LSDoorRefreshNode *) LIST_HEAD(ls->p_DoorRefreshList);
-	        NODE_SUCC(drn); drn = (struct LSDoorRefreshNode *) NODE_SUCC(drn))
+	for (drn = (LSDoorRefreshNode *)LIST_HEAD(ls->p_DoorRefreshList); NODE_SUCC(drn); drn = (LSDoorRefreshNode *)NODE_SUCC(drn)) {
 		if (drn->lso == lso)
 			break;
+	}
 
-	width = lso->uch_Size;
-	height = lso->uch_Size;
+	uint16 width = lso->uch_Size;
+	uint16 height = lso->uch_Size;
 
 	gfxLSPut(&LS_DOOR_REFRESH_MEM_RP, drn->us_XOffset, drn->us_YOffset,
 	         lso->us_DestX, lso->us_DestY, width, height);

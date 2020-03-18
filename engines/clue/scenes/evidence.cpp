@@ -101,7 +101,7 @@ static uint32 tcIsThereATraitor() {
 			             Object_Person);
 
 			byte symp = 255;
-			for (NODE *n = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n)) {
+			for (NODE *n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
 				Person pers = (Person)OL_DATA(n);
 
 				if (OL_NR(n) != Person_Matt_Stuvysunt) {    /* Matt verrät sich nicht selbst */
@@ -153,8 +153,7 @@ uint32 tcStartEvidence() {
 	uint32 shownEvidence[4];
 	uint32 Recognition[4];
 
-	for (n = (struct ObjectNode *) LIST_HEAD(guys), i = 0; NODE_SUCC(n);
-	        n = (struct ObjectNode *) NODE_SUCC(n), i++) {
+	for (n = (ObjectNode *) LIST_HEAD(guys), i = 0; NODE_SUCC(n); n = (ObjectNode *) NODE_SUCC(n), i++) {
 		int32 div = 380;
 
 		p[i] = (Person)OL_DATA(n);
@@ -363,7 +362,7 @@ void tcForgetGuys() {
 	joined_byAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST, Object_Person);
 	LIST *guys = ObjectListPrivate;
 
-	for (NODE *node = (NODE *) LIST_HEAD(guys); NODE_SUCC(node); node = (NODE *) NODE_SUCC(node)) {
+	for (NODE *node = LIST_HEAD(guys); NODE_SUCC(node); node = NODE_SUCC(node)) {
 		if (OL_NR(node) != Person_Matt_Stuvysunt) {
 			Person pers = (Person)OL_DATA(node);
 

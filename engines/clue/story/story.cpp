@@ -59,7 +59,7 @@ void tcDoneCredits() {
 	Say(THECLOU_TXT, 0, LETTER_PICTID, "SOME_CREDITS");
 	Say(THECLOU_TXT, 0, MATT_PICTID, "SO_EIN_SCH");
 
-	SceneArgs.ReturnValue = SCENE_HOTEL_ROOM;
+	_sceneArgs._returnValue = SCENE_HOTEL_ROOM;
 }
 
 
@@ -72,7 +72,7 @@ void tcDoneArrival() {
 	AddTaxiLocation(0);     /* holland */
 	AddTaxiLocation(58);    /* victoria station */
 
-	SceneArgs.ReturnValue = SCENE_STATION;
+	_sceneArgs._returnValue = SCENE_STATION;
 }
 
 /* HOTEL RECEPTION
@@ -85,7 +85,7 @@ void tcDoneHotelReception() {
 	knowsSet(Person_Matt_Stuvysunt, Person_Ben_Riggley);
 
 	if (env->MattHasHotelRoom == 2) /* er hat es bereits ! */
-		SceneArgs.ReturnValue = SCENE_HOTEL;
+		_sceneArgs._returnValue = SCENE_HOTEL;
 	else {
 		AddTaxiLocation(2); /* watling */
 		AddTaxiLocation(1); /* cars */
@@ -99,7 +99,7 @@ void tcDoneHotelReception() {
 
 			tcSetPlayerMoney(tcGetPlayerMoney - tcCOSTS_FOR_HOTEL);
 
-			SceneArgs.ReturnValue = SCENE_HOTEL_ROOM;
+			_sceneArgs._returnValue = SCENE_HOTEL_ROOM;
 		} else if (env->MattHasHotelRoom == 0) {   /* 1. mal da */
 			byte choice = 2, evaluation = 0;
 
@@ -137,7 +137,7 @@ void tcDoneHotelReception() {
 			}
 
 			if (!evaluation) {
-				SceneArgs.ReturnValue = SCENE_HOLLAND_STR;
+				_sceneArgs._returnValue = SCENE_HOLLAND_STR;
 				env->MattHasHotelRoom = 1;
 			} else {
 				env->MattHasHotelRoom = 2;
@@ -145,11 +145,11 @@ void tcDoneHotelReception() {
 				Say(STORY_0_TXT, 0, MATT_PICTID, "MILLIONAIRE");
 				Say(STORY_0_TXT, 0, MATT_PICTID, "THANKS_FOR_KEY");
 
-				SceneArgs.ReturnValue = SCENE_HOTEL_ROOM;
+				_sceneArgs._returnValue = SCENE_HOTEL_ROOM;
 			}
 		} else if (env->MattHasHotelRoom == 1) {
 			Say(STORY_0_TXT, 0, rig->PictID, "YOU_HAVE_NO_MONEY");
-			SceneArgs.ReturnValue = SCENE_HOLLAND_STR;
+			_sceneArgs._returnValue = SCENE_HOLLAND_STR;
 		}
 	}
 
@@ -164,7 +164,7 @@ void tcDoneMamiCalls() {
 	Say(STORY_0_TXT, 0, MATT_PICTID, "ST_31_MATT_0");
 	Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "ST_31_OLD_1");
 
-	SceneArgs.ReturnValue = SCENE_HOTEL_ROOM;
+	_sceneArgs._returnValue = SCENE_HOTEL_ROOM;
 }
 
 /* CASH FROM GLUDO
@@ -205,7 +205,7 @@ void tcDoneGludoMoney() {
 	StopAnim();
 	gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
 
-	SceneArgs.ReturnValue = SCENE_WATLING;
+	_sceneArgs._returnValue = SCENE_WATLING;
 }
 
 /* CASH FROM DANNER
@@ -240,7 +240,7 @@ void tcDoneDanner() {
 	} else
 		livesInSet(London_London_1, Person_Jim_Danner);
 
-	SceneArgs.ReturnValue = SCENE_CARS_VANS;
+	_sceneArgs._returnValue = SCENE_CARS_VANS;
 }
 
 /* MEETING BRIGGS
@@ -279,7 +279,7 @@ void tcDoneMeetBriggs() {
 
 		hasSet(Person_Matt_Stuvysunt, Car_Fiat_Topolino_1940);
 
-		SceneArgs.ReturnValue = SCENE_FAT_MANS;
+		_sceneArgs._returnValue = SCENE_FAT_MANS;
 	} else {            /* nicht angenommen ! */
 		Person james = (Person)dbGetObject(Person_Pater_James);
 
@@ -305,7 +305,7 @@ void tcDoneMeetBriggs() {
 			Say(STORY_0_TXT, 0, 155, "THE_END_MONASTERY");  /* pict = holy matt ! */
 			Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "THE_EDGE");
 
-			SceneArgs.ReturnValue = SCENE_NEW_GAME;
+			_sceneArgs._returnValue = SCENE_NEW_GAME;
 		} else {        /* evil */
 			Say(STORY_0_TXT, 0, MATT_PICTID, "EVIL_MATT");
 			Say(STORY_0_TXT, 0, james->PictID, "EVIL_MATT_ABT");
@@ -316,7 +316,7 @@ void tcDoneMeetBriggs() {
 
 			AddVTime(1440 + 525 - GetMinute);
 
-			SceneArgs.ReturnValue = SCENE_HOLLAND_STR;
+			_sceneArgs._returnValue = SCENE_HOLLAND_STR;
 		}
 
 		StopAnim();
@@ -340,14 +340,14 @@ void tcDoneFreeTicket() {
 	Say(STORY_0_TXT, 0, 7, "AEHHH");
 	Say(STORY_0_TXT, 0, dan->PictID, "FREE_TICKET");
 
-	SceneArgs.ReturnValue = GetLocScene(8)->EventNr;
+	_sceneArgs._returnValue = GetLocScene(8)->EventNr;
 }
 #if 0
 static void tcDoneAfterMeetingBriggs() {
 	SetBubbleType(THINK_BUBBLE);
 	Say(STORY_0_TXT, 0, MATT_PICTID, "AFTER_MEETING_BRIGGS");
 
-	SceneArgs.ReturnValue = SCENE_WATLING;
+	_sceneArgs._returnValue = SCENE_WATLING;
 }
 #endif
 
@@ -367,7 +367,7 @@ void tcDoneCallFromPooly() {
 			Say(STORY_0_TXT, 0, PHONE_PICTID, "DEALER_2");
 	}
 
-	SceneArgs.ReturnValue = SCENE_HOTEL_ROOM;
+	_sceneArgs._returnValue = SCENE_HOTEL_ROOM;
 }
 
 void tcInitPrison() {
@@ -401,7 +401,7 @@ void tcDonePrison()
 	StopAnim();
 	gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
 
-	SceneArgs.ReturnValue = SCENE_NEW_GAME;
+	_sceneArgs._returnValue = SCENE_NEW_GAME;
 }
 
 bool tcIsDeadlock() {
@@ -427,7 +427,7 @@ bool tcIsDeadlock() {
 		hasAll(Person_Marc_Smith, OLF_NORMAL, Object_Car);
 
 		/* get cheapest car! */
-		for (NODE *n = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n)) {
+		for (NODE *n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
 			Car car = (Car)OL_DATA(n);
 
 			if (tcGetCarPrice(car) < money)
@@ -500,7 +500,7 @@ void tcDone1stBurglary() {
 
 	GetScene(SCENE_FAHNDUNG)->Geschehen = 0;    /* damit nicht gleich Burglary 2 geschieht */
 
-	SceneArgs.ReturnValue = GetLocScene(GetLocation)->EventNr;
+	_sceneArgs._returnValue = GetLocScene(GetLocation)->EventNr;
 }
 
 void tcDoneGludoAsSailor() {
@@ -516,7 +516,7 @@ void tcDoneGludoAsSailor() {
 		Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "SAILOR_OLD_MATT_0");
 
 		sndPlaySound("street1.bk", 0);
-		SceneArgs.ReturnValue = SCENE_HOLLAND_STR;
+		_sceneArgs._returnValue = SCENE_HOLLAND_STR;
 	} else {
 		Say(STORY_0_TXT, 0, (uint16) FACE_GLUDO_SAILOR, "SAILOR_GLUDO_2");
 		StopAnim();
@@ -535,7 +535,7 @@ void tcDoneCallFromBriggs() {
 	Say(STORY_0_TXT, 0, MATT_PICTID, "CALL_MATT_0");
 	Say(STORY_0_TXT, 0, PHONE_PICTID, "CALL_BRIGGS_1");
 
-	SceneArgs.ReturnValue = SCENE_HOTEL_ROOM;
+	_sceneArgs._returnValue = SCENE_HOTEL_ROOM;
 }
 
 /***********************************************************************
@@ -573,7 +573,7 @@ void tcDone2ndBurglary() {
 
 	GetScene(SCENE_FAHNDUNG)->Geschehen = 0;    /* damit nicht gleich Burglary 2 geschieht */
 
-	SceneArgs.ReturnValue = GetLocScene(GetLocation)->EventNr;
+	_sceneArgs._returnValue = GetLocScene(GetLocation)->EventNr;
 }
 
 /* wird von DoneHotel aufgerufen */
@@ -640,7 +640,7 @@ void tcDone3rdBurglary() {
 
 	GetScene(SCENE_FAHNDUNG)->Geschehen = 0;    /* damit nicht gleich Burglary 2 geschieht */
 
-	SceneArgs.ReturnValue = GetLocScene(GetLocation)->EventNr;
+	_sceneArgs._returnValue = GetLocScene(GetLocation)->EventNr;
 }
 
 void tcCheckForDowning() {
@@ -708,7 +708,7 @@ void tcDone4thBurglary() {
 	gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
 
 	GetScene(SCENE_FAHNDUNG)->Geschehen = 0;    /* damit nicht gleich Burglary 2 geschieht */
-	SceneArgs.ReturnValue = GetLocScene(7)->EventNr;    /* Polizei */
+	_sceneArgs._returnValue = GetLocScene(7)->EventNr;    /* Polizei */
 }
 
 void tcDoneMattIsArrested() {
@@ -721,7 +721,7 @@ void tcDoneMattIsArrested() {
 	Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "IN_PRISON_OLD_0");
 	gfxShow(161, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1); /* polizei */
 
-	SceneArgs.ReturnValue = SCENE_POLICE;
+	_sceneArgs._returnValue = SCENE_POLICE;
 }
 
 /***********************************************************************
@@ -766,7 +766,7 @@ void tcDone5thBurglary() {
 	}
 
 	GetScene(SCENE_FAHNDUNG)->Geschehen = 0;    /* damit nicht gleich Burglary 2 geschieht */
-	SceneArgs.ReturnValue = GetLocScene(GetLocation)->EventNr;
+	_sceneArgs._returnValue = GetLocScene(GetLocation)->EventNr;
 }
 
 void tcDoneDealerIsAfraid() {
@@ -775,15 +775,15 @@ void tcDoneDealerIsAfraid() {
 	switch (GetLocation) {
 	case 52:
 		persID = Person_Helen_Parker;
-		SceneArgs.ReturnValue = SCENE_WATLING;
+		_sceneArgs._returnValue = SCENE_WATLING;
 		break;
 	case 53:
 		persID = Person_Frank_Maloya;
-		SceneArgs.ReturnValue = SCENE_HOLLAND_STR;
+		_sceneArgs._returnValue = SCENE_HOLLAND_STR;
 		break;
 	case 54:
 		persID = Person_Eric_Pooly;
-		SceneArgs.ReturnValue = SCENE_HOLLAND_STR;
+		_sceneArgs._returnValue = SCENE_HOLLAND_STR;
 		break;
 	default:
 		return;
@@ -814,12 +814,12 @@ void tcDoneRaidInWalrus() {
 		Say(STORY_0_TXT, 0, MATT_PICTID, "RAID_MATT_1");
 		Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "RAID_OLD_MATT_1");
 
-		SceneArgs.ReturnValue = SCENE_HOTEL_ROOM;
+		_sceneArgs._returnValue = SCENE_HOTEL_ROOM;
 	} else {
 		Say(STORY_0_TXT, 0, MATT_PICTID, "RAID_MATT_2");
 		Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "RAID_OLD_MATT_2");
 
-		SceneArgs.ReturnValue = SCENE_POLICE;
+		_sceneArgs._returnValue = SCENE_POLICE;
 	}
 
 	StopAnim();
@@ -861,17 +861,17 @@ void tcDoneDartJager() {
 			StopAnim();
 			gfxChangeColors(l_gc, 3L, GFX_FADE_OUT, 0L);
 
-			SceneArgs.ReturnValue = SCENE_NEW_GAME;
+			_sceneArgs._returnValue = SCENE_NEW_GAME;
 		} else {
 			Say(STORY_0_TXT, 0, Grull->PictID, "DART_GRULL_2");
 			Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "DART_OLD_MATT_0");
 
 			gfxShow(161, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1); /* Polizei - refresh */
 
-			SceneArgs.ReturnValue = SCENE_POLICE;
+			_sceneArgs._returnValue = SCENE_POLICE;
 		}
 	} else
-		SceneArgs.ReturnValue = SCENE_POLICE;
+		_sceneArgs._returnValue = SCENE_POLICE;
 }
 
 void tcDoneGludoBurnsOffice() {
@@ -911,7 +911,7 @@ void tcDoneGludoBurnsOffice() {
 
 	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
 
-	SceneArgs.ReturnValue = SCENE_WATLING;
+	_sceneArgs._returnValue = SCENE_WATLING;
 }
 
 void tcDoneBeautifullMorning() {
@@ -929,7 +929,7 @@ void tcDoneBeautifullMorning() {
 
 	AddTaxiLocation(61);
 
-	SceneArgs.ReturnValue = SCENE_HOTEL_ROOM;
+	_sceneArgs._returnValue = SCENE_HOTEL_ROOM;
 }
 
 void tcDoneVisitingSabien() {
@@ -948,7 +948,7 @@ void tcDoneVisitingSabien() {
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "GROVE_OLD_MATT_1");
 
 	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
-	SceneArgs.ReturnValue = SCENE_LISSON_GROVE;
+	_sceneArgs._returnValue = SCENE_LISSON_GROVE;
 }
 
 void tcDoneADream() {
@@ -974,19 +974,19 @@ void tcDoneADream() {
 	Say(STORY_1_TXT, 0, MATT_PICTID, "ST1_MATT_3");
 	Say(STORY_1_TXT, 0, PHONE_PICTID, "ST1_BRIGGS_4");
 
-	SceneArgs.ReturnValue = SCENE_HOTEL_ROOM;
+	_sceneArgs._returnValue = SCENE_HOTEL_ROOM;
 }
 
 void tcMeetingRosenblatt() {
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_2_OLD_0");
 
-	SceneArgs.ReturnValue = SCENE_STATION;
+	_sceneArgs._returnValue = SCENE_STATION;
 }
 
 void tcBriggsAngry() {
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_2_NOT_OLD_0");
 
-	SceneArgs.ReturnValue = SCENE_HOTEL_REC;
+	_sceneArgs._returnValue = SCENE_HOTEL_REC;
 }
 
 void tcSabienInWalrus() {
@@ -1005,7 +1005,7 @@ void tcSabienInWalrus() {
 
 	gfxShow(141, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1); /* Walrus */
 
-	SceneArgs.ReturnValue = SCENE_WALRUS;
+	_sceneArgs._returnValue = SCENE_WALRUS;
 }
 
 void tcWalrusTombola() {
@@ -1016,7 +1016,7 @@ void tcWalrusTombola() {
 
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_5_OLD_0");
 
-	SceneArgs.ReturnValue = SCENE_WALRUS;
+	_sceneArgs._returnValue = SCENE_WALRUS;
 }
 
 void tcRainyEvening() {
@@ -1038,14 +1038,14 @@ void tcRainyEvening() {
 	Say(STORY_1_TXT, 0, Briggs->PictID, "ST_9_BRIGGS_0");
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_9_OLD_1");
 
-	SceneArgs.ReturnValue = SCENE_HOTEL_ROOM;
+	_sceneArgs._returnValue = SCENE_HOTEL_ROOM;
 }
 
 void tcDoneMissedDate() {
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "VERPASST_BRIEF");
 	Say(STORY_1_TXT, 0, LETTER_PICTID, "DATE_VERPASST");
 
-	SceneArgs.ReturnValue = SCENE_HOTEL_ROOM;
+	_sceneArgs._returnValue = SCENE_HOTEL_ROOM;
 }
 
 /***********************************************************************
@@ -1073,7 +1073,7 @@ void tcDone6thBurglary() {
 	}
 
 	GetScene(SCENE_FAHNDUNG)->Geschehen = 0;    /* damit nicht gleich Burglary 2 geschieht */
-	SceneArgs.ReturnValue = GetLocScene(GetLocation)->EventNr;
+	_sceneArgs._returnValue = GetLocScene(GetLocation)->EventNr;
 }
 
 void tcPoliceInfoTower() {
@@ -1086,12 +1086,12 @@ void tcPoliceInfoTower() {
 
 		Present(Building_Tower_of_London, "Building", InitBuildingPresent);
 
-		SceneArgs.ReturnValue = SCENE_WATLING;
+		_sceneArgs._returnValue = SCENE_WATLING;
 
 		StopAnim();
 		gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
 	} else
-		SceneArgs.ReturnValue = SCENE_POLICE;
+		_sceneArgs._returnValue = SCENE_POLICE;
 }
 
 void tcPresentInHotel() {
@@ -1103,7 +1103,7 @@ void tcPresentInHotel() {
 	Say(STORY_1_TXT, 0, Ben->PictID, "ST_6_BEN_0");
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_6_OLD_0");
 
-	SceneArgs.ReturnValue = SCENE_HOTEL_REC;
+	_sceneArgs._returnValue = SCENE_HOTEL_REC;
 }
 
 void tcSabienDinner() {
@@ -1119,7 +1119,7 @@ void tcSabienDinner() {
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_4_OLD_2");
 
 	gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
-	SceneArgs.ReturnValue = SCENE_WALRUS;
+	_sceneArgs._returnValue = SCENE_WALRUS;
 }
 
 /***********************************************************************
@@ -1144,7 +1144,7 @@ void tcDone7thBurglary() {
 	livesInSet(London_London_1, Person_Mohammed_Abdula);
 
 	GetScene(SCENE_FAHNDUNG)->Geschehen = 0;    /* damit nicht gleich Burglary 2 geschieht */
-	SceneArgs.ReturnValue = GetLocScene(GetLocation)->EventNr;
+	_sceneArgs._returnValue = GetLocScene(GetLocation)->EventNr;
 }
 
 void tcDoneBirthday() {
@@ -1157,7 +1157,7 @@ void tcDoneBirthday() {
 	knowsAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST, Object_Person);
 	LIST *persons = ObjectListPrivate;
 
-	for (struct ObjectNode *n = (struct ObjectNode *) LIST_HEAD(persons); NODE_SUCC(n); n = (struct ObjectNode *) NODE_SUCC(n)) {
+	for (ObjectNode *n = (ObjectNode *) LIST_HEAD(persons); NODE_SUCC(n); n = (ObjectNode *) NODE_SUCC(n)) {
 		Person p = (Person)dbGetObject(OL_NR(n));
 
 		switch (OL_NR(n)) {
@@ -1186,7 +1186,7 @@ void tcDoneBirthday() {
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_11_OLD_0");
 	gfxShow(141, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);
 
-	SceneArgs.ReturnValue = SCENE_WALRUS;
+	_sceneArgs._returnValue = SCENE_WALRUS;
 }
 
 void tcWalkWithSabien() {
@@ -1201,7 +1201,7 @@ void tcWalkWithSabien() {
 
 	Env->MattIsInLove = 1;
 
-	SceneArgs.ReturnValue = SCENE_LISSON_GROVE;
+	_sceneArgs._returnValue = SCENE_LISSON_GROVE;
 }
 
 void tcDoneSabienCall() {
@@ -1210,7 +1210,7 @@ void tcDoneSabienCall() {
 	Say(STORY_0_TXT, 0, PHONE_PICTID, "A_CALL_FOR_YOU");
 	Say(STORY_1_TXT, 0, PHONE_PICTID, "ST_10_SABIEN");
 
-	SceneArgs.ReturnValue = SCENE_HOTEL_ROOM;
+	_sceneArgs._returnValue = SCENE_HOTEL_ROOM;
 }
 
 void tcDoneMeetingAgain() {
@@ -1218,7 +1218,7 @@ void tcDoneMeetingAgain() {
 
 	gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
 
-	SceneArgs.ReturnValue = SCENE_LISSON_GROVE;
+	_sceneArgs._returnValue = SCENE_LISSON_GROVE;
 }
 
 /***********************************************************************
@@ -1232,7 +1232,7 @@ void tcDone8thBurglary() {
 	AddTaxiLocation(25);    /* villa */
 
 	GetScene(SCENE_FAHNDUNG)->Geschehen = 0;    /* damit nicht gleich Burglary 2 geschieht */
-	SceneArgs.ReturnValue = GetLocScene(GetLocation)->EventNr;
+	_sceneArgs._returnValue = GetLocScene(GetLocation)->EventNr;
 }
 
 void tcDoneAgent() {
@@ -1245,7 +1245,7 @@ void tcDoneAgent() {
 
 	tcAddPlayerMoney(15000);
 
-	SceneArgs.ReturnValue = SCENE_HOTEL_ROOM;
+	_sceneArgs._returnValue = SCENE_HOTEL_ROOM;
 }
 
 /***********************************************************************
@@ -1302,19 +1302,19 @@ void tcDone9thBurglary() {
 	SetEnabledChoices(GO | WAIT);
 
 	GetScene(SCENE_FAHNDUNG)->Geschehen = 0;    /* damit nicht gleich Burglary 2 geschieht */
-	SceneArgs.ReturnValue = GetLocScene(GetLocation)->EventNr;
+	_sceneArgs._returnValue = GetLocScene(GetLocation)->EventNr;
 }
 
 void tcDoneGoAndFetchJaguar() {
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_16_OLD_0");
 
-	SceneArgs.ReturnValue = SCENE_HOLLAND_STR;
+	_sceneArgs._returnValue = SCENE_HOLLAND_STR;
 }
 
 void tcDoneThinkOfSabien() {
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_16_OLD_1");
 
-	SceneArgs.ReturnValue = SCENE_HOLLAND_STR;
+	_sceneArgs._returnValue = SCENE_HOLLAND_STR;
 }
 
 void tcDoneTerror() {
@@ -1345,7 +1345,7 @@ void tcDoneTerror() {
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_17_OLD_1");
 	gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
 
-	SceneArgs.ReturnValue = SCENE_CARS_VANS;
+	_sceneArgs._returnValue = SCENE_CARS_VANS;
 }
 
 void tcDoneConfessingSabien() {
@@ -1378,14 +1378,14 @@ void tcDoneConfessingSabien() {
 		inpWaitFor(INP_LBUTTONP);
 		gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
 
-		SceneArgs.ReturnValue = SCENE_NEW_GAME;
+		_sceneArgs._returnValue = SCENE_NEW_GAME;
 	} else {            /* bleibt nicht bei Sabien! */
 
 		AddVTime(2713);     /* hier nicht ausblenden? */
 
 		gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
 
-		SceneArgs.ReturnValue = SCENE_SOUTHHAMPTON;
+		_sceneArgs._returnValue = SCENE_SOUTHHAMPTON;
 
 		SetLocation(-1);    /* damit sicher eingeblendet wird! */
 	}
@@ -1394,7 +1394,7 @@ void tcDoneConfessingSabien() {
 void tcDoneSouthhamptonWithoutSabien() {
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_20_OLD_0");
 
-	SceneArgs.ReturnValue = SCENE_SOUTHHAMPTON;
+	_sceneArgs._returnValue = SCENE_SOUTHHAMPTON;
 }
 
 void tcDoneSouthhamptonSabienUnknown() {
@@ -1403,7 +1403,7 @@ void tcDoneSouthhamptonSabienUnknown() {
 	StopAnim();
 	gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
 
-	SceneArgs.ReturnValue = SCENE_SOUTHHAMPTON;
+	_sceneArgs._returnValue = SCENE_SOUTHHAMPTON;
 }
 
 static void tcDoneFirstTimeLonelyInSouth() {
@@ -1509,8 +1509,8 @@ void tcDoneSouthhampton() {
 	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "SouthhamptonMenu");
 	Environment Env = (Environment)dbGetObject(Environment_TheClou);
 
-	SceneArgs.Ueberschrieben = 1;
-	SceneArgs.ReturnValue = 0;  /* MUß SEIN! */
+	_sceneArgs._overwritten = true;
+	_sceneArgs._returnValue = 0;  /* MUß SEIN! */
 
 	SetEnabledChoices(GP_ALL_CHOICES_ENABLED);
 
@@ -1525,7 +1525,7 @@ void tcDoneSouthhampton() {
 
 	/* mit Gehen oder Planen kommt man aus dem Menü raus */
 	byte activ = 1;     /* !! */
-	while ((activ != 0) && (SceneArgs.ReturnValue == 0)) {
+	while ((activ != 0) && (_sceneArgs._returnValue == 0)) {
 		inpTurnESC(0);
 		inpTurnFunctionKey(1);
 		activ = Menu(menu, 127, activ, NULL, 0L);
@@ -1534,7 +1534,7 @@ void tcDoneSouthhampton() {
 
 		if (activ == (byte) - 1) {
 			ShowTheClouRequester(No_Error);
-			SceneArgs.ReturnValue =
+			_sceneArgs._returnValue =
 			    ((Player) dbGetObject(Player_Player_1))->CurrScene;
 
 			activ = 1;      /* nicht 0! */
@@ -1567,7 +1567,7 @@ void tcDoneSouthhampton() {
 				break;
 			case 6:
 				if (tcDoTowerBurglary())
-					SceneArgs.ReturnValue = SCENE_KASERNE_OUTSIDE;
+					_sceneArgs._returnValue = SCENE_KASERNE_OUTSIDE;
 				else
 					RefreshCurrScene();
 				break;
@@ -1582,7 +1582,7 @@ void tcDoneSouthhampton() {
 
 	if (!activ) {
 		AddVTime(g_clue->calcRandomNr(560, 830));
-		SceneArgs.ReturnValue = SCENE_TOWER_OUT;
+		_sceneArgs._returnValue = SCENE_TOWER_OUT;
 	}
 
 	StopAnim();
@@ -1776,7 +1776,7 @@ void tcDoneKaserne() {
 				StopAnim();
 				gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
 				SetLocation(65);
-				SceneArgs.Moeglichkeiten = 265;
+				_sceneArgs._options = 265;
 				DoneInsideHouse();
 				tcMattGoesTo(66);
 				break;
@@ -1828,7 +1828,7 @@ void tcDoneKaserne() {
 	gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
 	RemoveList(menu);
 
-	SceneArgs.ReturnValue = successor;
+	_sceneArgs._returnValue = successor;
 }
 
 int32 tcIsLastBurglaryOk() {

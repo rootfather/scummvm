@@ -46,19 +46,15 @@ static uint32 tcShowPatrol(LIST *bubble_l, char *c_time, char *patr, byte first,
 
 void Investigate(const char *location) {
 	NODE *n, *nextMsg;
-	LIST *origin, *bubble_l;
 	char patr[TXT_KEY_LENGTH], line[TXT_KEY_LENGTH], c_time[10];
-	uint32 minutes = 0, guarding = 0, choice = 0, count = 0, buiID = 0, first =
-	                                   0, raise;
-	Building bui;
-	uint32 patrolCount;
+	uint32 minutes = 0, choice = 0, first = 0;
 
-	buiID = GetObjNrOfBuilding(GetLocation);
-	bui = (Building) dbGetObject(buiID);
+	uint32 buiID = GetObjNrOfBuilding(GetLocation);
+	Building bui = (Building)dbGetObject(buiID);
 
 	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		if (buiID == Building_Buckingham_Palace) {
-			bubble_l = g_clue->_txtMgr->goKey(INVESTIGATIONS_TXT, "BuckinghamBeobachtet");
+			LIST *bubble_l = g_clue->_txtMgr->goKey(INVESTIGATIONS_TXT, "BuckinghamBeobachtet");
 			SetBubbleType(THINK_BUBBLE);
 			Bubble(bubble_l, 0, 0L, 0L);
 			RemoveList(bubble_l);
@@ -84,11 +80,11 @@ void Investigate(const char *location) {
 	gfxPrint(m_gc, line, 24, GFX_PRINT_CENTER);
 
 	/* Beobachtungstexte von Disk lesen */
-	origin = g_clue->_txtMgr->goKey(INVESTIGATIONS_TXT, location);
-	bubble_l = CreateList();
-	count = GetNrOfNodes(origin);
-	guarding = (uint32) tcRGetGRate(bui);
-	patrolCount = (270 - guarding) / 4 + 1;
+	LIST *origin = g_clue->_txtMgr->goKey(INVESTIGATIONS_TXT, location);
+	LIST *bubble_l = CreateList();
+	uint32 count = GetNrOfNodes(origin);
+	uint32 guarding = (uint32) tcRGetGRate(bui);
+	uint32 patrolCount = (270 - guarding) / 4 + 1;
 
 	/* Wissensgewinn pro Ereignis =
 	 * (255-guarding) = alle wieviel Minuten Streife kommt
@@ -97,7 +93,7 @@ void Investigate(const char *location) {
 	 * 3 = Konstante zur Beschleunigung (GamePlay)
 	 */
 
-	raise = 255 / (1439 / patrolCount + count + 1) + 3;
+	uint32 raise = 255 / (1439 / patrolCount + count + 1) + 3;
 
 	hasSet(Person_Matt_Stuvysunt, buiID);
 
@@ -108,8 +104,7 @@ void Investigate(const char *location) {
 		if (!(GetMinute % 60))
 			ShowTime(0);
 
-		for (n = (NODE *) LIST_HEAD(origin); NODE_SUCC(n);
-		        n = (NODE *) NODE_SUCC(n)) {
+		for (n = LIST_HEAD(origin); NODE_SUCC(n); n = NODE_SUCC(n)) {
 			if (strncmp(NODE_NAME(n), c_time, 5) == 0)
 				nextMsg = n;
 		}
@@ -156,9 +151,9 @@ void Investigate(const char *location) {
 				ShowTime(0);
 
 				if (NODE_SUCC(NODE_SUCC(nextMsg)))
-					nextMsg = (NODE *) NODE_SUCC(nextMsg);
+					nextMsg = NODE_SUCC(nextMsg);
 				else
-					nextMsg = (NODE *) LIST_HEAD(origin);
+					nextMsg = LIST_HEAD(origin);
 			}
 		}
 

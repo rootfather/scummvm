@@ -57,18 +57,16 @@ void livInit(uint16 us_VisLScapeX, uint16 us_VisLScapeY,
 void livDone() {
 	if (sc) {
 		if (sc->p_Livings) {
-			for (NODE *node = (NODE *) LIST_HEAD(sc->p_Livings); NODE_SUCC(node);
-			        node = (NODE *) NODE_SUCC(node))
-				livRem((struct Living *) node);
+			for (NODE *node = LIST_HEAD(sc->p_Livings); NODE_SUCC(node); node = NODE_SUCC(node))
+				livRem((Living *) node);
 
 			RemoveList(sc->p_Livings);
 			sc->p_Livings = NULL;
 		}
 
 		if (sc->p_Template) {
-			for (NODE *node = (NODE *) LIST_HEAD(sc->p_Template); NODE_SUCC(node);
-			        node = (NODE *) NODE_SUCC(node))
-				livRemTemplate((struct AnimTemplate *) node);
+			for (NODE *node = LIST_HEAD(sc->p_Template); NODE_SUCC(node); node = NODE_SUCC(node))
+				livRemTemplate((AnimTemplate *) node);
 
 			RemoveList(sc->p_Template);
 			sc->p_Template = NULL;
@@ -98,8 +96,7 @@ void livRefreshAll() {
 
 void livSetAllInvisible() {
 	if (sc) {
-		for (struct Living *liv = (struct Living *) LIST_HEAD(sc->p_Livings); NODE_SUCC(liv);
-		        liv = (struct Living *) NODE_SUCC(liv))
+		for (Living *liv = (Living *) LIST_HEAD(sc->p_Livings); NODE_SUCC(liv); liv = (Living *) NODE_SUCC(liv))
 			livHide(liv);
 	}
 }
@@ -169,8 +166,7 @@ static void livCorrectViewDirection(struct Living *liv) {
 	if (liv->uch_Action <= ANM_MOVE_LEFT)
 		liv->uch_ViewDirection = liv->uch_Action;
 	else {
-		if (!strcmp(name, LIV_TEMPL_BULLE_NAME)
-		        && (liv->uch_Action == ANM_WORK_CONTROL))
+		if (!strcmp(name, LIV_TEMPL_BULLE_NAME) && (liv->uch_Action == ANM_WORK_CONTROL))
 			liv->uch_ViewDirection = ANM_MOVE_DOWN;
 	}
 }
@@ -182,8 +178,8 @@ void livDoAnims(byte uch_Play, byte uch_Move) {
 	livPrepareAnims();
 	lsDoScroll();
 
-	for (struct Living *liv = (struct Living *) LIST_HEAD(sc->p_Livings);
-	        NODE_SUCC(liv); liv = (struct Living *) NODE_SUCC(liv)) {
+	for (Living *liv = (Living *) LIST_HEAD(sc->p_Livings);
+	        NODE_SUCC(liv); liv = (Living *) NODE_SUCC(liv)) {
 		if (liv->uch_Status == LIV_ENABLED) {
 			if (uch_Move) {
 				liv->us_XPos += liv->s_XSpeed;
@@ -225,19 +221,19 @@ void livSetVisLScape(uint16 us_VisLScapeX, uint16 us_VisLScapeY) {
 uint16 livGetXPos(const char *Name) {
 	struct Living *liv = livGet(Name);
 
-	return (liv->us_XPos);
+	return liv->us_XPos;
 }
 
 uint16 livGetYPos(const char *Name) {
 	struct Living *liv = livGet(Name);
 
-	return (liv->us_YPos);
+	return liv->us_YPos;
 }
 
 byte livGetViewDirection(const char *uch_Name) {
 	struct Living *liv = livGet(uch_Name);
 
-	return (liv->uch_ViewDirection);
+	return liv->uch_ViewDirection;
 }
 
 #if 0
@@ -315,24 +311,22 @@ bool livCanWalk(const char *puch_Name) {
 }
 
 static struct Living *livGet(const char *uch_Name) {
-	struct Living *liv = (struct Living *) GetNode(sc->p_Livings, uch_Name);
+	Living *liv = (Living *) GetNode(sc->p_Livings, uch_Name);
 
 	if (!liv)
 		ErrorMsg(Internal_Error, ERROR_MODULE_LIVING, 1);
 
-	return (liv);
+	return liv;
 }
 
 static void livAdd(const char *uch_Name, char *uch_TemplateName, byte uch_XSize,
                    byte uch_YSize, int16 s_XSpeed, int16 s_YSpeed) {
-	struct Living *liv = (struct Living *)
-	      CreateNode(sc->p_Livings, sizeof(struct Living), uch_Name);
+	Living *liv = (Living *) CreateNode(sc->p_Livings, sizeof(struct Living), uch_Name);
 
 	liv->uch_XSize = uch_XSize;
 	liv->uch_YSize = uch_YSize;
 
-	struct AnimTemplate *tlt = liv->p_OriginTemplate =
-	          (struct AnimTemplate *) GetNode(sc->p_Template, uch_TemplateName);
+	AnimTemplate *tlt = liv->p_OriginTemplate = (AnimTemplate *) GetNode(sc->p_Template, uch_TemplateName);
 
 	liv->us_LivingNr = BobInit(tlt->us_Width, tlt->us_Height);
 
@@ -371,7 +365,7 @@ static void livLoadTemplates() {
 	for (uint16 i = 0; i < cnt; i++) {
 		char *line = NODE_NAME(GetNthNode(l, i));
 
-		struct AnimTemplate *tlt = (struct AnimTemplate *) CreateNode(sc->p_Template,
+		AnimTemplate *tlt = (AnimTemplate *) CreateNode(sc->p_Template,
 		        sizeof(struct AnimTemplate),
 				g_clue->_txtMgr->getKey(1, line));
 

@@ -93,9 +93,7 @@ void tcMoveAPerson(uint32 persID, uint32 newLocID) {
 	hasAll(persID, 0, Object_Location); /* wo is er denn ? */
 
 	if (!(LIST_EMPTY(ObjectList))) {
-		NODE *n;
-
-		for (n = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n)) {
+		for (NODE *n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
 			uint32 oldLocID = OL_NR(n);
 			hasUnSet(persID, oldLocID);
 			hasUnSet(oldLocID, persID);
@@ -466,42 +464,39 @@ uint32 StdHandle(uint32 choice) {
 void StdDone() {
 	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 
-	SceneArgs.ReturnValue = 0L;
+	_sceneArgs._returnValue = 0L;
 
-	while (!SceneArgs.ReturnValue) {
+	while (!_sceneArgs._returnValue) {
 		if (tcPersonIsHere())
-			if (!(SceneArgs.Moeglichkeiten & BUSINESS_TALK))
-				SceneArgs.Moeglichkeiten |=
-				    (BUSINESS_TALK & film->EnabledChoices);
+			if (!(_sceneArgs._options & BUSINESS_TALK))
+				_sceneArgs._options |= (BUSINESS_TALK & film->EnabledChoices);
 
 		if (g_clue->getFeatures() & GF_PROFIDISK) {
 			if (GetCurrentScene()->EventNr == SCENE_PROFI_26) {
 				Environment env = (Environment)dbGetObject(Environment_TheClou);
 
 				if (env->PostzugDone)
-					SceneArgs.Moeglichkeiten &= ~INVESTIGATE;
+					_sceneArgs._options &= ~INVESTIGATE;
 			}
 		}
 
-		if (SceneArgs.Moeglichkeiten) {
+		if (_sceneArgs._options) {
 			inpTurnESC(0);
 			inpTurnFunctionKey(1);
 
 			byte activ = 0;
-			activ = Menu(menu, SceneArgs.Moeglichkeiten, (byte)(activ), NULL, 0L);
+			activ = Menu(menu, _sceneArgs._options, activ, NULL, 0L);
 
 			if (activ == (byte) - 1) {
 				ShowTheClouRequester(No_Error);
-				SceneArgs.ReturnValue = ((Player) dbGetObject(Player_Player_1))->CurrScene;
+				_sceneArgs._returnValue = ((Player) dbGetObject(Player_Player_1))->CurrScene;
 
 				activ = 0;
-			} else {
-				if (activ == ((byte)(TXT_MENU_TIMEOUT)))
-					activ = 0;
-				else {
-					uint32 choice = (uint32) 1L << (activ);
-					SceneArgs.ReturnValue = StdHandle(choice);
-				}
+			} else if (activ == ((byte)(TXT_MENU_TIMEOUT)))
+				activ = 0;
+			else {
+				uint32 choice = (uint32) 1L << (activ);
+				_sceneArgs._returnValue = StdHandle(choice);
 			}
 
 			inpTurnESC(1);
@@ -511,7 +506,7 @@ void StdDone() {
 
 	StopAnim();
 
-	if (!(SceneArgs.Ueberschrieben))
+	if (!_sceneArgs._overwritten)
 		gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
 
 	RemoveList(menu);

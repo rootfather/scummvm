@@ -370,8 +370,8 @@ char * TextMgr::getNthString(uint32 textId, const char *key, uint32 nth, char *d
 	return dest;
 }
 
-char *TextMgr::getFirstLine(uint32 id, const char *key, char *dest) {
-	return getNthString(id, key, 0, dest);
+Common::String TextMgr::getFirstLine(uint32 id, const char *key, char *dest) {
+	return Common::String(getNthString(id, key, 0, dest));
 }
 
 void TextMgr::putCharacter(LIST *list, uint16 pos, uint8 c) {

@@ -453,8 +453,7 @@ void tcAddGuyToParty() {
 
 	LIST *l2 = ObjectListPrivate;
 	if (GetNrOfNodes(l2) < Organisation.PlacesInCar) {
-		for (struct ObjectNode *n = (struct ObjectNode *) LIST_HEAD(l2); NODE_SUCC(n);
-		        n = (struct ObjectNode *) NODE_SUCC(n))
+		for (struct ObjectNode *n = (ObjectNode *) LIST_HEAD(l2); NODE_SUCC(n); n = (ObjectNode *) NODE_SUCC(n))
 			dbRemObjectNode(l1, OL_NR(n));
 
 		if (!LIST_EMPTY(l1)) {
@@ -465,8 +464,7 @@ void tcAddGuyToParty() {
 
 			byte choice = Bubble(l1, 0, 0L, 0L);
 			if (ChoiceOk(choice, GET_OUT, l1)) {
-				uint32 persID = (uint32)(((struct ObjectNode *)
-				              GetNthNode(l1, (uint32) choice))->nr);
+				uint32 persID = ((ObjectNode *)GetNthNode(l1, (uint32)choice))->nr;
 
 				Organisation.GuyCount++;
 				joined_bySet(Person_Matt_Stuvysunt, persID);
@@ -476,14 +474,12 @@ void tcAddGuyToParty() {
 		} else {
 			SetBubbleType(THINK_BUBBLE);
 			Say(BUSINESS_TXT, 0,
-			    ((Person) dbGetObject(Person_Matt_Stuvysunt))->PictID,
-			    "PLAN_DO_NOT_KNOW_ANYBODY");
+			    ((Person) dbGetObject(Person_Matt_Stuvysunt))->PictID, "PLAN_DO_NOT_KNOW_ANYBODY");
 		}
 	} else {
 		SetBubbleType(THINK_BUBBLE);
 		Say(BUSINESS_TXT, 0,
-		    ((Person) dbGetObject(Person_Matt_Stuvysunt))->PictID,
-		    "PLAN_CAR_FULL");
+		    ((Person) dbGetObject(Person_Matt_Stuvysunt))->PictID, "PLAN_CAR_FULL");
 	}
 
 	RemoveList(l2);
@@ -510,7 +506,7 @@ void tcRemGuyFromParty() {
 
 		byte choice = Bubble(list, 0, 0L, 0L);
 		if (ChoiceOk(choice, GET_OUT, list)) {
-			uint32 persID = (uint32)(((struct ObjectNode *) GetNthNode(list, (uint32) choice))->nr);
+			uint32 persID = ((ObjectNode *) GetNthNode(list, (uint32) choice))->nr;
 
 			Organisation.GuyCount--;
 			joined_byUnSet(Person_Matt_Stuvysunt, persID);
@@ -519,8 +515,7 @@ void tcRemGuyFromParty() {
 				rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Person);
 
 				if (!LIST_EMPTY(ObjectList))
-					rememberUnSet(Person_Matt_Stuvysunt,
-					              OL_NR(LIST_HEAD(ObjectList)));
+					rememberUnSet(Person_Matt_Stuvysunt, OL_NR(LIST_HEAD(ObjectList)));
 
 				Organisation.DriverID = 0L;
 			}

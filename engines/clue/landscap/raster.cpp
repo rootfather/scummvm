@@ -184,7 +184,7 @@ void lsShowAllConnections(uint32 areaID, NODE *node, byte perc) {
 		srcX = (srcX * rasterSize) / LS_RASTER_X_SIZE;
 		srcY = (srcY * rasterSize) / LS_RASTER_Y_SIZE;
 
-		for (NODE *n = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n)) {
+		for (NODE *n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
 			gfxSetPens(l_gc, col, GFX_SAME_PEN, GFX_SAME_PEN);
 
 			LSObject lso2 = (LSObject)OL_DATA(n);

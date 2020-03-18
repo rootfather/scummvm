@@ -225,8 +225,7 @@ void tcDisplayAbilities(uint32 personNr, uint32 displayData) {
 		NODE *node;
 		unsigned i;
 
-		for (node = LIST_HEAD(abilities), i = 0; NODE_SUCC(node);
-		        node = NODE_SUCC(node), i++) {
+		for (node = LIST_HEAD(abilities), i = 0; NODE_SUCC(node); node = NODE_SUCC(node), i++) {
 			char line[TXT_KEY_LENGTH];
 
 			uint32 abiNr = ((struct ObjectNode *) GetNthNode(abilities, (uint32) i))->nr;

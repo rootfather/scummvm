@@ -45,7 +45,7 @@ uint32 GamePlayMode = 0;
 byte RefreshMode = 0;
 
 struct Film *film = NULL;
-struct SceneArgs SceneArgs;
+struct SceneArgs _sceneArgs;
 
 
 void InitStory(const char *story_filename) {
@@ -172,8 +172,8 @@ uint32 PlayStory() {
 
 		/* Entscheidung für eine Szene getroffen ! */
 
-		SceneArgs.ReturnValue = 0L;
-		SceneArgs.Ueberschrieben = 0;
+		_sceneArgs._returnValue = 0L;
+		_sceneArgs._overwritten = false;
 
 		/* wenn Szene Storyszene ist, dann Musik beibehalten */
 		/* (Storyszenen ändern sie selbst in Done */
@@ -221,14 +221,13 @@ uint32 PlayStory() {
 		}
 
 		if (!story_scene) {
-			SceneArgs.Ueberschrieben = 0;
+			_sceneArgs._overwritten = false;
 
 #ifdef DEEP_DEBUG
 			printf("STEP_B\n");
 #endif
 			if (curr->Done) {
-				SceneArgs.Moeglichkeiten =
-				    curr->Moeglichkeiten & film->EnabledChoices;
+				_sceneArgs._options = curr->Moeglichkeiten & film->EnabledChoices;
 
 #ifdef DEEP_DEBUG
 				printf("SCENE_DONE\n");
@@ -244,8 +243,8 @@ uint32 PlayStory() {
 			interr_allowed = 1;
 
 			/* der Spieler ist fertig mit dieser Szene - aber wie geht es weiter ? */
-			if (SceneArgs.ReturnValue)
-				next = GetScene(SceneArgs.ReturnValue); /* Nachfolger festlegen */
+			if (_sceneArgs._returnValue)
+				next = GetScene(_sceneArgs._returnValue); /* Nachfolger festlegen */
 			else
 				ErrorMsg(Internal_Error, ERROR_MODULE_GAMEPLAY, 4);
 		} else

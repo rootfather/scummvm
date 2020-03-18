@@ -191,7 +191,7 @@ bool tcLoadTheClou() {
 			if (player) {  /* MOD 04-02 */
 				player->CurrScene = film->act_scene->EventNr;
 
-				SceneArgs.ReturnValue = film->act_scene->EventNr;
+				_sceneArgs._returnValue = film->act_scene->EventNr;
 			}
 
 			return false;
@@ -219,7 +219,7 @@ void tcRefreshAfterLoad(bool loaded) {
 		SetTime(player->CurrMinute);
 		SetLocation(-1);    /* auf alle Fälle ein Refresh! */
 
-		SceneArgs.ReturnValue = GetLocScene(player->CurrLocation)->EventNr;
+		_sceneArgs._returnValue = GetLocScene(player->CurrLocation)->EventNr;
 	}
 }
 

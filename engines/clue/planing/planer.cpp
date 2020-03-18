@@ -530,35 +530,26 @@ static void plActionTake() {
 	else {
 		LIST *takeableList = CreateList();
 
-		for (struct ObjectNode *n = (struct ObjectNode *) LIST_HEAD(actionList); NODE_SUCC(n);
-		        n = (struct ObjectNode *) NODE_SUCC(n)) {
-			SetObjectListAttr(OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_NORMAL,
-			                  0L);
-			AskAll(dbGetObject(OL_NR(n)), hasLoot(CurrentPerson),
-			       BuildObjectList);
+		for (ObjectNode *n = (ObjectNode *) LIST_HEAD(actionList); NODE_SUCC(n); n = (ObjectNode *) NODE_SUCC(n)) {
+			SetObjectListAttr(OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_NORMAL, 0L);
+			AskAll(dbGetObject(OL_NR(n)), hasLoot(CurrentPerson), BuildObjectList);
 
 			uint32 state = lsGetObjectState(OL_NR(n));
 
 			if (!LIST_EMPTY(ObjectList)) {
 				if (CHECK_STATE(state, Const_tcTAKE_BIT)) {
-					struct ObjectNode *h2 = (struct ObjectNode *) LIST_HEAD(ObjectList);
+					ObjectNode *h2 = (ObjectNode *) LIST_HEAD(ObjectList);
 
-					struct ObjectNode *h = (struct ObjectNode *) CreateNode(takeableList,
-					                                     sizeof(struct
-					                                             ObjectNode),
-					                                     OL_NAME(h2));
+					ObjectNode *h = (ObjectNode *) CreateNode(takeableList,
+					                         sizeof(struct ObjectNode), OL_NAME(h2));
 					h->nr = OL_NR(h2);  /* Loot */
 					h->type = OL_NR(n); /* Original */
 					h->data = NULL;
 				} else {
 					if (CHECK_STATE(state, Const_tcOPEN_CLOSE_BIT)) {
-						for (struct ObjectNode *h2 = (struct ObjectNode *) LIST_HEAD(ObjectList);
-						        NODE_SUCC(h2);
-						        h2 = (struct ObjectNode *) NODE_SUCC(h2)) {
-							struct ObjectNode *h = (struct ObjectNode *) CreateNode(takeableList,
-							                                     sizeof(struct
-							                                             ObjectNode),
-							                                     OL_NAME(h2));
+						for (ObjectNode *h2 = (ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(h2);
+						        h2 = (ObjectNode *) NODE_SUCC(h2)) {
+							ObjectNode *h = (ObjectNode *) CreateNode(takeableList, sizeof(ObjectNode), OL_NAME(h2));
 							h->nr = OL_NR(h2);  /* Loot */
 							h->type = OL_NR(n); /* Original */
 							h->data = (void *) 1L;
@@ -571,10 +562,8 @@ static void plActionTake() {
 		if (!LIST_EMPTY(takeableList)) {
 			plMessage("TAKE", PLANING_MSG_REFRESH);
 
-			SetPictID(((Person)
-			           dbGetObject(OL_NR
-			                       (GetNthNode(BurglarsList, CurrentPerson))))->
-			          PictID);
+			SetPictID(((Person) dbGetObject(
+				OL_NR(GetNthNode(BurglarsList, CurrentPerson))))->PictID);
 
 			char exp[TXT_KEY_LENGTH];
 			g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
@@ -760,13 +749,12 @@ static bool plCheckRequiredTools(uint32 checkToolId) {
 
 	hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Tool);
 
-	for (NODE *n = (NODE *) LIST_HEAD(trl); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n)) {
+	for (NODE *n = LIST_HEAD(trl); NODE_SUCC(n); n = NODE_SUCC(n)) {
 		bool found = false;
 
 		ret = false;
 
-		for (NODE *h = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(h);
-		        h = (NODE *) NODE_SUCC(h)) {
+		for (NODE *h = LIST_HEAD(ObjectList); NODE_SUCC(h); h = NODE_SUCC(h)) {
 			if (OL_NR(n) == OL_NR(h))
 				found = true;
 		}

@@ -1874,8 +1874,6 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 					livTurn(Planing_Name[i], LIV_DISABLED); /* alle Sprites ausschalten! */
 
 				for (byte i = 0; i < BurglarsNr; i++) {
-					struct ObjectNode *n;
-
 					Search.GuyXPos[i] = livGetXPos(Planing_Name[i]);
 					Search.GuyYPos[i] = livGetYPos(Planing_Name[i]);
 
@@ -1883,8 +1881,8 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 					AskAll(dbGetObject(OL_NR(GetNthNode(PersonsList, i))),
 					       take_RelId, BuildObjectList);
 
-					for (n = (struct ObjectNode *) LIST_HEAD(ObjectList);
-					        NODE_SUCC(n); n = (struct ObjectNode *) NODE_SUCC(n)) {
+					for (ObjectNode* n = (ObjectNode*)LIST_HEAD(ObjectList);
+					        NODE_SUCC(n); n = (ObjectNode *) NODE_SUCC(n)) {
 						if (has(Person_Matt_Stuvysunt, OL_NR(n))) {
 							uint32 oldValue =
 							    hasGet(Person_Matt_Stuvysunt, OL_NR(n));

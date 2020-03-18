@@ -387,19 +387,15 @@ byte ClueEngine::startupMenu() {
 
 	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		if (g_clue->getFeatures() & ADGF_CD) {
-			PrintStatus(g_clue->_txtMgr->getFirstLine(THECLOU_TXT,
-			                            "BITTE_WARTEN_PC_CD_ROM_PROFI", line));
+			PrintStatus(g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "BITTE_WARTEN_PC_CD_ROM_PROFI", line).c_str());
 		} else {
-			PrintStatus(g_clue->_txtMgr->getFirstLine(THECLOU_TXT,
-			                            "BITTE_WARTEN_PC_PROFI", line));
+			PrintStatus(g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "BITTE_WARTEN_PC_PROFI", line).c_str());
 		}
 	} else {
 		if (g_clue->getFeatures() & ADGF_CD) {
-			PrintStatus(g_clue->_txtMgr->getFirstLine(THECLOU_TXT,
-			                            "BITTE_WARTEM_PC_CD_ROM", line));
+			PrintStatus(g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "BITTE_WARTEM_PC_CD_ROM", line).c_str());
 		} else {
-			PrintStatus(g_clue->_txtMgr->getFirstLine(THECLOU_TXT,
-			                            "BITTE_WARTEN_PC", line));
+			PrintStatus(g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "BITTE_WARTEN_PC", line).c_str());
 		}
 	}
 
@@ -421,7 +417,7 @@ byte ClueEngine::startupMenu() {
 		g_clue->_txtMgr->reset(OBJECTS_TXT);
 
 		if (tcLoadTheClou()) {
-			film->StartScene = SceneArgs.ReturnValue;
+			film->StartScene = _sceneArgs._returnValue;
 			ret = 1;
 		}
 		break;

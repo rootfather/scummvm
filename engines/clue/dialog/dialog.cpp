@@ -41,9 +41,9 @@ static LIST *PrepareQuestions(LIST *keyWords, uint32 talkBits, byte textID) {
 	LIST *questionList = g_clue->_txtMgr->goKey((uint32) textID, "QUESTIONS");
 
 	char question[TXT_KEY_LENGTH];
-	for (NODE *n = (NODE *) LIST_HEAD(keyWords); NODE_SUCC((NODE *) n); n = (NODE *) NODE_SUCC(n)) {
+	for (NODE *n = LIST_HEAD(keyWords); NODE_SUCC(n); n = NODE_SUCC(n)) {
 		byte r = (byte)g_clue->calcRandomNr(0L, 6L);
-		sprintf(question, NODE_NAME(GetNthNode(questionList, r)), NODE_NAME((NODE *) n));
+		sprintf(question, NODE_NAME(GetNthNode(questionList, r)), NODE_NAME(n));
 		CreateNode(preparedList, 0L, question);
 	}
 
@@ -66,7 +66,7 @@ static LIST *PrepareQuestions(LIST *keyWords, uint32 talkBits, byte textID) {
 static LIST *ParseTalkText(LIST *origin, LIST *bubble, byte known) {
 	LIST *keyWords = CreateList();
 
-	for (NODE *n = (NODE *) LIST_HEAD(origin); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n)) {
+	for (NODE *n = LIST_HEAD(origin); NODE_SUCC(n); n = NODE_SUCC(n)) {
 		char line[TXT_KEY_LENGTH], key[TXT_KEY_LENGTH], keyWord[TXT_KEY_LENGTH];
 		byte line_pos = 0;
 		byte key_pos = 0;

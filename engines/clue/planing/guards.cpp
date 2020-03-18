@@ -60,8 +60,8 @@ bool grdAddToList(uint32 bldId, LIST *l) {
 	isGuardedbyAll(bldId, OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Police);
 
 	if (!LIST_EMPTY(ObjectList)) {
-		for (struct ObjectNode *n = (struct ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n);
-		        n = (struct ObjectNode *) NODE_SUCC(n))
+		for (ObjectNode *n = (ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n);
+		        n = (ObjectNode *) NODE_SUCC(n))
 			dbAddObjectNode(l, OL_NR(n), OLF_INCLUDE_NAME | OLF_INSERT_STAR);
 
 		return true;
@@ -115,13 +115,12 @@ bool grdDraw(GC *gc, uint32 bldId, uint32 areaId) {
 					gfxMoveCursor(gc, xpos, ypos);
 
 					/* drawing system */
-					for (struct Action *action = (struct Action *) LIST_HEAD(h->Actions);
+					for (Action *action = (Action *) LIST_HEAD(h->Actions);
 					        NODE_SUCC(action);
-					        action = (struct Action *) NODE_SUCC(action)) {
+					        action = (Action *) NODE_SUCC(action)) {
 						switch (action->Type) {
 						case ACTION_GO:
-							switch ((ActionData(action, struct ActionGo *))->
-							        Direction) {
+							switch ((ActionData(action, struct ActionGo *))-> Direction) {
 							case DIRECTION_LEFT:
 								xpos -= action->TimeNeeded;
 								break;
@@ -137,6 +136,8 @@ bool grdDraw(GC *gc, uint32 bldId, uint32 areaId) {
 							case DIRECTION_DOWN:
 								ypos += action->TimeNeeded;
 								break;
+							default:
+								break;
 							}
 
 							gfxDraw(gc, xpos, ypos);
@@ -147,6 +148,8 @@ bool grdDraw(GC *gc, uint32 bldId, uint32 areaId) {
 						case ACTION_CLOSE:
 						case ACTION_CONTROL:
 							/*DrawCircle(rp, xpos, ypos, 1);*/
+							break;
+						default:
 							break;
 						}
 					}

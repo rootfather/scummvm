@@ -102,14 +102,9 @@ struct Film {
 };
 
 struct SceneArgs {
-	uint32 Moeglichkeiten;
-	uint32 ReturnValue;     /* wird AUCH (!) als Input verwendet,
-                 * wenn als Output verwendet = EventNr der
-                 * Nachfolgerszene
-                 */
-	byte Ueberschrieben;    /*  0...direkter Nachfahre,
-                 * >0......uberschriebene Methode
-                 */
+	uint32 _options;
+	uint32 _returnValue;     /* is ALSO (!) used as input, when used as Output = EventNr the successor Scene */
+	bool _overwritten;       /* False...direct descendant, True......overwritten method */
 };
 
 struct Scene {
@@ -176,7 +171,7 @@ extern void AddVTime(uint32 Zeit);
 
 extern void LinkScenes();   /* Init und Done in jeder Scene Struktur setzen */
 
-extern struct SceneArgs SceneArgs;
+extern struct SceneArgs _sceneArgs;
 extern struct Film *film;
 extern uint32 GamePlayMode;
 extern byte RefreshMode;

@@ -29,15 +29,14 @@ void DoneTaxi() {
 	knowsSet(Person_Matt_Stuvysunt, Person_Dan_Stanford);
 	taxiAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Location);
 
-	for (struct ObjectNode *n = (struct ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n);
-	        n = (struct ObjectNode *) NODE_SUCC(n)) {
+	for (ObjectNode *n = (ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n); n = (ObjectNode *) NODE_SUCC(n)) {
 		Location loc = (Location)OL_DATA(n);
-		uint32 locNr = ((Location) loc)->LocationNr;
+		uint32 locNr = loc->LocationNr;
 
 		char name[TXT_KEY_LENGTH];
 		sprintf(name, "*%s", NODE_NAME(GetNthNode(film->loc_names, locNr)));
 
-		struct ObjectNode *newNode = (struct ObjectNode *) CreateNode(locs, sizeof(struct ObjectNode), name);
+		ObjectNode *newNode = (ObjectNode *) CreateNode(locs, sizeof(ObjectNode), name);
 		newNode->nr = locNr + 1;    /* because of ChoiceOk */
 	}
 
@@ -52,15 +51,15 @@ void DoneTaxi() {
 		i = j;
 
 		uint32 locNr = OL_NR(GetNthNode(locs, i)) - 1;
-		SceneArgs.ReturnValue = (uint32)GetLocScene(locNr)->EventNr;
+		_sceneArgs._returnValue = GetLocScene(locNr)->EventNr;
 	} else {
 		Say(BUSINESS_TXT, 0, MATT_PICTID, "LOVELY_TAXI");
 
-		SceneArgs.ReturnValue = (uint32)GetLocScene(GetOldLocation)->EventNr;
+		_sceneArgs._returnValue = GetLocScene(GetOldLocation)->EventNr;
 	}
 
-	SceneArgs.Ueberschrieben = 1;
-	SceneArgs.Moeglichkeiten = 0L;
+	_sceneArgs._overwritten = true;
+	_sceneArgs._options = 0L;
 
 	RemoveList(locs);
 	gfxChangeColors(l_gc, 2L, GFX_FADE_OUT, 0L);
@@ -69,8 +68,8 @@ void DoneTaxi() {
 void DoneInsideHouse() {
 	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 
-	SceneArgs.ReturnValue = 0;
-	SceneArgs.Ueberschrieben = 1;
+	_sceneArgs._returnValue = 0;
+	_sceneArgs._overwritten = true;
 
 	ShowMenuBackground();
 
@@ -79,8 +78,7 @@ void DoneInsideHouse() {
 
 	/* jetzt alle Stockwerke laden */
 	uint32 areaID;
-	for (NODE *node = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(node);
-	        node = (NODE *) NODE_SUCC(node)) {
+	for (NODE *node = LIST_HEAD(ObjectList); NODE_SUCC(node); node = NODE_SUCC(node)) {
 		areaID = OL_NR(node);
 
 		lsInitRelations(areaID);
@@ -102,11 +100,11 @@ void DoneInsideHouse() {
 	tcRefreshLocationInTitle(GetLocation);
 
 	byte activ = 0;
-	while (!SceneArgs.ReturnValue) {
-		if (SceneArgs.Moeglichkeiten) {
+	while (!_sceneArgs._returnValue) {
+		if (_sceneArgs._options) {
 			inpTurnFunctionKey(0);
 			inpTurnESC(0);
-			activ = Menu(menu, SceneArgs.Moeglichkeiten, (byte)(activ), NULL, 0L);
+			activ = Menu(menu, _sceneArgs._options, activ, NULL, 0L);
 			inpTurnFunctionKey(1);
 			inpTurnESC(1);
 
@@ -122,10 +120,7 @@ void DoneInsideHouse() {
 				break;
 			case GO:
 				if (!(areaID = tcGoInsideOfHouse(buildingID)))
-					SceneArgs.ReturnValue =
-					    (uint32)(((struct TCEventNode
-					               *)(LIST_HEAD((GetCurrentScene()->
-					                             std_succ))))->EventNr);
+					_sceneArgs._returnValue = ((TCEventNode *) LIST_HEAD(GetCurrentScene()-> std_succ))->EventNr;
 				else {
 					lsSetRelations(areaID);
 
@@ -134,7 +129,7 @@ void DoneInsideHouse() {
 				tcRefreshLocationInTitle(GetLocation);
 				break;
 			default:
-				SceneArgs.ReturnValue = StdHandle(choice);
+				_sceneArgs._returnValue = StdHandle(choice);
 				break;
 			}
 		}
@@ -143,8 +138,7 @@ void DoneInsideHouse() {
 	consistsOfAll(buildingID, OLF_NORMAL, Object_LSArea);
 
 	/* jetzt alle Stockwerke entfernen */
-	for (NODE *node = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(node);
-	        node = (NODE *) NODE_SUCC(node))
+	for (NODE *node = LIST_HEAD(ObjectList); NODE_SUCC(node); node = NODE_SUCC(node))
 		lsDoneObjectDB(OL_NR(node));
 
 	StopAnim();
@@ -156,18 +150,18 @@ void DoneInsideHouse() {
 void DoneTools() {
 	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 
-	SceneArgs.Ueberschrieben = 1;
+	_sceneArgs._overwritten = true;
 
 	tcMoveAPerson(Person_Mary_Bolton, Location_Tools_Shop);
 	livesInUnSet(London_London_1, Person_Mary_Bolton);
 
 	byte activ = 0;
-	while (!SceneArgs.ReturnValue) {
+	while (!_sceneArgs._returnValue) {
 		tcPersonIsHere();
 
 		inpTurnFunctionKey(0);  /* dont save in tools shop */
 		inpTurnESC(0);
-		activ = Menu(menu, SceneArgs.Moeglichkeiten, (byte)(activ), NULL, 0L);
+		activ = Menu(menu, _sceneArgs._options, (byte)(activ), NULL, 0L);
 		inpTurnESC(1);
 
 		uint32 choice = (uint32) 1L << (activ);
@@ -177,7 +171,7 @@ void DoneTools() {
 			AddVTime(9);
 			ShowTime(0);
 		} else
-			SceneArgs.ReturnValue = StdHandle(choice);
+			_sceneArgs._returnValue = StdHandle(choice);
 	}
 
 	inpTurnFunctionKey(1);
@@ -192,8 +186,8 @@ void DoneTools() {
 void DoneDealer() {
 	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 
-	SceneArgs.Ueberschrieben = 1;
-	SceneArgs.ReturnValue = 0L;
+	_sceneArgs._overwritten = true;
+	_sceneArgs._returnValue = 0L;
 
 	tcMoveAPerson(Person_Frank_Maloya, Location_Maloya);
 	tcMoveAPerson(Person_Eric_Pooly, Location_Pooly);
@@ -204,10 +198,10 @@ void DoneDealer() {
 	livesInUnSet(London_London_1, Person_Helen_Parker);
 
 	byte activ = 0;
-	while (!SceneArgs.ReturnValue) {
+	while (!_sceneArgs._returnValue) {
 		inpTurnFunctionKey(0);  /* or call save functions in case of space */
 		inpTurnESC(0);
-		activ = Menu(menu, SceneArgs.Moeglichkeiten, (byte)(activ), NULL, 0L);
+		activ = Menu(menu, _sceneArgs._options, (byte)(activ), NULL, 0L);
 		inpTurnESC(1);
 		inpTurnFunctionKey(1);
 
@@ -216,7 +210,7 @@ void DoneDealer() {
 		if (choice == BUSINESS_TALK)
 			tcDealerDlg();
 		else
-			SceneArgs.ReturnValue = StdHandle(choice);
+			_sceneArgs._returnValue = StdHandle(choice);
 	}
 
 	livesInSet(London_London_1, Person_Frank_Maloya);
@@ -233,15 +227,15 @@ void DoneParking() {
 	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 	Person marc = (Person)dbGetObject(Person_Marc_Smith);
 
-	SceneArgs.Ueberschrieben = 1;
-	SceneArgs.ReturnValue = 0;
+	_sceneArgs._overwritten = true;
+	_sceneArgs._returnValue = 0;
 
 	byte activ = 0;
-	while (!SceneArgs.ReturnValue) {
+	while (!_sceneArgs._returnValue) {
 		inpTurnFunctionKey(0);  /* or call save functions in case of space */
 		inpTurnESC(0);
 
-		activ = Menu(menu, SceneArgs.Moeglichkeiten, (byte)(activ), 0L, 0L);
+		activ = Menu(menu, _sceneArgs._options, (byte)(activ), 0L, 0L);
 
 		inpTurnESC(1);
 		inpTurnFunctionKey(1);
@@ -277,7 +271,7 @@ void DoneParking() {
 			ShowTime(0);
 		} else {
 			inpTurnESC(0);
-			SceneArgs.ReturnValue = StdHandle(1L << activ);
+			_sceneArgs._returnValue = StdHandle(1L << activ);
 			inpTurnESC(1);
 		}
 	}
@@ -293,14 +287,14 @@ void DoneGarage() {
 	byte activ = 0;
 	Person marc = (Person)dbGetObject(Person_Marc_Smith);
 
-	SceneArgs.Ueberschrieben = 1;
-	SceneArgs.ReturnValue = 0;
+	_sceneArgs._overwritten = true;
+	_sceneArgs._returnValue = 0;
 
-	while (!SceneArgs.ReturnValue) {
+	while (!_sceneArgs._returnValue) {
 		inpTurnFunctionKey(0);  /* or call save functions in case of space */
 		inpTurnESC(0);
 
-		activ = Menu(menu, SceneArgs.Moeglichkeiten, (byte)(activ), NULL, 0);
+		activ = Menu(menu, _sceneArgs._options, (byte)(activ), NULL, 0);
 
 		inpTurnESC(1);
 		inpTurnFunctionKey(1);
@@ -316,12 +310,12 @@ void DoneGarage() {
 			} else {
 				Say(BUSINESS_TXT, 0, marc->PictID, "REPAIR_HERE");
 				inpTurnESC(0);
-				SceneArgs.ReturnValue = StdHandle(GO);
+				_sceneArgs._returnValue = StdHandle(GO);
 				inpTurnESC(1);
 			}
 		} else {
 			inpTurnESC(0);
-			SceneArgs.ReturnValue = StdHandle(choice);
+			_sceneArgs._returnValue = StdHandle(choice);
 			inpTurnESC(1);
 		}
 	}
@@ -342,20 +336,20 @@ void tcInitFahndung() {
 void tcDoneFahndung() {
 	if (tcStartEvidence()) {
 		tcDonePrison();
-		SceneArgs.ReturnValue = SCENE_NEW_GAME;
+		_sceneArgs._returnValue = SCENE_NEW_GAME;
 	} else {
 		switch (((Player)(dbGetObject(Player_Player_1)))->NrOfBurglaries) {
 		case 3:
-			SceneArgs.ReturnValue = SCENE_STATION;
+			_sceneArgs._returnValue = SCENE_STATION;
 			break;
 		default:
-			SceneArgs.ReturnValue = SCENE_HOTEL_ROOM;
+			_sceneArgs._returnValue = SCENE_HOTEL_ROOM;
 			break;
 		}
 	}
 
 	if (tcIsDeadlock())
-		SceneArgs.ReturnValue = SCENE_NEW_GAME;
+		_sceneArgs._returnValue = SCENE_NEW_GAME;
 
 	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
 }

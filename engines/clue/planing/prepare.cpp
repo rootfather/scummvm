@@ -181,7 +181,7 @@ void plPrepareRel() {
 	consistsOfAll(Planing_BldId, OLF_PRIVATE_LIST, Object_LSArea);
 	LIST *areas = ObjectListPrivate;
 
-	for (NODE *n = (NODE *) LIST_HEAD(areas); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n)) {
+	for (NODE *n = LIST_HEAD(areas); NODE_SUCC(n); n = NODE_SUCC(n)) {
 		LSArea area = (LSArea)OL_DATA(n);
 
 		if (!CloneRelation

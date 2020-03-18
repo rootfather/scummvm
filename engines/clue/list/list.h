@@ -25,8 +25,8 @@ namespace Clue {
  **************/
 
 typedef struct Node {
-	struct Node *Succ;
-	struct Node *Pred;
+	Node *Succ;
+	Node *Pred;
 	char *Name;
 	size_t Size;
 } NODE;

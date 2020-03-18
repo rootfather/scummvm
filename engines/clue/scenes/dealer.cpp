@@ -133,17 +133,17 @@ void tcDealerSays(Person dealer, byte textNr, int32 perc) {
 		hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Loot);
 		perc = tcGetDealerPerc(dealer, perc);
 
-		for (struct ObjectNode *n = (struct ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n);
-		        n = (struct ObjectNode *) NODE_SUCC(n)) {
+		for (ObjectNode *n = (ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n);
+		        n = (ObjectNode *) NODE_SUCC(n)) {
 			Loot loot = (Loot)OL_DATA(n);
-			uint32 price = hasGet(Person_Matt_Stuvysunt, OL_NR(n)), offer;
+			uint32 price = hasGet(Person_Matt_Stuvysunt, OL_NR(n));
 
-			offer = tcGetDealerOffer(price, perc);
+			uint32 offer = tcGetDealerOffer(price, perc);
 			offer = MAX(offer, 1u);
 
 			RemoveNode(dealerOffer, NULL);
 
-			if ((loot->Type) == textNr) {
+			if (loot->Type == textNr) {
 				byte symp;
 				if (loot->Name) {
 					symp = 10;
@@ -168,11 +168,9 @@ void tcDealerSays(Person dealer, byte textNr, int32 perc) {
 				Bubble(dealerOffer, 0, 0L, 0L);
 
 				if (!(Say(BUSINESS_TXT, 0, MATT_PICTID, "DEALER_ANSWER"))) {
-					int32 mattsMoney;
-
 					hasUnSet(Person_Matt_Stuvysunt, OL_NR(n));
 
-					mattsMoney = MAX((((int32)offer * (player->MattsPart)) / 100), 1);
+					int32 mattsMoney = MAX((((int32)offer * (player->MattsPart)) / 100), 1);
 
 					tcAddDealerSymp(dealer, symp);
 					tcAddPlayerMoney(mattsMoney);
@@ -216,8 +214,7 @@ LIST *tcMakeLootList(uint32 containerID, uint32 relID) {
 	/* Liste durcharbeiten */
 
 	if (!(LIST_EMPTY(loots))) {
-		for (NODE *n = (NODE *) LIST_HEAD(loots); NODE_SUCC(n);
-		        n = (NODE *) NODE_SUCC(n)) {
+		for (NODE *n = LIST_HEAD(loots); NODE_SUCC(n); n = NODE_SUCC(n)) {
 			if (OL_TYPE(n) == Object_Loot) {
 				Loot loot = (Loot)OL_DATA(n);
 				uint32 value = GetP(dbGetObject(containerID), relID, loot);

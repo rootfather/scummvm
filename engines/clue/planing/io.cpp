@@ -27,10 +27,6 @@ struct IOData {
 	byte io_Data;
 };
 
-
-static int Planing_Open[3] = { 0, 1, 0 };
-
-
 /* Loading & saving functions */
 void plSaveTools(Common::Stream *fh) {
 	if (fh) {
@@ -38,8 +34,7 @@ void plSaveTools(Common::Stream *fh) {
 
 		dskSetLine(fh, PLANING_PLAN_TOOL_BEGIN_ID);
 
-		for (struct ObjectNode *n = (struct ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n);
-		        n = (struct ObjectNode *) NODE_SUCC(n))
+		for (ObjectNode *n = (ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n); n = (ObjectNode *) NODE_SUCC(n))
 			dskSetLine_U32(fh, OL_NR(n));
 
 		dskSetLine(fh, PLANING_PLAN_TOOL_END_ID);
@@ -98,6 +93,8 @@ LIST *plLoadTools(Common::Stream *fh) {
 }
 
 byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
+	static const int Planing_Open[3] = { 0, 1, 0 };
+
 	if (GamePlayMode & GP_GUARD_DESIGN) {
 		if (grdInit(fh, Planing_Open[mode], objId, lsGetActivAreaID()))
 			return PLANING_OPEN_OK;

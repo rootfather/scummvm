@@ -1147,7 +1147,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 			}
 
 			if (animate & PLANING_ANIMATE_NO) {
-				struct Handler *h = (struct Handler *) plSys->ActivHandler;
+				Handler *h = (Handler *) plSys->ActivHandler;
 				uint16 dir;
 
 				if (i < BurglarsNr)
@@ -1156,8 +1156,8 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 					dir = ANM_MOVE_DOWN;
 
 				if (CurrentTimer(plSys) != 0) {
-					for (struct Action *a = (struct Action *) LIST_HEAD(h->Actions);
-					        NODE_SUCC(a); a = (struct Action *) NODE_SUCC(a)) {
+					for (Action *a = (Action *) LIST_HEAD(h->Actions);
+					        NODE_SUCC(a); a = (Action *) NODE_SUCC(a)) {
 						switch (a->Type) {
 						case ACTION_GO:
 							switch (ActionData(a, struct ActionGo *)->Direction) {
@@ -1185,9 +1185,11 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 						case ACTION_CONTROL:
 							dir = ANM_MOVE_DOWN;
 							break;
+						default:
+							break;
 						}
 
-						if (a == (struct Action *) h->CurrentAction)
+						if (a == (Action *) h->CurrentAction)
 							break;
 					}
 				}
@@ -1202,7 +1204,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 
 	SetActivHandler(plSys, OL_NR(GetNthNode(PersonsList, CurrentPerson)));
 
-	if ((lastAreaId) && (lastAreaId != lsGetActivAreaID())) {
+	if (lastAreaId && (lastAreaId != lsGetActivAreaID())) {
 		lsDoneActivArea(lastAreaId);
 		lsInitActivArea(lastAreaId, livGetXPos(Planing_Name[CurrentPerson]),
 		                livGetYPos(Planing_Name[CurrentPerson]),

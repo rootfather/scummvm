@@ -23,6 +23,7 @@
 
 /* includes */
 #include "clue/list/list.h"
+#include "common/str.h"
 
 namespace Clue {
 /* public defines */
@@ -37,7 +38,7 @@ struct TextControl {
 };
 
 struct Text {
-	NODE txt_Link;
+	NODE txt_Link; // Unused? But required for alignment during casting?
 
 	char *_handle;
 	char *_lastMark;
@@ -78,7 +79,7 @@ public:
 
 	/* public prototypes - STRING */
 	char *getNthString(uint32 textId, const char *key, uint32 nth, char *dest);
-	char *getFirstLine(uint32 textId, const char *key, char *dest);
+	Common::String getFirstLine(uint32 textId, const char *key, char *dest);
 	void putCharacter(LIST *list, uint16 pos, uint8 c);
 };
 	

@@ -89,10 +89,10 @@ uint32 Go(LIST *succ) {
 
 		PrintStatus(line);
 
-		for (struct TCEventNode *node = (struct TCEventNode *) LIST_HEAD(succ); NODE_SUCC(node);
-		        node = (struct TCEventNode *) NODE_SUCC(node)) {
+		for (TCEventNode *node = (TCEventNode *) LIST_HEAD(succ); NODE_SUCC(node);
+		        node = (TCEventNode *) NODE_SUCC(node)) {
 			struct Scene *sc = GetScene(node->EventNr);
-			NODE *location = (NODE *)GetNthNode(film->loc_names, (uint32) sc->LocationNr);
+			NODE *location = (NODE *)GetNthNode(film->loc_names, sc->LocationNr);
 
 			NODE_NAME(node) = NODE_NAME(location);
 
@@ -102,23 +102,21 @@ uint32 Go(LIST *succ) {
 		prob = (1 << prob) - 1;
 		prob = Menu(succ, prob, 0, NULL, 0L);
 
-		succ_eventnr =
-		    ((struct TCEventNode *) GetNthNode(succ, (uint32) prob))->EventNr;
+		succ_eventnr = ((TCEventNode *) GetNthNode(succ, prob))->EventNr;
 
 		/* jetzt die Zuweisung wieder entfernen, damit der Name */
 		/* nicht 2 mal freigegeben wird */
 
-		for (struct TCEventNode *node = (struct TCEventNode *) LIST_HEAD(succ); NODE_SUCC(node);
-		        node = (struct TCEventNode *) NODE_SUCC(node))
+		for (TCEventNode *node = (TCEventNode *) LIST_HEAD(succ); NODE_SUCC(node);
+		        node = (TCEventNode *) NODE_SUCC(node))
 			NODE_NAME(node) = NULL;
 	} else {
-		succ_eventnr = (uint32)((struct TCEventNode *)
-		                        GetNthNode(succ, 0L))->EventNr;
+		succ_eventnr = ((TCEventNode *) GetNthNode(succ, 0L))->EventNr;
 	}
 
 	inpTurnFunctionKey(1);
 
-	return (succ_eventnr);
+	return succ_eventnr;
 }
 
 

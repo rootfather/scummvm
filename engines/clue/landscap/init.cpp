@@ -159,7 +159,7 @@ void lsInitObjects() {
 	}
 
 	NODE *n;
-	for (n = (NODE *) LIST_HEAD(areas); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n)) {
+	for (n = LIST_HEAD(areas); NODE_SUCC(n); n = NODE_SUCC(n)) {
 		lsInitRelations(OL_NR(n));
 
 		/* Daten laden */
@@ -260,7 +260,7 @@ static void lsLoadAllSpots() {
 	consistsOfAll(ls->ul_BuildingID, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME, Object_LSArea);
 	LIST *areas = ObjectListPrivate;
 
-	NODE *n = (NODE *) LIST_HEAD(areas);
+	NODE *n = LIST_HEAD(areas);
 
 	char fileName[TXT_KEY_LENGTH];
 	strcpy(fileName, NODE_NAME(n));
@@ -313,13 +313,11 @@ void lsDoneObjectDB(uint32 areaID) {
 
 void lsDoneLandScape() {
 	if (ls) {
-		LIST *areas;
-
 		consistsOfAll(ls->ul_BuildingID, OLF_PRIVATE_LIST, Object_LSArea);
-		areas = ObjectListPrivate;
+		LIST* areas = ObjectListPrivate;
 
 		int32 areaCount = 0;
-		for (NODE *n = (NODE *) LIST_HEAD(areas); NODE_SUCC(n); n = (NODE *) NODE_SUCC(n), areaCount++) {
+		for (NODE *n = LIST_HEAD(areas); NODE_SUCC(n); n = NODE_SUCC(n), areaCount++) {
 			lsDoneObjectDB(OL_NR(n));
 
 			if (ls->p_ObjectRetrievalLists[areaCount]) {
