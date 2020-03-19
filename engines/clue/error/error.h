@@ -64,10 +64,6 @@ static const char moduleNames[][ERROR_MODULE_LAST] = {
 
 #define ERR_CHANNEL(x) 1 << x
 
-/* openerrormanager defines */
-
-#define ERR_STD_ERROR_FILENAME  "tc.err"
-
 /* Parameter : mode */
 
 #define  ERR_NO_OUTPUT         1
