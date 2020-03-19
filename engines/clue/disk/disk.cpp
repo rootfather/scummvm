@@ -6,11 +6,9 @@
   distribution.
  ****************************************************************************/
 
-#include <sys/stat.h>
+#include "common/fs.h"
+#include "common/stream.h"
 #include "clue/error/error.h"
-
-// HACK: Replace with proper streams
-#include "backends/fs/stdiostream.h"
 
 namespace Clue {
 
@@ -30,13 +28,15 @@ char *dskGetRootPath(char *result) {
 #endif
 
 Common::Stream *dskOpen(const char *Pathname, int RW) {
+	// HACK: Replace with proper streams
+	Common::FSNode node(Pathname);
 	Common::Stream *fp = NULL;
 	if (RW == 0) {
 		DebugMsg(ERR_DEBUG, ERROR_MODULE_DISK, "Reading :%s", Pathname);
-		fp = StdioStream::makeFromPath(Pathname, false);
+		fp = dynamic_cast<Common::Stream*>(node.createReadStream());
 	} else {
 		DebugMsg(ERR_DEBUG, ERROR_MODULE_DISK, "Writing :%s", Pathname);
-		fp = StdioStream::makeFromPath(Pathname, true);
+		fp = dynamic_cast<Common::Stream*>(node.createWriteStream());
 	}
 
 	if (!fp)
@@ -84,7 +84,6 @@ bool dskBuildPathName(DiskCheckE check, const char *Directory, const char *Filen
 
 	Common::String Dir;
 	Common::String File;
-	struct stat status;
 
 	do {
 		switch (step++) {
@@ -115,7 +114,7 @@ bool dskBuildPathName(DiskCheckE check, const char *Directory, const char *Filen
 			sprintf(Result, "%s" DIR_SEP "%s", RootPathName, Dir.c_str());
 		}
 
-	} while (stat(Result, &status) == -1);
+	} while (!Common::FSNode(Result).exists());
 
 	if (check == DISK_CHECK_DIR) {
 		strcat(Result, DIR_SEP);
@@ -125,13 +124,19 @@ bool dskBuildPathName(DiskCheckE check, const char *Directory, const char *Filen
 	return true;
 }
 
-size_t dskFileLength(const char *Pathname) {
-	struct stat status;
+int32 dskFileLength(const char *Pathname) {
+	int32 length = 0;
+	Common::FSNode node(Pathname);
 
-	if (stat(Pathname, &status) == -1)
-		return 0;
+	if (node.exists()) {
+		Common::SeekableReadStream *stream = node.createReadStream();
+		if (stream && stream->size() > 0) {
+			length = stream->size();
+		}
+		delete stream;
+	}
 
-	return status.st_size;
+	return length;
 }
 
 void dskClose(Common::Stream *fp) {

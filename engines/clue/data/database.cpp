@@ -256,24 +256,24 @@ dbRWStdObject(void *obj, int RW, uint32 type, uint32 size, uint32 localSize, Com
 	void (*U8_RW)(Common::Stream * fp, uint8 * x);
 	void (*S8_RW)(Common::Stream * fp, int8 * x);
 	void (*U16LE_RW)(Common::Stream * fp, uint16 * x);
-	void (*S16LE_RW)(Common::Stream * fp, int16 * x);
+	//void (*S16LE_RW)(Common::Stream * fp, int16 * x);
 	void (*U32LE_RW)(Common::Stream * fp, uint32 * x);
-	void (*S32LE_RW)(Common::Stream * fp, int32 * x);
+	//void (*S32LE_RW)(Common::Stream * fp, int32 * x);
 
 	if (RW == 0) {
 		U8_RW = dskRead_U8;
 		S8_RW = dskRead_S8;
 		U16LE_RW = dskRead_U16LE;
-		S16LE_RW = dskRead_S16LE;
+		//S16LE_RW = dskRead_S16LE;
 		U32LE_RW = dskRead_U32LE;
-		S32LE_RW = dskRead_S32LE;
+		//S32LE_RW = dskRead_S32LE;
 	} else {
 		U8_RW = dskWrite_U8;
 		S8_RW = dskWrite_S8;
 		U16LE_RW = dskWrite_U16LE;
-		S16LE_RW = dskWrite_S16LE;
+		//S16LE_RW = dskWrite_S16LE;
 		U32LE_RW = dskWrite_U32LE;
-		S32LE_RW = dskWrite_S32LE;
+		//S32LE_RW = dskWrite_S32LE;
 	}
 
 	switch (type) {
@@ -695,24 +695,24 @@ dbRWProfiObject(void *obj, int RW, uint32 type, uint32 size, uint32 localSize, C
 	void (*U8_RW)(Common::Stream * fp, uint8 * x);
 	void (*S8_RW)(Common::Stream * fp, int8 * x);
 	void (*U16LE_RW)(Common::Stream * fp, uint16 * x);
-	void (*S16LE_RW)(Common::Stream * fp, int16 * x);
+	//void (*S16LE_RW)(Common::Stream * fp, int16 * x);
 	void (*U32LE_RW)(Common::Stream * fp, uint32 * x);
-	void (*S32LE_RW)(Common::Stream * fp, int32 * x);
+	//void (*S32LE_RW)(Common::Stream * fp, int32 * x);
 
 	if (RW == 0) {
 		U8_RW = dskRead_U8;
 		S8_RW = dskRead_S8;
 		U16LE_RW = dskRead_U16LE;
-		S16LE_RW = dskRead_S16LE;
+		//S16LE_RW = dskRead_S16LE;
 		U32LE_RW = dskRead_U32LE;
-		S32LE_RW = dskRead_S32LE;
+		//S32LE_RW = dskRead_S32LE;
 	} else {
 		U8_RW = dskWrite_U8;
 		S8_RW = dskWrite_S8;
 		U16LE_RW = dskWrite_U16LE;
-		S16LE_RW = dskWrite_S16LE;
+		//S16LE_RW = dskWrite_S16LE;
 		U32LE_RW = dskWrite_U32LE;
-		S32LE_RW = dskWrite_S32LE;
+		//S32LE_RW = dskWrite_S32LE;
 	}
 
 	switch (type) {

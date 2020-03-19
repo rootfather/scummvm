@@ -57,7 +57,7 @@ void dskRead_U32LE(Common::Stream *fp, uint32 *x);
 void dskRead_S32LE(Common::Stream *fp, int32 *x);
 
 
-size_t dskFileLength(const char *Pathname);
+int32 dskFileLength(const char *Pathname);
 
 Common::Stream *dskOpen(const char *Pathname, int RW);
 
