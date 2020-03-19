@@ -165,7 +165,7 @@ void tcRefreshLocationInTitle(uint32 locNr) {
 	BuildDate(GetDay, date);
 	NODE *node = (NODE *)GetNthNode(film->loc_names, locNr);
 
-	sprintf(line, "%s %s", NODE_NAME(node), date);
+	snprintf(line, TXT_KEY_LENGTH, "%s %s", NODE_NAME(node), date);
 	ShowMenuBackground();
 	PrintStatus(line);
 }

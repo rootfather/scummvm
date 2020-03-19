@@ -388,7 +388,7 @@ uint32 tcPersonWanted(uint32 persId) {
 	LIST *bubble = g_clue->_txtMgr->goKey(BUSINESS_TXT, "BURGLAR_RECOG");
 
 	char line[TXT_KEY_LENGTH];
-	sprintf(line, "%s %s.", NODE_NAME(GetNthNode(bubble, 3)), name);
+	snprintf(line, TXT_KEY_LENGTH, "%s %s.", NODE_NAME(GetNthNode(bubble, 3)), name);
 
 	RemoveNode(bubble, NODE_NAME(GetNthNode(bubble, 3)));
 	CreateNode(bubble, 0L, line);

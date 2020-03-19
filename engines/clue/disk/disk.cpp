@@ -255,11 +255,12 @@ void dskRead_S32LE(Common::Stream *fp, int32 *x) {
 bool dskGetLine(char *s, int size, Common::Stream *fp) {
 	Common::SeekableReadStream *stream = dynamic_cast<Common::SeekableReadStream *>(fp);
 	if (stream->readLine(s, size)) {
-		char *p;
-		if (p = strrchr(s, '\n'))
+		char *p = strrchr(s, '\n');
+		if (p)
 			*p = '\0';
 
-		if (p = strrchr(s, '\r'))
+		p = strrchr(s, '\r');
+		if (p)
 			*p = '\0';
 
 		return true;

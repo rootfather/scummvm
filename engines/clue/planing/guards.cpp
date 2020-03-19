@@ -42,7 +42,7 @@ bool grdInit(Common::Stream **fh, int RW, uint32 bldId, uint32 areaId) {
 	dbGetObjectName(areaId, fileName);
 	fileName[strlen(fileName) - 1] = '\0';
 	char bldName[TXT_KEY_LENGTH];
-	sprintf(bldName, "%s%s", fileName, GUARD_EXTENSION);
+	snprintf(bldName, TXT_KEY_LENGTH, "%s%s", fileName, GUARD_EXTENSION);
 
 	dskBuildPathName(DISK_CHECK_FILE, GUARD_DIRECTORY, bldName, fileName);
 
