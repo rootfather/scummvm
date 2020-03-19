@@ -42,8 +42,7 @@ void DoneTaxi() {
 
 	i = MIN((uint32)i, GetNrOfNodes(locs) - 1);
 
-	char exp[TXT_KEY_LENGTH];
-	g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
+	Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
 	ExpandObjectList(locs, exp);
 
 	byte j = Bubble(locs, i, 0L, 0L);

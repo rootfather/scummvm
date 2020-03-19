@@ -159,7 +159,7 @@ extern void SetCurrentScene(Scene *scene);
 extern char *GetCurrLocName();
 
 char *BuildDate(uint32 days, char *date);
-char *BuildTime(uint32 min, char *time);
+Common::String BuildTime(uint32 min);
 
 void FormatDigit(uint32 digit, char *s);
 

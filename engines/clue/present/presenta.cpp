@@ -19,8 +19,7 @@ namespace Clue {
 
 void InitEvidencePresent(uint32 nr, LIST *presentationData, LIST *texts) {
 	Evidence e = (Evidence)dbGetObject(nr);
-	char data[TXT_KEY_LENGTH];
-	dbGetObjectName(e->pers, data);
+	Common::String data = dbGetObjectName(e->pers);
 
 	AddPresentTextLine(presentationData, data, 0, texts, 0);
 	AddPresentLine(presentationData, PRESENT_AS_BAR, e->Recognition, 255, texts, 1);
@@ -58,11 +57,11 @@ void InitLootPresent(uint32 nr, LIST *presentationData, LIST *texts) {
 void InitOneLootPresent(uint32 nr, LIST *presentationData, LIST *texts) {
 	Loot loot = (Loot)dbGetObject(nr);
 
-	char data[TXT_KEY_LENGTH];
+	Common::String data;
 	if (loot->Name == Kein_Name)
-		dbGetObjectName(nr, data);
+		data = dbGetObjectName(nr);
 	else
-		g_clue->_txtMgr->getNthString(OBJECTS_ENUM_TXT, "enum_LootNameE", loot->Name, data);
+		data = g_clue->_txtMgr->getNthString(OBJECTS_ENUM_TXT, "enum_LootNameE", loot->Name);
 
 	AddPresentTextLine(presentationData, data, 0, texts, 4);
 
@@ -78,8 +77,7 @@ void InitOneLootPresent(uint32 nr, LIST *presentationData, LIST *texts) {
 void InitObjectPresent(uint32 nr, LIST *presentationData, LIST *texts) {
 	LSObject lso = (LSObject)dbGetObject(nr);
 
-	char data[TXT_KEY_LENGTH];
-	dbGetObjectName(lso->Type, data);
+	Common::String data = dbGetObjectName(lso->Type);
 
 	AddPresentTextLine(presentationData, data, 0, texts, 0);
 
@@ -106,8 +104,7 @@ void InitToolPresent(uint32 nr, LIST *presentationData, LIST *texts) {
 
 	Tool obj = (Tool) dbGetObject(nr);
 
-	char data[TXT_KEY_LENGTH];
-	dbGetObjectName(nr, data);
+	Common::String data = dbGetObjectName(nr);
 
 	AddPresentTextLine(presentationData, data, 0, texts, 0);
 	AddPresentLine(presentationData, PRESENT_AS_NUMBER, tcGetToolTraderOffer(obj), 0, texts, 1);
@@ -154,8 +151,7 @@ void InitToolPresent(uint32 nr, LIST *presentationData, LIST *texts) {
 		uint32 time = breakGet(nr, itemNr);
 		Item item = (Item)OL_DATA(n);
 
-		sprintf(data, "%.2d:%.2d", time / 60, time % 60);
-
+		data = Common::String::format("%.2d:%.2d", time / 60, time % 60);
 		AddPresentTextLine(presentationData, data, 0, tools, item->Type);
 	}
 
@@ -166,16 +162,14 @@ void InitToolPresent(uint32 nr, LIST *presentationData, LIST *texts) {
 void InitBuildingPresent(uint32 nr, LIST *presentationData, LIST *texts) {
 	Building obj = (Building) dbGetObject(nr);
 
-	char data[TXT_KEY_LENGTH];
-	dbGetObjectName(nr, data);
+	Common::String data = dbGetObjectName(nr);
 	AddPresentTextLine(presentationData, data, 0, texts, 0);
 
-	BuildTime(tcGetBuildPoliceT(obj), data);
+	data = BuildTime(tcGetBuildPoliceT(obj));
 	AddPresentTextLine(presentationData, data, 0, texts, 1);
-	AddPresentLine(presentationData, PRESENT_AS_NUMBER,
-	               tcGetBuildValues(obj), 255, texts, 2);
+	AddPresentLine(presentationData, PRESENT_AS_NUMBER, tcGetBuildValues(obj), 255, texts, 2);
 
-	g_clue->_txtMgr->getNthString(OBJECTS_ENUM_TXT, "enum_RouteE", obj->EscapeRoute, data);
+	data = g_clue->_txtMgr->getNthString(OBJECTS_ENUM_TXT, "enum_RouteE", obj->EscapeRoute);
 	AddPresentTextLine(presentationData, data, 0, texts, 3);
 
 	AddPresentLine(presentationData, PRESENT_AS_BAR, obj->Exactlyness, 255, texts, 4);
@@ -200,14 +194,13 @@ void InitPlayerPresent(uint32 nr, LIST *presentationData, LIST *texts) {
 void InitPersonPresent(uint32 nr, LIST *presentationData, LIST *texts) {
 	Person obj = (Person) dbGetObject(nr);
 
-	char data[TXT_KEY_LENGTH];
-	dbGetObjectName(nr, data);
+	Common::String data = dbGetObjectName(nr);
 	AddPresentTextLine(presentationData, data, 0, texts, 0);
 
-	g_clue->_txtMgr->getNthString(OBJECTS_ENUM_TXT, "enum_JobE", obj->Job, data);
+	data = g_clue->_txtMgr->getNthString(OBJECTS_ENUM_TXT, "enum_JobE", obj->Job);
 	AddPresentTextLine(presentationData, data, 0L, texts, 1);
 
-	g_clue->_txtMgr->getNthString(OBJECTS_ENUM_TXT, "enum_SexE", obj->Sex, data);
+	data = g_clue->_txtMgr->getNthString(OBJECTS_ENUM_TXT, "enum_SexE", obj->Sex);
 	AddPresentTextLine(presentationData, data, 0L, texts, 2);
 
 	AddPresentLine(presentationData, PRESENT_AS_NUMBER, obj->Age, 0L, texts, 3);
@@ -238,7 +231,7 @@ void InitPersonPresent(uint32 nr, LIST *presentationData, LIST *texts) {
 			uint32 abiNr = ((struct ObjectNode *) GetNthNode(abilities, (uint32) i))->nr;
 			Ability abi = (Ability) dbGetObject(abiNr);
 	
-			g_clue->_txtMgr->getNthString(OBJECTS_ENUM_TXT, "enum_AbilityE", abi->Name, data);
+			data = g_clue->_txtMgr->getNthString(OBJECTS_ENUM_TXT, "enum_AbilityE", abi->Name);
 			CreateNode(texts, 0, data);
 	
 			AddPresentLine(presentationData, PRESENT_AS_BAR, hasGet(nr, abiNr), 255, texts, 17 + i);
@@ -251,11 +244,10 @@ void InitPersonPresent(uint32 nr, LIST *presentationData, LIST *texts) {
 void InitCarPresent(uint32 nr, LIST *presentationData, LIST *texts) {
 	Car obj = (Car) dbGetObject(nr);
 
-	char data[TXT_KEY_LENGTH];
-	dbGetObjectName(nr, data);
+	Common::String data = dbGetObjectName(nr);
 	AddPresentTextLine(presentationData, data, 0, texts, 0);
 
-	g_clue->_txtMgr->getNthString(OBJECTS_ENUM_TXT, "enum_LandE", obj->Land, data);
+	data = g_clue->_txtMgr->getNthString(OBJECTS_ENUM_TXT, "enum_LandE", obj->Land);
 	AddPresentTextLine(presentationData, data, 0, texts, 1);
 
 	AddPresentLine(presentationData, PRESENT_AS_NUMBER, tcRGetCarAge(obj), 0, texts, 2);

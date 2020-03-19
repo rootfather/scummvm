@@ -183,32 +183,29 @@ void lsInitObjects() {
 }
 
 void lsLoadGlobalData(uint32 bld, uint32 ul_AreaId) {
-	char areaName[TXT_KEY_LENGTH], fileName[DSK_PATH_MAX];
+	char fileName[DSK_PATH_MAX];
 
-	dbGetObjectName(ul_AreaId, areaName);
-	areaName[strlen(areaName) - 1] = '\0';
+	Common::String areaName = dbGetObjectName(ul_AreaId);
+	areaName += OBJ_GLOBAL_REL_EXTENSION;
 
-	strcat(areaName, OBJ_GLOBAL_REL_EXTENSION);
+	dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, areaName.c_str(), fileName);
 
-	dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, areaName, fileName);
-
-	if (!(LoadRelations(fileName, 0)))
+	if (!LoadRelations(fileName, 0))
 		ErrorMsg(Disk_Defect, ERROR_MODULE_LANDSCAP, 2);
 }
 
 void lsInitObjectDB(uint32 bld, uint32 areaID) {
-	char fileName[DSK_PATH_MAX], areaName[TXT_KEY_LENGTH];
-
-	dbGetObjectName(areaID, areaName);
-	strcat(areaName, OBJ_DATA_EXTENSION);
-	dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, areaName, fileName);
+	char fileName[DSK_PATH_MAX];
+	Common::String areaName = dbGetObjectName(areaID);
+	areaName += OBJ_DATA_EXTENSION;
+	dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, areaName.c_str(), fileName);
 
 	dbSetLoadObjectsMode(DB_LOAD_MODE_NO_NAME); /* dont fetch names of objects */
 
 	if (dbLoadAllObjects(fileName, 0)) {
-		dbGetObjectName(areaID, areaName);
-		strcat(areaName, OBJ_REL_EXTENSION);
-		dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, areaName, fileName);
+		areaName = dbGetObjectName(areaID);
+		areaName += OBJ_REL_EXTENSION;
+		dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, areaName.c_str(), fileName);
 
 		if (!(LoadRelations(fileName, 0)))
 			ErrorMsg(Disk_Defect, ERROR_MODULE_LANDSCAP, 3);
@@ -237,12 +234,11 @@ static void lsInitFloorSquares() {
 		ls->p_AllFloors[i] = (LSFloorSquare *)TCAllocMem(size, 0);
 		ls->ul_FloorAreaId[i] = OL_NR(n);
 
-		char areaName[TXT_KEY_LENGTH];
-		dbGetObjectName(ls->ul_FloorAreaId[i], areaName);
-		strcat(areaName, FLOOR_DATA_EXTENSION);
+		Common::String areaName = dbGetObjectName(ls->ul_FloorAreaId[i]);
+		areaName += FLOOR_DATA_EXTENSION;
 
 		char fileName[TXT_KEY_LENGTH];
-		dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, areaName, fileName);
+		dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, areaName.c_str(), fileName);
 
 		Common::Stream *fh = dskOpen(fileName, 0);
 		if (fh) {

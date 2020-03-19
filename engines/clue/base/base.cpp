@@ -25,7 +25,6 @@
 
 namespace Clue {
 
-void *StdBuffer0 = NULL;
 void *StdBuffer1 = NULL;
 
 void tcDone() {
@@ -56,9 +55,6 @@ void tcDone() {
 		if (StdBuffer1)
 			TCFreeMem(StdBuffer1, STD_BUFFER1_SIZE);
 
-		if (StdBuffer0)
-			TCFreeMem(StdBuffer0, STD_BUFFER0_SIZE);
-
 		if (memGetAllocatedMem())
 			DebugMsg(ERR_DEBUG, ERROR_MODULE_BASE, "Attention: dirty mem: %ld bytes!!!", memGetAllocatedMem());
 		else
@@ -70,9 +66,8 @@ bool ClueEngine::tcInit() {
 	InitAudio();
 
 	StdBuffer1 = TCAllocMem(STD_BUFFER1_SIZE, true);
-	StdBuffer0 = TCAllocMem(STD_BUFFER0_SIZE, true);
 
-	if (!StdBuffer0 || !StdBuffer1) {
+	if (!StdBuffer1) {
 		return false;
 	}
 	 
@@ -380,29 +375,31 @@ void ClueEngine::setFullEnviroment() {
 byte ClueEngine::startupMenu() {
 	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "STARTUP_MENU");
 	uint32 activ;
-	char line[TXT_KEY_LENGTH];
+	Common::String line;
 	byte ret = 0;
 
 	ShowMenuBackground();
 
 	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		if (g_clue->getFeatures() & ADGF_CD) {
-			PrintStatus(g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "BITTE_WARTEN_PC_CD_ROM_PROFI", line).c_str());
+			line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "BITTE_WARTEN_PC_CD_ROM_PROFI");
 		} else {
-			PrintStatus(g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "BITTE_WARTEN_PC_PROFI", line).c_str());
+			line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "BITTE_WARTEN_PC_PROFI");
 		}
+		PrintStatus(line);
 	} else {
 		if (g_clue->getFeatures() & ADGF_CD) {
-			PrintStatus(g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "BITTE_WARTEM_PC_CD_ROM", line).c_str());
+			line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "BITTE_WARTEM_PC_CD_ROM");
 		} else {
-			PrintStatus(g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "BITTE_WARTEN_PC", line).c_str());
+			line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "BITTE_WARTEN_PC");
 		}
+		PrintStatus(line);
 	}
 
 	inpTurnFunctionKey(0);
 	inpTurnESC(0);
 
-	activ = Menu(menu, 7L, 0, NULL, 0L);
+	activ = Menu(menu, 7L, 0, nullptr, 0L);
 
 	inpTurnESC(1);
 	inpTurnFunctionKey(1);

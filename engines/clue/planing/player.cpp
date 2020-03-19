@@ -1785,8 +1785,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 
 					case PLANING_PLAYER_RADIO_ONE:
 						if (BurglarsNr > 2) {
-							char exp[TXT_KEY_LENGTH];
-							NODE *node, *help;
+							NODE*help;
 
 							plMessage("RADIO_1", PLANING_MSG_REFRESH);
 							SetPictID(((Person)
@@ -1794,12 +1793,11 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 							                       (GetNthNode
 							                        (BurglarsList,
 							                         0))))->PictID);
-							node =
-							    (NODE *)UnLink(BurglarsList,
-							                   OL_NAME(GetNthNode(BurglarsList, 0)),
-							                   &help);
+							NODE* node = (NODE*)UnLink(BurglarsList,
+							                           OL_NAME(GetNthNode(BurglarsList, 0)),
+							                           &help);
 
-							g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_RADIO", exp);
+							Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_RADIO");
 							ExpandObjectList(BurglarsList, exp);
 
 							choice1 = Bubble(BurglarsList, 0, NULL, 0L);

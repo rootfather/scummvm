@@ -79,7 +79,10 @@ void *RemTailNode(LIST *list) {
 
 	return NULL;
 }
-
+void *CreateNode(LIST *list, size_t size, Common::String name) {
+	return CreateNode(list, size, name.c_str());
+}
+	
 void *CreateNode(LIST *list, size_t size, const char *name) {
 	if (!size)
 		size = sizeof(NODE);

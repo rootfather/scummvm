@@ -23,18 +23,16 @@
 
 namespace Clue {
 
-static uint32 tcShowPatrol(LIST *bubble_l, char *c_time, char *patr, byte first,
+static uint32 tcShowPatrol(LIST *bubble_l, Common::String c_time, Common::String patr, byte first,
                            Building bui, uint32 raise) {
-	char patrolie[TXT_KEY_LENGTH];
 	uint32 choice = 0;
-
-	sprintf(patrolie, "%s  %s", c_time, patr);
+	Common::String patrolie = c_time + ' ' + patr;
 
 	CreateNode(bubble_l, 0L, patrolie);
 
 	SetBubbleType(THINK_BUBBLE);
 
-	Bubble(bubble_l, (byte) first, 0, 140L);
+	Bubble(bubble_l, (byte) first, nullptr, 140L);
 	choice = GetExtBubbleActionInfo();
 
 	tcAddBuildExactlyness(bui, raise);
@@ -46,7 +44,6 @@ static uint32 tcShowPatrol(LIST *bubble_l, char *c_time, char *patr, byte first,
 
 void Investigate(const char *location) {
 	NODE *n, *nextMsg;
-	char patr[TXT_KEY_LENGTH], line[TXT_KEY_LENGTH], c_time[10];
 	uint32 minutes = 0, choice = 0, first = 0;
 
 	uint32 buiID = GetObjNrOfBuilding(GetLocation);
@@ -74,8 +71,8 @@ void Investigate(const char *location) {
 	gfxSetRect(0, 320);
 	gfxSetPens(l_gc, 249, GFX_SAME_PEN, 0);
 
-	g_clue->_txtMgr->getFirstLine(INVESTIGATIONS_TXT, "Abbrechen", line);
-	g_clue->_txtMgr->getFirstLine(INVESTIGATIONS_TXT, "Patrolie", patr);
+	Common::String line = g_clue->_txtMgr->getFirstLine(INVESTIGATIONS_TXT, "Abbrechen");
+	Common::String patr = g_clue->_txtMgr->getFirstLine(INVESTIGATIONS_TXT, "Patrolie");
 
 	gfxPrint(m_gc, line, 24, GFX_PRINT_CENTER);
 
@@ -99,13 +96,13 @@ void Investigate(const char *location) {
 
 	/* bis zur 1. Meldung Zeit vergehen lassen! */
 	for (nextMsg = 0; nextMsg == 0;) {
-		BuildTime(GetMinute, c_time);
+		Common::String c_time = BuildTime(GetMinute);
 
 		if (!(GetMinute % 60))
 			ShowTime(0);
 
 		for (n = LIST_HEAD(origin); NODE_SUCC(n); n = NODE_SUCC(n)) {
-			if (strncmp(NODE_NAME(n), c_time, 5) == 0)
+			if (strncmp(NODE_NAME(n), c_time.c_str(), 5) == 0)
 				nextMsg = n;
 		}
 
@@ -119,7 +116,7 @@ void Investigate(const char *location) {
 			tcAddBuildStrike(bui, 1);
 	}
 
-	while (((minutes) < MINUTES_PER_DAY) && (!(choice & INP_LBUTTONP))
+	while ((minutes < MINUTES_PER_DAY) && (!(choice & INP_LBUTTONP))
 	        && (!(choice & INP_RBUTTONP)) && (!(choice & INP_ESC))) {
 		choice = 0;
 
@@ -127,7 +124,7 @@ void Investigate(const char *location) {
 		if ((GetMinute % 60) == 0)
 			ShowTime(0);
 
-		BuildTime(GetMinute, c_time);
+		Common::String c_time = BuildTime(GetMinute);
 
 		/* je nach Bewachungsgrad Meldung : "Patrolie" einsetzen ! */
 		if ((GetMinute % patrolCount) == 0)
@@ -135,7 +132,7 @@ void Investigate(const char *location) {
 
 		/* Überprüfen ob zur aktuellen Zeit (time) etwas geschieht : */
 		if (!choice) {
-			if (strncmp(NODE_NAME(nextMsg), c_time, 5) == 0) {
+			if (strncmp(NODE_NAME(nextMsg), c_time.c_str(), 5) == 0) {
 				if ((GetMinute % 60) != 0)
 					ShowTime(0);
 

@@ -75,12 +75,12 @@ void tcDisplayCommon() {
 
 	gfxSetPens(l_gc, 249, 254, GFX_SAME_PEN);
 
-	char line[TXT_KEY_LENGTH];
+	Common::String line;
 	Building building = NULL;
 	if (Organisation.BuildingID) {
 		building = (Building) dbGetObject(Organisation.BuildingID);
 
-		dbGetObjectName(Organisation.BuildingID, line);
+		line = dbGetObjectName(Organisation.BuildingID);
 		gfxPrint(l_gc, line, 9, GFX_PRINT_CENTER | GFX_PRINT_SHADOW);
 	}
 
@@ -93,15 +93,14 @@ void tcDisplayCommon() {
 	 */
 
 	gfxSetRect(0, 106);
-	strcpy(line, NODE_NAME(GetNthNode(texts, 0L)));
+	line = Common::String(NODE_NAME(GetNthNode(texts, 0L)));
 
-	char name[TXT_KEY_LENGTH];
+	Common::String name;
 	if (Organisation.CarID) {
-		dbGetObjectName(Organisation.CarID, name);
-		tcCutName(name, (byte) ' ', 12);
-		strcat(line, name);
+		name = tcCutName(dbGetObjectName(Organisation.CarID), (byte) ' ', 12);
+		line += name;
 	} else
-		strcat(line, " ? ");
+		line += " ? ";
 
 	gfxPrint(l_gc, line, 25, GFX_PRINT_LEFT);
 
@@ -110,13 +109,13 @@ void tcDisplayCommon() {
 	 */
 
 	gfxSetRect(106, 106);
-	strcpy(line, NODE_NAME(GetNthNode(texts, 2L)));
+	line = Common::String(NODE_NAME(GetNthNode(texts, 2L)));
 
 	if (Organisation.CarID) {
-		sprintf(name, "%d", Organisation.PlacesInCar);
-		strcat(line, name);
+		name = Common::String::format("%d", Organisation.PlacesInCar);
+		line += name;
 	} else
-		strcat(line, " ? ");
+		line += " ? ";
 
 	gfxPrint(l_gc, line, 25, GFX_PRINT_CENTER);
 
@@ -125,13 +124,13 @@ void tcDisplayCommon() {
 	 */
 
 	gfxSetRect(212, 106);
-	strcpy(line, NODE_NAME(GetNthNode(texts, 1L)));
+	line = Common::String(NODE_NAME(GetNthNode(texts, 1L)));
 
 	if (Organisation.DriverID) {
-		dbGetObjectName(Organisation.DriverID, name);
-		strcat(line, name);
+		name = dbGetObjectName(Organisation.DriverID);
+		line += name;
 	} else
-		strcat(line, " ? ");
+		line += " ? ";
 
 	gfxPrint(l_gc, line, 25, GFX_PRINT_RIGHT);
 
@@ -140,17 +139,17 @@ void tcDisplayCommon() {
 	 */
 
 	gfxSetRect(0, 106);
-	strcpy(line, NODE_NAME(GetNthNode(texts, 3L)));
+	line = Common::String(NODE_NAME(GetNthNode(texts, 3L)));
 
 	if (Organisation.BuildingID) {
 		LIST *enums = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_RouteE");
 
-		strcpy(name, NODE_NAME(GetNthNode(enums, building->EscapeRoute)));
-		strcat(line, name);
+		name = Common::String(NODE_NAME(GetNthNode(enums, building->EscapeRoute)));
+		line += name;
 
 		RemoveList(enums);
 	} else
-		strcat(line, " ? ");
+		line += " ? ";
 
 	gfxPrint(l_gc, line, 35, GFX_PRINT_LEFT);
 
@@ -159,13 +158,13 @@ void tcDisplayCommon() {
 	 */
 
 	gfxSetRect(106, 106);
-	strcpy(line, NODE_NAME(GetNthNode(texts, 4L)));
+	line = Common::String(NODE_NAME(GetNthNode(texts, 4L)));
 
 	if (Organisation.BuildingID) {
-		sprintf(name, "%d (km)", building->EscapeRouteLength);
-		strcat(line, name);
+		name = Common::String::format("%d (km)", building->EscapeRouteLength);
+		line += name;
 	} else
-		strcat(line, " ? ");
+		line += " ? ";
 
 	gfxPrint(l_gc, line, 35, GFX_PRINT_CENTER);
 
@@ -174,10 +173,10 @@ void tcDisplayCommon() {
 	 */
 
 	gfxSetRect(212, 106);
-	strcpy(line, NODE_NAME(GetNthNode(texts, 5L)));
+	line = Common::String(NODE_NAME(GetNthNode(texts, 5L)));
 
-	sprintf(name, " %d%%", tcCalcMattsPart());
-	strcat(line, name);
+	name = Common::String::format(" %d%%", tcCalcMattsPart());
+	line += name;
 
 	gfxPrint(l_gc, line, 35, GFX_PRINT_RIGHT);
 
@@ -238,9 +237,7 @@ void tcDisplayAbilities(uint32 personNr, uint32 displayData) {
 			              ORG_DISP_ABILITIES_Y + i * (ORG_DISP_LINE + 4));
 		}
 	} else {
-		char line[TXT_KEY_LENGTH];
-
-		g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "PLAN_NO_CAPABILITY", line);
+		Common::String line = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "PLAN_NO_CAPABILITY");
 		gfxSetRect(ORG_DISP_GUY_WIDTH + 5, ORG_DISP_GUY_WIDTH - 5);
 		gfxSetDrMd(l_gc, GFX_JAM_1);
 		gfxPrint(l_gc, line, ORG_DISP_ABILITIES_Y + ORG_DISP_LINE, GFX_PRINT_LEFT);

@@ -602,18 +602,17 @@ void FormatDigit(uint32 digit, char *s) {
 		sprintf(s, "%u", digit);
 }
 
-char *BuildTime(uint32 min, char *time) {
+Common::String BuildTime(uint32 min) {
 	uint32 h = (min / 60) % 24;
 	char s[TXT_KEY_LENGTH];
 
 	min %= 60;
-
 	FormatDigit(h, s);
-	sprintf(time, "%s:", s);
+	Common::String time = Common::String::format("%s:", s);
 	FormatDigit(min, s);
-	strcat(time, s);
+	time += s;
 
-	return (time);
+	return time;
 }
 
 char *BuildDate(uint32 days, char *date) {

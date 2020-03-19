@@ -28,8 +28,7 @@ void tcSaveTheClou() {
 
 	/* in welche Datei ?? */
 	ShowMenuBackground();
-	char line[TXT_KEY_LENGTH];
-	g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "SaveGame", line);
+	Common::String line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "SaveGame");
 
 	player->CurrScene = film->act_scene->EventNr;
 	player->CurrDay = GetDay;
@@ -41,7 +40,7 @@ void tcSaveTheClou() {
 	if (ReadList(games, 0L, pathname)) {
 		inpTurnESC(1);
 		inpTurnFunctionKey(0);
-		uint16 activ = (uint16) Menu(games, 15L, 0, NULL, 0L);
+		uint16 activ = (uint16) Menu(games, 15L, 0, nullptr, 0L);
 		inpTurnFunctionKey(1);
 
 		/* Name erstellen */
@@ -67,33 +66,33 @@ void tcSaveTheClou() {
 			ReplaceNode(games, NODE_NAME(GetNthNode(games, activ)), game);
 
 			ShowMenuBackground();
-			g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "SAVING", line);
+			line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "SAVING");
 			PrintStatus(line);
 
 			WriteList(games, pathname);
 
 			/* Speichern von tcMain */
-			sprintf(line, "%s%d%s", MAIN_DATA_NAME, activ, GAME_DATA_EXT);
-			dskBuildPathName(DISK_CHECK_DIR, DATADISK, line, pathname);
+			line = Common::String::format("%s%d%s", MAIN_DATA_NAME, activ, GAME_DATA_EXT);
+			dskBuildPathName(DISK_CHECK_DIR, DATADISK, line.c_str(), pathname);
 			dbSaveAllObjects(pathname, DB_tcMain_OFFSET, DB_tcMain_SIZE, 0);
 
-			sprintf(line, "%s%d%s", MAIN_DATA_NAME, activ, GAME_REL_EXT);
-			dskBuildPathName(DISK_CHECK_DIR, DATADISK, line, pathname);
+			line = Common::String::format("%s%d%s", MAIN_DATA_NAME, activ, GAME_REL_EXT);
+			dskBuildPathName(DISK_CHECK_DIR, DATADISK, line.c_str(), pathname);
 			SaveRelations(pathname, DB_tcMain_OFFSET, DB_tcMain_SIZE, 0);
 
 			/* Speichern von tcBuild */
-			sprintf(line, "%s%d%s", BUILD_DATA_NAME, activ, GAME_DATA_EXT);
-			dskBuildPathName(DISK_CHECK_DIR, DATADISK, line, pathname);
+			line = Common::String::format("%s%d%s", BUILD_DATA_NAME, activ, GAME_DATA_EXT);
+			dskBuildPathName(DISK_CHECK_DIR, DATADISK, line.c_str(), pathname);
 			dbSaveAllObjects(pathname, (uint32)(DB_tcBuild_OFFSET),
 			                 (uint32)(DB_tcBuild_SIZE), 0);
 
-			sprintf(line, "%s%d%s", BUILD_DATA_NAME, activ, GAME_REL_EXT);
-			dskBuildPathName(DISK_CHECK_DIR, DATADISK, line, pathname);
+			line = Common::String::format("%s%d%s", BUILD_DATA_NAME, activ, GAME_REL_EXT);
+			dskBuildPathName(DISK_CHECK_DIR, DATADISK, line.c_str(), pathname);
 			SaveRelations(pathname, (uint32) DB_tcBuild_OFFSET, (uint32) DB_tcBuild_SIZE, 0);
 
 			/* Speichern der Story */
-			sprintf(line, "%s%d%s", STORY_DATA_NAME, activ, GAME_DATA_EXT);
-			dskBuildPathName(DISK_CHECK_DIR, DATADISK, line, pathname);
+			line = Common::String::format("%s%d%s", STORY_DATA_NAME, activ, GAME_DATA_EXT);
+			dskBuildPathName(DISK_CHECK_DIR, DATADISK, line.c_str(), pathname);
 			tcSaveChangesInScenes(pathname);
 		}
 	}
@@ -103,8 +102,7 @@ void tcSaveTheClou() {
 
 bool tcLoadIt(char activ) {
 	ShowMenuBackground();
-	char line[TXT_KEY_LENGTH];
-	g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "LOADING", line);
+	Common::String line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "LOADING");
 	PrintStatus(line);
 
 	/* alte Daten löschen */
@@ -121,26 +119,26 @@ bool tcLoadIt(char activ) {
 
 	g_clue->_txtMgr->reset(OBJECTS_TXT);
 
-	sprintf(line, "%s%d%s", MAIN_DATA_NAME, (int) activ, GAME_DATA_EXT);
+	line = Common::String::format("%s%d%s", MAIN_DATA_NAME, (int) activ, GAME_DATA_EXT);
 	char pathname[DSK_PATH_MAX];
-	dskBuildPathName(DISK_CHECK_FILE, DATADISK, line, pathname);
+	dskBuildPathName(DISK_CHECK_FILE, DATADISK, line.c_str(), pathname);
 
 	bool loaded = false;
 	if (dbLoadAllObjects(pathname, 0)) {
-		sprintf(line, "%s%d%s", BUILD_DATA_NAME, (int) activ, GAME_DATA_EXT);
-		dskBuildPathName(DISK_CHECK_FILE, DATADISK, line, pathname);
+		line = Common::String::format("%s%d%s", BUILD_DATA_NAME, (int) activ, GAME_DATA_EXT);
+		dskBuildPathName(DISK_CHECK_FILE, DATADISK, line.c_str(), pathname);
 
 		if (dbLoadAllObjects(pathname, 0)) {
-			sprintf(line, "%s%d%s", MAIN_DATA_NAME, (int) activ, GAME_REL_EXT);
-			dskBuildPathName(DISK_CHECK_FILE, DATADISK, line, pathname);
+			line = Common::String::format("%s%d%s", MAIN_DATA_NAME, (int) activ, GAME_REL_EXT);
+			dskBuildPathName(DISK_CHECK_FILE, DATADISK, line.c_str(), pathname);
 
 			if (LoadRelations(pathname, 0)) {
-				sprintf(line, "%s%d%s", BUILD_DATA_NAME, (int) activ, GAME_REL_EXT);
-				dskBuildPathName(DISK_CHECK_FILE, DATADISK, line, pathname);
+				line = Common::String::format("%s%d%s", BUILD_DATA_NAME, (int) activ, GAME_REL_EXT);
+				dskBuildPathName(DISK_CHECK_FILE, DATADISK, line.c_str(), pathname);
 
 				if (LoadRelations(pathname, 0)) {
-					sprintf(line, "%s%d%s", STORY_DATA_NAME, (int) activ, GAME_DATA_EXT);
-					dskBuildPathName(DISK_CHECK_FILE, DATADISK, line, pathname);
+					line = Common::String::format("%s%d%s", STORY_DATA_NAME, (int) activ, GAME_DATA_EXT);
+					dskBuildPathName(DISK_CHECK_FILE, DATADISK, line.c_str(), pathname);
 
 					if (tcLoadChangesInScenes(pathname))
 						loaded = true;
@@ -163,8 +161,7 @@ bool tcLoadTheClou() {
 	bool loaded = false;
 	if (ReadList(games, 0L, pathname1) && ReadList(origin, 0L, pathname2)) {
 		ShowMenuBackground();
-		char line[TXT_KEY_LENGTH];
-		g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "LoadAGame", line);
+		Common::String line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "LoadAGame");
 
 		inpTurnFunctionKey(0);
 		inpTurnESC(1);
@@ -177,7 +174,7 @@ bool tcLoadTheClou() {
 		} else {
 			ShowMenuBackground();
 
-			g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "NOT_LOADING", line);
+			line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "NOT_LOADING");
 			PrintStatus(line);
 			inpWaitFor(INP_LBUTTONP);
 

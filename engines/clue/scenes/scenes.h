@@ -76,8 +76,8 @@ uint32 tcChooseCar(uint32 backgroundNr);
 
 LIST *tcMakeLootList(uint32 containerID, uint32 relID);
 
-char *tcShowPriceOfCar(uint32 nr, uint32 type, void *data);
-char *tcShowPriceOfTool(uint32 nr, uint32 type, void *data);
+Common::String tcShowPriceOfCar(uint32 nr, uint32 type, void *data);
+Common::String tcShowPriceOfTool(uint32 nr, uint32 type, void *data);
 
 void tcDealerSays(Person dealer, byte textNr, int32 perc);
 void tcDealerOffer(Person dealer, byte which);

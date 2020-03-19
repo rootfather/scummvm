@@ -280,7 +280,6 @@ static void plActionWait() {
 		case PLANING_WAIT_RADIO:
 			if (has(Person_Matt_Stuvysunt, Tool_Funkgeraet)) {
 				if (BurglarsNr > 2) {
-					char exp[TXT_KEY_LENGTH];
 					plMessage("RADIO_2", PLANING_MSG_REFRESH);
 					SetPictID(((Person)
 					           dbGetObject(OL_NR
@@ -294,7 +293,7 @@ static void plActionWait() {
 					                            (BurglarsList, CurrentPerson)),
 					                    &help);
 
-					g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_RADIO", exp);
+					Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_RADIO");
 					ExpandObjectList(BurglarsList, exp);
 
 					choice1 = Bubble(BurglarsList, 0, NULL, 0L);
@@ -401,11 +400,10 @@ static void plLevelDesigner(LSObject lso) {
 			break;
 
 		case PLANING_LD_OK: {
-			char fileName[DSK_PATH_MAX], areaName[TXT_KEY_LENGTH];
-
-			dbGetObjectName(area, areaName);
-			strcat(areaName, ".dat");
-			dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, areaName, fileName);
+			char fileName[DSK_PATH_MAX];
+			Common::String areaName = dbGetObjectName(area);
+			areaName += ".dat";
+			dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, areaName.c_str(), fileName);
 
 			dbSaveAllObjects(fileName,
 			                 ((LSArea) dbGetObject(area))->ul_ObjectBaseNr,
@@ -443,14 +441,12 @@ static void plActionOpenClose(uint16 what) {
 	if (LIST_EMPTY(actionList))
 		plMessage("NO_OBJECTS", PLANING_MSG_WAIT);
 	else {
-		char exp[TXT_KEY_LENGTH];
 		if (what == ACTION_OPEN) {
 			plMessage("OPEN", PLANING_MSG_REFRESH);
-			g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
 		} else {
 			plMessage("CLOSE", PLANING_MSG_REFRESH);
-			g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
 		}
+		Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 
 		ExpandObjectList(actionList, exp);
 		SetPictID(((Person)
@@ -565,8 +561,7 @@ static void plActionTake() {
 			SetPictID(((Person) dbGetObject(
 				OL_NR(GetNthNode(BurglarsList, CurrentPerson))))->PictID);
 
-			char exp[TXT_KEY_LENGTH];
-			g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
+			Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 			ExpandObjectList(takeableList, exp);
 
 			uint32 choice = Bubble(takeableList, 0, NULL, 0L);
@@ -694,25 +689,24 @@ static void plActionTake() {
 	RemoveList(actionList);
 }
 
-static char *plSetUseString(uint32 nr, uint32 type, void *data) {
+static Common::String plSetUseString(uint32 nr, uint32 type, void *data) {
 	uint32 actLoudness =
 	    lsGetLoudness(livGetXPos(Planing_Name[CurrentPerson]),
 	                  livGetYPos(Planing_Name[CurrentPerson]));
 	uint32 objLoudness = soundGet(((LSObject) dbGetObject(UseObject))->Type, nr);
 
-	static char useString[TXT_KEY_LENGTH];
-	useString[0] = '\0';
+	Common::String useString;
 
 	if (break_(((LSObject) dbGetObject(UseObject))->Type, nr)) {
-		sprintf(useString, "%u %s",
+		useString = Common::String::format("%u %s",
 		        tcGuyUsesTool(OL_NR(GetNthNode(PersonsList, CurrentPerson)),
 		                      (Building) dbGetObject(Planing_BldId), nr,
 		                      ((LSObject) dbGetObject(UseObject))->Type),
 		        txtSeconds);
 
 		if (objLoudness >= actLoudness) {
-			strcat(useString, ", ");
-			strcat(useString, txtTooLoud);
+			useString += ", ";
+			useString += txtTooLoud;
 		}
 	}
 
@@ -815,8 +809,7 @@ static void plActionUse() {
 				                        (PersonsList,
 				                         CurrentPerson))))->PictID);
 
-				char exp[TXT_KEY_LENGTH];
-				g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
+				Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 				ExpandObjectList(actionList, exp);
 
 				uint32 choice1 = Bubble(actionList, 0, NULL, 0L);
@@ -852,7 +845,7 @@ static void plActionUse() {
 							       PLANING_TIME_USE_STAIRS *
 							       PLANING_CORRECT_TIME, 1);
 							lsSetActivLiving(Planing_Name[CurrentPerson],
-							                 (uint16) - 1, (uint16) - 1);
+							                 (uint16) -1, (uint16) -1);
 						} else
 							plSay("PLANING_END", CurrentPerson);
 					} else if (dbIsObject(choice1, Object_Police)) {
@@ -871,7 +864,7 @@ static void plActionUse() {
 								                OLF_INCLUDE_NAME |
 								                OLF_INSERT_STAR);
 
-							g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
+							exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 							ExpandObjectList(objList, exp);
 
 							plMessage("USE_4", PLANING_MSG_REFRESH);
@@ -970,7 +963,7 @@ static void plActionUse() {
 									ObjectListSuccString = NULL;
 									UseObject = 0L;
 
-									g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
+									exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 									ExpandObjectList(ObjectList, exp);
 
 									SetPictID(((Person)
@@ -1194,8 +1187,7 @@ static void plActionUse() {
 			                       (GetNthNode(PersonsList, CurrentPerson))))->
 			          PictID);
 
-			char exp[TXT_KEY_LENGTH];
-			g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
+			Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 			ExpandObjectList(actionList, exp);
 
 			uint32 choice1 = Bubble(actionList, 0, NULL, 0L);
@@ -1232,7 +1224,6 @@ static void plAction() {
 	byte activ = 0;
 
 	while (activ != PLANING_ACTION_RETURN) {
-		char exp[TXT_KEY_LENGTH];
 		uint32 choice1 = 0L, choice2 = 0L, bitset;
 		if (CurrentPerson < BurglarsNr) {
 			bitset = BIT(PLANING_PERSON_WALK) +
@@ -1366,8 +1357,7 @@ static void plAction() {
 				                       (GetNthNode
 				                        (BurglarsList,
 				                         CurrentPerson))))->PictID);
-
-				g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
+				Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 				ExpandObjectList(ObjectList, exp);
 
 				choice1 = Bubble(ObjectList, 0, NULL, 0L);
@@ -1436,11 +1426,10 @@ static void plAction() {
 					                    OL_NAME(GetNthNode
 					                            (BurglarsList, CurrentPerson)),
 					                    &help);
-
-					g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL", exp);
+					Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 					ExpandObjectList(BurglarsList, exp);
 
-					choice1 = Bubble(BurglarsList, 0, NULL, 0L);
+					choice1 = Bubble(BurglarsList, 0, nullptr, 0L);
 
 					if (ChoiceOk(choice1, GET_OUT, BurglarsList))
 						choice1 = OL_NR(GetNthNode(BurglarsList, choice1));
@@ -1481,7 +1470,6 @@ static void plAction() {
 
 static void plNoteBook() {
 	LIST *bubble = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_6");
-	char exp[TXT_KEY_LENGTH];
 
 	uint32 choice1 = 0;
 	while (choice1 != GET_OUT) {
@@ -1497,7 +1485,7 @@ static void plNoteBook() {
 
 		case PLANING_NOTE_TEAM:
 			while (choice2 != GET_OUT) {
-				g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_NOTEBOOK", exp);
+				Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_NOTEBOOK");
 				ExpandObjectList(BurglarsList, exp);
 
 				SetBubbleType(THINK_BUBBLE);
@@ -1525,7 +1513,7 @@ static void plNoteBook() {
 			LIST *l = ObjectListPrivate;
 
 			if (!LIST_EMPTY(l)) {
-				g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_NOTEBOOK", exp);
+				Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_NOTEBOOK");
 				ExpandObjectList(l, exp);
 
 				while (choice2 != GET_OUT) {
@@ -1556,10 +1544,9 @@ static void plNoteBook() {
 
 static void plLook() {
 	LIST *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_7");
-	byte activ = 0, choice;
+	byte activ = 0;
 	uint32 timer = 0L, maxTimer = GetMaxTimer(plSys), realCurrentPerson =
 	                                  CurrentPerson, choice1;
-	uint32 bitset;
 
 	plMessage("PERSON_NOTES", PLANING_MSG_REFRESH);
 	plSync(PLANING_ANIMATE_NO, timer, maxTimer, 0);
@@ -1571,7 +1558,7 @@ static void plLook() {
 
 		ShowMenuBackground();
 
-		bitset = BIT(PLANING_LOOK_PLAN) + BIT(PLANING_LOOK_RETURN);
+		uint32 bitset = BIT(PLANING_LOOK_PLAN) + BIT(PLANING_LOOK_RETURN);
 
 		if ((CurrentPerson < BurglarsNr) ? BurglarsNr > 1 : PersonsNr > 1)
 			bitset += BIT(PLANING_LOOK_PERSON_CHANGE);
@@ -1598,7 +1585,7 @@ static void plLook() {
 			while (1) {
 				plDisplayTimer(timer / PLANING_CORRECT_TIME, 0);
 
-				choice = inpWaitFor(INP_MOVEMENT | INP_LBUTTONP);
+				byte choice = inpWaitFor(INP_MOVEMENT | INP_LBUTTONP);
 
 				if (choice & INP_LBUTTONP)
 					break;

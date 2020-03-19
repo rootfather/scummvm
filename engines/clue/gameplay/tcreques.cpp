@@ -31,6 +31,10 @@ void PrintStatus(const char *text) {
 	gfxPrint(m_gc, text, 10, GFX_PRINT_SHADOW | GFX_PRINT_CENTER);
 }
 
+void PrintStatus(Common::String text) {
+	PrintStatus(text.c_str());
+}
+	
 uint32 ShowTheClouRequester(int32 error_class) {
 	LIST *menu;
 	uint32 answer = 0;

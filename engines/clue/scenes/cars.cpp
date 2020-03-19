@@ -55,13 +55,11 @@ void SetCarColors(byte index) {
 	          (uint32) Col[index][3][1] << 3, (uint32) Col[index][3][2] << 3);
 }
 
-char *tcShowPriceOfCar(uint32 nr, uint32 type, void *data) {
+Common::String tcShowPriceOfCar(uint32 nr, uint32 type, void *data) {
 	Car car = (Car) data;
 
-	char line1[TXT_KEY_LENGTH];
-	g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "PRICE_AND_MONEY", line1);
-	static char line[TXT_KEY_LENGTH];
-	sprintf(line, line1, tcGetCarPrice(car));
+	Common::String line1 = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "PRICE_AND_MONEY");
+	Common::String line = Common::String::format(line1.c_str(), tcGetCarPrice(car));
 
 	return line;
 }
@@ -79,13 +77,11 @@ void tcBuyCar() {
 		       OLF_INSERT_STAR | OLF_ADD_SUCC_STRING, Object_Car);
 		LIST *bubble = ObjectListPrivate;
 
-		ObjectListSuccString = NULL;
+		ObjectListSuccString = nullptr;
 		ObjectListWidth = 0;
 
-		if (!(LIST_EMPTY(bubble))) {
-			char exp[TXT_KEY_LENGTH];
-
-			g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "THANKS", exp);
+		if (!LIST_EMPTY(bubble)) {
+			Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "THANKS");
 			ExpandObjectList(bubble, exp);
 
 			ShowMenuBackground();
@@ -105,9 +101,7 @@ void tcBuyCar() {
 						uint32 price = tcGetCarPrice(matts_car);
 
 						if (tcSpendMoney(price, 0)) {
-							uint32 carID =
-							    ((ObjectNode *)
-							     GetNthNode(bubble, (uint32) choice))->nr;
+							uint32 carID = ((ObjectNode *)GetNthNode(bubble, (uint32) choice))->nr;
 
 							hasSet(Person_Matt_Stuvysunt, carID);
 							hasUnSet(Person_Marc_Smith, carID);
@@ -186,9 +180,7 @@ void tcColorCar(Car car) {
 		g_clue->_txtMgr->putCharacter(colors, 0, '*');
 
 		if (tcSpendMoney(costs, 1)) {
-			char exp[TXT_KEY_LENGTH];
-
-			g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
+			Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
 			ExpandObjectList(colors, exp);
 
 			byte choice = Bubble(colors, (byte) car->ColorIndex, 0L, 0L);
@@ -362,9 +354,7 @@ uint32 tcChooseCar(uint32 backgroundNr) {
 			carID = OL_NR(LIST_HEAD(bubble));
 			choice = 1;
 		} else {
-			char exp[TXT_KEY_LENGTH];
-
-			g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
+			Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
 			ExpandObjectList(bubble, exp);
 
 			Say(BUSINESS_TXT, 0, 7, "ES GEHT UM..");

@@ -319,14 +319,14 @@ static struct Living *livGet(const char *uch_Name) {
 	return liv;
 }
 
-static void livAdd(const char *uch_Name, char *uch_TemplateName, byte uch_XSize,
+static void livAdd(Common::String uch_Name, Common::String uch_TemplateName, byte uch_XSize,
                    byte uch_YSize, int16 s_XSpeed, int16 s_YSpeed) {
-	Living *liv = (Living *) CreateNode(sc->p_Livings, sizeof(struct Living), uch_Name);
+	Living *liv = (Living *) CreateNode(sc->p_Livings, sizeof(struct Living), uch_Name.c_str());
 
 	liv->uch_XSize = uch_XSize;
 	liv->uch_YSize = uch_YSize;
 
-	AnimTemplate *tlt = liv->p_OriginTemplate = (AnimTemplate *) GetNode(sc->p_Template, uch_TemplateName);
+	AnimTemplate *tlt = liv->p_OriginTemplate = (AnimTemplate *) GetNode(sc->p_Template, uch_TemplateName.c_str());
 
 	liv->us_LivingNr = BobInit(tlt->us_Width, tlt->us_Height);
 
@@ -365,9 +365,7 @@ static void livLoadTemplates() {
 	for (uint16 i = 0; i < cnt; i++) {
 		char *line = NODE_NAME(GetNthNode(l, i));
 
-		AnimTemplate *tlt = (AnimTemplate *) CreateNode(sc->p_Template,
-		        sizeof(struct AnimTemplate),
-				g_clue->_txtMgr->getKey(1, line));
+		AnimTemplate *tlt = (AnimTemplate *) CreateNode(sc->p_Template, sizeof(struct AnimTemplate), g_clue->_txtMgr->getKey(1, line));
 
 		tlt->us_Width = (uint16)g_clue->_txtMgr->getKeyAsUint32(2, line);
 		tlt->us_Height = (uint16)g_clue->_txtMgr->getKeyAsUint32(3, line);
@@ -393,11 +391,9 @@ static void livLoadLivings() {
 		ErrorMsg(Disk_Defect, ERROR_MODULE_LIVING, 2);
 
 	for (uint16 i = 0; i < cnt; i++) {
-		char name[TXT_KEY_LENGTH], templateName[TXT_KEY_LENGTH];
 		char *line = NODE_NAME(GetNthNode(l, i));
-
-		strcpy(name, g_clue->_txtMgr->getKey(1, line));
-		strcpy(templateName, g_clue->_txtMgr->getKey(2, line));
+		Common::String name = g_clue->_txtMgr->getKey(1, line);
+		Common::String templateName = g_clue->_txtMgr->getKey(2, line);
 
 		livAdd(name,
 		       templateName,

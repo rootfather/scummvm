@@ -204,19 +204,19 @@ static struct presentationInfo *AddPresentInfo(LIST *l, uint32 max,
 	return p;
 }
 
-void AddPresentTextLine(LIST *l, const char *data, uint32 max, LIST *texts, uint16 textNr) {
+
+void AddPresentTextLine(LIST *l, Common::String data, uint32 max, LIST *texts, uint16 textNr) {
 	struct presentationInfo *p = AddPresentInfo(l, max, texts, textNr);
 	p->presentHow = PRESENT_AS_TEXT;
 
-	if (data)
-		strcpy(p->extendedText, data);
+	if (!data.empty())
+		strcpy(p->extendedText, data.c_str());
 	else
 		strcpy(p->extendedText, "");
 }
 
 /* XXX: ONLY FOR NUMBERIC VALUES! */
-void AddPresentLine(LIST *l, uint8 presentHow, uint32 data, uint32 max,
-                    LIST *texts, uint16 textNr) {
+void AddPresentLine(LIST *l, uint8 presentHow, uint32 data, uint32 max, LIST *texts, uint16 textNr) {
 	struct presentationInfo *p = AddPresentInfo(l, max, texts, textNr);
 	p->presentHow = presentHow;
 

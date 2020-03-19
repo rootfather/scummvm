@@ -205,8 +205,7 @@ static void gfxInitCollList() {
 	ReadList(tempList, 0, pathname);
 
 	for (NODE *n = LIST_HEAD(tempList); NODE_SUCC(n); n = NODE_SUCC(n)) {
-		Collection *coll = (Collection *)CreateNode(CollectionList, sizeof(Collection),
-			g_clue->_txtMgr->getKey(2, NODE_NAME(n)));
+		Collection *coll = (Collection *)CreateNode(CollectionList, sizeof(Collection), g_clue->_txtMgr->getKey(2, NODE_NAME(n)));
 
 		coll->us_CollId = (uint16)g_clue->_txtMgr->getKeyAsUint32(1, NODE_NAME(n));
 
@@ -509,6 +508,15 @@ uint16 gfxTextWidth(GC *gc, const char *txt, size_t len) {
 	return w;
 }
 
+uint16 gfxTextWidth(GC *gc, Common::String txt) {
+	size_t w = txt.size() * gc->font->w;
+
+	if (w > USHRT_MAX)
+		return 0;
+
+	return w;
+}
+
 /*******************************************************************
  * access & calc functions
  */
@@ -711,12 +719,12 @@ void gfxPrintExact(GC *gc, const char *txt, uint16 x, uint16 y) {
 	gfxRefreshArea(area.left, area.top, area.width(), area.height());
 }
 
-void gfxPrint(GC *gc, const char *txt, uint16 y, uint32 mode) {
-	if (txt[0] == '\0')
+void gfxPrint(GC *gc, Common::String txt, uint16 y, uint32 mode) {
+	if (txt.empty())
 		return;
 
 	uint16 x = GlobalPrintRect.us_X;
-	uint16 w = gfxTextWidth(gc, txt, strlen(txt));
+	uint16 w = gfxTextWidth(gc, txt);
 
 	if (mode & GFX_PRINT_RIGHT)
 		x += GlobalPrintRect.us_Width - w;
@@ -727,19 +735,16 @@ void gfxPrint(GC *gc, const char *txt, uint16 y, uint32 mode) {
 	}
 
 	if (mode & GFX_PRINT_SHADOW) {
-		uint8 tmp;
-
-		tmp = gc->foreground;
+		uint8 tmp = gc->foreground;
 		gc->foreground = gc->background;
 
-		gfxPrintExact(gc, txt, x + 1, y + 1);
+		gfxPrintExact(gc, txt.c_str(), x + 1, y + 1);
 
 		gc->foreground = tmp;
 	}
 
-	gfxPrintExact(gc, txt, x, y);
+	gfxPrintExact(gc, txt.c_str(), x, y);
 }
-
 /*******************************************************************
  * refresh...
  */
@@ -760,7 +765,7 @@ void gfxRefresh() {
  * presentation
  */
 static GC *gfxGetGC(int32 l_DestY) {
-	GC *gc = NULL;
+	GC *gc = nullptr;
 
 	switch (GfxBase.uch_VideoMode) {
 	case GFX_VIDEO_NCH4:

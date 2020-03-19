@@ -43,7 +43,6 @@ namespace Clue {
 /* private globals declaration */
 TextMgr::TextMgr(ClueEngine* vm, char lang) : _vm(vm) {
 	_txtBase = nullptr;
-	_keyBuffer[0] = '\0';
 	init(lang);
 }
 
@@ -200,7 +199,7 @@ void TextMgr::reset(uint32 textId) {
 
 
 /* public functions - KEY */
-char *TextMgr::getKey(uint16 keyNr, const char *key) {
+Common::String TextMgr::getKey(uint16 keyNr, const char *key) {
 	if (!key)
 		return NULL;
 
@@ -218,23 +217,27 @@ char *TextMgr::getKey(uint16 keyNr, const char *key) {
 		key++;
 
 	if (!*key)
-		return NULL;
+		return Common::String("");
 
-	uint16 i;
-	for (i = 0; (i < TXT_KEY_LENGTH) && *key && (*key != TXT_CHAR_KEY_SEPERATOR); i++)
-		_keyBuffer[i] = *key++;
+	Common::String retVal;
+	for (uint16 i = 0; (i < TXT_KEY_LENGTH) && *key && (*key != TXT_CHAR_KEY_SEPERATOR); ++i, ++key) {
+		retVal += *key;
+	}
 
-	_keyBuffer[i] = TXT_CHAR_EOS;
-	return _keyBuffer;
+	return retVal;
 }
 
 uint32 TextMgr::getKeyAsUint32(uint16 keyNr, const char *key) {
-	char *res = getKey(keyNr, key);
+	const Common::String res = getKey(keyNr, key);
 
-	if (res)
-		return ((uint32) atoi(res));
-	else
-		return ((uint32) - 1);
+	if (!res.empty())
+		return (uint32) atoi(res.c_str());
+
+	return (uint32) -1;
+}
+
+uint32 TextMgr::getKeyAsUint32(uint16 keyNr, Common::String key) {
+	return getKeyAsUint32(keyNr, key.c_str());
 }
 
 LIST * TextMgr::goKey(uint32 textId, const char *key) {
@@ -362,23 +365,24 @@ uint32 TextMgr::countKey(const char *key) {
 	return k + 1;
 }
 
-
+uint32 TextMgr::countKey(Common::String key) {
+	return countKey(key.c_str());
+}
 /* functions - STRING */
-char * TextMgr::getNthString(uint32 textId, const char *key, uint32 nth, char *dest) {
+Common::String TextMgr::getNthString(uint32 textId, const char *key, uint32 nth) {
+	Common::String dest;
 	LIST *txtList = goKey(textId, key);
 	void *src = GetNthNode(txtList, nth);
 
 	if (src)
-		strcpy(dest, NODE_NAME(src));
-	else
-		strcpy(dest, "");
+		dest = Common::String(NODE_NAME(src));
 
 	RemoveList(txtList);
 	return dest;
 }
 
-Common::String TextMgr::getFirstLine(uint32 id, const char *key, char *dest) {
-	return Common::String(getNthString(id, key, 0, dest));
+Common::String TextMgr::getFirstLine(uint32 id, const char *key) {
+	return Common::String(getNthString(id, key, 0));
 }
 
 void TextMgr::putCharacter(LIST *list, uint16 pos, uint8 c) {

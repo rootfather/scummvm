@@ -34,6 +34,7 @@ namespace Clue {
 
 void plPrintInfo(const char *person);
 void plMessage(const char *msg, byte flags);
+void plMessage(Common::String msg, byte flags);
 void plPersonPict(uint32 personId);
 void plDisplayAbilities();
 void plDisplayTimer(uint32 time, byte doSpotsImmediatly);

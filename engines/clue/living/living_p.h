@@ -105,7 +105,7 @@ static void livRem(struct Living *liv);
 static void livHide(struct Living *liv);
 static void livShow(struct Living *liv);
 
-static void livAdd(const char *uch_Name, char *uch_TemplateName, byte uch_XSize,
+static void livAdd(Common::String uch_Name, Common::String uch_TemplateName, byte uch_XSize,
                    byte uch_YSize, int16 s_XSpeed, int16 s_YSpeed);
 
 static bool livIsVisible(struct Living *liv);

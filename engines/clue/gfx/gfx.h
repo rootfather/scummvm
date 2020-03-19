@@ -188,8 +188,10 @@ extern void gfxClearArea(GC *gc);
 extern void gfxSetRect(uint16 us_X, uint16 us_Width);
 
 extern uint16 gfxTextWidth(GC *gc, const char *txt, size_t len);
+extern uint16 gfxTextWidth(GC *gc, Common::String txt);
 
-extern void gfxPrint(GC *gc, const char *txt, uint16 y, uint32 mode);
+extern void gfxPrint(GC *gc, Common::String txt, uint16 y, uint32 mode);
+
 extern void gfxPrintExact(GC *gc, const char *txt, uint16 x, uint16 y);
 
 extern void gfxSetColorRange(byte uch_ColorStart, byte uch_ColorEnd);

@@ -40,11 +40,13 @@ extern uint32 StdHandle(uint32 choice);
 
 extern void SetFunc(struct Scene *sc, void (*init)(), void (*done)());
 void PrintStatus(const char *text);
+void PrintStatus(Common::String text);
 extern void InitTaxiLocations();
 extern void LinkScenes();
 
 extern void tcGetLastName(const char *Name, char *dest, uint32 maxLength);
 extern void tcCutName(char *Name, byte Sign, uint32 maxLength);
+extern Common::String tcCutName(Common::String Name, byte Sign, uint32 maxLength);
 
 extern bool tcLoadTheClou();
 extern void tcSaveTheClou();

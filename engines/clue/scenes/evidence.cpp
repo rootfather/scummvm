@@ -70,17 +70,15 @@ static uint32 tcATraitor(uint32 traitorId) {
 	LIST *newList = CreateList();
 	Person john = (Person)dbGetObject(Person_John_Gludo);
 
-	char name[TXT_KEY_LENGTH];
-	dbGetObjectName(traitorId, name);
-	char line[TXT_KEY_LENGTH];
-	sprintf(line, NODE_NAME(LIST_HEAD(bubble)), name);
+	Common::String name = dbGetObjectName(traitorId);
+	Common::String line = Common::String::format(NODE_NAME(LIST_HEAD(bubble)), name.c_str());
 
 	CreateNode(newList, 0L, line);
 	CreateNode(newList, 0L, NODE_NAME(GetNthNode(bubble, 1)));
 	CreateNode(newList, 0L, NODE_NAME(GetNthNode(bubble, 2)));
 
 	SetPictID(john->PictID);
-	Bubble(newList, 0, 0L, 0L);
+	Bubble(newList, 0, nullptr, 0L);
 
 	RemoveList(bubble);
 	RemoveList(newList);
@@ -214,8 +212,7 @@ uint32 tcStartEvidence() {
 	prSetBarPrefs(m_gc, 300, 12, 1, 3, 0);
 
 	byte guyReady = 0;
-	char line[TXT_KEY_LENGTH];
-	g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "FAHNDUNG", line);
+	Common::String line = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "FAHNDUNG");
 
 	byte shown = 0;
 	while (guyReady != ((1 << guyCount) - 1)) {
@@ -382,19 +379,17 @@ uint32 tcPersonWanted(uint32 persId) {
 	Person miles = (Person)dbGetObject(Person_Miles_Chickenwing);
 	LIST *jobs = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_JobE");
 
-	char name[TXT_KEY_LENGTH];
-	dbGetObjectName(persId, name);
+	Common::String name = dbGetObjectName(persId);
 
 	LIST *bubble = g_clue->_txtMgr->goKey(BUSINESS_TXT, "BURGLAR_RECOG");
 
-	char line[TXT_KEY_LENGTH];
-	snprintf(line, TXT_KEY_LENGTH, "%s %s.", NODE_NAME(GetNthNode(bubble, 3)), name);
+	Common::String line = Common::String::format("%s %s.", NODE_NAME(GetNthNode(bubble, 3)), name.c_str());
 
 	RemoveNode(bubble, NODE_NAME(GetNthNode(bubble, 3)));
 	CreateNode(bubble, 0L, line);
 
 	SetPictID(john->PictID);
-	Bubble(bubble, 0, 0L, 0L);
+	Bubble(bubble, 0, nullptr, 0L);
 	RemoveList(bubble);
 
 	Say(BUSINESS_TXT, 0, miles->PictID, "ARREST_HIM");
@@ -642,8 +637,7 @@ int32 tcCalcCarEscape(int32 timeLeft) {
 		length *= 1000;     /* Fluchtweg in Meter */
 
 		/* Bildschirmdarstellung */
-		char line[TXT_KEY_LENGTH];
-		g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "FLUCHT", line);
+		Common::String line = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "FLUCHT");
 		ShowMenuBackground();
 		PrintStatus(line);
 

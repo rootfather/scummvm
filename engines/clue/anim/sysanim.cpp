@@ -112,12 +112,10 @@ void ContinueAnim() {
 static void PrepareAnim(const char *AnimID)
 /* initializes various values and afterwards copies anim phases into memory */
 {
-	char pict_list[TXT_KEY_LENGTH];
 	struct Collection *coll;
+	Common::String pict_list = GetAnim(AnimID);
 
-	GetAnim(AnimID, pict_list);
-
-	if ((uint32)(g_clue->_txtMgr->countKey(pict_list)) > PIC_1_ID_POS) {
+	if ((uint32)(g_clue->_txtMgr->countKey(pict_list.c_str())) > PIC_1_ID_POS) {
 		coll = gfxGetCollection(g_clue->_txtMgr->getKeyAsUint32(ANIM_COLL_ID_POS, pict_list));
 		Handler.frameCount = g_clue->_txtMgr->getKeyAsUint32(PIC_COUNT_POS, pict_list);
 
@@ -148,12 +146,10 @@ static void PrepareAnim(const char *AnimID)
  */
 
 void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode) {
-	char pict_list[TXT_KEY_LENGTH];
-	uint16 pict_id = 0, rate;
+	uint16 pict_id = 0;
+	Common::String pict_list = GetAnim(AnimID);
 
-	GetAnim(AnimID, pict_list);
-
-	if (pict_list[0] == '\0')
+	if (pict_list.empty())
 		gfxClearArea(l_gc);
 	else {
 		StopAnim();
@@ -171,7 +167,7 @@ void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode) {
 			gfxShow(pict_id, mode, 2, -1L, -1L);
 
 		if (g_clue->_txtMgr->countKey(pict_list) > PIC_1_ID_POS) {
-			rate = (uint16)g_clue->_txtMgr->getKeyAsUint32((uint16) PIC_P_SEC_POS, pict_list);
+			uint16 rate = (uint16)g_clue->_txtMgr->getKeyAsUint32((uint16)PIC_P_SEC_POS, pict_list);
 
 			/* ZZZZZZXXXZZZZZ NOTE: UHHHHHHHHHHHHHHH? WTF???
 			   LOOK AT 'texts/animd.txt! WTF?'
@@ -207,8 +203,7 @@ void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode) {
 void StopAnim() {
 	if (Handler.RunningAnimID) {    /* anim currently playing */
 		if (Handler.RunningAnimID[0] != '\0') {
-			char pict_list[TXT_KEY_LENGTH];
-			GetAnim(Handler.RunningAnimID, pict_list);
+			Common::String pict_list = GetAnim(Handler.RunningAnimID);
 
 			/* "unprepare" pictures for the sake of completeness */
 			struct Picture *pict = gfxGetPicture((uint16)g_clue->_txtMgr->getKeyAsUint32((uint16) PIC_1_ID_POS, pict_list));
@@ -229,7 +224,7 @@ void StopAnim() {
  * GetAnim
  */
 
-void GetAnim(const char *AnimID, char *Dest) {
+Common::String GetAnim(const char *AnimID) {
 	char id[TXT_KEY_LENGTH];
 
 	strcpy(id, AnimID);
@@ -239,7 +234,7 @@ void GetAnim(const char *AnimID, char *Dest) {
 			id[i] = '_';
 	}
 
-	g_clue->_txtMgr->getFirstLine(ANIM_TXT, id, Dest);
+	return g_clue->_txtMgr->getFirstLine(ANIM_TXT, id);
 }
 
 /*

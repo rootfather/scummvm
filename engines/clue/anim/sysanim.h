@@ -40,7 +40,7 @@ extern void CloseAnimHandler();
 extern void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode);    /* -> docs from 16.08.92 ! */
 extern void StopAnim();
 
-extern void GetAnim(const char *AnimID, char *Dest);
+extern Common::String GetAnim(const char *AnimID);
 extern void animator();
 
 extern void SuspendAnim();

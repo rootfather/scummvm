@@ -30,8 +30,8 @@ namespace Clue {
 LIST *ObjectList = NULL;
 LIST *ObjectListPrivate = NULL;
 uint32 ObjectListWidth = 0L;
-char *(*ObjectListPrevString)(uint32, uint32, void *) = NULL;
-char *(*ObjectListSuccString)(uint32, uint32, void *) = NULL;
+Common::String (*ObjectListPrevString)(uint32, uint32, void *) = nullptr;
+Common::String (*ObjectListSuccString)(uint32, uint32, void *) = nullptr;
 
 
 /* private declarations */
@@ -1298,18 +1298,17 @@ uint32 dbGetObjectNr(void *key) {
 	return dbGetObjectReal(key)->nr;
 }
 
-char *dbGetObjectName(uint32 nr, char *objName) {
+Common::String dbGetObjectName(uint32 nr) {
 	uint8 objHashValue = dbGetObjectHashNr(nr);
 
-	for (dbObject *obj = (dbObject *) LIST_HEAD(objHash[objHashValue]);
-	        NODE_SUCC(obj); obj = (dbObject *) NODE_SUCC(obj)) {
+	for (dbObject *obj = (dbObject *)LIST_HEAD(objHash[objHashValue]); NODE_SUCC(obj); obj = (dbObject *)NODE_SUCC(obj)) {
 		if (obj->nr == nr) {
-			strcpy(objName, NODE_NAME(obj));
+			Common::String objName = Common::String(NODE_NAME(obj));
 			return objName;
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 void *dbIsObject(uint32 nr, uint32 type) {
@@ -1340,10 +1339,10 @@ ObjectNode *dbAddObjectNode(LIST *objectList, uint32 nr, uint32 flags) {
 		strcpy(name, "*");
 
 	if (flags & OLF_INCLUDE_NAME) {
-		char *succString = NULL;
+		Common::String succString;
 
 		if ((flags & OLF_ADD_PREV_STRING) && ObjectListPrevString)
-			strcat(name, ObjectListPrevString(obj->nr, obj->type, dbGetObjectKey(obj)));
+			strcat(name, ObjectListPrevString(obj->nr, obj->type, dbGetObjectKey(obj)).c_str());
 
 		strcat(name, NODE_NAME(obj));
 		namePtr = name;
@@ -1352,7 +1351,7 @@ ObjectNode *dbAddObjectNode(LIST *objectList, uint32 nr, uint32 flags) {
 			succString = ObjectListSuccString(obj->nr, obj->type, dbGetObjectKey(obj));
 
 		if ((flags & (OLF_ADD_SUCC_STRING | OLF_ALIGNED)) && ObjectListWidth) {
-			uint8 len = strlen(name) + strlen(succString);
+			uint8 len = strlen(name) + succString.size();
 
 			if (flags & OLF_INSERT_STAR)
 				len--;
@@ -1362,7 +1361,7 @@ ObjectNode *dbAddObjectNode(LIST *objectList, uint32 nr, uint32 flags) {
 		}
 
 		if ((flags & OLF_ADD_SUCC_STRING) && ObjectListSuccString)
-			strcat(name, succString);
+			strcat(name, succString.c_str());
 	} else
 		namePtr = NULL;
 
@@ -1431,6 +1430,16 @@ void ExpandObjectList(LIST *objectList, char *expandItem) {
 	objNode->data = NULL;
 }
 
+void ExpandObjectList(LIST *objectList, Common::String expandItem) {
+	ObjectNode *objNode = (ObjectNode *)CreateNode(objectList, sizeof(*objNode), expandItem);
+
+	if (!objNode)
+		ErrorMsg(Internal_Error, ERROR_MODULE_DATABASE, 2);
+
+	objNode->nr = 0;
+	objNode->type = 0;
+	objNode->data = nullptr;
+}
 
 int16 dbStdCompareObjects(ObjectNode *obj1, ObjectNode *obj2) {
 	if (obj1->nr > obj2->nr)

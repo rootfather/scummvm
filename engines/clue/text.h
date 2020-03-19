@@ -82,7 +82,6 @@ public:
 private:
 	ClueEngine *_vm;
 	TextControl *_txtBase;
-	char _keyBuffer[TXT_KEY_LENGTH];
 
 	char *getLine(Text *txt, uint8 lineNr);
 
@@ -97,18 +96,20 @@ public:
 	void reset(uint32 textId);
 
 	/* public prototypes - KEY */
-	char* getKey(uint16 keyNr, const char *key);
+	Common::String getKey(uint16 keyNr, const char *key);
 	uint32 getKeyAsUint32(uint16 keyNr, const char *key);
+	uint32 getKeyAsUint32(uint16 keyNr, Common::String key);
 
 	LIST* goKey(uint32 textId, const char *key);
 	LIST* goKeyAndInsert(uint32 textId, const char *key, ...);
 
 	bool keyExists(uint32 textId, const char *key);
 	uint32 countKey(const char *key);
+	uint32 countKey(Common::String key);
 
 	/* public prototypes - STRING */
-	char *getNthString(uint32 textId, const char *key, uint32 nth, char *dest);
-	Common::String getFirstLine(uint32 textId, const char *key, char *dest);
+	Common::String getNthString(uint32 textId, const char *key, uint32 nth);
+	Common::String getFirstLine(uint32 textId, const char *key);
 	void putCharacter(LIST *list, uint16 pos, uint8 c);
 };
 	

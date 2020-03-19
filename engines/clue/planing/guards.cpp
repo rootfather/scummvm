@@ -39,12 +39,9 @@ void grdDo(Common::Stream *fh, struct System *sys, LIST *personsList, uint32 bur
 
 bool grdInit(Common::Stream **fh, int RW, uint32 bldId, uint32 areaId) {
 	char fileName[DSK_PATH_MAX];
-	dbGetObjectName(areaId, fileName);
-	fileName[strlen(fileName) - 1] = '\0';
-	char bldName[TXT_KEY_LENGTH];
-	snprintf(bldName, TXT_KEY_LENGTH, "%s%s", fileName, GUARD_EXTENSION);
 
-	dskBuildPathName(DISK_CHECK_FILE, GUARD_DIRECTORY, bldName, fileName);
+	Common::String bldName = dbGetObjectName(areaId) + GUARD_EXTENSION;
+	dskBuildPathName(DISK_CHECK_FILE, GUARD_DIRECTORY, bldName.c_str(), fileName);
 
 	if ((*fh = dskOpen(fileName, RW)))
 		return true;

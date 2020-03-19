@@ -74,9 +74,8 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 	LSArea area = (LSArea)dbGetObject(areaID);
 	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "LookMenu");
 
-	char alarm[TXT_KEY_LENGTH], power[TXT_KEY_LENGTH];
-	g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "PROTECTED", alarm);
-	g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "SUPPLIED", power);
+	Common::String alarm = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "PROTECTED");
+	Common::String power = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "SUPPLIED");
 
 	inpTurnESC(0);
 	inpTurnFunctionKey(0);
@@ -100,21 +99,21 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 		uint32 action = 0;
 		while (action != 4) {
 			LSObject lso = (LSObject) OL_DATA(node);
-			char name[TXT_KEY_LENGTH];
-			dbGetObjectName(lso->Type, name);
+			Common::String name = dbGetObjectName(lso->Type);
 
 			if (lso->uch_Chained) {
-				strcat(name, "(");
+				name += "(";
 				if (lso->uch_Chained & Const_tcCHAINED_TO_ALARM) {
-					strcat(name, alarm);
+					name += alarm.c_str();
 					if (lso->uch_Chained & Const_tcCHAINED_TO_POWER) {
-						strcat(name, ", ");
-						strcat(name, power);
+						name += ", ";
+						name += power;
 					}
-				} else if (lso->uch_Chained & Const_tcCHAINED_TO_POWER)
-					strcat(name, power);
+				}
+				else if (lso->uch_Chained & Const_tcCHAINED_TO_POWER)
+					name += power;
 
-				strcat(name, ")");
+				name += ")";
 			}
 // TODO : use console
 #ifdef THECLOU_DEBUG
@@ -133,11 +132,11 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 
 			SetMenuTimeOutFunc(FadeInsideObject);
 
-			inpTurnFunctionKey(0);
-			inpTurnESC(0);
-			action = Menu(menu, 31, (byte) action, 0, 10);
-			inpTurnESC(1);
-			inpTurnFunctionKey(1);
+			inpTurnFunctionKey(false);
+			inpTurnESC(false);
+			action = Menu(menu, 31, (byte) action, nullptr, 10);
+			inpTurnESC(true);
+			inpTurnFunctionKey(true);
 
 			lsFadeRasterObject(areaID, lso, 1);
 

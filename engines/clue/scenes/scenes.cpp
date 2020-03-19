@@ -33,12 +33,11 @@ static byte tcDisplayInfoAboutPerson(uint32 objID) {
 	if (has(Person_Matt_Stuvysunt, objID))  /* hat Matt Wissen über ihn? */
 		return Present(objID, "Person", InitPersonPresent);
 
-	char name[TXT_KEY_LENGTH];
-	dbGetObjectName(objID, name);
-	LIST *bubble = g_clue->_txtMgr->goKey(LOOK_TXT, name);
+	Common::String name = dbGetObjectName(objID);
+	LIST *bubble = g_clue->_txtMgr->goKey(LOOK_TXT, name.c_str());
 
 	SetBubbleType(THINK_BUBBLE);
-	Bubble(bubble, 0, 0L, 0L);
+	Bubble(bubble, 0, nullptr, 0L);
 	RemoveList(bubble);
 
 	return 0;
@@ -84,9 +83,7 @@ uint32 Go(LIST *succ) {
 
 		ShowMenuBackground();
 
-		char line[255];
-		g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "Gehen", line);
-
+		Common::String line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "Gehen");
 		PrintStatus(line);
 
 		for (TCEventNode *node = (TCEventNode *) LIST_HEAD(succ); NODE_SUCC(node);
@@ -100,7 +97,7 @@ uint32 Go(LIST *succ) {
 		}
 
 		prob = (1 << prob) - 1;
-		prob = Menu(succ, prob, 0, NULL, 0L);
+		prob = Menu(succ, prob, 0, nullptr, 0L);
 
 		succ_eventnr = ((TCEventNode *) GetNthNode(succ, prob))->EventNr;
 
@@ -121,7 +118,7 @@ uint32 Go(LIST *succ) {
 
 
 void Information() {
-	inpTurnESC(1);
+	inpTurnESC(true);
 
 	byte choice = 0;
 	byte ret = 0;
@@ -147,8 +144,7 @@ void Information() {
 			LIST *list = ObjectListPrivate;
 
 			if (!(LIST_EMPTY(list))) {
-				char enough[TXT_KEY_LENGTH];
-				g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "GENUG", enough);
+				Common::String enough =  g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "GENUG");
 				ExpandObjectList(list, enough);
 				SetBubbleType(THINK_BUBBLE);
 
@@ -172,8 +168,7 @@ void Information() {
 			LIST *list = ObjectListPrivate;
 
 			if (!(LIST_EMPTY(list))) {
-				char enough[TXT_KEY_LENGTH];
-				g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "GENUG", enough);
+				Common::String enough = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "GENUG");
 				ExpandObjectList(list, enough);
 				SetBubbleType(THINK_BUBBLE);
 
@@ -198,8 +193,7 @@ void Information() {
 
 			if (!(LIST_EMPTY(list))) {
 				SetBubbleType(THINK_BUBBLE);
-				char enough[TXT_KEY_LENGTH];
-				g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "GENUG", enough);
+				Common::String enough = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "GENUG");
 				ExpandObjectList(list, enough);
 
 				while (ChoiceOk((choice1 = Bubble(list, choice1, 0L, 0L)), GET_OUT, list)) {
@@ -223,8 +217,7 @@ void Information() {
 
 			if (!(LIST_EMPTY(list))) {
 				SetBubbleType(THINK_BUBBLE);
-				char enough[TXT_KEY_LENGTH];
-				g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "GENUG", enough);
+				Common::String enough = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "GENUG");
 				ExpandObjectList(list, enough);
 
 				while (ChoiceOk((choice1 = Bubble(list, choice1, 0L, 0L)), GET_OUT, list)) {
@@ -284,8 +277,7 @@ void Look(uint32 locNr) {
 				bubble = ObjectListPrivate;
 
 				if (!(LIST_EMPTY(bubble))) {
-					char enough[TXT_KEY_LENGTH];
-					g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "GENUG_2", enough);
+					Common::String enough = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "GENUG_2");
 					ExpandObjectList(bubble, enough);
 
 					SetBubbleType(THINK_BUBBLE);
@@ -320,8 +312,7 @@ uint32 tcTelefon() {
 	if (!(LIST_EMPTY(ObjectList))) {
 		byte choice = 0;
 
-		char connect[TXT_KEY_LENGTH];
-		g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "DONT_CONNECT_ME", connect);
+		Common::String connect = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "DONT_CONNECT_ME");
 		ExpandObjectList(ObjectList, connect);
 
 		inpTurnESC(0);
@@ -367,8 +358,7 @@ void tcWait() {
 
 	gfxSetRect(0, 320);
 	gfxSetPens(m_gc, 249, 0, GFX_SAME_PEN);
-	char line[TXT_KEY_LENGTH];
-	g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "WAIT", line);
+	Common::String line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "WAIT");
 	gfxPrint(m_gc, line, 22, GFX_PRINT_CENTER);
 
 	byte ende = 0;

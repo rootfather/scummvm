@@ -17,6 +17,11 @@
 #define MODULE_LIST
 
 #include "clue/theclou.h"
+#include "common/str.h"
+
+namespace Common {
+	class String;
+}
 
 namespace Clue {
 
@@ -65,6 +70,7 @@ void *AddTailNode(LIST *list, void *node);
 void *AddHeadNode(LIST *list, void *node);
 void *RemNode(void *node);
 void *RemTailNode(LIST *list);
+void *CreateNode(LIST *list, size_t size, Common::String name);
 void *CreateNode(LIST *list, size_t size, const char *name);
 void RemoveNode(LIST *list, const char *name);
 void FreeNode(void *node);

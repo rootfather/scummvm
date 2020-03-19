@@ -23,13 +23,11 @@
 
 namespace Clue {
 
-char *tcShowPriceOfTool(uint32 nr, uint32 type, void *data) {
-	static char line[TXT_KEY_LENGTH];
-	char line1[TXT_KEY_LENGTH];
+Common::String tcShowPriceOfTool(uint32 nr, uint32 type, void *data) {
 	Tool tool = (Tool) data;
 
-	g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "PRICE_AND_MONEY", line1);
-	sprintf(line, line1, tool->Value);
+	Common::String line1 = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "PRICE_AND_MONEY");
+	Common::String line = Common::String::format(line1.c_str(), tool->Value);
 
 	return line;
 }
@@ -48,8 +46,7 @@ byte tcBuyTool(byte choice) {
 	ObjectListSuccString = NULL;
 	ObjectListWidth = 0;
 
-	char exp[TXT_KEY_LENGTH];
-	g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "THANKS", exp);
+	Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "THANKS");
 	ExpandObjectList(tools, exp);
 
 	SetBubbleType(THINK_BUBBLE);
@@ -99,10 +96,9 @@ byte tcDescTool(byte choice) {
 	LIST *tools = ObjectListPrivate;
 
 	ObjectListWidth = 0;
-	ObjectListSuccString = NULL;
+	ObjectListSuccString = nullptr;
 
-	char exp[TXT_KEY_LENGTH];
-	g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "THANKS", exp);
+	Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "THANKS");
 	ExpandObjectList(tools, exp);
 
 	choice = MIN((uint32)choice, (GetNrOfNodes(tools) - 1));
@@ -113,14 +109,11 @@ byte tcDescTool(byte choice) {
 		oldChoice = choice;
 
 		if (ChoiceOk(choice = Bubble(tools, choice, 0L, 0L), GET_OUT, tools)) {
-			LIST *desc;
-			char line[TXT_KEY_LENGTH];
-			dbGetObjectName(OL_NR(GetNthNode(tools, (uint32) choice)), line);
-
-			desc = g_clue->_txtMgr->goKey(TOOLS_TXT, line);
+			Common::String line = dbGetObjectName(OL_NR(GetNthNode(tools, (uint32) choice)));
+			LIST* desc = g_clue->_txtMgr->goKey(TOOLS_TXT, line.c_str());
 
 			SetPictID(mary->PictID);
-			Bubble(desc, 0, 0L, 0L);
+			Bubble(desc, 0, nullptr, 0L);
 
 			RemoveList(desc);
 		} else
@@ -146,8 +139,7 @@ byte tcShowTool(byte choice) {
 	ObjectListSuccString = NULL;
 	ObjectListWidth = 0;
 
-	char exp[TXT_KEY_LENGTH];
-	g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "THANKS", exp);
+	Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "THANKS");
 	ExpandObjectList(tools, exp);
 
 	choice = MIN((uint32)choice, (GetNrOfNodes(tools) - 1));
@@ -185,9 +177,7 @@ void tcSellTool() {
 
 	byte choice = 0;
 	while ((choice != GET_OUT) && (!LIST_EMPTY(tools))) {
-		char exp[TXT_KEY_LENGTH];
-
-		g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE", exp);
+		Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
 		ExpandObjectList(tools, exp);
 
 		SetPictID(MATT_PICTID);

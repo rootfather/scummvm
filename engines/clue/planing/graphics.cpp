@@ -49,6 +49,10 @@ void plMessage(const char *msg, byte flags) {
 	}
 }
 
+void plMessage(Common::String msg, byte flags) {
+	plMessage(msg.c_str(), flags);
+}
+	
 void plDisplayTimer(uint32 time, byte doSpotsImmediatly) {
 	/* 2014-06-28 LucyG : static */
 	static uint32 oldTimer = (uint32) -1;
@@ -90,8 +94,7 @@ void plDisplayTimer(uint32 time, byte doSpotsImmediatly) {
 }
 
 void plDisplayInfo() {
-	char info[80];
-	dbGetObjectName(OL_NR(GetNthNode(PersonsList, CurrentPerson)), info);
+	Common::String info = dbGetObjectName(OL_NR(GetNthNode(PersonsList, CurrentPerson)));
 
 	gfxSetPens(m_gc, 0, 0, 0);
 	gfxRectFill(m_gc, 0, 0, 120, 10);

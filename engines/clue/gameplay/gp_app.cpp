@@ -316,9 +316,7 @@ void tcPlayStreetSound() {
 }
 
 void ShowTime(uint32 delay) {
-	char time[TXT_KEY_LENGTH];
-
-	BuildTime(GetMinute, time);
+	Common::String time = BuildTime(GetMinute);
 
 	gfxShow(25, GFX_NO_REFRESH | GFX_OVERLAY, delay, -1, -1);
 
@@ -346,12 +344,10 @@ uint32 StdHandle(uint32 choice) {
 
 				if (objNr) {
 					Location loc = (Location)dbGetObject(objNr);
-					if ((GetMinute < loc->OpenFromMinute)
-					        || (GetMinute > loc->OpenToMinute)) {
+					if ((GetMinute < loc->OpenFromMinute) || (GetMinute > loc->OpenToMinute)) {
 						ShowMenuBackground();
 
-						char line[TXT_KEY_LENGTH];
-						g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "No_Entry", line);
+						Common::String line =  g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "No_Entry");
 
 						PrintStatus(line);
 						inpWaitFor(INP_LBUTTONP);
@@ -372,14 +368,14 @@ uint32 StdHandle(uint32 choice) {
 		ShowTime(0);
 		break;
 	case LOOK:
-		Look((uint32) GetCurrentScene()->LocationNr);
+		Look(GetCurrentScene()->LocationNr);
 		AddVTime(1);
 		ShowTime(0);
 		break;
 	case INVESTIGATE:
 		Investigate(NODE_NAME
 		            (GetNthNode
-		             (film->loc_names, (GetCurrentScene()->LocationNr))));
+		             (film->loc_names, GetCurrentScene()->LocationNr)));
 		ShowTime(0);
 		break;
 	case MAKE_CALL:
@@ -760,6 +756,21 @@ void tcCutName(char *Name, byte Sign, uint32 maxLength) {
 	}
 
 	strcpy(Name, Source);
+}
+
+Common::String tcCutName(Common::String Name, byte Sign, uint32 maxLength) {
+	char Source[TXT_KEY_LENGTH];
+	strcpy(Source, Name.c_str());
+
+	uint32 j = MIN(Name.size(), maxLength);
+
+	for (int32 i = j - 1; i >= 0; i--) {
+		if (Source[i] == Sign)
+			Source[i] = '\0';
+	}
+
+	Common::String retVal = Common::String(Source);
+	return retVal;
 }
 
 void ShowMenuBackground() {

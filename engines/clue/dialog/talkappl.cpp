@@ -51,20 +51,20 @@ void tcJobOffer(Person p) {
 void tcMyJobAnswer(Person p) {
 	LIST *bubble = CreateList();
 	LIST *jobs = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_JobE");
-	char line[TXT_KEY_LENGTH], job[TXT_KEY_LENGTH];
+	char job[TXT_KEY_LENGTH];
 
+	Common::String line;
 	strcpy(job, NODE_NAME(GetNthNode(jobs, p->Job)));
 
 	if (strcmp(job, NODE_NAME(GetNthNode(jobs, 10)))) {
-		char temp[TXT_KEY_LENGTH];
-		g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "MY_JOB_IS", temp);
-		sprintf(line, temp, job);
+		Common::String temp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "MY_JOB_IS");
+		line = Common::String::format(temp.c_str(), job);
 	} else
-		g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_JOB", line);
+		line = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_JOB");
 
 	SetPictID(p->PictID);
 	CreateNode(bubble, 0L, line);
-	Bubble(bubble, 0, 0L, 0L);
+	Bubble(bubble, 0, nullptr, 0L);
 
 	RemoveList(jobs);
 	RemoveList(bubble);
@@ -86,11 +86,10 @@ void tcPrisonAnswer(Person p) {
 }
 
 void tcAbilityAnswer(uint32 personID) {
-	char name[TXT_KEY_LENGTH];
 	Person p = (Person)dbGetObject(personID);
 
-	dbGetObjectName(personID, name);
-	LIST *bubble = g_clue->_txtMgr->goKey(ABILITY_TXT, name);
+	Common::String name = dbGetObjectName(personID);
+	LIST *bubble = g_clue->_txtMgr->goKey(ABILITY_TXT, name.c_str());
 	SetPictID(p->PictID);
 	Bubble(bubble, 0, 0, 0);
 

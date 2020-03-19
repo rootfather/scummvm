@@ -48,7 +48,7 @@ extern void prSetBarPrefs(struct _GC *gc, uint16 us_BarWidth, uint16 us_BarHeigh
 extern void prDrawTextBar(const char *puch_Text, uint32 ul_Value, uint32 ul_Max, uint16 us_XPos, uint16 us_YPos);
 
 extern void DrawPresent(LIST *present, uint8 firstLine, struct _GC *gc, uint8 max);
-void AddPresentTextLine(LIST *l, const char *data, uint32 max, LIST *texts, uint16 textNr);
+void AddPresentTextLine(LIST *l, Common::String data, uint32 max, LIST *texts, uint16 textNr);
 void AddPresentLine(LIST *l, uint8 presentHow, uint32 data, uint32 max, LIST *texts, uint16 textNr);
 
 } // End of namespace Clue

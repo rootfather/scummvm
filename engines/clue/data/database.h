@@ -71,8 +71,8 @@ struct ObjectNode {
 extern LIST *ObjectList;
 extern LIST *ObjectListPrivate;
 extern uint32 ObjectListWidth;
-extern char *(*ObjectListPrevString)(uint32, uint32, void *);
-extern char *(*ObjectListSuccString)(uint32, uint32, void *);
+extern Common::String (*ObjectListPrevString)(uint32, uint32, void *);
+extern Common::String (*ObjectListSuccString)(uint32, uint32, void *);
 
 extern LIST *objHash[OBJ_HASH_SIZE];
 
@@ -91,7 +91,7 @@ void *dbNewObject(uint32 nr, uint32 type, uint32 size, char *name, uint32 realNr
 
 void *dbGetObject(uint32 nr);
 uint32 dbGetObjectNr(void *key);
-char *dbGetObjectName(uint32 nr, char *objName);
+Common::String dbGetObjectName(uint32 nr);
 
 void *dbIsObject(uint32 nr, uint32 type);
 
@@ -103,6 +103,7 @@ struct ObjectNode *dbHasObjectNode(LIST *objectList, uint32 nr);
 void SetObjectListAttr(uint32 flags, uint32 type);
 void BuildObjectList(void *key);
 void ExpandObjectList(LIST *objectList, char *expandItem);
+void ExpandObjectList(LIST *objectList, Common::String expandItem);
 
 int16 dbStdCompareObjects(struct ObjectNode *obj1, struct ObjectNode *obj2);
 int32 dbSortObjectList(LIST **objectList,
