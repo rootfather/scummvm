@@ -8,6 +8,7 @@
 
 #include "common/fs.h"
 #include "common/stream.h"
+#include "common/bufferedstream.h"
 #include "clue/error/error.h"
 
 namespace Clue {
@@ -47,24 +48,13 @@ Common::Stream *dskOpen(const char *Pathname, int RW) {
 
 void *dskLoad(const char *Pathname) {
 
-	Common::Stream *fp = dskOpen(Pathname, 0);
-	Common::ReadStream *stream = dynamic_cast<Common::ReadStream *>(fp);
-	if (fp) {
-		size_t nread;
-		size_t pos = 0;
-		size_t size = BUFSIZ;
-		uint8 *ptr = (uint8 *)malloc(size);
-		while ((nread = stream->read(ptr + pos, BUFSIZ)) == BUFSIZ) {
-			pos  += nread;
-			ptr   = (uint8 *)realloc(ptr, size + BUFSIZ);
-			size += nread;
-		}
-
-		pos += nread;
-
-		ptr = (uint8 *)realloc(ptr, pos);
-		dskClose(fp);
-		return (void *)ptr;
+	Common::SeekableReadStream *fp = dynamic_cast<Common::SeekableReadStream*>(dskOpen(Pathname, 0));
+	Common::SeekableReadStream *stream = Common::wrapBufferedSeekableReadStream(fp, BUFSIZ, DisposeAfterUse::YES);
+	if (stream) {
+		void *ptr = malloc(stream->size());
+		stream->read(ptr, stream->size());
+		dskClose(stream);
+		return ptr;
 	}
 	return NULL;
 }
@@ -126,16 +116,11 @@ bool dskBuildPathName(DiskCheckE check, const char *Directory, const char *Filen
 
 int32 dskFileLength(const char *Pathname) {
 	int32 length = 0;
-	Common::FSNode node(Pathname);
-
-	if (node.exists()) {
-		Common::SeekableReadStream *stream = node.createReadStream();
-		if (stream && stream->size() > 0) {
-			length = stream->size();
-		}
-		delete stream;
+	Common::SeekableReadStream *fp = dynamic_cast<Common::SeekableReadStream*>(dskOpen(Pathname, 0));
+	if (fp && fp->size() > 0) {
+		length = fp->size();
 	}
-
+	dskClose(fp);
 	return length;
 }
 
