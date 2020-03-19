@@ -42,6 +42,28 @@ typedef enum {
 	ERROR_MODULE_LAST
 } ErrorModuleE;
 
+static const char *moduleNames[ERROR_MODULE_LAST] = {
+	"",
+	"",
+	"",
+	"Base",
+	"Txt",
+	"Dsk",
+	"Mem",
+	"Data",
+	"GP",
+	"L/S",
+	"Land",
+	"Liv",
+	"Plan",
+	"Snd",
+	"Pres",
+	"Gfx",
+	"Input"
+};
+
+#define ERR_CHANNEL(x) 1 << x
+
 /* openerrormanager defines */
 
 #define ERR_STD_ERROR_FILENAME  "tc.err"

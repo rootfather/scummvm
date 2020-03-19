@@ -23,8 +23,10 @@
 #include "clue/theclou.h"
 
 #include "common/config-manager.h"
+#include "common/debug-channels.h"
 
 #include "clue/clue.h"
+#include "clue/error/error.h"
 #include "clue/base/base.h"
 #include "clue/text.h"
 
@@ -34,6 +36,11 @@ ClueEngine *g_clue = NULL;
 
 ClueEngine::ClueEngine(OSystem *syst, const ADGameDescription *gameDesc) : Engine(syst), _gameDescription(gameDesc) {
 	g_clue = this;
+	// Set up debug channels
+	for (uint32 moduleId = ERROR_MODULE_BASE; moduleId < ERROR_MODULE_LAST; moduleId++) {
+		DebugMan.addDebugChannel(ERR_CHANNEL(moduleId), moduleNames[moduleId], "");
+	}
+
 	rnd = new Common::RandomSource("clue");
 	const char* path = ConfMan.get("path").c_str();
 	dskSetRootPath(path);

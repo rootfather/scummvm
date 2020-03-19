@@ -27,26 +27,6 @@
 
 namespace Clue {
 
-static const char *moduleNames[ERROR_MODULE_LAST] = {
-	"",
-	"",
-	"",
-	"Base",
-	"Txt",
-	"Dsk",
-	"Mem",
-	"Data",
-	"GP",
-	"L/S",
-	"Land",
-	"Liv",
-	"Plan",
-	"Snd",
-	"Pres",
-	"Gfx",
-	"Input"
-};
-
 void ErrorMsg(ErrorE type, ErrorModuleE moduleId, uint32 errorId) {
 	DebugMsg(ERR_DEBUG, moduleId, "Error %d", errorId);
 
@@ -69,19 +49,19 @@ void ErrorMsg(ErrorE type, ErrorModuleE moduleId, uint32 errorId) {
 	}
 }
 
-static void ErrDebugMsg(DebugE type, const char *moduleName, const char *txt) {
+static void ErrDebugMsg(DebugE type, ErrorModuleE moduleId, const char *txt) {
 	switch (type) {
 	case ERR_DEBUG:
-		debug("%s\t: %s", moduleName, txt);
+		debugC(ERR_CHANNEL(moduleId), "%s\t: %s", moduleNames[moduleId], txt);
 		break;
 
 	case ERR_WARNING:
-		warning("Module %s: %s", moduleName, txt);
+		warning("Module %s: %s", moduleNames[moduleId], txt);
 		break;
 
 	case ERR_ERROR:
 		tcDone();
-		error("ERROR: Module %s: %s", moduleName, txt);
+		error("Module %s: %s", moduleNames[moduleId], txt);
 		break;
 	}
 }
@@ -94,7 +74,7 @@ void DebugMsg(DebugE type, ErrorModuleE moduleId, const char *format, ...) {
 	vsprintf(txt, format, arglist);
 	va_end(arglist);
 
-	ErrDebugMsg(type, moduleNames[moduleId], txt);
+	ErrDebugMsg(type, moduleId, txt);
 }
 
 } // End of namespace Clue
