@@ -186,6 +186,7 @@ void lsLoadGlobalData(uint32 bld, uint32 ul_AreaId) {
 	char fileName[DSK_PATH_MAX];
 
 	Common::String areaName = dbGetObjectName(ul_AreaId);
+	areaName.deleteLastChar();
 	areaName += OBJ_GLOBAL_REL_EXTENSION;
 
 	dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, areaName.c_str(), fileName);

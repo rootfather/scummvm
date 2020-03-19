@@ -38,12 +38,14 @@ void grdDo(Common::Stream *fh, struct System *sys, LIST *personsList, uint32 bur
 }
 
 bool grdInit(Common::Stream **fh, int RW, uint32 bldId, uint32 areaId) {
-	char fileName[DSK_PATH_MAX];
+	char grdPath[DSK_PATH_MAX];
 
-	Common::String bldName = dbGetObjectName(areaId) + GUARD_EXTENSION;
-	dskBuildPathName(DISK_CHECK_FILE, GUARD_DIRECTORY, bldName.c_str(), fileName);
+	Common::String fileName = dbGetObjectName(areaId);
+	fileName.deleteLastChar();
+	Common::String bldName = fileName + GUARD_EXTENSION;
+	dskBuildPathName(DISK_CHECK_FILE, GUARD_DIRECTORY, bldName.c_str(), grdPath);
 
-	if ((*fh = dskOpen(fileName, RW)))
+	if ((*fh = dskOpen(grdPath, RW)))
 		return true;
 
 	return false;

@@ -100,6 +100,7 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 			return PLANING_OPEN_OK;
 	} else {
 		Common::String name1 = dbGetObjectName(lsGetActivAreaID());
+		name1.deleteLastChar();
 		Common::String name2 = name1 + PLANING_PLAN_LIST_EXTENSION;
 
 		char pllPath[DSK_PATH_MAX];
@@ -154,6 +155,7 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 						i = data->io_Data;
 
 					name1 = dbGetObjectName(lsGetActivAreaID());
+					name1.deleteLastChar();
 					name2 = Common::String::format("%s%d%s", name1.c_str(), i + 1, PLANING_PLAN_EXTENSION);
 
 					char pllPath2[DSK_PATH_MAX];
