@@ -156,7 +156,10 @@ void gfxDone() {
 
 	gfxDoneMemRastPort(&LSRPInMem);
 
-	Screen->free();
+	if (Screen) {
+		Screen->free();
+		Screen = NULL;
+	}
 }
 
 void gfxSetGC(GC *gc) {
