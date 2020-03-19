@@ -42,7 +42,7 @@ typedef enum {
 	ERROR_MODULE_LAST
 } ErrorModuleE;
 
-static const char *moduleNames[ERROR_MODULE_LAST] = {
+static const char moduleNames[][ERROR_MODULE_LAST] = {
 	"",
 	"",
 	"",
