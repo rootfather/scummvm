@@ -95,7 +95,7 @@ bool dskBuildPathName(DiskCheckE check, const char *Directory, const char *Filen
 
 		case 1:
 			Dir.toUppercase();
-			Dir.toUppercase();
+			File.toUppercase();
 			break;
 
 		case 2:
