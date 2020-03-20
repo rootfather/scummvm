@@ -124,11 +124,10 @@ void TextMgr::load(uint32 textId) {
 
 	if (txt) {
 		if (!txt->_handle) {
-			char txtFile[DSK_PATH_MAX];
 			char txtPath[DSK_PATH_MAX];
 
-			snprintf(txtFile, TXT_KEY_LENGTH, "%s%c%s", NODE_NAME(txt), _txtBase->_language, TXT_SUFFIX);
-			dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, txtFile, txtPath);
+			Common::String txtFile = Common::String::format("%s%c%s", NODE_NAME(txt), _txtBase->_language, TXT_SUFFIX);
+			dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, txtFile.c_str(), txtPath);
 
 			size_t length = dskFileLength(txtPath);
 			txt->_length = length;
@@ -241,11 +240,11 @@ uint32 TextMgr::getKeyAsUint32(uint16 keyNr, Common::String key) {
 }
 
 LIST * TextMgr::goKey(uint32 textId, const char *key) {
-	LIST *txtList = NULL;
+	LIST *txtList = nullptr;
 
 	Text *txt = (Text *)GetNthNode(_txtBase->_textList, textId);
 	if (txt) {
-		char *LastMark = NULL;
+		char *LastMark = nullptr;
 
 		/* MOD: 08-04-94 hg
 		     * if no key was given take the next one
@@ -353,20 +352,16 @@ bool TextMgr::keyExists(uint32 textId, const char *key) {
 	return found;
 }
 
-uint32 TextMgr::countKey(const char *key) {
-	uint32 i = strlen(key);
-	uint32 j, k;
+uint32 TextMgr::countKey(Common::String key) {
+	const uint size = key.size();
+	uint count = 1;
 
-	for (j = 0, k = 0; j < i; j++) {
+	for (uint j = 0; j < size; j++) {
 		if (key[j] == TXT_CHAR_KEY_SEPERATOR)
-			k++;
+			++count;
 	}
 
-	return k + 1;
-}
-
-uint32 TextMgr::countKey(Common::String key) {
-	return countKey(key.c_str());
+	return count;
 }
 /* functions - STRING */
 Common::String TextMgr::getNthString(uint32 textId, const char *key, uint32 nth) {

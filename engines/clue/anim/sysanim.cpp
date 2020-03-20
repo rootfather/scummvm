@@ -112,11 +112,10 @@ void ContinueAnim() {
 static void PrepareAnim(const char *AnimID)
 /* initializes various values and afterwards copies anim phases into memory */
 {
-	struct Collection *coll;
 	Common::String pict_list = GetAnim(AnimID);
 
-	if ((uint32)(g_clue->_txtMgr->countKey(pict_list.c_str())) > PIC_1_ID_POS) {
-		coll = gfxGetCollection(g_clue->_txtMgr->getKeyAsUint32(ANIM_COLL_ID_POS, pict_list));
+	if ((uint32)g_clue->_txtMgr->countKey(pict_list) > PIC_1_ID_POS) {
+		struct Collection* coll = gfxGetCollection(g_clue->_txtMgr->getKeyAsUint32(ANIM_COLL_ID_POS, pict_list));
 		Handler.frameCount = g_clue->_txtMgr->getKeyAsUint32(PIC_COUNT_POS, pict_list);
 
 		Handler.width = (uint16)g_clue->_txtMgr->getKeyAsUint32(PHASE_WIDTH_POS, pict_list);

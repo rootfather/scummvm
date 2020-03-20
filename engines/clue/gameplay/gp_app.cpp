@@ -158,14 +158,13 @@ uint32 tcBurglary(uint32 buildingID) {
 }
 
 void tcRefreshLocationInTitle(uint32 locNr) {
-	char date[TXT_KEY_LENGTH], line[TXT_KEY_LENGTH];
-
 	gfxSetPens(m_gc, 3, GFX_SAME_PEN, GFX_SAME_PEN);
 
+	char date[TXT_KEY_LENGTH];
 	BuildDate(GetDay, date);
 	NODE *node = (NODE *)GetNthNode(film->loc_names, locNr);
 
-	snprintf(line, TXT_KEY_LENGTH, "%s %s", NODE_NAME(node), date);
+	Common::String line = Common::String::format("%s %s", NODE_NAME(node), date);
 	ShowMenuBackground();
 	PrintStatus(line);
 }

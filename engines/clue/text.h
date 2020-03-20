@@ -104,7 +104,6 @@ public:
 	LIST* goKeyAndInsert(uint32 textId, const char *key, ...);
 
 	bool keyExists(uint32 textId, const char *key);
-	uint32 countKey(const char *key);
 	uint32 countKey(Common::String key);
 
 	/* public prototypes - STRING */

@@ -43,7 +43,8 @@ void plSaveTools(Common::Stream *fh) {
 
 LIST *plLoadTools(Common::Stream *fh) {
 	LIST *l = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_1");
-	byte foundAll = 1, canGet = 2, toolsNr = 0;
+	bool foundAll = true;
+	byte canGet = 2, toolsNr = 0;
 
 	char buffer[64];
 	buffer[0] = '\0';
@@ -61,7 +62,7 @@ LIST *plLoadTools(Common::Stream *fh) {
 						dbAddObjectNode(l, id, OLF_INCLUDE_NAME);
 					}
 
-					foundAll = 0;
+					foundAll = false;
 				}
 			}
 		}
@@ -109,8 +110,6 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 		Common::Stream *pllFh = dskOpen(pllPath, 0);
 		if (pllFh) {
 			uint32 pllData = 0;
-			// TODO: Make sure this still works
-			//fscanf(pllFh, "%u", &pllData);
 			dskGetLine_U32(pllFh, &pllData);
 			dskClose(pllFh);
 
@@ -167,8 +166,6 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 						pllData |= 1L << i;
 
 						if ((pllFh = dskOpen(pllPath, 1))) {
-							// TODO: Make sure this still works
-							//dskPrintf(pllFh, "%u", pllData);
 							dskSetLine_U32(pllFh, pllData);
 							dskClose(pllFh);
 						}
