@@ -24,7 +24,7 @@ void BobVis(uint16 BobID);
 void BobInVis(uint16 BobID);
 
 void BobSetDarkness(byte darkness);
-void BobDisplayLists(GC *gc);
+void BobDisplayLists(_GC *gc);
 
 } // End of namespace Clue
 

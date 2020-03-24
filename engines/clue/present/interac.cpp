@@ -303,7 +303,7 @@ byte Menu(List *menu, uint32 possibility, byte activ, void (*func)(byte), uint32
 	return activ;
 }
 
-static void DrawBubble(List *bubble, uint8 firstLine, uint8 activ, GC *gc, uint32 max) {
+static void DrawBubble(List *bubble, uint8 firstLine, uint8 activ, _GC *gc, uint32 max) {
 	gfxScreenFreeze();
 	gfxSetPens(gc, 224, 224, 224);
 	gfxRectFill(gc, X_OFFSET, 3, X_OFFSET + INT_BUBBLE_WIDTH, 49);

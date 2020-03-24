@@ -25,6 +25,7 @@
 #include "clue/list/list.h"
 
 namespace Clue {
+struct _GC;
 
 #define GFX_NO_MEM_HANDLE   ((uint16) -1)
 
@@ -116,8 +117,6 @@ struct Collection {
 	byte uch_ColorRangeEnd;
 };
 
-typedef struct _GC GC;
-
 struct Picture {
 	Node Link;
 
@@ -144,9 +143,9 @@ struct Font {
 	unsigned char last;
 };
 
-extern GC *l_gc;
-extern GC *u_gc;
-extern GC *m_gc;
+extern _GC *l_gc;
+extern _GC *u_gc;
+extern _GC *m_gc;
 
 extern MemRastPort ScratchRP;
 
@@ -172,35 +171,35 @@ extern void gfxSetVideoMode(byte uch_NewMode);
 extern void wfd();
 extern void wfr();
 
-void gfxSetRGB(GC *gc, uint8 color, uint8 r, uint8 g, uint8 b);
+void gfxSetRGB(_GC *gc, uint8 color, uint8 r, uint8 g, uint8 b);
 
-void gfxMoveCursor(GC *gc, uint16 x, uint16 y);
-void gfxSetPens(GC *gc, uint8 foreground, uint8 background, uint8 outline);
-void gfxRectFill(GC *gc, uint16 sx, uint16 sy, uint16 ex, uint16 ey);
-void gfxDraw(GC *gc, uint16 x, uint16 y);
-void gfxSetDrMd(GC *rp, GfxDrawModeE mode);
-void gfxSetFont(GC *gc, Font *font);
+void gfxMoveCursor(_GC *gc, uint16 x, uint16 y);
+void gfxSetPens(_GC *gc, uint8 foreground, uint8 background, uint8 outline);
+void gfxRectFill(_GC *gc, uint16 sx, uint16 sy, uint16 ex, uint16 ey);
+void gfxDraw(_GC *gc, uint16 x, uint16 y);
+void gfxSetDrMd(_GC *rp, GfxDrawModeE mode);
+void gfxSetFont(_GC *gc, Font *font);
 
 extern void gfxPrepareRefresh();
 extern void gfxRefresh();
 
-extern void gfxClearArea(GC *gc);
+extern void gfxClearArea(_GC *gc);
 extern void gfxSetRect(uint16 us_X, uint16 us_Width);
 
-extern uint16 gfxTextWidth(GC *gc, const char *txt, size_t len);
-extern uint16 gfxTextWidth(GC *gc, Common::String txt);
+extern uint16 gfxTextWidth(_GC *gc, const char *txt, size_t len);
+extern uint16 gfxTextWidth(_GC *gc, Common::String txt);
 
-extern void gfxPrint(GC *gc, Common::String txt, uint16 y, uint32 mode);
+extern void gfxPrint(_GC *gc, Common::String txt, uint16 y, uint32 mode);
 
-extern void gfxPrintExact(GC *gc, const char *txt, uint16 x, uint16 y);
+extern void gfxPrintExact(_GC *gc, const char *txt, uint16 x, uint16 y);
 
 extern void gfxSetColorRange(byte uch_ColorStart, byte uch_ColorEnd);
 
-extern void gfxChangeColors(GC *gc, uint32 delay, uint32 mode, uint8 *palette);
+extern void gfxChangeColors(_GC *gc, uint32 delay, uint32 mode, uint8 *palette);
 extern void gfxShow(uint16 us_PictId, uint32 ul_Mode, int32 l_Delay, int32 l_XPos,
                     int32 l_YPos);
 
-extern void gfxSetGC(GC *gc);
+extern void gfxSetGC(_GC *gc);
 
 extern void gfxGetPaletteFromReg(uint8 *palette, uint32 start, uint32 num);
 extern void gfxGetPalette(uint16 collId, uint8 *palette);
@@ -228,7 +227,7 @@ typedef enum {
 	GFX_ROP_SET       = 3
 } ROpE;
 
-void gfxBlit(GC *gc, MemRastPort *src, uint16 sx, uint16 sy, uint16 dx, uint16 dy,
+void gfxBlit(_GC *gc, MemRastPort *src, uint16 sx, uint16 sy, uint16 dx, uint16 dy,
              uint16 w, uint16 h, bool has_mask);
 
 void MemBlit(MemRastPort *src, Rect *src_rect,
@@ -237,10 +236,10 @@ void MemBlit(MemRastPort *src, Rect *src_rect,
 void gfxRefreshArea(uint16 x, uint16 y, uint16 w, uint16 h);
 
 void gfxScreenFreeze();
-void gfxScreenThaw(GC *gc, uint16 x, uint16 y, uint16 w, uint16 h);
+void gfxScreenThaw(_GC *gc, uint16 x, uint16 y, uint16 w, uint16 h);
 void gfxScreenUnFreeze();
 
-void gfxGetMouseXY(GC *gc, uint16 *pMouseX, uint16 *pMouseY);
+void gfxGetMouseXY(_GC *gc, uint16 *pMouseX, uint16 *pMouseY);
 
 void ShowIntro();
 

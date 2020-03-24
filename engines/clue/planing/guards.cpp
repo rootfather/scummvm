@@ -69,7 +69,7 @@ bool grdAddToList(uint32 bldId, List *l) {
 	return false;
 }
 
-bool grdDraw(GC *gc, uint32 bldId, uint32 areaId) {
+bool grdDraw(_GC *gc, uint32 bldId, uint32 areaId) {
 	bool ret = false;
 	List *GuardsList = CreateList();
 	if (grdAddToList(bldId, GuardsList)) {

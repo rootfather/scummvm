@@ -44,15 +44,15 @@ struct ColorRange {
 };
 
 struct GfxBase {
-	GC *gc;
+	_GC *gc;
 
 	byte uch_VideoMode;
 };
 
-GC LowerGC;
-GC MenuGC;
-GC LSUpperGC;
-GC LSMenuGC;
+_GC LowerGC;
+_GC MenuGC;
+_GC LSUpperGC;
+_GC LSMenuGC;
 
 /* wird verwendet für Double Buffering während der Vorbereitung */
 MemRastPort ScratchRP;
@@ -105,14 +105,14 @@ struct GfxBase GfxBase;
 List *CollectionList = NULL;
 List *PictureList = NULL;
 
-GC *l_gc;
-GC *m_gc;
-GC *u_gc;
+_GC *l_gc;
+_GC *m_gc;
+_GC *u_gc;
 
 struct Font *bubbleFont;
 struct Font *menuFont;
 
-static void gfxInitGC(GC *gc, uint16 x, uint16 y, uint16 w, uint16 h,
+static void gfxInitGC(_GC *gc, uint16 x, uint16 y, uint16 w, uint16 h,
                       uint8 colorStart, uint8 colorEnd, Font *font);
 
 static void gfxInitCollList();

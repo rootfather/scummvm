@@ -103,7 +103,7 @@ void BobInVis(uint16 BobID) {
 void BobSetDarkness(byte darkness) {
 }
 
-void BobDisplayLists(GC *gc) {
+void BobDisplayLists(_GC *gc) {
 	gfxPrepareColl(137);
 
 	for (uint16 i = 0; i < BOB_MAX; i++) {

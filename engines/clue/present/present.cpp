@@ -27,7 +27,7 @@ namespace Clue {
 
 struct PresentControl PresentControl = { NULL, 0, 0 };
 
-void DrawPresent(List *present, uint8 firstLine, GC *gc, uint8 max) {
+void DrawPresent(List *present, uint8 firstLine, _GC *gc, uint8 max) {
 	gfxScreenFreeze();
 	gfxSetPens(gc, 224, 224, 224);
 	gfxRectFill(gc, 88, 3, 320, 49);
@@ -233,7 +233,7 @@ void AddPresentLine(List *l, uint8 presentHow, uint32 data, uint32 max, List *te
 		p->extendedNr = data;
 }
 
-void prSetBarPrefs(GC *gc, uint16 us_BarWidth,
+void prSetBarPrefs(_GC *gc, uint16 us_BarWidth,
                    uint16 us_BarHeight, byte uch_FCol, byte uch_BCol,
                    byte uch_TCol) {
 	PresentControl.gc = gc;
@@ -246,7 +246,7 @@ void prSetBarPrefs(GC *gc, uint16 us_BarWidth,
 
 void prDrawTextBar(const char *puch_Text, uint32 ul_Value, uint32 ul_Max,
                    uint16 us_XPos, uint16 us_YPos) {
-	GC *gc = PresentControl.gc;
+	_GC *gc = PresentControl.gc;
 	uint16 us_Width = PresentControl.us_BarWidth;
 	uint16 us_Height = PresentControl.us_BarHeight;
 

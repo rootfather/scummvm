@@ -16,7 +16,7 @@ namespace Clue {
 #define BAR_WIDTH            255
 
 struct PresentControl {
-	GC *gc;
+	_GC *gc;
 
 	uint16 us_BarWidth;
 	uint16 us_BarHeight;

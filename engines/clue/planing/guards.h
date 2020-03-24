@@ -36,7 +36,6 @@ namespace Clue {
 
 
 struct System;
-
 struct _GC;
 
 /* main method */
