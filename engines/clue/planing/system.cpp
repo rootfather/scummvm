@@ -90,7 +90,7 @@ void SetActivHandler(System *sys, uint32 id) {
 	Handler *h = FindHandler(sys, id);
 
 	if (h)
-		sys->ActivHandler = (NODE *) h;
+		sys->ActivHandler = (Node *) h;
 	else
 		sys->ActivHandler = NULL;
 }
@@ -106,8 +106,8 @@ void SaveSystem(Common::Stream *fh, System *sys) {
 	}
 }
 
-LIST *LoadSystem(Common::Stream *fh, struct System *sys) {
-	LIST *l = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_GUYS_MISSING_1");
+List *LoadSystem(Common::Stream *fh, struct System *sys) {
+	List *l = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_GUYS_MISSING_1");
 	bool foundAll = true;
 	uint8 knowsSomebody = 1, handlerNr = 0;
 
@@ -140,7 +140,7 @@ LIST *LoadSystem(Common::Stream *fh, struct System *sys) {
 		RemoveList(l);
 		l = NULL;
 	} else {
-		LIST *extList = NULL;
+		List *extList = NULL;
 
 		if (knowsSomebody == 1)
 			extList = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_GUYS_MISSING_3");
@@ -150,7 +150,7 @@ LIST *LoadSystem(Common::Stream *fh, struct System *sys) {
 			extList = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_GUYS_MISSING_4");
 
 		if (extList) {
-			for (NODE *n = LIST_HEAD(extList); NODE_SUCC(n); n = NODE_SUCC(n))
+			for (Node *n = LIST_HEAD(extList); NODE_SUCC(n); n = NODE_SUCC(n))
 				CreateNode(l, 0, NODE_NAME(n));
 
 			RemoveList(extList);
@@ -176,7 +176,7 @@ Handler *InitHandler(struct System *sys, uint32 id, uint32 flags) {
 				h = NULL;
 			}
 
-			sys->ActivHandler = (NODE *) h;
+			sys->ActivHandler = (Node *) h;
 		}
 	}
 
@@ -349,7 +349,7 @@ Action *InitAction(struct System *sys, uint16 type, uint32 data1, uint32 data2, 
 				a->Timer = time;
 
 				h->Timer += time;
-				h->CurrentAction = (NODE *) a;
+				h->CurrentAction = (Node *) a;
 
 				switch (type) {
 				case ACTION_GO:
@@ -529,7 +529,7 @@ void RemLastAction(struct System *sys) {
 	if (sys && (h = (Handler *) sys->ActivHandler)) {
 		if (!LIST_EMPTY(h->Actions)) {
 			if (GetNrOfNodes(h->Actions) > 1) {
-				NODE *n = (NODE *) RemTailNode(h->Actions);
+				Node *n = (Node *) RemTailNode(h->Actions);
 				sysUsedMem -= NODE_SIZE(n);
 				FreeNode(n);
 
@@ -628,8 +628,8 @@ uint32 GetMaxTimer(System *sys) {
 	return time;
 }
 
-void CorrectMem(LIST *l) {
-	for (NODE *n = LIST_HEAD(l); NODE_SUCC(n); n = NODE_SUCC(n))
+void CorrectMem(List *l) {
+	for (Node *n = LIST_HEAD(l); NODE_SUCC(n); n = NODE_SUCC(n))
 		sysUsedMem -= NODE_SIZE(n);
 }
 

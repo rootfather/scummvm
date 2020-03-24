@@ -35,7 +35,7 @@ char txtSeconds[20];
 /* System functions */
 void plInit() {
 	/* Get texts */
-	LIST *l = g_clue->_txtMgr->goKey(PLAN_TXT, "TXT_TOO_LOUD");
+	List *l = g_clue->_txtMgr->goKey(PLAN_TXT, "TXT_TOO_LOUD");
 	sprintf(txtTooLoud, "%s", NODE_NAME(LIST_HEAD(l)));
 	RemoveList(l);
 

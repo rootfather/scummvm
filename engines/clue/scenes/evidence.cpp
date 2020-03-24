@@ -66,8 +66,8 @@ static bool tcCarFound(Car car, uint32 time) {
 }
 
 static uint32 tcATraitor(uint32 traitorId) {
-	LIST *bubble = g_clue->_txtMgr->goKey(BUSINESS_TXT, "A_TRAITOR");
-	LIST *newList = CreateList();
+	List *bubble = g_clue->_txtMgr->goKey(BUSINESS_TXT, "A_TRAITOR");
+	List *newList = CreateList();
 	Person john = (Person)dbGetObject(Person_John_Gludo);
 
 	Common::String name = dbGetObjectName(traitorId);
@@ -99,7 +99,7 @@ static uint32 tcIsThereATraitor() {
 			             Object_Person);
 
 			byte symp = 255;
-			for (NODE *n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
+			for (Node *n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
 				Person pers = (Person)OL_DATA(n);
 
 				if (OL_NR(n) != Person_Matt_Stuvysunt) {    /* Matt verrät sich nicht selbst */
@@ -129,11 +129,11 @@ uint32 tcStartEvidence() {
 
 	joined_byAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST, Object_Person);
 
-	LIST *guys = ObjectListPrivate;
+	List *guys = ObjectListPrivate;
 	dbSortObjectList(&guys, dbStdCompareObjects);
 
 	byte guyCount = (byte) GetNrOfNodes(guys);
-	LIST *spuren = g_clue->_txtMgr->goKey(BUSINESS_TXT, "SPUREN");
+	List *spuren = g_clue->_txtMgr->goKey(BUSINESS_TXT, "SPUREN");
 
 	Person p[4];
 	p[0] = p[1] = p[2] = p[3] = NULL;
@@ -357,9 +357,9 @@ uint32 tcStartEvidence() {
 
 void tcForgetGuys() {
 	joined_byAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST, Object_Person);
-	LIST *guys = ObjectListPrivate;
+	List *guys = ObjectListPrivate;
 
-	for (NODE *node = LIST_HEAD(guys); NODE_SUCC(node); node = NODE_SUCC(node)) {
+	for (Node *node = LIST_HEAD(guys); NODE_SUCC(node); node = NODE_SUCC(node)) {
 		if (OL_NR(node) != Person_Matt_Stuvysunt) {
 			Person pers = (Person)OL_DATA(node);
 
@@ -377,11 +377,11 @@ void tcForgetGuys() {
 uint32 tcPersonWanted(uint32 persId) {
 	Person john = (Person)dbGetObject(Person_John_Gludo);
 	Person miles = (Person)dbGetObject(Person_Miles_Chickenwing);
-	LIST *jobs = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_JobE");
+	List *jobs = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_JobE");
 
 	Common::String name = dbGetObjectName(persId);
 
-	LIST *bubble = g_clue->_txtMgr->goKey(BUSINESS_TXT, "BURGLAR_RECOG");
+	List *bubble = g_clue->_txtMgr->goKey(BUSINESS_TXT, "BURGLAR_RECOG");
 
 	Common::String line = Common::String::format("%s %s.", NODE_NAME(GetNthNode(bubble, 3)), name.c_str());
 

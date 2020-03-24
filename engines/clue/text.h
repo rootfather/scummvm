@@ -62,12 +62,12 @@ class ClueEngine;
 
 /* private structures */
 struct TextControl {
-	LIST *_textList;
+	List *_textList;
 	char _language;
 };
 
 struct Text {
-	NODE txt_Link; // Unused? But required for alignment during casting?
+	Node txt_Link; // Unused? But required for alignment during casting?
 
 	char *_handle;
 	char *_lastMark;
@@ -100,8 +100,8 @@ public:
 	uint32 getKeyAsUint32(uint16 keyNr, const char *key);
 	uint32 getKeyAsUint32(uint16 keyNr, Common::String key);
 
-	LIST* goKey(uint32 textId, const char *key);
-	LIST* goKeyAndInsert(uint32 textId, const char *key, ...);
+	List* goKey(uint32 textId, const char *key);
+	List* goKeyAndInsert(uint32 textId, const char *key, ...);
 
 	bool keyExists(uint32 textId, const char *key);
 	uint32 countKey(Common::String key);
@@ -109,7 +109,7 @@ public:
 	/* public prototypes - STRING */
 	Common::String getNthString(uint32 textId, const char *key, uint32 nth);
 	Common::String getFirstLine(uint32 textId, const char *key);
-	void putCharacter(LIST *list, uint16 pos, uint8 c);
+	void putCharacter(List *list, uint16 pos, uint8 c);
 };
 	
 } // End of namespace Clue

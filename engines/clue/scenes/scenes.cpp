@@ -34,7 +34,7 @@ static byte tcDisplayInfoAboutPerson(uint32 objID) {
 		return Present(objID, "Person", InitPersonPresent);
 
 	Common::String name = dbGetObjectName(objID);
-	LIST *bubble = g_clue->_txtMgr->goKey(LOOK_TXT, name.c_str());
+	List *bubble = g_clue->_txtMgr->goKey(LOOK_TXT, name.c_str());
 
 	SetBubbleType(THINK_BUBBLE);
 	Bubble(bubble, 0, nullptr, 0L);
@@ -74,7 +74,7 @@ void RemTaxiLocation(uint32 locNr) {
  * Wait
  */
 
-uint32 Go(LIST *succ) {
+uint32 Go(List *succ) {
 	uint32 succ_eventnr;
 	inpTurnFunctionKey(0);
 
@@ -89,7 +89,7 @@ uint32 Go(LIST *succ) {
 		for (TCEventNode *node = (TCEventNode *) LIST_HEAD(succ); NODE_SUCC(node);
 		        node = (TCEventNode *) NODE_SUCC(node)) {
 			Scene *sc = GetScene(node->EventNr);
-			NODE *location = (NODE *)GetNthNode(film->loc_names, sc->LocationNr);
+			Node *location = (Node *)GetNthNode(film->loc_names, sc->LocationNr);
 
 			NODE_NAME(node) = NODE_NAME(location);
 
@@ -124,7 +124,7 @@ void Information() {
 	byte ret = 0;
 	while ((choice != 6) && (ret != GET_OUT)) {
 		SetBubbleType(THINK_BUBBLE);
-		LIST *bubble = g_clue->_txtMgr->goKey(THECLOU_TXT, "INFORMATION");
+		List *bubble = g_clue->_txtMgr->goKey(THECLOU_TXT, "INFORMATION");
 		choice = Bubble(bubble, choice, 0L, 0L);
 		RemoveList(bubble);
 
@@ -141,7 +141,7 @@ void Information() {
 			hasAll(Person_Matt_Stuvysunt,
 			       OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
 			       Object_Car);
-			LIST *list = ObjectListPrivate;
+			List *list = ObjectListPrivate;
 
 			if (!(LIST_EMPTY(list))) {
 				Common::String enough =  g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "GENUG");
@@ -165,7 +165,7 @@ void Information() {
 			knowsAll(Person_Matt_Stuvysunt,
 			         OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
 			         Object_Person);
-			LIST *list = ObjectListPrivate;
+			List *list = ObjectListPrivate;
 
 			if (!(LIST_EMPTY(list))) {
 				Common::String enough = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "GENUG");
@@ -189,7 +189,7 @@ void Information() {
 			hasAll(Person_Matt_Stuvysunt,
 			       OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
 			       Object_Tool);
-			LIST *list = ObjectListPrivate;
+			List *list = ObjectListPrivate;
 
 			if (!(LIST_EMPTY(list))) {
 				SetBubbleType(THINK_BUBBLE);
@@ -213,7 +213,7 @@ void Information() {
 			hasAll(Person_Matt_Stuvysunt,
 			       OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
 			       Object_Building);
-			LIST *list = ObjectListPrivate;
+			List *list = ObjectListPrivate;
 
 			if (!(LIST_EMPTY(list))) {
 				SetBubbleType(THINK_BUBBLE);
@@ -250,7 +250,7 @@ void Look(uint32 locNr) {
 
 	byte choice = 0;
 	while (choice != 2) {
-		LIST *menu = g_clue->_txtMgr->goKey(THECLOU_TXT, "UMSEHEN");
+		List *menu = g_clue->_txtMgr->goKey(THECLOU_TXT, "UMSEHEN");
 
 		SetBubbleType(THINK_BUBBLE);
 		choice = Bubble(menu, 0, 0L, 0L);
@@ -260,7 +260,7 @@ void Look(uint32 locNr) {
 
 		switch (choice) {
 		case 0: {
-			LIST *bubble = g_clue->_txtMgr->goKey(HOUSEDESC_TXT,
+			List *bubble = g_clue->_txtMgr->goKey(HOUSEDESC_TXT,
 			                  NODE_NAME(GetNthNode(film->loc_names, (locNr))));
 
 			SetBubbleType(THINK_BUBBLE);
@@ -271,7 +271,7 @@ void Look(uint32 locNr) {
 
 		case 1: {
 			uint32 objID = GetObjNrOfLocation(locNr);
-			LIST *bubble = nullptr;
+			List *bubble = nullptr;
 			if (objID) {
 				hasAll(objID, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Person);
 				bubble = ObjectListPrivate;

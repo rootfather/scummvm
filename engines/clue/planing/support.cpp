@@ -193,8 +193,8 @@ void plWork(uint32 current) {
 	}
 }
 
-LIST *plGetObjectsList(uint32 current, byte addLootBags) {
-	LIST *list = NULL;
+List *plGetObjectsList(uint32 current, byte addLootBags) {
+	List *list = NULL;
 	uint32 areaId = livWhereIs(Planing_Name[current]), oldAreaId;
 
 	oldAreaId = lsGetCurrObjectRetrieval();
@@ -230,7 +230,7 @@ LIST *plGetObjectsList(uint32 current, byte addLootBags) {
 	return list;
 }
 
-void plInsertGuard(LIST *list, uint32 current, uint32 guard) {
+void plInsertGuard(List *list, uint32 current, uint32 guard) {
 	switch (livGetViewDirection(Planing_Name[current])) {
 	case ANM_MOVE_LEFT:
 		tcInsertGuard(list, Planing_GuardRoomList[guard - BurglarsNr],
@@ -275,7 +275,7 @@ void plInsertGuard(LIST *list, uint32 current, uint32 guard) {
 }
 
 bool plObjectInReach(uint32 current, uint32 objId) {
-	LIST *actionList = plGetObjectsList(current, 1);
+	List *actionList = plGetObjectsList(current, 1);
 	bool ret = false;
 
 	for (byte i = BurglarsNr; i < PersonsNr; i++)

@@ -34,7 +34,7 @@ namespace Clue {
 void lsLoadSpotBitMap(MemRastPort *rp);
 
 struct SpotControl {
-	LIST *p_spots;
+	List *p_spots;
 
 	MemRastPort RP;
 };
@@ -345,7 +345,7 @@ void lsFreeAllSpots() {
 		RemoveList(spot->p_positions);
 }
 
-LIST *lsGetSpotList() {
+List *lsGetSpotList() {
 	return sc->p_spots;
 }
 

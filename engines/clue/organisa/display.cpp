@@ -62,7 +62,7 @@ void tcDisplayOrganisation() {
 }
 
 void tcDisplayCommon() {
-	LIST *texts = g_clue->_txtMgr->goKey(BUSINESS_TXT, "PLAN_COMMON_DATA");
+	List *texts = g_clue->_txtMgr->goKey(BUSINESS_TXT, "PLAN_COMMON_DATA");
 
 	gfxSetGC(l_gc);
 	gfxShow(ORG_PICT_ID, GFX_ONE_STEP | GFX_NO_REFRESH, 0, -1, -1);
@@ -142,7 +142,7 @@ void tcDisplayCommon() {
 	line = Common::String(NODE_NAME(GetNthNode(texts, 3L)));
 
 	if (Organisation.BuildingID) {
-		LIST *enums = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_RouteE");
+		List *enums = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_RouteE");
 
 		name = Common::String(NODE_NAME(GetNthNode(enums, building->EscapeRoute)));
 		line += name;
@@ -185,11 +185,11 @@ void tcDisplayCommon() {
 
 void tcDisplayPerson(uint32 displayMode) {
 	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST, Object_Person);
-	LIST *guys = ObjectListPrivate;
+	List *guys = ObjectListPrivate;
 	dbSortObjectList(&guys, dbStdCompareObjects);
 
 	uint32 i;
-	NODE *node;
+	Node *node;
 	for (node = LIST_HEAD(guys), i = 0; NODE_SUCC(node); node = NODE_SUCC(node), i++) {
 		char line[TXT_KEY_LENGTH];
 		uint32 objNr = ((struct ObjectNode *) node)->nr;
@@ -216,12 +216,12 @@ void tcDisplayPerson(uint32 displayMode) {
 void tcDisplayAbilities(uint32 personNr, uint32 displayData) {
 	hasAll(personNr, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME, Object_Ability);
 
-	LIST *abilities = ObjectListPrivate;
+	List *abilities = ObjectListPrivate;
 
 	prSetBarPrefs(l_gc, ORG_DISP_GUY_WIDTH - 5, ORG_DISP_LINE + 1, 251, 250, 249);
 
 	if (!(LIST_EMPTY(abilities))) {
-		NODE *node;
+		Node *node;
 		unsigned i;
 
 		for (node = LIST_HEAD(abilities), i = 0; NODE_SUCC(node); node = NODE_SUCC(node), i++) {

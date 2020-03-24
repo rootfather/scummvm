@@ -245,7 +245,7 @@ static void plPersonLearns(uint32 persId, uint32 toolId) {
 }
 
 static byte plCarTooFull() {
-	LIST *l = tcMakeLootList(Person_Matt_Stuvysunt, Relation_has);
+	List *l = tcMakeLootList(Person_Matt_Stuvysunt, Relation_has);
 
 	CompleteLoot complete = (CompleteLoot) dbGetObject(CompleteLoot_LastLoot);
 	Car car = (Car) dbGetObject(Organisation.CarID);
@@ -1593,7 +1593,7 @@ static void plPlayerAction() {
 
 int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32)) {
 	Common::Stream *fh = NULL;
-	LIST *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "PLAYER_MENU");
+	List *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "PLAYER_MENU");
 	byte activ = 0;
 	uint32 timeLeft = 0, bitset, choice1, choice2;
 	int32 ret = 0;
@@ -1612,7 +1612,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 	AnimCounter = 0;
 
 	if ((activ = plOpen(objId, PLANING_OPEN_READ_BURGLARY, &fh)) == PLANING_OPEN_OK) {
-		LIST *l = LoadSystem(fh, plSys);
+		List *l = LoadSystem(fh, plSys);
 		if (!l) {
 			if (!(l = plLoadTools(fh))) {
 				PD.ende = 0;
@@ -1785,7 +1785,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 
 					case PLANING_PLAYER_RADIO_ONE:
 						if (BurglarsNr > 2) {
-							NODE*help;
+							Node *help;
 
 							plMessage("RADIO_1", PLANING_MSG_REFRESH);
 							SetPictID(((Person)
@@ -1793,7 +1793,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 							                       (GetNthNode
 							                        (BurglarsList,
 							                         0))))->PictID);
-							NODE* node = (NODE*)UnLink(BurglarsList,
+							Node *node = (Node *)UnLink(BurglarsList,
 							                           OL_NAME(GetNthNode(BurglarsList, 0)),
 							                           &help);
 

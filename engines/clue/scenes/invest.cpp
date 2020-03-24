@@ -23,7 +23,7 @@
 
 namespace Clue {
 
-static uint32 tcShowPatrol(LIST *bubble_l, Common::String c_time, Common::String patr, byte first,
+static uint32 tcShowPatrol(List *bubble_l, Common::String c_time, Common::String patr, byte first,
                            Building bui, uint32 raise) {
 	uint32 choice = 0;
 	Common::String patrolie = c_time + ' ' + patr;
@@ -43,7 +43,7 @@ static uint32 tcShowPatrol(LIST *bubble_l, Common::String c_time, Common::String
 }
 
 void Investigate(const char *location) {
-	NODE *n, *nextMsg;
+	Node *n, *nextMsg;
 	uint32 minutes = 0, choice = 0, first = 0;
 
 	uint32 buiID = GetObjNrOfBuilding(GetLocation);
@@ -51,7 +51,7 @@ void Investigate(const char *location) {
 
 	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		if (buiID == Building_Buckingham_Palace) {
-			LIST *bubble_l = g_clue->_txtMgr->goKey(INVESTIGATIONS_TXT, "BuckinghamBeobachtet");
+			List *bubble_l = g_clue->_txtMgr->goKey(INVESTIGATIONS_TXT, "BuckinghamBeobachtet");
 			SetBubbleType(THINK_BUBBLE);
 			Bubble(bubble_l, 0, 0L, 0L);
 			RemoveList(bubble_l);
@@ -77,8 +77,8 @@ void Investigate(const char *location) {
 	gfxPrint(m_gc, line, 24, GFX_PRINT_CENTER);
 
 	/* Beobachtungstexte von Disk lesen */
-	LIST *origin = g_clue->_txtMgr->goKey(INVESTIGATIONS_TXT, location);
-	LIST *bubble_l = CreateList();
+	List *origin = g_clue->_txtMgr->goKey(INVESTIGATIONS_TXT, location);
+	List *bubble_l = CreateList();
 	uint32 count = GetNrOfNodes(origin);
 	uint32 guarding = (uint32) tcRGetGRate(bui);
 	uint32 patrolCount = (270 - guarding) / 4 + 1;
@@ -136,7 +136,7 @@ void Investigate(const char *location) {
 				if ((GetMinute % 60) != 0)
 					ShowTime(0);
 
-				n = (NODE *)CreateNode(bubble_l, 0L, NODE_NAME(nextMsg));
+				n = (Node *)CreateNode(bubble_l, 0L, NODE_NAME(nextMsg));
 
 				SetBubbleType(THINK_BUBBLE);
 

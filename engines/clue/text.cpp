@@ -239,8 +239,8 @@ uint32 TextMgr::getKeyAsUint32(uint16 keyNr, Common::String key) {
 	return getKeyAsUint32(keyNr, key.c_str());
 }
 
-LIST * TextMgr::goKey(uint32 textId, const char *key) {
-	LIST *txtList = nullptr;
+List * TextMgr::goKey(uint32 textId, const char *key) {
+	List *txtList = nullptr;
 
 	Text *txt = (Text *)GetNthNode(_txtBase->_textList, textId);
 	if (txt) {
@@ -298,15 +298,15 @@ LIST * TextMgr::goKey(uint32 textId, const char *key) {
 	return txtList;
 }
 
-LIST * TextMgr::goKeyAndInsert(uint32 textId, const char *key, ...) {
-	LIST *txtList = CreateList();
+List * TextMgr::goKeyAndInsert(uint32 textId, const char *key, ...) {
+	List *txtList = CreateList();
 
 	va_list argument;
 	va_start(argument, key);
 
-	LIST *originList = goKey(textId, key);
+	List *originList = goKey(textId, key);
 
-	for (NODE *node = LIST_HEAD(originList); NODE_SUCC(node); node = NODE_SUCC(node)) {
+	for (Node *node = LIST_HEAD(originList); NODE_SUCC(node); node = NODE_SUCC(node)) {
 		char originLine[256], txtLine[256];
 
 		strcpy(originLine, NODE_NAME(node));
@@ -366,7 +366,7 @@ uint32 TextMgr::countKey(Common::String key) {
 /* functions - STRING */
 Common::String TextMgr::getNthString(uint32 textId, const char *key, uint32 nth) {
 	Common::String dest;
-	LIST *txtList = goKey(textId, key);
+	List *txtList = goKey(textId, key);
 	void *src = GetNthNode(txtList, nth);
 
 	if (src)
@@ -380,8 +380,8 @@ Common::String TextMgr::getFirstLine(uint32 id, const char *key) {
 	return Common::String(getNthString(id, key, 0));
 }
 
-void TextMgr::putCharacter(LIST *list, uint16 pos, uint8 c) {
-	for (NODE *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node))
+void TextMgr::putCharacter(List *list, uint16 pos, uint8 c) {
+	for (Node *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node))
 		NODE_NAME(node)[pos] = c;
 }
 

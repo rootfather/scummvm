@@ -94,7 +94,7 @@ static void lsShowRooms() {
 
 void lsBuildScrollWindow() {
 	int32 i;
-	NODE *node;
+	Node *node;
 	LSArea area = (LSArea) dbGetObject(ls->ul_AreaID);
 	uint8 palette[GFX_PALETTE_SIZE];
 
@@ -290,15 +290,15 @@ static int16 lsSortByYCoord(struct ObjectNode *n1, struct ObjectNode *n2) {
 	return ((int16) - 1);
 }
 
-static void lsSortObjectList(LIST **l) {
+static void lsSortObjectList(List **l) {
 	LSObject lso1, lso2;
 	byte lastNode = 0;
 
 	if (!LIST_EMPTY(*l)) {
 		dbSortObjectList(l, lsSortByYCoord);
 
-		for (NODE* node = LIST_HEAD(*l); (!lastNode) && NODE_SUCC(NODE_SUCC(node));) {
-			NODE* node1 = node;
+		for (Node* node = LIST_HEAD(*l); (!lastNode) && NODE_SUCC(NODE_SUCC(node));) {
+			Node* node1 = node;
 
 			do {
 				node1 = NODE_SUCC(node1);
@@ -306,7 +306,7 @@ static void lsSortObjectList(LIST **l) {
 				lso2 = (LSObject)OL_DATA(node1);
 			} while ((lso1->us_DestY == lso2->us_DestY) && NODE_SUCC(NODE_SUCC(node1)));
 
-			NODE* next = node1;
+			Node* next = node1;
 
 			/* wenn Abbruch wegen NODE_SUCC(NODE_SUCC(.. erflogte, darf
 			 * nicht der NODE_PRED(node1) genomen werden!
@@ -384,7 +384,7 @@ void lsRefreshAllLootBags() {
 }
 
 void lsGuyInsideSpot(uint16 *us_XPos, uint16 *us_YPos, uint32 *areaId) {
-	LIST *spots = lsGetSpotList();
+	List *spots = lsGetSpotList();
 
 	for (struct Spot* s = (Spot*)LIST_HEAD(spots); NODE_SUCC(s); s = (Spot *) NODE_SUCC(s)) {
 		if (s->uch_Status & LS_SPOT_ON) {
@@ -433,7 +433,7 @@ void lsWalkThroughWindow(LSObject lso, uint16 us_LivXPos, uint16 us_LivYPos, uin
 void lsPatchObjects() {
 	((Item) dbGetObject(Item_Fenster))->OffsetFact = 16;
 
-	for (NODE* n = LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(n); n = NODE_SUCC(n)) {
+	for (Node* n = LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(n); n = NODE_SUCC(n)) {
 		LSObject lso = (LSObject)OL_DATA(n);
 
 		Item item = (Item)dbGetObject(lso->Type);

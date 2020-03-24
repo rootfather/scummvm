@@ -184,7 +184,7 @@ static void plActionGo() {
 }
 
 static void plActionWait() {
-	LIST *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_4");
+	List *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_4");
 	byte activ = 0;
 	uint32 choice1 = 0L, choice2 = 0L, bitset;
 
@@ -286,9 +286,9 @@ static void plActionWait() {
 					                       (GetNthNode
 					                        (BurglarsList,
 					                         CurrentPerson))))->PictID);
-					NODE *help;
-					NODE *node =
-					    (NODE *) UnLink(BurglarsList,
+					Node *help;
+					Node *node =
+					    (Node *) UnLink(BurglarsList,
 					                    OL_NAME(GetNthNode
 					                            (BurglarsList, CurrentPerson)),
 					                    &help);
@@ -337,7 +337,7 @@ static void plActionWait() {
 }
 
 static void plLevelDesigner(LSObject lso) {
-	LIST *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_8");
+	List *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_8");
 	byte ende = 0, activ = 0;
 	uint16 originX = lso->us_DestX, originY = lso->us_DestY;
 	uint32 area = lsGetActivAreaID();
@@ -436,7 +436,7 @@ static void plLevelDesigner(LSObject lso) {
 }
 
 static void plActionOpenClose(uint16 what) {
-	LIST *actionList = plGetObjectsList(CurrentPerson, 0);
+	List *actionList = plGetObjectsList(CurrentPerson, 0);
 
 	if (LIST_EMPTY(actionList))
 		plMessage("NO_OBJECTS", PLANING_MSG_WAIT);
@@ -519,12 +519,12 @@ static void plActionOpenClose(uint16 what) {
 }
 
 static void plActionTake() {
-	LIST *actionList = plGetObjectsList(CurrentPerson, 1);
+	List *actionList = plGetObjectsList(CurrentPerson, 1);
 
 	if (LIST_EMPTY(actionList))
 		plMessage("NO_OBJECTS", PLANING_MSG_WAIT);
 	else {
-		LIST *takeableList = CreateList();
+		List *takeableList = CreateList();
 
 		for (ObjectNode *n = (ObjectNode *) LIST_HEAD(actionList); NODE_SUCC(n); n = (ObjectNode *) NODE_SUCC(n)) {
 			SetObjectListAttr(OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_NORMAL, 0L);
@@ -717,10 +717,10 @@ static bool plCheckAbilities(uint32 persId, uint32 checkToolId) {
 	bool ret = true;
 
 	toolRequiresAll(checkToolId, OLF_PRIVATE_LIST, Object_Ability);
-	LIST *requires = ObjectListPrivate;
+	List *requires = ObjectListPrivate;
 
-	for (NODE *n = (NODE *) LIST_HEAD(requires); NODE_SUCC(n);
-	        n = (NODE *) NODE_SUCC(n)) {
+	for (Node *n = (Node *) LIST_HEAD(requires); NODE_SUCC(n);
+	        n = (Node *) NODE_SUCC(n)) {
 		if (!has(persId, OL_NR(n))) {
 			ret = false;
 			break;
@@ -739,16 +739,16 @@ static bool plCheckRequiredTools(uint32 checkToolId) {
 	bool ret = true;
 
 	toolRequiresAll(checkToolId, OLF_PRIVATE_LIST, Object_Tool);
-	LIST *trl = ObjectListPrivate;
+	List *trl = ObjectListPrivate;
 
 	hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Tool);
 
-	for (NODE *n = LIST_HEAD(trl); NODE_SUCC(n); n = NODE_SUCC(n)) {
+	for (Node *n = LIST_HEAD(trl); NODE_SUCC(n); n = NODE_SUCC(n)) {
 		bool found = false;
 
 		ret = false;
 
-		for (NODE *h = LIST_HEAD(ObjectList); NODE_SUCC(h); h = NODE_SUCC(h)) {
+		for (Node *h = LIST_HEAD(ObjectList); NODE_SUCC(h); h = NODE_SUCC(h)) {
 			if (OL_NR(n) == OL_NR(h))
 				found = true;
 		}
@@ -785,7 +785,7 @@ static void plCorrectToolsList(uint32 flags) {
 }
 
 static void plActionUse() {
-	LIST *actionList = plGetObjectsList(CurrentPerson, 0);
+	List *actionList = plGetObjectsList(CurrentPerson, 0);
 
 	if (CurrentPerson < BurglarsNr) {
 		for (byte i = BurglarsNr; i < PersonsNr; i++)
@@ -852,7 +852,7 @@ static void plActionUse() {
 						if (has
 						        (OL_NR(GetNthNode(PersonsList, CurrentPerson)),
 						         Ability_Kampf)) {
-							LIST *objList = CreateList();
+							List *objList = CreateList();
 
 							dbAddObjectNode(objList, Tool_Hand,
 							                OLF_INCLUDE_NAME | OLF_INSERT_STAR);
@@ -1215,7 +1215,7 @@ static void plActionUse() {
 }
 
 static void plAction() {
-	LIST *menu = NULL;
+	List *menu = NULL;
 	if (CurrentPerson < BurglarsNr)
 		menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_2");
 	else
@@ -1413,7 +1413,7 @@ static void plAction() {
 		case PLANING_ACTION_RADIO:
 			if (has(Person_Matt_Stuvysunt, Tool_Funkgeraet)) {
 				if (BurglarsNr > 2) {
-					NODE *node, *help;
+					Node *node, *help;
 
 					plMessage("RADIO_1", PLANING_MSG_REFRESH);
 					SetPictID(((Person)
@@ -1422,7 +1422,7 @@ static void plAction() {
 					                        (BurglarsList,
 					                         CurrentPerson))))->PictID);
 					node =
-					    (NODE *) UnLink(BurglarsList,
+					    (Node *) UnLink(BurglarsList,
 					                    OL_NAME(GetNthNode
 					                            (BurglarsList, CurrentPerson)),
 					                    &help);
@@ -1469,7 +1469,7 @@ static void plAction() {
 }
 
 static void plNoteBook() {
-	LIST *bubble = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_6");
+	List *bubble = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_6");
 
 	uint32 choice1 = 0;
 	while (choice1 != GET_OUT) {
@@ -1510,7 +1510,7 @@ static void plNoteBook() {
 			hasAll(Person_Matt_Stuvysunt,
 			       OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
 			       Object_Tool);
-			LIST *l = ObjectListPrivate;
+			List *l = ObjectListPrivate;
 
 			if (!LIST_EMPTY(l)) {
 				Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_NOTEBOOK");
@@ -1543,7 +1543,7 @@ static void plNoteBook() {
 }
 
 static void plLook() {
-	LIST *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_7");
+	List *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_7");
 	byte activ = 0;
 	uint32 timer = 0L, maxTimer = GetMaxTimer(plSys), realCurrentPerson =
 	                                  CurrentPerson, choice1;
@@ -1685,7 +1685,7 @@ static void plLook() {
 
 /* Planer */
 void plPlaner(uint32 objId) {
-	LIST *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_1");
+	List *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_1");
 	byte activ = 0;
 	uint32 bitset;
 

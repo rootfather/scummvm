@@ -43,14 +43,14 @@ namespace Clue {
 #define LS_ALL_INVISIBLE_SPOTS      2
 
 struct SpotPosition {
-	NODE Link;
+	Node Link;
 
 	uint16 us_XPos;
 	uint16 us_YPos;
 };
 
 struct Spot {
-	NODE Link;
+	Node Link;
 
 	uint16 us_Size;
 	uint16 us_Speed;        /* secconds per move */
@@ -66,7 +66,7 @@ struct Spot {
 
 	uint16 us_PosCount;
 
-	LIST *p_positions;
+	List *p_positions;
 
 	SpotPosition *p_CurrPos; /* for fast access */
 };
@@ -89,7 +89,7 @@ extern void lsWriteSpots(const char *uch_FileName);
 extern void lsFreeAllSpots();
 extern void lsRemSpot(Spot *spot);
 
-extern LIST *lsGetSpotList();
+extern List *lsGetSpotList();
 extern Spot *lsAddSpot(uint16 us_Size, uint16 us_Speed, uint32 ul_CtrlObjId);
 
 #if 0

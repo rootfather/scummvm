@@ -427,7 +427,7 @@ bool tcIsDeadlock() {
 		hasAll(Person_Marc_Smith, OLF_NORMAL, Object_Car);
 
 		/* get cheapest car! */
-		for (NODE *n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
+		for (Node *n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
 			Car car = (Car)OL_DATA(n);
 
 			if (tcGetCarPrice(car) < money)
@@ -1155,7 +1155,7 @@ void tcDoneBirthday() {
 	sndPlayFX();
 
 	knowsAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST, Object_Person);
-	LIST *persons = ObjectListPrivate;
+	List *persons = ObjectListPrivate;
 
 	for (ObjectNode *n = (ObjectNode *) LIST_HEAD(persons); NODE_SUCC(n); n = (ObjectNode *) NODE_SUCC(n)) {
 		Person p = (Person)dbGetObject(OL_NR(n));
@@ -1407,7 +1407,7 @@ void tcDoneSouthhamptonSabienUnknown() {
 }
 
 static void tcDoneFirstTimeLonelyInSouth() {
-	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "SouthhamptonMenu");
+	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "SouthhamptonMenu");
 	Environment Env = (Environment)dbGetObject(Environment_TheClou);
 	Person Herb = (Person)dbGetObject(Person_Herbert_Briggs);
 
@@ -1506,7 +1506,7 @@ static void tcDoneFirstTimeLonelyInSouth() {
 }
 
 void tcDoneSouthhampton() {
-	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "SouthhamptonMenu");
+	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "SouthhamptonMenu");
 	Environment Env = (Environment)dbGetObject(Environment_TheClou);
 
 	_sceneArgs._overwritten = true;
@@ -1600,8 +1600,8 @@ void tcInitTowerBurglary() {
 
 	joined_byAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Person);
 
-	for (NODE *node = (NODE *) LIST_HEAD(ObjectList); NODE_SUCC(node);
-	        node = (NODE *) NODE_SUCC(node))
+	for (Node *node = (Node *) LIST_HEAD(ObjectList); NODE_SUCC(node);
+	        node = (Node *) NODE_SUCC(node))
 		joined_byUnSet(Person_Matt_Stuvysunt, OL_NR(node));
 
 	/* und Personen, Abilities neu setzen! */
@@ -1726,7 +1726,7 @@ void tcDoneMafia() {
 void tcDoneKaserne() {
 	Environment Env = (Environment)dbGetObject(Environment_TheClou);
 	Car car = (Car)dbGetObject(Car_Cadillac_Club_1952);
-	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "KaserneMenu");
+	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "KaserneMenu");
 
 	joined_bySet(Person_Matt_Stuvysunt, Person_Matt_Stuvysunt);
 	joined_bySet(Person_Matt_Stuvysunt, Person_Herbert_Briggs);

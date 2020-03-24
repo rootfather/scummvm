@@ -30,7 +30,7 @@ void lsShowRaster(uint32 areaID, byte perc) {
 
 	SetObjectListAttr(OLF_PRIVATE_LIST, Object_LSObject);
 	AskAll(area, ConsistOfRelationID, BuildObjectList);
-	LIST *objects = ObjectListPrivate;
+	List *objects = ObjectListPrivate;
 
 	/*lsSortObjectList(&objects);*/
 
@@ -41,8 +41,8 @@ void lsShowRaster(uint32 areaID, byte perc) {
 		int32 i;
 
 		for (node = (ObjectNode *) LIST_HEAD(objects), i = 0;
-		        (NODE_SUCC((NODE *) node)) && (i < count);
-		        node = (ObjectNode *) NODE_SUCC((NODE *) node), i++) {
+		        (NODE_SUCC((Node *) node)) && (i < count);
+		        node = (ObjectNode *) NODE_SUCC((Node *) node), i++) {
 			LSObject lso = (LSObject)OL_DATA(node);
 
 			switch (lso->Type) {
@@ -57,8 +57,8 @@ void lsShowRaster(uint32 areaID, byte perc) {
 		}
 
 		for (node = (ObjectNode *) LIST_HEAD(objects), i = 0;
-		        (NODE_SUCC((NODE *) node)) && (i < count);
-		        node = (ObjectNode *) NODE_SUCC((NODE *) node), i++) {
+		        (NODE_SUCC((Node *) node)) && (i < count);
+		        node = (ObjectNode *) NODE_SUCC((Node *) node), i++) {
 			LSObject lso = (LSObject)OL_DATA(node);
 
 			switch (lso->Type) {
@@ -77,8 +77,8 @@ void lsShowRaster(uint32 areaID, byte perc) {
 	RemoveList(objects);
 }
 
-NODE *lsGetSuccObject(NODE *start) {
-	NODE *n = (NODE *) NODE_SUCC(start);
+Node *lsGetSuccObject(Node *start) {
+	Node *n = (Node *) NODE_SUCC(start);
 
 	while (NODE_SUCC(n)) {
 		LSObject lso = (LSObject) OL_DATA(n);
@@ -86,14 +86,14 @@ NODE *lsGetSuccObject(NODE *start) {
 		if (lso->ul_Status & (1L << Const_tcACCESS_BIT))
 			return n;
 
-		n = (NODE *) NODE_SUCC(n);
+		n = (Node *) NODE_SUCC(n);
 	}
 
 	return start;
 }
 
-NODE *lsGetPredObject(NODE *start) {
-	NODE *n = (NODE *) NODE_PRED(start);
+Node *lsGetPredObject(Node *start) {
+	Node *n = (Node *) NODE_PRED(start);
 
 	while (NODE_PRED(n)) {
 		LSObject lso = (LSObject) OL_DATA(n);
@@ -101,7 +101,7 @@ NODE *lsGetPredObject(NODE *start) {
 		if (lso->ul_Status & (1L << Const_tcACCESS_BIT))
 			return n;
 
-		n = (NODE *) NODE_PRED(n);
+		n = (Node *) NODE_PRED(n);
 	}
 
 	return start;
@@ -137,7 +137,7 @@ void lsFadeRasterObject(uint32 areaID, LSObject lso, byte status) {
 	gfxRectFill(l_gc, xStart, yStart, xEnd, yEnd);
 }
 
-void lsShowAllConnections(uint32 areaID, NODE *node, byte perc) {
+void lsShowAllConnections(uint32 areaID, Node *node, byte perc) {
 	// CHECKME: Initial value?
 	static byte Alarm_Power;
 
@@ -183,7 +183,7 @@ void lsShowAllConnections(uint32 areaID, NODE *node, byte perc) {
 		srcX = (srcX * rasterSize) / LS_RASTER_X_SIZE;
 		srcY = (srcY * rasterSize) / LS_RASTER_Y_SIZE;
 
-		for (NODE *n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
+		for (Node *n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
 			gfxSetPens(l_gc, col, GFX_SAME_PEN, GFX_SAME_PEN);
 
 			LSObject lso2 = (LSObject)OL_DATA(n);

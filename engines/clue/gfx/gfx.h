@@ -98,7 +98,7 @@ struct _Rect {
 };
 
 struct Collection {
-	NODE Link;
+	Node Link;
 
 	uint16 us_CollId;
 
@@ -119,7 +119,7 @@ struct Collection {
 typedef struct _GC GC;
 
 struct Picture {
-	NODE Link;
+	Node Link;
 
 	uint16 us_PictId;
 	uint16 us_CollId;       /* in welcher Collection sich dieses Bild befindet */

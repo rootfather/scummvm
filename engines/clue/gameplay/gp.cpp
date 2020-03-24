@@ -90,7 +90,7 @@ void SetEnabledChoices(uint32 ChoiceMask) {
 }
 
 void RefreshCurrScene() {
-	NODE *node = (NODE *)GetNthNode(film->loc_names, GetLocation);
+	Node *node = (Node *)GetNthNode(film->loc_names, GetLocation);
 
 	tcRefreshLocationInTitle(GetLocation);
 	PlayAnim(NODE_NAME(node), 30000,
@@ -100,13 +100,13 @@ void RefreshCurrScene() {
 }
 
 void InitLocations() {
-	LIST *l = CreateList();
+	List *l = CreateList();
 	char pathname[DSK_PATH_MAX];
 
 	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, LOCATIONS_TXT, pathname);
 
 	if (ReadList(l, sizeof(TCEventNode), pathname))
-		film->loc_names = (LIST *) l;
+		film->loc_names = (List *) l;
 	else
 		ErrorMsg(Disk_Defect, ERROR_MODULE_GAMEPLAY, 1);
 }
@@ -334,7 +334,7 @@ int32 CheckConditions(Scene *scene) {
 	 */
 
 	if (bed->n_events) {
-		for (NODE *node = LIST_HEAD(bed->n_events); NODE_SUCC(node); node = NODE_SUCC(node)) {
+		for (Node *node = LIST_HEAD(bed->n_events); NODE_SUCC(node); node = NODE_SUCC(node)) {
 			if (GetEventCount(((TCEventNode *) node)->EventNr))
 				return (0L);
 		}
@@ -346,7 +346,7 @@ int32 CheckConditions(Scene *scene) {
 	 */
 
 	if (bed->events) {
-		for (NODE *node = LIST_HEAD(bed->events); NODE_SUCC(node); node = NODE_SUCC(node)) {
+		for (Node *node = LIST_HEAD(bed->events); NODE_SUCC(node); node = NODE_SUCC(node)) {
 			if (!GetEventCount(((TCEventNode *) node)->EventNr))
 				return (0L);
 		}

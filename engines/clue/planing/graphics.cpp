@@ -32,7 +32,7 @@ void plPrintInfo(const char *person) {
 }
 
 void plMessage(const char *msg, byte flags) {
-	LIST *m = g_clue->_txtMgr->goKey(PLAN_TXT, msg);
+	List *m = g_clue->_txtMgr->goKey(PLAN_TXT, msg);
 
 	if (flags & PLANING_MSG_REFRESH)
 		ShowMenuBackground();
@@ -105,7 +105,7 @@ void plDisplayInfo() {
 }
 
 byte plSay(const char *msg, uint32 persId) {
-	LIST *l = g_clue->_txtMgr->goKey(PLAN_TXT, msg);
+	List *l = g_clue->_txtMgr->goKey(PLAN_TXT, msg);
 
 	SetPictID(((Person) dbGetObject(OL_NR(GetNthNode(PersonsList, persId))))->PictID);
 

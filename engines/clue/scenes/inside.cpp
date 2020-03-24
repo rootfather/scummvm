@@ -32,7 +32,7 @@ static void FadeInsideObject() {
 }
 
 uint32 tcGoInsideOfHouse(uint32 buildingID) {
-	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "INSIDE_MENU"), *areas;
+	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "INSIDE_MENU"), *areas;
 	uint32 areaID = 0;
 
 	consistsOfAll(buildingID, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME,
@@ -72,7 +72,7 @@ uint32 tcGoInsideOfHouse(uint32 buildingID) {
 
 void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 	LSArea area = (LSArea)dbGetObject(areaID);
-	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "LookMenu");
+	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "LookMenu");
 
 	Common::String alarm = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "PROTECTED");
 	Common::String power = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "SUPPLIED");
@@ -83,12 +83,12 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 	/* liste und node initialisieren */
 	SetObjectListAttr(OLF_PRIVATE_LIST, Object_LSObject);
 	AskAll(area, ConsistOfRelationID, BuildObjectList);
-	LIST *objects = ObjectListPrivate;
+	List *objects = ObjectListPrivate;
 
 	/*lsSortObjectList(&objects);*/
 
 	uint32 count = (GetNrOfNodes(objects) * perc) / 255;
-	NODE *node = lsGetSuccObject(LIST_HEAD(objects));
+	Node *node = lsGetSuccObject(LIST_HEAD(objects));
 
 	CurrAreaId = areaID;
 
@@ -142,7 +142,7 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 
 			switch (action) {
 			case 0: {
-				NODE *n = lsGetSuccObject(node);
+				Node *n = lsGetSuccObject(node);
 				if (GetNodeNrByAddr(objects, n) < (count - 1))
 					node = n;
 				}
@@ -178,7 +178,7 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 	inpSetWaitTicks(0);
 }
 
-void tcShowObjectData(uint32 areaID, NODE *node, byte perc) {
+void tcShowObjectData(uint32 areaID, Node *node, byte perc) {
 	/* Objekt selbst präsentieren */
 	Present(OL_NR(node), "RasterObject", InitObjectPresent);
 
@@ -188,7 +188,7 @@ void tcShowObjectData(uint32 areaID, NODE *node, byte perc) {
 
 	if (!LIST_EMPTY(ObjectList)) {
 		/* alle Loots durchgehen und anzeigen! */
-		for (NODE *n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
+		for (Node *n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
 			/* zur Variablenübergabe... (DIRTY, DIRTY...) */
 			SetP(OL_DATA(n), hasLootRelationID, OL_DATA(n),
 			     GetP(OL_DATA(node), hasLootRelationID, OL_DATA(n)));

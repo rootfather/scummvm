@@ -49,7 +49,7 @@ void tcAsDaysGoBy(uint32 day, uint32 stepSize) {
 }
 
 void tcMattGoesTo(uint32 locNr) {
-	NODE *node = (NODE *)GetNthNode(film->loc_names, locNr);
+	Node *node = (Node *)GetNthNode(film->loc_names, locNr);
 
 	SetLocation(locNr);
 	tcRefreshLocationInTitle(locNr);
@@ -93,7 +93,7 @@ void tcMoveAPerson(uint32 persID, uint32 newLocID) {
 	hasAll(persID, 0, Object_Location); /* wo is er denn ? */
 
 	if (!(LIST_EMPTY(ObjectList))) {
-		for (NODE *n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
+		for (Node *n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
 			uint32 oldLocID = OL_NR(n);
 			hasUnSet(persID, oldLocID);
 			hasUnSet(oldLocID, persID);
@@ -162,7 +162,7 @@ void tcRefreshLocationInTitle(uint32 locNr) {
 
 	char date[TXT_KEY_LENGTH];
 	BuildDate(GetDay, date);
-	NODE *node = (NODE *)GetNthNode(film->loc_names, locNr);
+	Node *node = (Node *)GetNthNode(film->loc_names, locNr);
 
 	Common::String line = Common::String::format("%s %s", NODE_NAME(node), date);
 	ShowMenuBackground();
@@ -178,7 +178,7 @@ void StdInit() {
 
 	tcRefreshLocationInTitle(sc->LocationNr);
 
-	NODE *node = (NODE *)GetNthNode(film->loc_names, sc->LocationNr);
+	Node *node = (Node *)GetNthNode(film->loc_names, sc->LocationNr);
 
 	if (((RefreshMode) || (!sameLocation)))
 		PlayAnim(NODE_NAME(node), (int16) 30000, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
@@ -457,7 +457,7 @@ uint32 StdHandle(uint32 choice) {
 }
 
 void StdDone() {
-	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
+	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 
 	_sceneArgs._returnValue = 0L;
 

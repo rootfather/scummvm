@@ -197,14 +197,14 @@ void gfxSetVideoMode(byte uch_NewMode) {
  */
 
 static void gfxInitCollList() {
-	LIST *tempList = CreateList();
+	List *tempList = CreateList();
 	CollectionList = CreateList();
 
 	char pathname[DSK_PATH_MAX];
 	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, COLL_LIST_TXT, pathname);
 	ReadList(tempList, 0, pathname);
 
-	for (NODE *n = LIST_HEAD(tempList); NODE_SUCC(n); n = NODE_SUCC(n)) {
+	for (Node *n = LIST_HEAD(tempList); NODE_SUCC(n); n = NODE_SUCC(n)) {
 		Collection *coll = (Collection *)CreateNode(CollectionList, sizeof(Collection), g_clue->_txtMgr->getKey(2, NODE_NAME(n)));
 
 		coll->us_CollId = (uint16)g_clue->_txtMgr->getKeyAsUint32(1, NODE_NAME(n));
@@ -223,14 +223,14 @@ static void gfxInitCollList() {
 }
 
 static void gfxInitPictList() {
-	LIST *tempList = CreateList();
+	List *tempList = CreateList();
 	PictureList = CreateList();
 
 	char pathname[DSK_PATH_MAX];
 	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, PICT_LIST_TXT, pathname);
 	ReadList(tempList, 0, pathname);
 
-	for (NODE *n = LIST_HEAD(tempList); NODE_SUCC(n); n = NODE_SUCC(n)) {
+	for (Node *n = LIST_HEAD(tempList); NODE_SUCC(n); n = NODE_SUCC(n)) {
 		Picture *pict = (Picture *)CreateNode(PictureList, sizeof(*pict), NULL);
 
 		pict->us_PictId = (uint16)g_clue->_txtMgr->getKeyAsUint32(1, NODE_NAME(n));

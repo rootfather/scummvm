@@ -373,7 +373,7 @@ void ClueEngine::setFullEnviroment() {
 }
 
 byte ClueEngine::startupMenu() {
-	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "STARTUP_MENU");
+	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "STARTUP_MENU");
 	uint32 activ;
 	Common::String line;
 	byte ret = 0;

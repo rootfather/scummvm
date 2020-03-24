@@ -35,7 +35,7 @@ namespace Clue {
 
 
 /* private definitions */
-extern LIST *objHash[OBJ_HASH_SIZE];
+extern List *objHash[OBJ_HASH_SIZE];
 extern char decodeStr[11];
 
 extern uint32 ObjectListType;

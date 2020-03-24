@@ -37,10 +37,10 @@ namespace Clue {
 
 #define TXT_MENU_TIMEOUT        (-2)
 
-extern bool ChoiceOk(byte choice, byte exit, LIST *l);
+extern bool ChoiceOk(byte choice, byte exit, List *l);
 
-extern byte Bubble(LIST *bubble, byte activ, void (*func)(byte), uint32 waitTime);
-extern byte Menu(LIST *menu, uint32 possibility, byte activ, void (*func)(byte), uint32 waitTime);
+extern byte Bubble(List *bubble, byte activ, void (*func)(byte), uint32 waitTime);
+extern byte Menu(List *menu, uint32 possibility, byte activ, void (*func)(byte), uint32 waitTime);
 
 extern void RefreshMenu();
 

@@ -150,7 +150,7 @@ void lsInitObjects() {
 
 	/* alle Relationen erzeugen */
 	consistsOfAll(ls->ul_BuildingID, OLF_PRIVATE_LIST, Object_LSArea);
-	LIST *areas = ObjectListPrivate;
+	List *areas = ObjectListPrivate;
 
 	/* jetzt alle Stockwerke durchgehen! */
 	for (uint32 i = 0; i < 3; i++) {
@@ -158,7 +158,7 @@ void lsInitObjects() {
 		ls->p_ObjectRetrievalLists[i] = NULL;
 	}
 
-	NODE *n;
+	Node *n;
 	for (n = LIST_HEAD(areas); NODE_SUCC(n); n = NODE_SUCC(n)) {
 		lsInitRelations(OL_NR(n));
 
@@ -224,10 +224,10 @@ static void lsInitFloorSquares() {
 	uint32 count = LS_FLOORS_PER_LINE * LS_FLOORS_PER_COLUMN;
 
 	consistsOfAll(ls->ul_BuildingID, OLF_PRIVATE_LIST, Object_LSArea);
-	LIST *areas = ObjectListPrivate;
+	List *areas = ObjectListPrivate;
 
 	/* jetzt alle Stockwerke durchgehen! */
-	NODE *n;
+	Node *n;
 	int i;
 	for (n = LIST_HEAD(areas), i = 0; NODE_SUCC(n); n = NODE_SUCC(n), i++) {
 		size_t size = sizeof(struct LSFloorSquare) * count;
@@ -255,9 +255,9 @@ static void lsInitFloorSquares() {
 
 static void lsLoadAllSpots() {
 	consistsOfAll(ls->ul_BuildingID, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME, Object_LSArea);
-	LIST *areas = ObjectListPrivate;
+	List *areas = ObjectListPrivate;
 
-	NODE *n = LIST_HEAD(areas);
+	Node *n = LIST_HEAD(areas);
 
 	char fileName[TXT_KEY_LENGTH];
 	strcpy(fileName, NODE_NAME(n));
@@ -311,10 +311,10 @@ void lsDoneObjectDB(uint32 areaID) {
 void lsDoneLandScape() {
 	if (ls) {
 		consistsOfAll(ls->ul_BuildingID, OLF_PRIVATE_LIST, Object_LSArea);
-		LIST* areas = ObjectListPrivate;
+		List* areas = ObjectListPrivate;
 
 		int32 areaCount = 0;
-		for (NODE *n = LIST_HEAD(areas); NODE_SUCC(n); n = NODE_SUCC(n), areaCount++) {
+		for (Node *n = LIST_HEAD(areas); NODE_SUCC(n); n = NODE_SUCC(n), areaCount++) {
 			lsDoneObjectDB(OL_NR(n));
 
 			if (ls->p_ObjectRetrievalLists[areaCount]) {

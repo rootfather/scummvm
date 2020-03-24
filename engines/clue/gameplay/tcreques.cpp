@@ -36,7 +36,7 @@ void PrintStatus(Common::String text) {
 }
 	
 uint32 ShowTheClouRequester(int32 error_class) {
-	LIST *menu;
+	List *menu;
 	uint32 answer = 0;
 	byte choices;
 	Player player = (Player)dbGetObject(Player_Player_1);

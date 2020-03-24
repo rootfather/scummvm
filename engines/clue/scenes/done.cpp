@@ -24,7 +24,7 @@ namespace Clue {
 
 void DoneTaxi() {
 	static byte i = 0;
-	LIST *locs = CreateList();
+	List *locs = CreateList();
 
 	knowsSet(Person_Matt_Stuvysunt, Person_Dan_Stanford);
 	taxiAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Location);
@@ -65,7 +65,7 @@ void DoneTaxi() {
 }
 
 void DoneInsideHouse() {
-	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
+	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 
 	_sceneArgs._returnValue = 0;
 	_sceneArgs._overwritten = true;
@@ -77,7 +77,7 @@ void DoneInsideHouse() {
 
 	/* jetzt alle Stockwerke laden */
 	uint32 areaID;
-	for (NODE *node = LIST_HEAD(ObjectList); NODE_SUCC(node); node = NODE_SUCC(node)) {
+	for (Node *node = LIST_HEAD(ObjectList); NODE_SUCC(node); node = NODE_SUCC(node)) {
 		areaID = OL_NR(node);
 
 		lsInitRelations(areaID);
@@ -137,7 +137,7 @@ void DoneInsideHouse() {
 	consistsOfAll(buildingID, OLF_NORMAL, Object_LSArea);
 
 	/* jetzt alle Stockwerke entfernen */
-	for (NODE *node = LIST_HEAD(ObjectList); NODE_SUCC(node); node = NODE_SUCC(node))
+	for (Node *node = LIST_HEAD(ObjectList); NODE_SUCC(node); node = NODE_SUCC(node))
 		lsDoneObjectDB(OL_NR(node));
 
 	StopAnim();
@@ -147,7 +147,7 @@ void DoneInsideHouse() {
 }
 
 void DoneTools() {
-	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
+	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 
 	_sceneArgs._overwritten = true;
 
@@ -183,7 +183,7 @@ void DoneTools() {
 }
 
 void DoneDealer() {
-	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
+	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 
 	_sceneArgs._overwritten = true;
 	_sceneArgs._returnValue = 0L;
@@ -222,8 +222,8 @@ void DoneDealer() {
 }
 
 void DoneParking() {
-	LIST *bubble = g_clue->_txtMgr->goKey(BUSINESS_TXT, "PARKING");
-	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
+	List *bubble = g_clue->_txtMgr->goKey(BUSINESS_TXT, "PARKING");
+	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 	Person marc = (Person)dbGetObject(Person_Marc_Smith);
 
 	_sceneArgs._overwritten = true;
@@ -282,7 +282,7 @@ void DoneParking() {
 }
 
 void DoneGarage() {
-	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
+	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 	byte activ = 0;
 	Person marc = (Person)dbGetObject(Person_Marc_Smith);
 

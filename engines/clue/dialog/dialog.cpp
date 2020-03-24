@@ -28,20 +28,20 @@ uint32 StartFrame = DLG_NO_SPEECH;
 uint32 EndFrame = DLG_NO_SPEECH;
 
 struct DynDlgNode {
-	NODE Link;
+	Node Link;
 
 	byte KnownBefore;       /* wie gut Sie bekannt sein müssen */
 	byte KnownAfter;        /* wie gut Sie danach bekannt sind ! */
 };
 
 
-static LIST *PrepareQuestions(LIST *keyWords, uint32 talkBits, byte textID) {
-	LIST *preparedList = CreateList();
-	LIST *stdQuestionList = g_clue->_txtMgr->goKey(BUSINESS_TXT, "STD_QUEST");
-	LIST *questionList = g_clue->_txtMgr->goKey((uint32) textID, "QUESTIONS");
+static List *PrepareQuestions(List *keyWords, uint32 talkBits, byte textID) {
+	List *preparedList = CreateList();
+	List *stdQuestionList = g_clue->_txtMgr->goKey(BUSINESS_TXT, "STD_QUEST");
+	List *questionList = g_clue->_txtMgr->goKey((uint32) textID, "QUESTIONS");
 
 	Common::String question;
-	for (NODE *n = LIST_HEAD(keyWords); NODE_SUCC(n); n = NODE_SUCC(n)) {
+	for (Node *n = LIST_HEAD(keyWords); NODE_SUCC(n); n = NODE_SUCC(n)) {
 		byte r = (byte)g_clue->calcRandomNr(0L, 6L);
 		question = Common::String::format(NODE_NAME(GetNthNode(questionList, r)), NODE_NAME(n));
 		CreateNode(preparedList, 0L, question);
@@ -63,10 +63,10 @@ static LIST *PrepareQuestions(LIST *keyWords, uint32 talkBits, byte textID) {
 	return preparedList;
 }
 
-static LIST *ParseTalkText(LIST *origin, LIST *bubble, byte known) {
-	LIST *keyWords = CreateList();
+static List *ParseTalkText(List *origin, List *bubble, byte known) {
+	List *keyWords = CreateList();
 
-	for (NODE *n = LIST_HEAD(origin); NODE_SUCC(n); n = NODE_SUCC(n)) {
+	for (Node *n = LIST_HEAD(origin); NODE_SUCC(n); n = NODE_SUCC(n)) {
 		char line[TXT_KEY_LENGTH], key[TXT_KEY_LENGTH], keyWord[TXT_KEY_LENGTH];
 		byte line_pos = 0;
 		byte key_pos = 0;
@@ -110,7 +110,7 @@ static LIST *ParseTalkText(LIST *origin, LIST *bubble, byte known) {
 					line[line_pos++] = keyWord[i];
 
 				if (known >= nr) {
-					NODE *keyNode = (NODE *)CreateNode(keyWords, sizeof(DynDlgNode), keyWord);
+					Node *keyNode = (Node *)CreateNode(keyWords, sizeof(DynDlgNode), keyWord);
 					((struct DynDlgNode *) keyNode)->KnownBefore = nr;
 					((struct DynDlgNode *) keyNode)->KnownAfter = nr1;
 				}
@@ -129,7 +129,7 @@ void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode) {
 	const char *Extension[4] = { "_UNKNOWN", "_KNOWN", "_FRIENDLY", "_BUSINESS" };
 	Person p1 = (Person) dbGetObject(Person1ID);
 	Person p2 = (Person) dbGetObject(Person2ID);
-	LIST *bubble = CreateList();
+	List *bubble = CreateList();
 
 	tcChgPersPopularity(p1, 5); /* Bekanntheit steigt sehr gering */
 
@@ -165,9 +165,9 @@ void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode) {
 	uint8 quit;
 	uint8 choice = 0, max = 1, stdcount = 0;
 	do {
-		LIST *origin = g_clue->_txtMgr->goKey(textID, key);
-		LIST *keyWords = ParseTalkText(origin, bubble, p2->Known);
-		LIST *questions = PrepareQuestions(keyWords, p2->TalkBits, textID);
+		List *origin = g_clue->_txtMgr->goKey(textID, key);
+		List *keyWords = ParseTalkText(origin, bubble, p2->Known);
+		List *questions = PrepareQuestions(keyWords, p2->TalkBits, textID);
 
 		if (choice < (max - stdcount)) {
 			SetPictID(p2->PictID);
@@ -191,7 +191,7 @@ void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode) {
 
 			strcpy(key, name.c_str());
 			strcat(key, "_");
-			strcat(key, NODE_NAME((NODE *) n));
+			strcat(key, NODE_NAME((Node *) n));
 
 			if (n->KnownAfter > p2->Known)
 				p2->Known = n->KnownAfter;
@@ -246,7 +246,7 @@ void PlayFromCDROM() {
 byte Say(uint32 TextID, byte activ, uint16 person, const char *text) {
 	byte choice;
 	if (g_clue->getFeatures() & ADGF_CD) {
-		LIST *bubble = g_clue->_txtMgr->goKey(TextID, text);
+		List *bubble = g_clue->_txtMgr->goKey(TextID, text);
 
 		if (person != (uint16) - 1)
 			SetPictID(person);
@@ -282,7 +282,7 @@ byte Say(uint32 TextID, byte activ, uint16 person, const char *text) {
 
 		RemoveList(bubble);
 	} else {
-		LIST *bubble = g_clue->_txtMgr->goKey(TextID, text);
+		List *bubble = g_clue->_txtMgr->goKey(TextID, text);
 
 		if (person != (uint16) -1)
 			SetPictID(person);
@@ -301,7 +301,7 @@ uint32 Talk() {
 
 	if (locNr) {
 		hasAll(locNr, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Person);
-		LIST *bubble = ObjectListPrivate;
+		List *bubble = ObjectListPrivate;
 
 		if (!(LIST_EMPTY(bubble))) {
 			inpTurnESC(1);

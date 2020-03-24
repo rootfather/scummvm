@@ -27,7 +27,7 @@ struct PresentControl {
 };
 
 struct presentationInfo {
-	NODE link;
+	Node link;
 
 	char extendedText[70];
 	uint32 extendedNr;

@@ -23,7 +23,7 @@
 namespace Clue {
 
 void tcSaveTheClou() {
-	LIST *games = CreateList();
+	List *games = CreateList();
 	Player player = (Player)dbGetObject(Player_Player_1);
 
 	/* in welche Datei ?? */
@@ -61,7 +61,7 @@ void tcSaveTheClou() {
 
 			/* Games.list abspeichern */
 
-			NODE *game = (NODE *)CreateNode(0L, 0L, location);
+			Node *game = (Node *)CreateNode(0L, 0L, location);
 
 			ReplaceNode(games, NODE_NAME(GetNthNode(games, activ)), game);
 
@@ -156,8 +156,8 @@ bool tcLoadTheClou() {
 	dskBuildPathName(DISK_CHECK_FILE, DATADISK, GAMES_LIST_TXT, pathname1);
 	dskBuildPathName(DISK_CHECK_FILE, DATADISK, GAMES_ORIG_TXT, pathname2);
 
-	LIST *games = CreateList();
-	LIST *origin = CreateList();
+	List *games = CreateList();
+	List *origin = CreateList();
 	bool loaded = false;
 	if (ReadList(games, 0L, pathname1) && ReadList(origin, 0L, pathname2)) {
 		ShowMenuBackground();

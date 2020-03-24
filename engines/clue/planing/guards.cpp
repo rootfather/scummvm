@@ -22,7 +22,7 @@
 
 namespace Clue {
 
-void grdDo(Common::Stream *fh, struct System *sys, LIST *personsList, uint32 burglarsNr,
+void grdDo(Common::Stream *fh, struct System *sys, List *personsList, uint32 burglarsNr,
            uint32 personsNr, byte grdAction) {
 	for (uint32 i = burglarsNr; i < personsNr; i++) {
 		switch (grdAction) {
@@ -55,7 +55,7 @@ void grdDone(Common::Stream *fh) {
 	dskClose(fh);
 }
 
-bool grdAddToList(uint32 bldId, LIST *l) {
+bool grdAddToList(uint32 bldId, List *l) {
 	isGuardedbyAll(bldId, OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Police);
 
 	if (!LIST_EMPTY(ObjectList)) {
@@ -71,7 +71,7 @@ bool grdAddToList(uint32 bldId, LIST *l) {
 
 bool grdDraw(GC *gc, uint32 bldId, uint32 areaId) {
 	bool ret = false;
-	LIST *GuardsList = CreateList();
+	List *GuardsList = CreateList();
 	if (grdAddToList(bldId, GuardsList)) {
 		Common::Stream *fh;
 		if (grdInit(&fh, 0, bldId, areaId)) {

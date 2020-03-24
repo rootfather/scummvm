@@ -29,26 +29,26 @@ namespace Clue {
  * Structures *
  **************/
 
-typedef struct Node {
+struct Node {
 	Node *Succ;
 	Node *Pred;
 	char *Name;
 	size_t Size;
-} NODE;
+};
 
-typedef struct List {
-	NODE Head;
-	NODE Tail;
-} LIST;
+struct List {
+	Node Head;
+	Node Tail;
+};
 
 /**********
  * Macros *
  **********/
 
-#define NODE_SUCC(node) (((NODE *)(node))->Succ)
-#define NODE_PRED(node) (((NODE *)(node))->Pred)
-#define NODE_NAME(node) (((NODE *)(node))->Name)
-#define NODE_SIZE(node) (((NODE *)(node))->Size)
+#define NODE_SUCC(node) (((Node *)(node))->Succ)
+#define NODE_PRED(node) (((Node *)(node))->Pred)
+#define NODE_NAME(node) (((Node *)(node))->Name)
+#define NODE_SIZE(node) (((Node *)(node))->Size)
 
 #define INNER_HEAD(list) (&(list)->Head)
 #define INNER_TAIL(list) (&(list)->Tail)
@@ -62,30 +62,30 @@ typedef struct List {
  * Prototypes *
  **************/
 
-LIST *CreateList();
-void RemoveList(LIST *list);
-void FreeList(LIST *list);
-void *AddNode(LIST *list, void *node, void *predNode);
-void *AddTailNode(LIST *list, void *node);
-void *AddHeadNode(LIST *list, void *node);
+List *CreateList();
+void RemoveList(List *list);
+void FreeList(List *list);
+void *AddNode(List *list, void *node, void *predNode);
+void *AddTailNode(List *list, void *node);
+void *AddHeadNode(List *list, void *node);
 void *RemNode(void *node);
-void *RemTailNode(LIST *list);
-void *CreateNode(LIST *list, size_t size, Common::String name);
-void *CreateNode(LIST *list, size_t size, const char *name);
-void RemoveNode(LIST *list, const char *name);
+void *RemTailNode(List *list);
+void *CreateNode(List *list, size_t size, Common::String name);
+void *CreateNode(List *list, size_t size, const char *name);
+void RemoveNode(List *list, const char *name);
 void FreeNode(void *node);
-void *GetNode(LIST *list, const char *name);
-void *GetNthNode(LIST *list, uint32 nth);
-uint32 GetNrOfNodes(LIST *list);
-uint32 GetNodeNrByAddr(LIST *list, void *node);
-void foreach(LIST *list, void (*processNode)(void *));
-void Link(LIST *list, void *node, void *predNode);
-void *UnLinkByAddr(LIST *list, void *node, NODE **predNode);
-void *UnLink(LIST *list, const char *name, NODE **predNode);
-void ReplaceNodeByAddr(LIST *list, void *node, NODE *newNode);
-void ReplaceNode(LIST *list, const char *name, NODE *newNode);
-uint32 ReadList(LIST *list, size_t size, char *fileName);
-void WriteList(LIST *list, char *fileName);
+void *GetNode(List *list, const char *name);
+void *GetNthNode(List *list, uint32 nth);
+uint32 GetNrOfNodes(List *list);
+uint32 GetNodeNrByAddr(List *list, void *node);
+void foreach(List *list, void (*processNode)(void *));
+void Link(List *list, void *node, void *predNode);
+void *UnLinkByAddr(List *list, void *node, Node **predNode);
+void *UnLink(List *list, const char *name, Node **predNode);
+void ReplaceNodeByAddr(List *list, void *node, Node *newNode);
+void ReplaceNode(List *list, const char *name, Node *newNode);
+uint32 ReadList(List *list, size_t size, char *fileName);
+void WriteList(List *list, char *fileName);
 
 #if 0
 void *RemHeadNode(LIST *list);

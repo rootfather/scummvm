@@ -51,7 +51,7 @@ extern int32 tcCalcEscapeTime();
 extern bool tcKillTheGuard(uint32 guyId, uint32 buildingId);
 extern bool tcAlarmByPowerLoss(uint32 powerId);
 extern bool tcAlarmByTouch(uint32 lsoId);
-extern bool tcGuardDetectsGuy(LIST *roomsList, uint16 us_XPos, uint16 us_YPos,
+extern bool tcGuardDetectsGuy(List *roomsList, uint16 us_XPos, uint16 us_YPos,
                               uint8 uch_ViewDirection, char *puch_GuardName,
                               char *puch_LivingName);
 extern int32 tcGetCarStrike(Car car);
@@ -87,7 +87,7 @@ extern uint32 tcGuyUsesTool(uint32 persId, Building b, uint32 toolId, uint32 ite
 extern uint32 tcGuyUsesToolInPlayer(uint32 persId, Building b, uint32 toolId, uint32 itemId,
                                     uint32 neededTime);
 
-extern void tcInsertGuard(LIST *list, LIST *roomsList, uint16 x, uint16 y,
+extern void tcInsertGuard(List *list, List *roomsList, uint16 x, uint16 y,
                           uint16 width, uint16 height, uint32 guardId, uint8 livId,
                           uint32 areaId);
 

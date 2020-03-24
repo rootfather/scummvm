@@ -27,10 +27,10 @@ namespace Clue {
 
 /* System main structure - like the kernel in an OS */
 struct System {
-	LIST *Handlers;     /* Pointer to all started handlers */
-	LIST *Signals;      /* Pointer to signal in the system */
+	List *Handlers;     /* Pointer to all started handlers */
+	List *Signals;      /* Pointer to signal in the system */
 
-	NODE *ActivHandler;
+	Node *ActivHandler;
 };
 
 struct System *InitSystem();    /* Initialize system for use */
@@ -38,7 +38,7 @@ void CloseSystem(struct System *sys);   /* Close all system immedietly */
 void SetActivHandler(struct System *sys, uint32 id);
 
 void SaveSystem(Common::Stream *fh, struct System *sys);
-LIST *LoadSystem(Common::Stream *fh, struct System *sys);
+List *LoadSystem(Common::Stream *fh, struct System *sys);
 
 
 /* System Handler Flags */
@@ -47,7 +47,7 @@ LIST *LoadSystem(Common::Stream *fh, struct System *sys);
 
 /* Handler structure - like a task in an OS */
 struct Handler {
-	NODE Link;          /* Link to next handler */
+	Node Link;          /* Link to next handler */
 
 	uint32 Id;          /* ID of handler (all handlers will be identified with their ID and
                    not through pointers, which will save global data) */
@@ -56,8 +56,8 @@ struct Handler {
 
 	uint32 Flags;           /* Handler flags */
 
-	LIST *Actions;      /* Action table */
-	NODE *CurrentAction;    /* Current action */
+	List *Actions;      /* Action table */
+	Node *CurrentAction;    /* Current action */
 };
 
 
@@ -84,7 +84,7 @@ bool LoadHandler(Common::Stream *fh, struct System *sys, uint32 id);
 #define ACTION_CONTROL          10
 
 struct Action {
-	NODE Link;
+	Node Link;
 
 	uint16 Type;
 
@@ -176,7 +176,7 @@ void IgnoreAction(struct System *sys);
 #define SIGNAL_ESCAPE      3    /* f..., police is coming, let's go */
 
 struct plSignal {
-	NODE Link;
+	Node Link;
 
 	uint32 SenderId;
 	uint32 ReceiverId;
@@ -191,7 +191,7 @@ uint32 CurrentTimer(struct System *sys);
 void IncCurrentTimer(struct System *sys, uint32 time, byte alsoTime);
 uint32 GetMaxTimer(struct System *sys);
 
-void CorrectMem(LIST *l);
+void CorrectMem(List *l);
 
 #if 0
 void ResetMem();

@@ -23,7 +23,7 @@
 namespace Clue {
 
 struct IOData {
-	NODE io_Link;
+	Node io_Link;
 	byte io_Data;
 };
 
@@ -41,8 +41,8 @@ void plSaveTools(Common::Stream *fh) {
 	}
 }
 
-LIST *plLoadTools(Common::Stream *fh) {
-	LIST *l = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_1");
+List *plLoadTools(Common::Stream *fh) {
+	List *l = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_1");
 	bool foundAll = true;
 	byte canGet = 2, toolsNr = 0;
 
@@ -72,7 +72,7 @@ LIST *plLoadTools(Common::Stream *fh) {
 		RemoveList(l);
 		l = NULL;
 	} else {
-		LIST *extList = NULL;
+		List *extList = NULL;
 
 		if (canGet == 2)
 			extList = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_3");
@@ -83,7 +83,7 @@ LIST *plLoadTools(Common::Stream *fh) {
 			extList = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_4");
 
 		if (extList) {
-			for (NODE *n = LIST_HEAD(extList); NODE_SUCC(n); n = NODE_SUCC(n))
+			for (Node *n = LIST_HEAD(extList); NODE_SUCC(n); n = NODE_SUCC(n))
 				CreateNode(l, 0, NODE_NAME(n));
 
 			RemoveList(extList);
@@ -117,7 +117,7 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 				name2 = Common::String::format("MODE_%d", mode);
 				plMessage(name2, PLANING_MSG_REFRESH);
 
-				LIST *PlanList = CreateList();
+				List *PlanList = CreateList();
 
 				name1 = dbGetObjectName(objId);
 
@@ -211,7 +211,7 @@ void plSave(uint32 objId) {
 
 void plSaveChanged(uint32 objId) {
 	if (PlanChanged) {
-		LIST *l = g_clue->_txtMgr->goKey(PLAN_TXT, "PLAN_CHANGED");
+		List *l = g_clue->_txtMgr->goKey(PLAN_TXT, "PLAN_CHANGED");
 
 		inpTurnESC(0);
 
@@ -243,7 +243,7 @@ void plLoad(uint32 objId) {
 			grdDo(fh, plSys, PersonsList, BurglarsNr, PersonsNr,
 			      GUARDS_DO_LOAD);
 		else {
-			LIST *l = NULL;
+			List *l = NULL;
 			byte i;
 			byte goon = 1;
 

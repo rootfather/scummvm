@@ -57,7 +57,7 @@ void livInit(uint16 us_VisLScapeX, uint16 us_VisLScapeY,
 void livDone() {
 	if (sc) {
 		if (sc->p_Livings) {
-			for (NODE *node = LIST_HEAD(sc->p_Livings); NODE_SUCC(node); node = NODE_SUCC(node))
+			for (Node *node = LIST_HEAD(sc->p_Livings); NODE_SUCC(node); node = NODE_SUCC(node))
 				livRem((Living *) node);
 
 			RemoveList(sc->p_Livings);
@@ -65,7 +65,7 @@ void livDone() {
 		}
 
 		if (sc->p_Template) {
-			for (NODE *node = LIST_HEAD(sc->p_Template); NODE_SUCC(node); node = NODE_SUCC(node))
+			for (Node *node = LIST_HEAD(sc->p_Template); NODE_SUCC(node); node = NODE_SUCC(node))
 				livRemTemplate((AnimTemplate *) node);
 
 			RemoveList(sc->p_Template);
@@ -353,7 +353,7 @@ static void livRem(struct Living *liv) {
 }
 
 static void livLoadTemplates() {
-	LIST *l = CreateList();
+	List *l = CreateList();
 
 	char pathname[DSK_PATH_MAX];
 	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, LIV_ANIM_TEMPLATE_LIST, pathname);
@@ -381,7 +381,7 @@ static void livRemTemplate(struct AnimTemplate *tlt) {
 }
 
 static void livLoadLivings() {
-	LIST *l = CreateList();
+	List *l = CreateList();
 
 	char pathname[DSK_PATH_MAX];
 	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, LIV_LIVINGS_LIST, pathname);

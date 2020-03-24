@@ -126,11 +126,11 @@ struct LandScape {
 	struct LSFloorSquare *p_AllFloors[3];
 	uint32 ul_FloorAreaId[3];
 
-	LIST *p_ObjectRetrieval;
-	LIST *p_ObjectRetrievalLists[3];
+	List *p_ObjectRetrieval;
+	List *p_ObjectRetrievalLists[3];
 	uint32 ul_ObjectRetrievalAreaId[3];
 
-	LIST *p_DoorRefreshList;
+	List *p_DoorRefreshList;
 
 	uint16 us_LivingXSpeed;
 	uint16 us_LivingYSpeed;
@@ -152,7 +152,7 @@ struct LSFloorSquare {
 };
 
 struct LSDoorRefreshNode {  /* für jede Tür existiert eine Node */
-	NODE Link;
+	Node Link;
 
 	LSObject lso;
 

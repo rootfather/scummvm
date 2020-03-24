@@ -203,7 +203,7 @@ uint16 lsGetFloorIndex(uint16 x, uint16 y) {
 	return (uint16)(line * fpl + row);
 }
 
-static void lsExtendGetList(LIST *list, uint32 nr, uint32 type, void *data) {
+static void lsExtendGetList(List *list, uint32 nr, uint32 type, void *data) {
 	struct ObjectNode *newNode =
 	    dbAddObjectNode(list, type, OLF_INCLUDE_NAME | OLF_INSERT_STAR);
 
@@ -212,14 +212,14 @@ static void lsExtendGetList(LIST *list, uint32 nr, uint32 type, void *data) {
 	newNode->data = data;
 }
 
-LIST *lsGetObjectsByList(uint16 x, uint16 y, uint16 width, uint16 height,
+List *lsGetObjectsByList(uint16 x, uint16 y, uint16 width, uint16 height,
                          byte showInvisible, byte addLootBags) {
-	LIST *list = CreateList();
+	List *list = CreateList();
 
 	/* diverse Objekte eintragen */
 	for (ObjectNode* node = (ObjectNode*)LIST_HEAD(ls->p_ObjectRetrieval);
-	        NODE_SUCC((NODE *) node);
-	        node = (ObjectNode *) NODE_SUCC((NODE *) node)) {
+	        NODE_SUCC(node);
+	        node = (ObjectNode *) NODE_SUCC(node)) {
 		LSObject lso = (LSObject) OL_DATA(node);
 
 		if ((lso->ul_Status & (1L << Const_tcACCESS_BIT))
@@ -255,10 +255,10 @@ uint32 lsGetActivAreaID() {
 	return (ls->ul_AreaID);
 }
 
-LIST *lsGetRoomsOfArea(uint32 ul_AreaId) {
+List *lsGetRoomsOfArea(uint32 ul_AreaId) {
 	LSArea area = (LSArea) dbGetObject(ul_AreaId);
 	uint32 roomRelId = area->ul_ObjectBaseNr + REL_HAS_ROOM_OFFSET;
-	NODE *room;
+	Node *room;
 
 	SetObjectListAttr(OLF_PRIVATE_LIST, Object_LSRoom);
 	AskAll(area, roomRelId, BuildObjectList);

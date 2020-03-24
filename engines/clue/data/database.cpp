@@ -27,8 +27,8 @@
 namespace Clue {
 
 /* public declarations */
-LIST *ObjectList = NULL;
-LIST *ObjectListPrivate = NULL;
+List *ObjectList = NULL;
+List *ObjectListPrivate = NULL;
 uint32 ObjectListWidth = 0L;
 Common::String (*ObjectListPrevString)(uint32, uint32, void *) = nullptr;
 Common::String (*ObjectListSuccString)(uint32, uint32, void *) = nullptr;
@@ -40,7 +40,7 @@ uint32 ObjectListFlags = OLF_NORMAL;
 
 uint8 ObjectLoadMode = DB_LOAD_MODE_STD;
 
-LIST *objHash[OBJ_HASH_SIZE];
+List *objHash[OBJ_HASH_SIZE];
 char decodeStr[11];
 
 
@@ -1165,7 +1165,7 @@ bool dbLoadAllObjects(const char *fileName, uint16 diskId) {
 
 			if ((objHd.nr != (uint32) - 1) && (objHd.type != (uint32) - 1)
 			        && (objHd.size != (uint32) - 1)) {
-				LIST *list = NULL;
+				List *list = NULL;
 				char *name = NULL;
 				uint32 localSize;
 
@@ -1328,7 +1328,7 @@ void *dbIsObject(uint32 nr, uint32 type) {
 }
 
 /* public prototypes - OBJECTNODE */
-ObjectNode *dbAddObjectNode(LIST *objectList, uint32 nr, uint32 flags) {
+ObjectNode *dbAddObjectNode(List *objectList, uint32 nr, uint32 flags) {
 	ObjectNode *n = NULL;
 	dbObject *obj = dbGetObjectReal(dbGetObject(nr));
 	char name[TXT_KEY_LENGTH], *namePtr;
@@ -1374,7 +1374,7 @@ ObjectNode *dbAddObjectNode(LIST *objectList, uint32 nr, uint32 flags) {
 	return n;
 }
 
-void dbRemObjectNode(LIST *objectList, uint32 nr) {
+void dbRemObjectNode(List *objectList, uint32 nr) {
 	ObjectNode *n = dbHasObjectNode(objectList, nr);
 
 	if (n) {
@@ -1383,7 +1383,7 @@ void dbRemObjectNode(LIST *objectList, uint32 nr) {
 	}
 }
 
-ObjectNode *dbHasObjectNode(LIST *objectList, uint32 nr) {
+ObjectNode *dbHasObjectNode(List *objectList, uint32 nr) {
 	for (ObjectNode *n = (ObjectNode *) LIST_HEAD(objectList); NODE_SUCC(n);
 	        n = (ObjectNode *) NODE_SUCC(n)) {
 		if (OL_NR(n) == nr)
@@ -1409,7 +1409,7 @@ void BuildObjectList(void *key) {
 	dbObject *obj = dbGetObjectReal(key);
 
 	if (!ObjectListType || (obj->type == ObjectListType)) {
-		LIST *list;
+		List *list;
 		if (ObjectListFlags & OLF_PRIVATE_LIST)
 			list = ObjectListPrivate;
 		else
@@ -1419,7 +1419,7 @@ void BuildObjectList(void *key) {
 	}
 }
 
-void ExpandObjectList(LIST *objectList, char *expandItem) {
+void ExpandObjectList(List *objectList, char *expandItem) {
 	ObjectNode *objNode = (ObjectNode *) CreateNode(objectList, sizeof(*objNode), expandItem);
 
 	if (!objNode)
@@ -1430,7 +1430,7 @@ void ExpandObjectList(LIST *objectList, char *expandItem) {
 	objNode->data = NULL;
 }
 
-void ExpandObjectList(LIST *objectList, Common::String expandItem) {
+void ExpandObjectList(List *objectList, Common::String expandItem) {
 	ObjectNode *objNode = (ObjectNode *)CreateNode(objectList, sizeof(*objNode), expandItem);
 
 	if (!objNode)
@@ -1451,10 +1451,10 @@ int16 dbStdCompareObjects(ObjectNode *obj1, ObjectNode *obj2) {
 	return 0;
 }
 
-void dbSortPartOfList(LIST *l, ObjectNode *start,
+void dbSortPartOfList(List *l, ObjectNode *start,
                       ObjectNode *end,
                       int16(*processNode)(ObjectNode *, ObjectNode *)) {
-	LIST *newList = CreateList();
+	List *newList = CreateList();
 	ObjectNode *n1, *startPred;
 
 	if (start == (ObjectNode *) LIST_HEAD(l))
@@ -1491,11 +1491,11 @@ void dbSortPartOfList(LIST *l, ObjectNode *start,
 	RemoveList(newList);
 }
 
-int32 dbSortObjectList(LIST **objectList, int16(*processNode)(ObjectNode *, ObjectNode *)) {
+int32 dbSortObjectList(List **objectList, int16(*processNode)(ObjectNode *, ObjectNode *)) {
 	int32 i = 0;
 
 	if (!LIST_EMPTY(*objectList)) {
-		LIST *newList = CreateList();
+		List *newList = CreateList();
 
 		for (ObjectNode *n1 = (ObjectNode *) LIST_HEAD(*objectList); NODE_SUCC(n1);
 		        n1 = (ObjectNode *) NODE_SUCC(n1), i++) {

@@ -17,8 +17,8 @@
 
 namespace Clue {
 
-LIST *CreateList() {
-	LIST *list = (LIST *) TCAllocMem(sizeof(*list), true);
+List *CreateList() {
+	List *list = (List *) TCAllocMem(sizeof(*list), true);
 
 	if (list) {
 		NODE_SUCC(INNER_HEAD(list)) = INNER_TAIL(list);
@@ -33,32 +33,32 @@ LIST *CreateList() {
 	return list;
 }
 
-void RemoveList(LIST *list) {
+void RemoveList(List *list) {
 	RemoveNode(list, NULL);
 	FreeList(list);
 }
 
-void FreeList(LIST *list) {
+void FreeList(List *list) {
 	TCFreeMem(list, sizeof(*list));
 }
 
-void *AddNode(LIST *list, void *node, void *predNode) {
+void *AddNode(List *list, void *node, void *predNode) {
 	if (!predNode)
 		predNode = INNER_HEAD(list);
 
 	NODE_SUCC(node) = NODE_SUCC(predNode);
-	NODE_PRED(node) = (NODE *)predNode;
+	NODE_PRED(node) = (Node *)predNode;
 
-	NODE_PRED(NODE_SUCC(predNode)) = (NODE *)node;
-	NODE_SUCC(predNode) = (NODE *)node;
+	NODE_PRED(NODE_SUCC(predNode)) = (Node *)node;
+	NODE_SUCC(predNode) = (Node *)node;
 	return node;
 }
 
-void *AddTailNode(LIST *list, void *node) {
+void *AddTailNode(List *list, void *node) {
 	return AddNode(list, node, LIST_TAIL(list));
 }
 
-void *AddHeadNode(LIST *list, void *node) {
+void *AddHeadNode(List *list, void *node) {
 	return AddNode(list, node, INNER_HEAD(list));
 }
 
@@ -73,27 +73,27 @@ void *RemNode(void *node) {
 	return node;
 }
 
-void *RemTailNode(LIST *list) {
+void *RemTailNode(List *list) {
 	if (!LIST_EMPTY(list))
 		return RemNode(LIST_TAIL(list));
 
 	return NULL;
 }
-void *CreateNode(LIST *list, size_t size, Common::String name) {
+void *CreateNode(List *list, size_t size, Common::String name) {
 	return CreateNode(list, size, name.c_str());
 }
 	
-void *CreateNode(LIST *list, size_t size, const char *name) {
+void *CreateNode(List *list, size_t size, const char *name) {
 	if (!size)
-		size = sizeof(NODE);
+		size = sizeof(Node);
 
 	size_t len = 0;
 	if (name)
 		len = strlen(name) + 1;
 
-	NODE *node = NULL;
-	if (size >= sizeof(NODE)) {
-		if ((node = (NODE *) TCAllocMem(size + len, true))) {
+	Node *node = NULL;
+	if (size >= sizeof(Node)) {
+		if ((node = (Node *) TCAllocMem(size + len, true))) {
 			NODE_SUCC(node) = NULL;
 			NODE_PRED(node) = NULL;
 			NODE_SIZE(node) = size;
@@ -113,16 +113,16 @@ void *CreateNode(LIST *list, size_t size, const char *name) {
 	return (void *) node;
 }
 
-void RemoveNode(LIST *list, const char *name) {
-	NODE *node;
+void RemoveNode(List *list, const char *name) {
+	Node *node;
 	if (name) {
-		if ((node = (NODE *)GetNode(list, name))) {
+		if ((node = (Node *)GetNode(list, name))) {
 			RemNode(node);
 			FreeNode(node);
 		}
 	} else {
 		if (!LIST_EMPTY(list)) {
-			while ((node = (NODE *)RemTailNode(list)))
+			while ((node = (Node *)RemTailNode(list)))
 				FreeNode(node);
 		}
 	}
@@ -137,8 +137,8 @@ void FreeNode(void *node) {
 	TCFreeMem(node, size);
 }
 
-void *GetNode(LIST *list, const char *name) {
-	for (NODE *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node)) {
+void *GetNode(List *list, const char *name) {
+	for (Node *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node)) {
 		if (strcmp(NODE_NAME(node), name) == 0)
 			return node;
 	}
@@ -146,8 +146,8 @@ void *GetNode(LIST *list, const char *name) {
 	return NULL;
 }
 
-void *GetNthNode(LIST *list, uint32 nth) {
-	for (NODE *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node)) {
+void *GetNthNode(List *list, uint32 nth) {
+	for (Node *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node)) {
 		if (nth == 0)
 			return node;
 		nth--;
@@ -156,8 +156,8 @@ void *GetNthNode(LIST *list, uint32 nth) {
 	return NULL;
 }
 
-uint32 GetNrOfNodes(LIST *list) {
-	NODE *node = NULL;
+uint32 GetNrOfNodes(List *list) {
+	Node *node = NULL;
 	uint32 i = 0;
 
 	for (i = 0, node = LIST_HEAD(list); NODE_SUCC(node); i++, node = NODE_SUCC(node))
@@ -166,8 +166,8 @@ uint32 GetNrOfNodes(LIST *list) {
 	return i;
 }
 
-uint32 GetNodeNrByAddr(LIST *list, void *node) {
-	NODE *s;
+uint32 GetNodeNrByAddr(List *list, void *node) {
+	Node *s;
 	uint32 i;
 
 	for (s = LIST_HEAD(list), i = 0; NODE_SUCC(s) && (s != node);
@@ -176,42 +176,42 @@ uint32 GetNodeNrByAddr(LIST *list, void *node) {
 	return i;
 }
 
-void foreach (LIST *list, void (*processNode)(void *)) {
-	for (NODE *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node))
+void foreach (List *list, void (*processNode)(void *)) {
+	for (Node *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node))
 		processNode(node);
 }
 
-void Link(LIST *list, void *node, void *predNode) {
+void Link(List *list, void *node, void *predNode) {
 	if (predNode)
 		AddNode(list, node, predNode);
 	else
 		AddTailNode(list, node);
 }
 
-void *UnLinkByAddr(LIST *list, void *node, NODE **predNode) {
+void *UnLinkByAddr(List *list, void *node, Node **predNode) {
 	if (predNode)
 		*predNode = NODE_PRED(node);
 
 	return RemNode(node);
 }
 
-void *UnLink(LIST *list, const char *name, NODE **predNode) {
+void *UnLink(List *list, const char *name, Node **predNode) {
 	return UnLinkByAddr(list, GetNode(list, name), predNode);
 }
 
-void ReplaceNodeByAddr(LIST *list, void *node, NODE *newNode) {
-	NODE *predNode;
+void ReplaceNodeByAddr(List *list, void *node, Node *newNode) {
+	Node *predNode;
 	if ((node = UnLinkByAddr(list, node, &predNode))) {
 		Link(list, newNode, predNode);
 		FreeNode(node);
 	}
 }
 
-void ReplaceNode(LIST *list, const char *name, NODE *newNode) {
+void ReplaceNode(List *list, const char *name, Node *newNode) {
 	ReplaceNodeByAddr(list, GetNode(list, name), newNode);
 }
 
-uint32 ReadList(LIST *list, size_t size, char *fileName) {
+uint32 ReadList(List *list, size_t size, char *fileName) {
 	uint32 i = 0;
 	Common::Stream *fh = dskOpen(fileName, 0);
 	if (fh) {
@@ -233,10 +233,10 @@ uint32 ReadList(LIST *list, size_t size, char *fileName) {
 	return i;
 }
 
-void WriteList(LIST *list, char *fileName) {
+void WriteList(List *list, char *fileName) {
 	Common::Stream *fh = dskOpen(fileName, 1);
 	if (fh) {
-		for (NODE *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node))
+		for (Node *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node))
 			dskSetLine(fh, NODE_NAME(node));
 
 		dskClose(fh);

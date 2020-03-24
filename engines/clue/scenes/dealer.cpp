@@ -108,10 +108,10 @@ void tcDealerOffer(Person dealer, byte which) {
 }
 
 void tcDealerSays(Person dealer, byte textNr, int32 perc) {
-	LIST *lootNames = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_LootE");
-	LIST *specialLoot = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_LootNameE");
-	LIST *dealerText = g_clue->_txtMgr->goKey(BUSINESS_TXT, "DEALER_OFFER");
-	LIST *dealerOffer = CreateList();
+	List *lootNames = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_LootE");
+	List *specialLoot = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_LootNameE");
+	List *dealerText = g_clue->_txtMgr->goKey(BUSINESS_TXT, "DEALER_OFFER");
+	List *dealerOffer = CreateList();
 	Player player = (Player)dbGetObject(Player_Player_1);
 
 	Person others[3];
@@ -193,17 +193,17 @@ void tcDealerSays(Person dealer, byte textNr, int32 perc) {
 	RemoveList(lootNames);
 }
 
-LIST *tcMakeLootList(uint32 containerID, uint32 relID) {
+List *tcMakeLootList(uint32 containerID, uint32 relID) {
 	CompleteLoot comp = (CompleteLoot)dbGetObject(CompleteLoot_LastLoot);
-	LIST *lootE = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_LootE");
-	LIST *lootNameE = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_LootNameE");
-	LIST *out = CreateList();
+	List *lootE = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_LootE");
+	List *lootNameE = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_LootNameE");
+	List *out = CreateList();
 
 	/* Listen initialisieren */
 
 	SetObjectListAttr(OLF_PRIVATE_LIST, Object_Loot);
 	AskAll(dbGetObject(containerID), relID, BuildObjectList);
-	LIST *loots = ObjectListPrivate;
+	List *loots = ObjectListPrivate;
 
 	comp->Bild = comp->Gold = comp->Geld = comp->Juwelen = 0;
 	comp->Delikates = comp->Statue = comp->Kuriositaet = 0;
@@ -214,7 +214,7 @@ LIST *tcMakeLootList(uint32 containerID, uint32 relID) {
 	/* Liste durcharbeiten */
 
 	if (!(LIST_EMPTY(loots))) {
-		for (NODE *n = LIST_HEAD(loots); NODE_SUCC(n); n = NODE_SUCC(n)) {
+		for (Node *n = LIST_HEAD(loots); NODE_SUCC(n); n = NODE_SUCC(n)) {
 			if (OL_TYPE(n) == Object_Loot) {
 				Loot loot = (Loot)OL_DATA(n);
 				uint32 value = GetP(dbGetObject(containerID), relID, loot);

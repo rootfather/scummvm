@@ -35,8 +35,8 @@ namespace Clue {
 
 
 struct SpriteControl {
-	LIST *p_Livings;
-	LIST *p_Template;
+	List *p_Livings;
+	List *p_Template;
 
 	uint32 ul_SprPlayMode;
 	uint32 ul_ActivAreaId;
@@ -57,7 +57,7 @@ struct SpriteControl {
 };
 
 struct AnimTemplate {
-	NODE Link;
+	Node Link;
 
 	uint16 us_Width;
 	uint16 us_Height;
@@ -67,7 +67,7 @@ struct AnimTemplate {
 
 struct Living {
 	/* komplette Daten einer Instanz   *//* eines Lebewesens                */
-	NODE Link;
+	Node Link;
 
 	uint32 ul_LivesInAreaId;    /* Area -> LandScap */
 

@@ -84,7 +84,7 @@ struct Film {
 	struct Scene *act_scene;
 	struct Scene *gameplay;
 
-	LIST *loc_names;        /* Liste aller Orte im Spiel */
+	List *loc_names;        /* Liste aller Orte im Spiel */
 	/* OrtNr = Nr der Node in der */
 	/* Liste */
 	uint32 StartScene;
@@ -115,7 +115,7 @@ struct Scene {
 
 	struct Bedingungen *bed;    /* damit das Ereignis eintritt */
 
-	LIST *std_succ;     /* Standardnachfolger TCEventNode */
+	List *std_succ;     /* Standardnachfolger TCEventNode */
 
 	uint32 Moeglichkeiten;      /* siehe defines oben                   */
 	uint32 Dauer;           /* Dauer dieser Szene in Sekunden       */
@@ -131,12 +131,12 @@ struct Scene {
 struct Bedingungen {
 	uint32 Ort;         /* der erfüllt sein muß */
 
-	LIST *events;       /* welche Events schon geschehen sein muessen */
-	LIST *n_events;     /* Events, die nicht geschehen sein dürfen */
+	List *events;       /* welche Events schon geschehen sein muessen */
+	List *n_events;     /* Events, die nicht geschehen sein dürfen */
 };
 
 struct TCEventNode {
-	NODE Node;
+	Node Node;
 
 	uint32 EventNr;
 };

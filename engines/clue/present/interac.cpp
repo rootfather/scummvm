@@ -40,7 +40,7 @@ void SetMenuTimeOutFunc(void (*func)()) {
 	MenuTimeOutFunc = func;
 }
 
-bool ChoiceOk(byte choice, byte exit, LIST *l) {
+bool ChoiceOk(byte choice, byte exit, List *l) {
 	if (choice == GET_OUT)
 		return false;
 
@@ -58,7 +58,7 @@ bool ChoiceOk(byte choice, byte exit, LIST *l) {
 	return true;
 }
 
-static void DrawMenu(LIST *menu, byte nr, int32 mode) {
+static void DrawMenu(List *menu, byte nr, int32 mode) {
 	if (mode == ACTIV_POSS)
 		gfxSetPens(m_gc, 249, GFX_SAME_PEN, GFX_SAME_PEN);
 	else
@@ -155,14 +155,14 @@ void RefreshMenu() {
 	}
 }
 
-byte Menu(LIST *menu, uint32 possibility, byte activ, void (*func)(byte), uint32 waitTime) {
+byte Menu(List *menu, uint32 possibility, byte activ, void (*func)(byte), uint32 waitTime) {
 	if (menu && !LIST_EMPTY(menu)) {
 		if (!possibility)
 			return 0;
 
 
 		uint16 x = 8;
-		NODE *n;
+		Node *n;
 		byte max;
 
 		for (max = 0, n = LIST_HEAD(menu); NODE_SUCC(n); n = NODE_SUCC(n), max++) {
@@ -303,7 +303,7 @@ byte Menu(LIST *menu, uint32 possibility, byte activ, void (*func)(byte), uint32
 	return activ;
 }
 
-static void DrawBubble(LIST *bubble, uint8 firstLine, uint8 activ, GC *gc, uint32 max) {
+static void DrawBubble(List *bubble, uint8 firstLine, uint8 activ, GC *gc, uint32 max) {
 	gfxScreenFreeze();
 	gfxSetPens(gc, 224, 224, 224);
 	gfxRectFill(gc, X_OFFSET, 3, X_OFFSET + INT_BUBBLE_WIDTH, 49);
@@ -357,7 +357,7 @@ static void DrawBubble(LIST *bubble, uint8 firstLine, uint8 activ, GC *gc, uint3
 }
 
 
-byte Bubble(LIST *bubble, byte activ, void (*func)(byte), uint32 waitTime) {
+byte Bubble(List *bubble, byte activ, void (*func)(byte), uint32 waitTime) {
 	int32 max = GetNrOfNodes(bubble);
 
 	SuspendAnim();

@@ -118,7 +118,7 @@ static byte tcMakeCarOk() {
 }
 
 uint32 tcOrganisation() {
-	LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "ORGANISATION");
+	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "ORGANISATION");
 	byte activ = 0, ende = 0;
 
 	/* activate first or memorized building */
@@ -282,7 +282,7 @@ uint32 tcChooseDriver(uint32 persID) {
 	joined_byAll(Person_Matt_Stuvysunt,
 	             OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
 	             Object_Person);
-	LIST *list = ObjectListPrivate;
+	List *list = ObjectListPrivate;
 
 	if (LIST_EMPTY(list)) {
 		SetBubbleType(THINK_BUBBLE);
@@ -323,7 +323,7 @@ uint32 tcChooseDestBuilding(uint32 objID) {
 	       OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
 	       Object_Building);
 
-	LIST *list = ObjectListPrivate;
+	List *list = ObjectListPrivate;
 	Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
 	ExpandObjectList(list, exp);
 
@@ -349,10 +349,10 @@ uint32 tcChooseEscapeCar(uint32 objID) {
 	hasAll(Person_Matt_Stuvysunt,
 	       OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST, Object_Car);
 
-	LIST *l1 = ObjectListPrivate;
+	List *l1 = ObjectListPrivate;
 
 	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST, Object_Person);
-	LIST *l2 = ObjectListPrivate;
+	List *l2 = ObjectListPrivate;
 
 	if (!LIST_EMPTY(l1)) {
 		Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
@@ -397,7 +397,7 @@ void tcChooseGuys() {
 	joinAll(Person_Matt_Stuvysunt,
 	        OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
 	        Object_Person);
-	LIST *list = ObjectListPrivate;
+	List *list = ObjectListPrivate;
 
 	dbRemObjectNode(list, Person_Matt_Stuvysunt);
 
@@ -405,7 +405,7 @@ void tcChooseGuys() {
 		SetBubbleType(THINK_BUBBLE);
 		Say(BUSINESS_TXT, 0, matt->PictID, "PLAN_WITHOUT_GUYS");
 	} else {
-		LIST *menu = g_clue->_txtMgr->goKey(MENU_TXT, "ORG_KOMPLIZEN");
+		List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "ORG_KOMPLIZEN");
 		byte activ = 0;
 
 		ShowMenuBackground();
@@ -441,10 +441,10 @@ void tcAddGuyToParty() {
 	        OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
 	        Object_Person);
 
-	LIST *l1 = ObjectListPrivate;
+	List *l1 = ObjectListPrivate;
 	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST, Object_Person);
 
-	LIST *l2 = ObjectListPrivate;
+	List *l2 = ObjectListPrivate;
 	if (GetNrOfNodes(l2) < Organisation.PlacesInCar) {
 		for (ObjectNode *n = (ObjectNode *) LIST_HEAD(l2); NODE_SUCC(n); n = (ObjectNode *) NODE_SUCC(n))
 			dbRemObjectNode(l1, OL_NR(n));
@@ -483,7 +483,7 @@ void tcRemGuyFromParty() {
 	joined_byAll(Person_Matt_Stuvysunt,
 	             OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
 	             Object_Person);
-	LIST *list = ObjectListPrivate;
+	List *list = ObjectListPrivate;
 
 	dbRemObjectNode(list, Person_Matt_Stuvysunt);
 

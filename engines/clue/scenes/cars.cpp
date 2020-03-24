@@ -75,7 +75,7 @@ void tcBuyCar() {
 		hasAll(Person_Marc_Smith,
 		       OLF_ALIGNED | OLF_PRIVATE_LIST | OLF_INCLUDE_NAME |
 		       OLF_INSERT_STAR | OLF_ADD_SUCC_STRING, Object_Car);
-		LIST *bubble = ObjectListPrivate;
+		List *bubble = ObjectListPrivate;
 
 		ObjectListSuccString = nullptr;
 		ObjectListWidth = 0;
@@ -168,14 +168,14 @@ void tcColorCar(Car car) {
 	Person marc = (Person) dbGetObject(Person_Marc_Smith);
 	uint32 costs = (uint32)tcColorCosts(car);
 
-	LIST *bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "LACKIEREN", (uint32) costs, NULL);
+	List *bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "LACKIEREN", (uint32) costs, NULL);
 
 	SetPictID(marc->PictID);
 	Bubble(bubble, 0, 0L, 0L);
 	RemoveList(bubble);
 
 	if (Say(BUSINESS_TXT, 0, MATT_PICTID, "LACKIEREN_ANT") == 0) {
-		LIST *colors = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_ColorE");
+		List *colors = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_ColorE");
 
 		g_clue->_txtMgr->putCharacter(colors, 0, '*');
 
@@ -215,7 +215,7 @@ void tcSellCar(uint32 ObjectID) {
 	Car car = (Car) dbGetObject(ObjectID);
 	uint32 offer = tcGetCarTraderOffer(car);
 
-	LIST *bubble;
+	List *bubble;
 	if (tcRGetCarAge(car) < 1)
 		bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "ANGEBOT_1", tcRGetCarValue(car), offer, NULL);
 	else
@@ -237,11 +237,11 @@ void tcSellCar(uint32 ObjectID) {
 }
 
 void tcRepairCar(Car car, const char *repairWhat) {
-	LIST *presentationData = CreateList();
+	List *presentationData = CreateList();
 	bool enough = true;
 	Person marc = (Person) dbGetObject(Person_Marc_Smith);
 
-	LIST *list = NULL;
+	List *list = NULL;
 	byte *item = NULL;
 	uint32 costs = 0;
 	byte type = 7;
@@ -345,7 +345,7 @@ void tcRepairCar(Car car, const char *repairWhat) {
 uint32 tcChooseCar(uint32 backgroundNr) {
 	hasAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Car);
 
-	LIST *bubble = ObjectListPrivate;
+	List *bubble = ObjectListPrivate;
 	uint32 carID = 0L;
 	if (!(LIST_EMPTY(bubble))) {
 		uint32 carCount = GetNrOfNodes(bubble);
@@ -383,7 +383,7 @@ void tcCarGeneralOverhoul(Car car) {
 
 	SetPictID(marc->PictID);
 
-	LIST *bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "GENERAL_OVERHOUL",
+	List *bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "GENERAL_OVERHOUL",
 	                      (uint32)((tcCostsPerTotalRepair(car) * 255) / 8), NULL);
 	Bubble(bubble, 0, 0L, 0L);
 	RemoveList(bubble);

@@ -27,7 +27,7 @@ namespace Clue {
 
 struct PresentControl PresentControl = { NULL, 0, 0 };
 
-void DrawPresent(LIST *present, uint8 firstLine, GC *gc, uint8 max) {
+void DrawPresent(List *present, uint8 firstLine, GC *gc, uint8 max) {
 	gfxScreenFreeze();
 	gfxSetPens(gc, 224, 224, 224);
 	gfxRectFill(gc, 88, 3, 320, 49);
@@ -87,8 +87,8 @@ void DrawPresent(LIST *present, uint8 firstLine, GC *gc, uint8 max) {
 	gfxScreenThaw(gc, 88, 3, 228, 46);
 }
 
-uint8 Present(uint32 nr, const char *presentationText, void (*initPresentation)(uint32, LIST *, LIST *)) {
-	LIST *presentationData = CreateList(), *list;
+uint8 Present(uint32 nr, const char *presentationText, void (*initPresentation)(uint32, List *, List *)) {
+	List *presentationData = CreateList(), *list;
 
 	SuspendAnim();
 
@@ -190,8 +190,8 @@ uint8 Present(uint32 nr, const char *presentationText, void (*initPresentation)(
 		return ((uint8)(exit - 1));
 }
 
-static struct presentationInfo *AddPresentInfo(LIST *l, uint32 max,
-        LIST *texts, uint16 textNr) {
+static struct presentationInfo *AddPresentInfo(List *l, uint32 max,
+        List *texts, uint16 textNr) {
 	char *name = NULL;
 
 	if (textNr != ((uint16) - 1))
@@ -205,7 +205,7 @@ static struct presentationInfo *AddPresentInfo(LIST *l, uint32 max,
 }
 
 
-void AddPresentTextLine(LIST *l, Common::String data, uint32 max, LIST *texts, uint16 textNr) {
+void AddPresentTextLine(List *l, Common::String data, uint32 max, List *texts, uint16 textNr) {
 	struct presentationInfo *p = AddPresentInfo(l, max, texts, textNr);
 	p->presentHow = PRESENT_AS_TEXT;
 
@@ -216,7 +216,7 @@ void AddPresentTextLine(LIST *l, Common::String data, uint32 max, LIST *texts, u
 }
 
 /* XXX: ONLY FOR NUMBERIC VALUES! */
-void AddPresentLine(LIST *l, uint8 presentHow, uint32 data, uint32 max, LIST *texts, uint16 textNr) {
+void AddPresentLine(List *l, uint8 presentHow, uint32 data, uint32 max, List *texts, uint16 textNr) {
 	struct presentationInfo *p = AddPresentInfo(l, max, texts, textNr);
 	p->presentHow = presentHow;
 

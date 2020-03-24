@@ -22,8 +22,8 @@
 
 namespace Clue {
 
-LIST *PersonsList = NULL;
-LIST *BurglarsList = NULL;
+List *PersonsList = NULL;
+List *BurglarsList = NULL;
 
 byte PersonsNr = 0;
 byte BurglarsNr = 0;
@@ -37,13 +37,13 @@ byte Planing_Guard[PLANING_NR_GUARDS];
 
 char Planing_Name[PLANING_NR_PERSONS + PLANING_NR_GUARDS][20];
 
-LIST *Planing_GuardRoomList[PLANING_NR_GUARDS];
+List *Planing_GuardRoomList[PLANING_NR_GUARDS];
 
 uint32 Planing_BldId;
 
 
 /* Handler functions */
-void plBuildHandler(NODE *n) {
+void plBuildHandler(Node *n) {
 	uint32 flags = SHF_NORMAL;
 
 	if (OL_TYPE(n) == Object_Police)
@@ -52,11 +52,11 @@ void plBuildHandler(NODE *n) {
 	InitHandler(plSys, OL_NR(n), flags);
 }
 
-void plClearHandler(NODE *n) {
+void plClearHandler(Node *n) {
 	ClearHandler(plSys, OL_NR(n));
 }
 
-void plCloseHandler(NODE *n) {
+void plCloseHandler(Node *n) {
 	CloseHandler(plSys, OL_NR(n));
 }
 
@@ -179,9 +179,9 @@ void plUnprepareGfx() {
 
 void plPrepareRel() {
 	consistsOfAll(Planing_BldId, OLF_PRIVATE_LIST, Object_LSArea);
-	LIST *areas = ObjectListPrivate;
+	List *areas = ObjectListPrivate;
 
-	for (NODE *n = LIST_HEAD(areas); NODE_SUCC(n); n = NODE_SUCC(n)) {
+	for (Node *n = LIST_HEAD(areas); NODE_SUCC(n); n = NODE_SUCC(n)) {
 		LSArea area = (LSArea)OL_DATA(n);
 
 		if (!CloneRelation
