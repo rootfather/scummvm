@@ -249,12 +249,12 @@ static void gfxInitPictList() {
 	RemoveList(tempList);
 }
 
-typedef struct {
+struct Rectangle {
 	int x;
 	int y;
 	int w;
 	int h;
-} Rectangle;
+};
 
 /*
  * Clips the rectangle B against rectangle A.

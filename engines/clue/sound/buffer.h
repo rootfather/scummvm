@@ -13,16 +13,15 @@
 namespace Clue {
 
 struct SndBuffer;
-typedef struct SndBuffer SND_BUFFER;
 
-SND_BUFFER *sndCreateBuffer(unsigned size);
-void sndResetBuffer(SND_BUFFER *buffer);
+SndBuffer *sndCreateBuffer(unsigned size);
+void sndResetBuffer(SndBuffer *buffer);
 
 #if 0
-unsigned sndLenBuffer(SND_BUFFER *buffer);
-void sndFreeBuffer(SND_BUFFER *buffer);
-unsigned sndInsertBuffer(SND_BUFFER *buffer, const void *src, unsigned srcLen);
-unsigned sndRemoveBuffer(SND_BUFFER *buffer, void *dst, unsigned dstLen);
+unsigned sndLenBuffer(SndBuffer *buffer);
+void sndFreeBuffer(SndBuffer *buffer);
+unsigned sndInsertBuffer(SndBuffer *buffer, const void *src, unsigned srcLen);
+unsigned sndRemoveBuffer(SndBuffer *buffer, void *dst, unsigned dstLen);
 #endif
 } // End of namespace Clue
 

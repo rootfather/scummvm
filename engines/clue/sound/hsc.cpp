@@ -60,9 +60,9 @@ static uint8 pattern_table[51];
 
 
 
-typedef enum {
+enum voice_type {
 	on, off, slide
-} voice_type;
+};
 
 
 static bool hsc_ch_keyoff[9];

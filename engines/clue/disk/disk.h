@@ -22,10 +22,10 @@ namespace Clue {
 #define ERR_DISK_WRITE_FAILED       2
 #define ERR_DISK_READ_FAILED        3
 
-typedef enum {
+enum DiskCheckE {
 	DISK_CHECK_FILE,
 	DISK_CHECK_DIR
-} DiskCheckE;
+};
 
 #if 0
 // CHECKME: Remove this when it's confirmed to be unused

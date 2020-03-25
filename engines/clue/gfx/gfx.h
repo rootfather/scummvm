@@ -37,10 +37,10 @@ struct _GC;
 
 /* defines for SetDrMd */
 
-typedef enum {
+enum GfxDrawModeE {
 	GFX_JAM_1               = 0,    /* Hintergrund wird gleichbelassen */
 	GFX_JAM_2               = 1     /* Hintergrund wird mit BackPen übermalt */
-} GfxDrawModeE;
+};
 
 /* defines for Show */
 #define GFX_NO_REFRESH             1
@@ -64,11 +64,7 @@ typedef enum {
 #define GFX_VIDEO_NCH4                  2
 #define GFX_VIDEO_TEXT                  3
 
-typedef struct _MemRastPort MemRastPort;
-typedef struct _Rect        Rect;
-typedef struct Font         Font;
-
-struct _MemRastPort {
+struct MemRastPort {
 	uint16 w;
 	uint16 h;
 
@@ -90,7 +86,7 @@ void gfxScratchToMem(MemRastPort *dst);
 
 void gfxCollToMem(uint16 collId, MemRastPort *rp);
 
-struct _Rect {
+struct Rect {
 	uint16 x;
 	uint16 y;
 
@@ -220,12 +216,12 @@ void gfxRAWBlit(uint8 *sp, uint8 *dp, const int x1, const int y1, const int x2,
                 const int y2, const int w, const int h, const int sw,
                 const int dw);
 
-typedef enum {
+enum ROpE {
 	GFX_ROP_BLIT      = 0,
 	GFX_ROP_MASK_BLIT = 1,
 	GFX_ROP_CLR       = 2,
 	GFX_ROP_SET       = 3
-} ROpE;
+};
 
 void gfxBlit(_GC *gc, MemRastPort *src, uint16 sx, uint16 sy, uint16 dx, uint16 dy,
              uint16 w, uint16 h, bool has_mask);

@@ -20,8 +20,8 @@ namespace Clue {
 struct FXBase {
 	uint16 us_AudioOk;
 
-	SND_BUFFER *pSfxBuffer;
-	SND_BUFFER *pMusicBuffer;
+	SndBuffer *pSfxBuffer;
+	SndBuffer *pMusicBuffer;
 };
 
 extern struct FXBase FXBase;

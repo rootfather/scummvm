@@ -19,8 +19,8 @@ struct SndBuffer {
 };
 
 
-SND_BUFFER *sndCreateBuffer(unsigned size) {
-	SND_BUFFER *buffer = (SND_BUFFER *)TCAllocMem(sizeof(*buffer), false);
+SndBuffer *sndCreateBuffer(unsigned size) {
+	SndBuffer *buffer = (SndBuffer *)TCAllocMem(sizeof(*buffer), false);
 	unsigned char *data = (unsigned char *)TCAllocMem(size, true);
 
 	buffer->data = data;
@@ -31,22 +31,22 @@ SND_BUFFER *sndCreateBuffer(unsigned size) {
 	return buffer;
 }
 
-void sndResetBuffer(SND_BUFFER *buffer) {
+void sndResetBuffer(SndBuffer *buffer) {
 	buffer->insertPos = 0;
 	buffer->removePos = 0;
 }
 
 #if 0
-unsigned sndLenBuffer(SND_BUFFER *buffer) {
+unsigned sndLenBuffer(SndBuffer *buffer) {
 	return buffer->insertPos - buffer->removePos;
 }
 
-void sndFreeBuffer(SND_BUFFER *buffer) {
+void sndFreeBuffer(SndBuffer *buffer) {
 	TCFreeMem(buffer->data, buffer->size);
 	TCFreeMem(buffer, sizeof(*buffer));
 }
 
-unsigned sndInsertBuffer(SND_BUFFER *buffer, const void *src, unsigned srcLen) {
+unsigned sndInsertBuffer(SndBuffer *buffer, const void *src, unsigned srcLen) {
 	const unsigned char *psrc = (const unsigned char *)src;
 
 	srcLen = MIN(srcLen, buffer->size - sndLenBuffer(buffer));
@@ -65,7 +65,7 @@ unsigned sndInsertBuffer(SND_BUFFER *buffer, const void *src, unsigned srcLen) {
 	return srcLen;
 }
 
-unsigned sndRemoveBuffer(SND_BUFFER *buffer, void *dst, uint dstLen) {
+unsigned sndRemoveBuffer(SndBuffer *buffer, void *dst, uint dstLen) {
 	unsigned char *pdst = (unsigned char *)dst;
 
 	dstLen = MIN(dstLen, sndLenBuffer(buffer));

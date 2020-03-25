@@ -24,7 +24,7 @@
 
 namespace Clue {
 
-typedef enum {
+enum ErrorModuleE {
 	ERROR_MODULE_BASE       =  3,
 	ERROR_MODULE_TXT        =  4,
 	ERROR_MODULE_DISK       =  5,
@@ -40,7 +40,7 @@ typedef enum {
 	ERROR_MODULE_GFX        = 15,
 	ERROR_MODULE_INPUT      = 16,
 	ERROR_MODULE_LAST
-} ErrorModuleE;
+};
 
 static const char moduleNames[][ERROR_MODULE_LAST] = {
 	"",
@@ -71,7 +71,7 @@ static const char moduleNames[][ERROR_MODULE_LAST] = {
 
 /* some error types */
 
-typedef enum {
+enum ErrorE {
 	No_Error        = 0,
 	Internal_Error,
 	No_Mem,
@@ -79,15 +79,15 @@ typedef enum {
 	Insert_Disk,
 	Lib_Error,
 	Last_Error
-} ErrorE;
+};
 
 /* some debug types */
 
-typedef enum {
+enum DebugE {
 	ERR_ERROR,
 	ERR_WARNING,
 	ERR_DEBUG
-} DebugE;
+};
 
 void ErrorMsg(ErrorE type, ErrorModuleE moduleId, uint32 errorId);
 void DebugMsg(DebugE type, ErrorModuleE moduleId, const char *format, ...);
