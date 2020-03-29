@@ -333,29 +333,28 @@ void TextMgr::reset(uint32 textId) {
 
 /* public functions - KEY */
 Common::String TextMgr::getKey(uint16 keyNr, const char *key) {
+	Common::String retVal = Common::String("");
 	if (!key)
-		return NULL;
+		return retVal;
 
 	for (uint16 i = 1; i < keyNr; i++) {
 		while (*key && (*key != TXT_CHAR_KEY_SEPERATOR))
 			key++;
 
 		if (!*key)
-			return NULL;
-		else
-			key++;
+			return retVal;
+
+		key++;
 	}
 
 	while (Common::isSpace(*key))
 		key++;
 
 	if (!*key)
-		return Common::String("");
+		return retVal;
 
-	Common::String retVal;
-	for (uint16 i = 0; (i < TXT_KEY_LENGTH) && *key && (*key != TXT_CHAR_KEY_SEPERATOR); ++i, ++key) {
+	for (uint16 i = 0; (i < TXT_KEY_LENGTH) && *key && (*key != TXT_CHAR_KEY_SEPERATOR); ++i, ++key)
 		retVal += *key;
-	}
 
 	return retVal;
 }
