@@ -40,7 +40,155 @@
 
 namespace Clue {
 
-/* private globals declaration */
+NewNode::NewNode() {
+	this->_pred = nullptr;
+	this->_succ = nullptr;
+}
+
+NewNode::~NewNode() {
+	delete _pred;
+	delete _succ;
+}
+
+void NewNode::remNode() {
+	_pred->_succ = _succ;
+	_succ->_pred = _pred;
+}
+
+
+template <typename T>
+NewList < T > ::NewList() {
+	_head = new T;
+	_tail = new T;
+	_head->_succ = _tail;
+	_tail->_pred = _head;
+}
+
+template <typename T>
+NewList<T>::~NewList() {
+	delete _head;
+	delete _tail;
+}
+
+template <typename T>
+void NewList<T>::addNode(T *node, T *predNode) {
+	if (!predNode)
+		predNode = _head;
+
+	node->_succ = predNode->_succ;
+	node->_pred = predNode;
+
+	predNode->_succ->_pred = node;
+	predNode->_succ = node;
+}
+
+template <typename T>
+void NewList<T>::addTailNode(T *node) {
+	addNode(node, (T *)_tail->_pred);
+}
+
+template <typename T>
+T *NewList<T>::getNthNode(uint32 nth) {
+	for (NewNode *node = _head->_succ; node->_succ; node = node->_succ) {
+		if (nth == 0)
+			return (T *)node;
+		nth--;
+	}
+
+	return nullptr;
+}
+
+template <typename T>
+uint32 NewList<T>::getNrOfNodes() {
+	uint32 i = 0;
+	for (NewNode *node = _head->_succ; node->_succ; node = node->_succ)
+		++i;
+
+	return i;
+}
+
+template <typename T>
+void NewList<T>::removeList() {
+	removeNode(nullptr);
+	// freeList();
+}
+
+template <typename T>
+T *NewList<T>::remTailNode() {
+	T *result = nullptr;
+	if (!_head->_succ) {
+		result = _tail;
+		_tail->_pred->remNode();
+	}
+
+	return result;
+}
+	
+template <typename T>
+void NewList<T>::removeNode(const char *name) {
+	T *node;
+	if (name) {
+		if ((node = getNode(name))) {
+			node->remNode();
+			delete node;
+		}
+	} else if (_head->_succ) {
+		while ((node = remTailNode()))
+			delete node;
+	}
+}
+
+template <typename T>
+T *NewList<T>::createNode(const char *name) {
+	T *node = new T;
+	node->_succ = nullptr;
+	node->_pred = nullptr;
+	node->_name = Common::String(name);
+
+	addTailNode(node);
+
+	return node;
+}
+
+template <typename T>
+T *NewList<T>::getNode(const char *name) {
+	for (T *node = _head->_succ; node->_succ; node = node->_succ) {
+		if (node->_name.equals(name))
+			return node;
+	}
+
+	return nullptr;
+}
+
+template <typename T>
+void NewList<T>::readList(const char *fileName) {
+	Common::Stream *fh = dskOpen(fileName, 0);
+	if (fh) {
+		char buffer[256];
+		while (dskGetLine(buffer, sizeof(buffer), fh)) {
+			if (buffer[0] != ';') // skip comments
+				createNode(buffer);
+		}
+
+		dskClose(fh);
+	}
+}
+
+Text::Text() {
+	_handle = nullptr;
+	_lastMark = nullptr;
+	_length = 0;
+}
+
+Text::~Text() {
+	if (_handle)
+		free(_handle);
+	if (_lastMark)
+		free(_lastMark);
+}
+
+	
+/* TextMgr */
 TextMgr::TextMgr(ClueEngine* vm, char lang) : _vm(vm) {
 	_txtBase = nullptr;
 	init(lang);
@@ -48,16 +196,13 @@ TextMgr::TextMgr(ClueEngine* vm, char lang) : _vm(vm) {
 
 TextMgr::~TextMgr() {
 	if (_txtBase) {
-		uint32 nr = GetNrOfNodes(_txtBase->_textList);
+		uint32 nr = _txtBase->getNrOfNodes();
 
 		for (uint32 i = 0; i < nr; i++)
 			unLoad(i);
-
-		RemoveList(_txtBase->_textList);
-		TCFreeMem(_txtBase, sizeof(*_txtBase));
 	}
 }
-	
+
 /* private functions */
 char *TextMgr::getLine(Text *txt, uint8 lineNr) {
 	char *line = nullptr;
@@ -67,17 +212,17 @@ char *TextMgr::getLine(Text *txt, uint8 lineNr) {
 
 		while (i < lineNr) {
 			if (*line == TXT_CHAR_EOF)
-				return NULL;
+				return nullptr;
 
 			if (i > 0 && (*line == TXT_CHAR_MARK))
-				return NULL;
+				return nullptr;
 
 			if (*line == TXT_CHAR_EOS) {
 				line++;     /* skip second EOS */
 				i++;
 
 				if (*line == TXT_CHAR_EOF)
-					return NULL;
+					return nullptr;
 
 				/* skip comments */
 				while (*(line + 1) == TXT_CHAR_REMARK) {
@@ -89,10 +234,8 @@ char *TextMgr::getLine(Text *txt, uint8 lineNr) {
 			line++;
 		}
 
-		if (*line == TXT_CHAR_EOF)
-			return NULL;
-		if (*line == TXT_CHAR_MARK)
-			return NULL;
+		if (*line == TXT_CHAR_EOF || *line == TXT_CHAR_MARK)
+			return nullptr;
 	}
 
 	return line;
@@ -100,33 +243,24 @@ char *TextMgr::getLine(Text *txt, uint8 lineNr) {
 
 /*  public functions - TEXT */
 void TextMgr::init(char lang) {
-	if ((_txtBase = (TextControl *)TCAllocMem(sizeof(TextControl), 0))) {
-		_txtBase->_textList = CreateList();
-		_txtBase->_language = lang;
+	_txtBase = new TextControl(lang);
 
-		char txtListPath[DSK_PATH_MAX];
-		dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, TXT_LIST, txtListPath);
-
-		if (ReadList(_txtBase->_textList, sizeof(Text), txtListPath)) {
-			uint32 nr = GetNrOfNodes(_txtBase->_textList);
-			for (uint32 i = 0; i < nr; i++)
-				load(i);
-		} else {
-			ErrorMsg(No_Mem, ERROR_MODULE_TXT, ERR_TXT_READING_LIST);
-		}
-	} else {
-		ErrorMsg(No_Mem, ERROR_MODULE_TXT, ERR_TXT_FAILED_BASE);
-	}
+	char txtListPath[DSK_PATH_MAX];
+	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, TXT_LIST, txtListPath);
+	_txtBase->readList(txtListPath);
+	uint32 nr = _txtBase->getNrOfNodes();
+	for (uint32 i = 0; i < nr; i++)
+		load(i);
 }
 
 void TextMgr::load(uint32 textId) {
-	Text *txt = (Text *)GetNthNode(_txtBase->_textList, textId);
+	Text *txt = _txtBase->getNthNode(textId);
 
 	if (txt) {
 		if (!txt->_handle) {
 			char txtPath[DSK_PATH_MAX];
 
-			Common::String txtFile = Common::String::format("%s%c%s", NODE_NAME(txt), _txtBase->_language, TXT_SUFFIX);
+			Common::String txtFile = txt->_name + Common::String::format("%c%s", _txtBase->_language, TXT_SUFFIX);
 			dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, txtFile.c_str(), txtPath);
 
 			size_t length = dskFileLength(txtPath);
@@ -167,21 +301,21 @@ void TextMgr::load(uint32 textId) {
 }
 
 void TextMgr::unLoad(uint32 textId) {
-	Text *txt = (Text *)GetNthNode(_txtBase->_textList, textId);
+	Text *txt = _txtBase->getNthNode(textId);
 
 	if (txt) {
 		if (txt->_handle) {
 			free(txt->_handle);
 		}
 
-		txt->_handle = NULL;
-		txt->_lastMark = NULL;
+		txt->_handle = nullptr;
+		txt->_lastMark = nullptr;
 		txt->_length = 0;
 	}
 }
 
 void TextMgr::prepare(uint32 textId) {
-	Text *txt = (Text *)GetNthNode(_txtBase->_textList, textId);
+	Text *txt = _txtBase->getNthNode(textId);
 
 	if (txt) {
 		memcpy(TXT_BUFFER_WORK, txt->_handle, txt->_length);
@@ -190,7 +324,7 @@ void TextMgr::prepare(uint32 textId) {
 }
 
 void TextMgr::reset(uint32 textId) {
-	Text *txt = (Text *)GetNthNode(_txtBase->_textList, textId);
+	Text *txt = _txtBase->getNthNode(textId);
 
 	if (txt)
 		txt->_lastMark = (char *)TXT_BUFFER_WORK;
@@ -242,7 +376,7 @@ uint32 TextMgr::getKeyAsUint32(uint16 keyNr, Common::String key) {
 List * TextMgr::goKey(uint32 textId, const char *key) {
 	List *txtList = nullptr;
 
-	Text *txt = (Text *)GetNthNode(_txtBase->_textList, textId);
+	Text *txt = _txtBase->getNthNode(textId);
 	if (txt) {
 		char *LastMark = nullptr;
 
@@ -329,7 +463,7 @@ List * TextMgr::goKeyAndInsert(uint32 textId, const char *key, ...) {
 
 bool TextMgr::keyExists(uint32 textId, const char *key) {
 	bool found = false;
-	Text *txt = (Text *)GetNthNode(_txtBase->_textList, textId);
+	Text *txt = _txtBase->getNthNode(textId);
 
 	if (txt && key) {
 		prepare(textId);

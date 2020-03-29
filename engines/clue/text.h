@@ -60,18 +60,58 @@ namespace Clue {
 
 class ClueEngine;
 
-/* private structures */
-struct TextControl {
-	List *_textList;
-	char _language;
+class NewNode {
+public:
+	NewNode* _succ;
+	NewNode* _pred;
+	Common::String _name;
+
+	NewNode();
+	~NewNode();
+
+	void remNode();
 };
 
-struct Text {
-	Node txt_Link; // Unused? But required for alignment during casting?
+template <typename T>
+class NewList {
+public:
+	T *_head;
+	T *_tail;
 
-	char *_handle;
-	char *_lastMark;
+	NewList();
+	~NewList();
+
+	T *getNthNode(uint32 nth);
+	uint32 getNrOfNodes();
+	void removeList();
+	void removeNode(const char *name);
+	T *getNode(const char *name);
+	T *remTailNode();
+	void readList(const char *fileName);
+	void addNode(T *node, T *predNode);
+	void addTailNode(T *node);
+
+private:
+	T *createNode(const char *name);
+
+};
+
+/* private structures */
+class Text : public NewNode {
+public:
+	char* _handle;
+	char* _lastMark;
 	size_t _length;
+
+	Text();
+	~Text();
+};
+
+class TextControl : public NewList<Text> {
+public:
+	char _language;
+
+	TextControl(char lang) : _language(lang) {}
 };
 
 class TextMgr {
