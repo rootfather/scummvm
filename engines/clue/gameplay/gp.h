@@ -136,7 +136,7 @@ struct Bedingungen {
 };
 
 struct TCEventNode {
-	Node Node;
+	Node node;
 
 	uint32 EventNr;
 };
