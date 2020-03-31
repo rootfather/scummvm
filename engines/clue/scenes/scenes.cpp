@@ -18,6 +18,7 @@
   distribution.
  ****************************************************************************/
 #include "clue/scenes/scenes.h"
+#include "clue/gameplay/gp.h"
 #include "clue/clue.h"
 
 namespace Clue {
@@ -74,11 +75,11 @@ void RemTaxiLocation(uint32 locNr) {
  * Wait
  */
 
-uint32 Go(List *succ) {
+uint32 Go(NewList<NewTCEventNode> *succ) {
 	uint32 succ_eventnr;
 	inpTurnFunctionKey(0);
 
-	if (GetNrOfNodes(succ) > 1) {
+	if (succ->getNrOfNodes() > 1) {
 		uint32 prob = 0L;
 
 		ShowMenuBackground();
@@ -86,29 +87,26 @@ uint32 Go(List *succ) {
 		Common::String line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "Gehen");
 		PrintStatus(line);
 
-		for (TCEventNode *node = (TCEventNode *) LIST_HEAD(succ); NODE_SUCC(node);
-		        node = (TCEventNode *) NODE_SUCC(node)) {
-			Scene *sc = GetScene(node->EventNr);
-			Node *location = (Node *)GetNthNode(film->loc_names, sc->LocationNr);
+		for (NewTCEventNode *node = succ->getListHead(); node->_succ; node = (NewTCEventNode *) node->_succ) {
+			Scene *sc = GetScene(node->_eventNr);
+			NewTCEventNode *location = film->loc_names->getNthNode(sc->LocationNr);
 
-			NODE_NAME(node) = NODE_NAME(location);
-
+			node->_name = location->_name;
 			prob++;
 		}
 
 		prob = (1 << prob) - 1;
 		prob = Menu(succ, prob, 0, nullptr, 0L);
 
-		succ_eventnr = ((TCEventNode *) GetNthNode(succ, prob))->EventNr;
+		succ_eventnr = succ->getNthNode(prob)->_eventNr;
 
 		/* jetzt die Zuweisung wieder entfernen, damit der Name */
 		/* nicht 2 mal freigegeben wird */
 
-		for (TCEventNode *node = (TCEventNode *) LIST_HEAD(succ); NODE_SUCC(node);
-		        node = (TCEventNode *) NODE_SUCC(node))
-			NODE_NAME(node) = NULL;
+		for (NewTCEventNode *node = succ->getListHead(); node->_succ; node = (NewTCEventNode *) node->_succ)
+			node->_name = "";
 	} else {
-		succ_eventnr = ((TCEventNode *) GetNthNode(succ, 0L))->EventNr;
+		succ_eventnr = succ->getNthNode(0)->_eventNr;
 	}
 
 	inpTurnFunctionKey(1);
@@ -260,8 +258,7 @@ void Look(uint32 locNr) {
 
 		switch (choice) {
 		case 0: {
-			List *bubble = g_clue->_txtMgr->goKey(HOUSEDESC_TXT,
-			                  NODE_NAME(GetNthNode(film->loc_names, (locNr))));
+			List *bubble = g_clue->_txtMgr->goKey(HOUSEDESC_TXT, film->loc_names->getNthNode(locNr)->_name.c_str());
 
 			SetBubbleType(THINK_BUBBLE);
 			choice1 = Bubble(bubble, 0, 0L, 0L);

@@ -46,7 +46,7 @@ uint16 MenuCoords[TXT_MAX_MENU_COLUMNS];
 void (*MenuTimeOutFunc)();
 
 /* refresh */
-List *refreshMenu = NULL;
+NewList<NewTCEventNode> *refreshMenu = nullptr;
 byte refreshActiv = 0;
 uint32 refreshPoss = 0;
 

@@ -65,14 +65,19 @@ void CloseStory() {
 	uint32 i;
 
 	if (film) {
-		if (film->loc_names)
-			RemoveList(film->loc_names);
+		if (film->loc_names) {
+			film->loc_names->removeList();
+			delete film->loc_names;
+			film->loc_names = nullptr;
+		}
 
 		for (i = 0; i < film->AmountOfScenes; i++) {
 			if (film->gameplay[i].bed)
 				FreeConditions(&film->gameplay[i]);
-			if (film->gameplay[i].std_succ)
-				RemoveList(film->gameplay[i].std_succ);
+			if (film->gameplay[i].std_succ) {
+				delete film->gameplay[i].std_succ;
+				film->gameplay[i].std_succ = nullptr;
+			}
 		}
 
 		if (film->gameplay)
@@ -90,25 +95,22 @@ void SetEnabledChoices(uint32 ChoiceMask) {
 }
 
 void RefreshCurrScene() {
-	Node *node = (Node *)GetNthNode(film->loc_names, GetLocation);
+	NewNode *node = film->loc_names->getNthNode(GetLocation);
 
 	tcRefreshLocationInTitle(GetLocation);
-	PlayAnim(NODE_NAME(node), 30000,
+	PlayAnim(node->_name.c_str(), 30000,
 	         GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
 
 	RefreshMenu();
 }
 
 void InitLocations() {
-	List *l = CreateList();
+	NewList<NewTCEventNode> *l = new NewList<NewTCEventNode>;
 	char pathname[DSK_PATH_MAX];
 
 	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, LOCATIONS_TXT, pathname);
-
-	if (ReadList(l, sizeof(TCEventNode), pathname))
-		film->loc_names = (List *) l;
-	else
-		ErrorMsg(Disk_Defect, ERROR_MODULE_GAMEPLAY, 1);
+	l->readList(pathname);
+	film->loc_names = l;
 }
 
 void PatchStory() {
@@ -134,13 +136,13 @@ void PatchStory() {
 		/* change possibilites in story_9 too! */
 
 		/* für die Kaserne hier einen Successor eingetragen! */
-		GetLocScene(65)->std_succ = CreateList();
-		TCEventNode *node = (TCEventNode *) CreateNode(GetLocScene(65)->std_succ, sizeof(*node), NULL);
-		node->EventNr = SCENE_KASERNE_OUTSIDE;  /* wurscht... */
+		GetLocScene(65)->std_succ = new NewList<NewTCEventNode>;
+		NewTCEventNode *node = GetLocScene(65)->std_succ->createNode(nullptr);
+		node->_eventNr = SCENE_KASERNE_OUTSIDE;  /* wurscht... */
 
-		GetLocScene(66)->std_succ = CreateList();
-		node = (TCEventNode *) CreateNode(GetLocScene(66)->std_succ, sizeof(*node), NULL);
-		node->EventNr = SCENE_KASERNE_INSIDE;   /* wurscht... */
+		GetLocScene(66)->std_succ = new NewList<NewTCEventNode>;
+		node = GetLocScene(66)->std_succ->createNode(nullptr);
+		node->_eventNr = SCENE_KASERNE_INSIDE;   /* wurscht... */
 
 		film->StartScene = SCENE_STATION;
 	}
@@ -334,8 +336,8 @@ int32 CheckConditions(Scene *scene) {
 	 */
 
 	if (bed->n_events) {
-		for (Node *node = LIST_HEAD(bed->n_events); NODE_SUCC(node); node = NODE_SUCC(node)) {
-			if (GetEventCount(((TCEventNode *) node)->EventNr))
+		for (NewTCEventNode *node = bed->n_events->getListHead(); node->_succ; node = (NewTCEventNode *)node->_succ) {
+			if (GetEventCount(node->_eventNr))
 				return (0L);
 		}
 	}
@@ -346,9 +348,9 @@ int32 CheckConditions(Scene *scene) {
 	 */
 
 	if (bed->events) {
-		for (Node *node = LIST_HEAD(bed->events); NODE_SUCC(node); node = NODE_SUCC(node)) {
-			if (!GetEventCount(((TCEventNode *) node)->EventNr))
-				return (0L);
+		for (NewTCEventNode *node = bed->events->getListHead(); node->_succ; node = (NewTCEventNode *)node->_succ) {
+			if (!GetEventCount(node->_eventNr))
+				return 0L;
 		}
 	}
 
@@ -422,11 +424,11 @@ void PrepareStory(const char *filename) {
 		/* Achtung! auch Patch ändern! */
 
 		if (NS.AnzahlderNachfolger) {
-			scene->std_succ = CreateList();
+			scene->std_succ = new NewList<NewTCEventNode>;
 
 			for (uint32 j = 0; j < NS.AnzahlderNachfolger; j++) {
-				TCEventNode *node = (TCEventNode *) CreateNode(scene->std_succ, sizeof(*node), NULL);
-				node->EventNr = NS.nachfolger[j];
+				NewTCEventNode *node = scene->std_succ->createNode(nullptr);
+				node->_eventNr = NS.nachfolger[j];
 			}
 
 			if (NS.nachfolger)
@@ -445,12 +447,11 @@ void InitConditions(Scene *scene, NewScene *ns) {
 	bed->Ort = ns->Ort;
 
 	if (ns->AnzahlderEvents) {
-		bed->events = CreateList();
+		bed->events = new NewList<NewTCEventNode>;
 
 		for (uint32 i = 0; i < ns->AnzahlderEvents; i++) {
-			TCEventNode *node = (TCEventNode *) CreateNode(bed->events, sizeof(*node), NULL);
-
-			node->EventNr = ns->events[i];
+			NewTCEventNode *node = bed->events->createNode(nullptr);
+			node->_eventNr = ns->events[i];
 		}
 
 		if (ns->events)
@@ -459,11 +460,11 @@ void InitConditions(Scene *scene, NewScene *ns) {
 		bed->events = NULL;
 
 	if (ns->AnzahlderN_Events) {
-		bed->n_events = CreateList();
+		bed->n_events = new NewList<NewTCEventNode>;
 
 		for (uint32 i = 0; i < ns->AnzahlderN_Events; i++) {
-			TCEventNode *node = (TCEventNode *) CreateNode(bed->n_events, sizeof(*node), NULL);
-			node->EventNr = ns->n_events[i];
+			NewTCEventNode *node = bed->n_events->createNode(nullptr);
+			node->_eventNr = ns->n_events[i];
 		}
 
 		if (ns->n_events)
@@ -476,14 +477,21 @@ void InitConditions(Scene *scene, NewScene *ns) {
 
 void FreeConditions(Scene *scene) {
 	if (scene->bed) {
-		if (scene->bed->events)
-			RemoveList(scene->bed->events);
-		if (scene->bed->n_events)
-			RemoveList(scene->bed->n_events);
+		if (scene->bed->events) {
+			scene->bed->events->removeList();
+			delete scene->bed->events;
+			scene->bed->events = nullptr;
+		}
+
+		if (scene->bed->n_events) {
+			scene->bed->n_events->removeList();
+			delete scene->bed->n_events;
+			scene->bed->n_events = nullptr;
+		}
 
 		TCFreeMem(scene->bed, sizeof(Bedingungen));
 
-		scene->bed = NULL;
+		scene->bed = nullptr;
 	}
 }
 
@@ -651,9 +659,9 @@ char *BuildDate(uint32 days, char *date) {
 	return (date);
 }
 
-char *GetCurrLocName() {
+Common::String GetCurrLocName() {
 	uint32 index = GetCurrentScene()->LocationNr;
-	return (NODE_NAME(GetNthNode(film->loc_names, index)));
+	return film->loc_names->getNthNode(index)->_name;
 }
 
 #if 0

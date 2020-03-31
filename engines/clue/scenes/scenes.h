@@ -21,18 +21,18 @@
 #ifndef MODULE_SCENES
 #define MODULE_SCENES
 
+#include "clue/text.h"
 #include "clue/present/present.h"
+#include "clue/gameplay/gp.h"
 #include "clue/gameplay/gp_app.h"
 #include "clue/landscap/raster.h"
-
 
 namespace Clue {
 
 extern uint16 CurrentBackground;
 
-/* standard scene functions - look at scenes.c */
-
-extern uint32 Go(List *succ);
+/* standard scene functions - look at scenes.c */	
+extern uint32 Go(NewList<NewTCEventNode> *succ);
 extern uint32 tcTelefon();
 
 extern void Look(uint32 locNr);

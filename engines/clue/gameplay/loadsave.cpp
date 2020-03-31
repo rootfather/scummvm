@@ -47,7 +47,7 @@ void tcSaveTheClou() {
 
 		if (activ != GET_OUT) {
 			char location[TXT_KEY_LENGTH];
-			strcpy(location, GetCurrLocName());
+			strcpy(location, GetCurrLocName().c_str());
 			char date[TXT_KEY_LENGTH];
 			BuildDate(GetDay, date);
 

@@ -40,6 +40,8 @@ namespace Clue {
 extern bool ChoiceOk(byte choice, byte exit, List *l);
 
 extern byte Bubble(List *bubble, byte activ, void (*func)(byte), uint32 waitTime);
+
+extern byte Menu(NewList<NewTCEventNode>* menu, uint32 possibility, byte activ, void (*func)(byte), uint32 waitTime);
 extern byte Menu(List *menu, uint32 possibility, byte activ, void (*func)(byte), uint32 waitTime);
 
 extern void RefreshMenu();

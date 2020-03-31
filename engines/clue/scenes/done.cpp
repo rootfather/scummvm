@@ -34,7 +34,7 @@ void DoneTaxi() {
 		uint32 locNr = loc->LocationNr;
 
 		char name[TXT_KEY_LENGTH];
-		sprintf(name, "*%s", NODE_NAME(GetNthNode(film->loc_names, locNr)));
+		sprintf(name, "*%s", film->loc_names->getNthNode(locNr)->_name.c_str());
 
 		ObjectNode *newNode = (ObjectNode *) CreateNode(locs, sizeof(ObjectNode), name);
 		newNode->nr = locNr + 1;    /* because of ChoiceOk */
@@ -45,7 +45,7 @@ void DoneTaxi() {
 	Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
 	ExpandObjectList(locs, exp);
 
-	byte j = Bubble(locs, i, 0L, 0L);
+	byte j = Bubble(locs, i, nullptr, 0L);
 	if (ChoiceOk(j, GET_OUT, locs)) {
 		i = j;
 
@@ -119,7 +119,7 @@ void DoneInsideHouse() {
 				break;
 			case GO:
 				if (!(areaID = tcGoInsideOfHouse(buildingID)))
-					_sceneArgs._returnValue = ((TCEventNode *) LIST_HEAD(GetCurrentScene()-> std_succ))->EventNr;
+					_sceneArgs._returnValue = GetCurrentScene()->std_succ->getListHead()->_eventNr;
 				else {
 					lsSetRelations(areaID);
 

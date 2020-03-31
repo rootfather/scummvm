@@ -24,6 +24,7 @@
 
 #include "clue/base/base.h"
 #include "clue/story/story.h"
+#include "clue/text.h"
 
 namespace Clue {
 
@@ -84,7 +85,7 @@ struct Film {
 	struct Scene *act_scene;
 	struct Scene *gameplay;
 
-	List *loc_names;        /* Liste aller Orte im Spiel */
+	NewList<NewTCEventNode> *loc_names;        /* Liste aller Orte im Spiel */
 	/* OrtNr = Nr der Node in der */
 	/* Liste */
 	uint32 StartScene;
@@ -115,7 +116,7 @@ struct Scene {
 
 	struct Bedingungen *bed;    /* damit das Ereignis eintritt */
 
-	List *std_succ;     /* Standardnachfolger TCEventNode */
+	NewList<NewTCEventNode> *std_succ;     /* Standardnachfolger TCEventNode */
 
 	uint32 Moeglichkeiten;      /* siehe defines oben                   */
 	uint32 Dauer;           /* Dauer dieser Szene in Sekunden       */
@@ -131,14 +132,8 @@ struct Scene {
 struct Bedingungen {
 	uint32 Ort;         /* der erfüllt sein muß */
 
-	List *events;       /* welche Events schon geschehen sein muessen */
-	List *n_events;     /* Events, die nicht geschehen sein dürfen */
-};
-
-struct TCEventNode {
-	Node node;
-
-	uint32 EventNr;
+	NewList<NewTCEventNode> *events;       /* welche Events schon geschehen sein muessen */
+	NewList<NewTCEventNode> *n_events;     /* Events, die nicht geschehen sein dürfen */
 };
 
 /* global functions */
@@ -156,7 +151,7 @@ extern void StdInit();
 extern void RefreshCurrScene();
 extern void SetCurrentScene(Scene *scene);
 
-extern char *GetCurrLocName();
+extern Common::String GetCurrLocName();
 
 char *BuildDate(uint32 days, char *date);
 Common::String BuildTime(uint32 min);

@@ -58,6 +58,49 @@ bool ChoiceOk(byte choice, byte exit, List *l) {
 	return true;
 }
 
+static void DrawMenu(NewList<NewTCEventNode>* menu, byte nr, int32 mode) {
+	if (mode == ACTIV_POSS)
+		gfxSetPens(m_gc, 249, GFX_SAME_PEN, GFX_SAME_PEN);
+	else
+		gfxSetPens(m_gc, 248, GFX_SAME_PEN, GFX_SAME_PEN);
+
+	const char* m1 = nullptr;
+	const char* m2 = nullptr;
+
+	int32 x = 8;
+	int32 lastx = 0;
+	byte i;
+
+	for (i = 0; i <= nr; i += 2) {
+		m1 = menu->getNthNode(i)->_name.c_str();
+
+		if (i + 1 <= nr)
+			m2 = menu->getNthNode(i + 1)->_name.c_str();
+		else
+			m2 = nullptr;
+
+		if (m2) {
+			if (strlen(m1) > strlen(m2)) {
+				lastx = gfxTextWidth(m_gc, m1, strlen(m1));
+				x += lastx;
+			}
+			else {
+				lastx = gfxTextWidth(m_gc, m2, strlen(m2));
+				x += lastx;
+			}
+		}
+		else {
+			lastx = gfxTextWidth(m_gc, m1, strlen(m1));
+			x += lastx;
+		}
+	}
+
+	if (nr == i - 2)
+		gfxPrintExact(m_gc, m1, x + 8 * nr - lastx, TXT_1ST_MENU_LINE_Y);
+	else if (m2)
+		gfxPrintExact(m_gc, m2, x + 8 * (nr - 1) - lastx, TXT_2ND_MENU_LINE_Y);
+}
+
 static void DrawMenu(List *menu, byte nr, int32 mode) {
 	if (mode == ACTIV_POSS)
 		gfxSetPens(m_gc, 249, GFX_SAME_PEN, GFX_SAME_PEN);
@@ -144,7 +187,7 @@ static char SearchMouseActiv(uint32 possibility, byte max) {
 
 void RefreshMenu() {
 	if (refreshMenu) {
-		byte max = GetNrOfNodes(refreshMenu);
+		byte max = refreshMenu->getNrOfNodes();
 
 		for (byte i = 0; i < max; i++) {
 			if (refreshPoss & (1L << i))
@@ -153,6 +196,150 @@ void RefreshMenu() {
 
 		DrawMenu(refreshMenu, refreshActiv, ACTIV_POSS);
 	}
+}
+
+byte Menu(NewList<NewTCEventNode> *menu, uint32 possibility, byte activ, void (*func)(byte), uint32 waitTime) {
+	if (menu && !menu->isEmpty()) {
+		if (!possibility)
+			return 0;
+
+
+		uint16 x = 8;
+		NewNode* n;
+		byte max;
+
+		for (max = 0, n = menu->getListHead(); n->_succ; n = n->_succ, max++) {
+			if ((max % 2) == 0) {
+				MenuCoords[max / 2] = x - 8;
+
+				uint16 l1 = gfxTextWidth(m_gc, n->_name.c_str(), n->_name.size());
+				uint16 l2 = 0;
+
+				if (n->_succ->_succ)
+					l2 = gfxTextWidth(m_gc, n->_succ->_name.c_str(), n->_succ->_name.size());
+
+				x += MAX(l1, l2) + 16;
+			}
+		}
+
+		for (byte i = 0; i < max; i++) {
+			if (possibility & (1L << i))
+				DrawMenu(menu, i, INACTIV_POSS);
+		}
+
+		DrawMenu(menu, activ, ACTIV_POSS);
+
+		if (func)
+			func(activ);
+
+		if (waitTime)
+			inpSetWaitTicks(waitTime);
+
+		bool ende = false;
+		while (!ende) {
+			int32 action = INP_LEFT | INP_RIGHT | INP_UP | INP_DOWN | INP_LBUTTONP;
+
+			if (waitTime)
+				action |= INP_TIME;
+
+			action = inpWaitFor(action);
+
+			if (action & INP_TIME) {
+				refreshMenu = nullptr;
+
+				if (MenuTimeOutFunc)
+					MenuTimeOutFunc();
+				else
+					return (byte)TXT_MENU_TIMEOUT;
+			}
+
+			if (action & INP_FUNCTION_KEY) {
+				refreshMenu = menu;
+				refreshPoss = possibility;
+				refreshActiv = activ;
+				return ((byte)-1);
+			}
+
+			if ((action & INP_ESC) || (action & INP_RBUTTONP))
+				return GET_OUT;
+
+			if (action & INP_LBUTTONP)
+				ende = true;
+
+			if (action & INP_MOUSE) {   /* MOD : 14.12.93 hg */
+				char nextActiv = SearchMouseActiv(possibility, max);
+				if (nextActiv != ((char)-1)) {
+					if (nextActiv != activ) {
+						DrawMenu(menu, activ, INACTIV_POSS);
+						activ = nextActiv;
+						DrawMenu(menu, activ, ACTIV_POSS);
+
+						if (func)
+							func(activ);
+					}
+				}
+			}
+			else {
+				if ((action & INP_UP) && (activ & 1)) {
+					char nextActiv = SearchActiv(-1, activ, possibility, max);
+					if (nextActiv != (char)-1) {
+						if (!(nextActiv & 1)) {
+							DrawMenu(menu, activ, INACTIV_POSS);
+							activ = nextActiv;
+							DrawMenu(menu, activ, ACTIV_POSS);
+
+							if (func)
+								func(activ);
+						}
+					}
+				}
+
+				if ((action & INP_DOWN) && !(activ & 1)) {
+					char nextActiv = SearchActiv(+1, activ, possibility, max);
+					if (nextActiv != (char)-1) {
+						if (nextActiv & 1) {
+							DrawMenu(menu, activ, INACTIV_POSS);
+							activ = nextActiv;
+							DrawMenu(menu, activ, ACTIV_POSS);
+
+							if (func)
+								func(activ);
+						}
+					}
+				}
+
+				if (action & INP_LEFT) {
+					char nextActiv = SearchActiv(-2, activ, possibility, max);
+					if (nextActiv != (char)-1) {
+						DrawMenu(menu, activ, INACTIV_POSS);
+						activ = nextActiv;
+						DrawMenu(menu, activ, ACTIV_POSS);
+
+						if (func)
+							func(activ);
+					}
+				}
+
+				if (action & INP_RIGHT) {
+					char nextActiv = SearchActiv(+2, activ, possibility, max);
+					if (nextActiv != (char)-1) {
+						DrawMenu(menu, activ, INACTIV_POSS);
+						activ = nextActiv;
+						DrawMenu(menu, activ, ACTIV_POSS);
+
+						if (func)
+							func(activ);
+					}
+				}
+			}
+		}
+
+		refreshMenu = nullptr;
+		return activ;
+	}
+
+	refreshMenu = nullptr;
+	return activ;
 }
 
 byte Menu(List *menu, uint32 possibility, byte activ, void (*func)(byte), uint32 waitTime) {
@@ -214,7 +401,7 @@ byte Menu(List *menu, uint32 possibility, byte activ, void (*func)(byte), uint32
 			}
 
 			if (action & INP_FUNCTION_KEY) {
-				refreshMenu = menu;
+				refreshMenu = (NewList<NewTCEventNode> *)menu; // HACK! Remove as soon as possible
 				refreshPoss = possibility;
 				refreshActiv = activ;
 				return ((byte) - 1);

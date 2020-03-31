@@ -28,12 +28,16 @@
 *	Copright (c) 2005-2017 Vasco Alexandre da Silva Costa
 */
 
-#ifndef MODULE_TEXT
-#define MODULE_TEXT
+#ifndef CLUE_TEXT_H
+#define CLUE_TEXT_H
 
 /* includes */
 #include "clue/list/list.h"
+#include "common/util.h"
 #include "common/str.h"
+
+#include "clue/error/error.h"
+#include "clue/clue.h"
 
 namespace Clue {
 /* private defines */
@@ -72,6 +76,14 @@ public:
 	void remNode();
 };
 
+class NewTCEventNode : public NewNode {
+public:
+	uint32 _eventNr;
+
+	NewTCEventNode() { _eventNr = 0; };
+	~NewTCEventNode() {}
+};
+
 template <typename T>
 class NewList {
 public:
@@ -91,9 +103,10 @@ public:
 	void addNode(T *node, T *predNode);
 	void addTailNode(T *node);
 
-private:
 	T *createNode(const char *name);
 
+	T* getListHead() { return (T *)_head->_succ; }
+	bool isEmpty() { return getListHead()->_succ == nullptr; }
 };
 
 /* private structures */
@@ -151,7 +164,128 @@ public:
 	Common::String getFirstLine(uint32 textId, const char *key);
 	void putCharacter(List *list, uint16 pos, uint8 c);
 };
-	
+
+// Template code
+
+template <typename T>
+NewList < T > ::NewList() {
+	_head = new T;
+	_tail = new T;
+	_head->_succ = _tail;
+	_tail->_pred = _head;
+}
+
+template <typename T>
+NewList<T>::~NewList() {
+	delete _head;
+	delete _tail;
+}
+
+template <typename T>
+void NewList<T>::addNode(T* node, T* predNode) {
+	if (!predNode)
+		predNode = _head;
+
+	node->_succ = predNode->_succ;
+	node->_pred = predNode;
+
+	predNode->_succ->_pred = node;
+	predNode->_succ = node;
+}
+
+template <typename T>
+void NewList<T>::addTailNode(T* node) {
+	addNode(node, (T*)_tail->_pred);
+}
+
+template <typename T>
+T* NewList<T>::getNthNode(uint32 nth) {
+	for (NewNode* node = _head->_succ; node->_succ; node = node->_succ) {
+		if (nth == 0)
+			return (T*)node;
+		nth--;
+	}
+
+	return nullptr;
+}
+
+template <typename T>
+uint32 NewList<T>::getNrOfNodes() {
+	uint32 i = 0;
+	for (NewNode* node = _head->_succ; node->_succ; node = node->_succ)
+		++i;
+
+	return i;
+}
+
+template <typename T>
+void NewList<T>::removeList() {
+	removeNode(nullptr);
+	// freeList();
+}
+
+template <typename T>
+T* NewList<T>::remTailNode() {
+	T* result = nullptr;
+	if (!_head->_succ) {
+		result = _tail;
+		_tail->_pred->remNode();
+	}
+
+	return result;
+}
+
+template <typename T>
+void NewList<T>::removeNode(const char* name) {
+	T* node;
+	if (name) {
+		if ((node = getNode(name))) {
+			node->remNode();
+			delete node;
+		}
+	}
+	else if (_head->_succ) {
+		while ((node = remTailNode()))
+			delete node;
+	}
+}
+
+template <typename T>
+T* NewList<T>::createNode(const char* name) {
+	T* node = new T;
+	node->_succ = nullptr;
+	node->_pred = nullptr;
+	node->_name = Common::String(name);
+
+	addTailNode(node);
+
+	return node;
+}
+
+template <typename T>
+T* NewList<T>::getNode(const char* name) {
+	for (T* node = (T *)_head->_succ; node->_succ; node = (T *)node->_succ) {
+		if (node->_name.equals(name))
+			return node;
+	}
+
+	return nullptr;
+}
+
+template <typename T>
+void NewList<T>::readList(const char* fileName) {
+	Common::Stream* fh = dskOpen(fileName, 0);
+	if (fh) {
+		char buffer[256];
+		while (dskGetLine(buffer, sizeof(buffer), fh)) {
+			if (buffer[0] != ';') // skip comments
+				createNode(buffer);
+		}
+
+		dskClose(fh);
+	}
+}
+
 } // End of namespace Clue
 
 #endif

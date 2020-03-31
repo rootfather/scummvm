@@ -49,14 +49,14 @@ void tcAsDaysGoBy(uint32 day, uint32 stepSize) {
 }
 
 void tcMattGoesTo(uint32 locNr) {
-	Node *node = (Node *)GetNthNode(film->loc_names, locNr);
+	NewTCEventNode *node = film->loc_names->getNthNode(locNr);
 
 	SetLocation(locNr);
 	tcRefreshLocationInTitle(locNr);
 	ShowTime(0);
 
 	gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
-	PlayAnim(NODE_NAME(node), (int16) 30000,
+	PlayAnim(node->_name.c_str(), (int16) 30000,
 	         GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
 }
 
@@ -162,9 +162,9 @@ void tcRefreshLocationInTitle(uint32 locNr) {
 
 	char date[TXT_KEY_LENGTH];
 	BuildDate(GetDay, date);
-	Node *node = (Node *)GetNthNode(film->loc_names, locNr);
+	NewTCEventNode *node = film->loc_names->getNthNode(locNr);
 
-	Common::String line = Common::String::format("%s %s", NODE_NAME(node), date);
+	Common::String line = node->_name + " " + date;
 	ShowMenuBackground();
 	PrintStatus(line);
 }
@@ -178,10 +178,10 @@ void StdInit() {
 
 	tcRefreshLocationInTitle(sc->LocationNr);
 
-	Node *node = (Node *)GetNthNode(film->loc_names, sc->LocationNr);
+	NewTCEventNode *node = film->loc_names->getNthNode(sc->LocationNr);
 
-	if (((RefreshMode) || (!sameLocation)))
-		PlayAnim(NODE_NAME(node), (int16) 30000, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
+	if (RefreshMode || !sameLocation)
+		PlayAnim(node->_name.c_str(), (int16) 30000, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
 
 	ShowTime(0);        /* Zeit sollte nach der Anim gezeigt werden, sonst Probleme mit Diskversion */
 
@@ -328,18 +328,18 @@ void ShowTime(uint32 delay) {
 }
 
 uint32 StdHandle(uint32 choice) {
-	uint32 succ_eventnr = 0, locNr, objNr;
+	uint32 succ_eventnr = 0;
 	struct Scene *scene = GetCurrentScene();
 
-	switch ((uint32)(choice)) {
+	switch (choice) {
 	case GO:
 		succ_eventnr = Go(scene->std_succ);
 
 		if (succ_eventnr) {
-			locNr = GetScene(succ_eventnr)->LocationNr;
+			uint32 locNr = GetScene(succ_eventnr)->LocationNr;
 
 			if (locNr != (uint32) - 1) {
-				objNr = GetObjNrOfLocation(locNr);
+				uint32 objNr = GetObjNrOfLocation(locNr);
 
 				if (objNr) {
 					Location loc = (Location)dbGetObject(objNr);
@@ -372,9 +372,7 @@ uint32 StdHandle(uint32 choice) {
 		ShowTime(0);
 		break;
 	case INVESTIGATE:
-		Investigate(NODE_NAME
-		            (GetNthNode
-		             (film->loc_names, GetCurrentScene()->LocationNr)));
+		Investigate(film->loc_names->getNthNode(GetCurrentScene()->LocationNr)->_name.c_str());
 		ShowTime(0);
 		break;
 	case MAKE_CALL:
