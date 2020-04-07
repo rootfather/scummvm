@@ -150,7 +150,7 @@ void lsInitObjects() {
 
 	/* alle Relationen erzeugen */
 	consistsOfAll(ls->ul_BuildingID, OLF_PRIVATE_LIST, Object_LSArea);
-	List *areas = ObjectListPrivate;
+	NewList<NewObjectNode> *areas = ObjectListPrivate;
 
 	/* jetzt alle Stockwerke durchgehen! */
 	for (uint32 i = 0; i < 3; i++) {
@@ -158,28 +158,28 @@ void lsInitObjects() {
 		ls->p_ObjectRetrievalLists[i] = NULL;
 	}
 
-	Node *n;
-	for (n = LIST_HEAD(areas); NODE_SUCC(n); n = NODE_SUCC(n)) {
-		lsInitRelations(OL_NR(n));
+	NewObjectNode* n;
+	for (n = areas->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
+		lsInitRelations(n->_nr);
 
 		/* Daten laden */
-		lsInitObjectDB(ls->ul_BuildingID, OL_NR(n));
+		lsInitObjectDB(ls->ul_BuildingID, n->_nr);
 
-		lsSetRelations(OL_NR(n));
-		lsRefreshObjectList(OL_NR(n));  /* ObjectRetrievalList erstellen */
+		lsSetRelations(n->_nr);
+		lsRefreshObjectList(n->_nr);  /* ObjectRetrievalList erstellen */
 
 		/* there's a lot to be patched! */
 		lsPatchObjects();
 
 		ls->p_ObjectRetrievalLists[areaCount] = ls->p_ObjectRetrieval;  /* und merken */
-		ls->ul_ObjectRetrievalAreaId[areaCount] = OL_NR(n);
+		ls->ul_ObjectRetrievalAreaId[areaCount] = n->_nr;
 
 		areaCount++;
 	}
 
-	lsLoadGlobalData(ls->ul_BuildingID, OL_NR(NODE_PRED(n)));
+	lsLoadGlobalData(ls->ul_BuildingID, ((NewObjectNode *)n->_pred)->_nr);
 
-	RemoveList(areas);
+	areas->removeList();
 }
 
 void lsLoadGlobalData(uint32 bld, uint32 ul_AreaId) {
@@ -224,16 +224,16 @@ static void lsInitFloorSquares() {
 	uint32 count = LS_FLOORS_PER_LINE * LS_FLOORS_PER_COLUMN;
 
 	consistsOfAll(ls->ul_BuildingID, OLF_PRIVATE_LIST, Object_LSArea);
-	List *areas = ObjectListPrivate;
+	NewList<NewObjectNode>* areas = ObjectListPrivate;
 
 	/* jetzt alle Stockwerke durchgehen! */
-	Node *n;
+	NewObjectNode *n;
 	int i;
-	for (n = LIST_HEAD(areas), i = 0; NODE_SUCC(n); n = NODE_SUCC(n), i++) {
+	for (n = areas->getListHead(), i = 0; n->_succ; n = (NewObjectNode *)n->_succ, i++) {
 		size_t size = sizeof(struct LSFloorSquare) * count;
 
 		ls->p_AllFloors[i] = (LSFloorSquare *)TCAllocMem(size, 0);
-		ls->ul_FloorAreaId[i] = OL_NR(n);
+		ls->ul_FloorAreaId[i] = n->_nr;
 
 		Common::String areaName = dbGetObjectName(ls->ul_FloorAreaId[i]);
 		areaName += FLOOR_DATA_EXTENSION;
@@ -250,22 +250,21 @@ static void lsInitFloorSquares() {
 		}
 	}
 
-	RemoveList(areas);
+	areas->removeList();
 }
 
 static void lsLoadAllSpots() {
 	consistsOfAll(ls->ul_BuildingID, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME, Object_LSArea);
-	List *areas = ObjectListPrivate;
-
-	Node *n = LIST_HEAD(areas);
+	NewList<NewObjectNode> *areas = ObjectListPrivate;
+	NewObjectNode *n = areas->getListHead();
 
 	char fileName[TXT_KEY_LENGTH];
-	strcpy(fileName, NODE_NAME(n));
+	strcpy(fileName, n->_name.c_str());
 	fileName[strlen(fileName) - 1] = '\0';
 	strcat(fileName, SPOT_DATA_EXTENSION);
 	lsLoadSpots(ls->ul_BuildingID, fileName);
 
-	RemoveList(areas);
+	areas->removeList();
 }
 
 static void lsSetCurrFloorSquares(uint32 areaId) {
@@ -311,20 +310,20 @@ void lsDoneObjectDB(uint32 areaID) {
 void lsDoneLandScape() {
 	if (ls) {
 		consistsOfAll(ls->ul_BuildingID, OLF_PRIVATE_LIST, Object_LSArea);
-		List* areas = ObjectListPrivate;
+		NewList<NewObjectNode> *areas = ObjectListPrivate;
 
 		int32 areaCount = 0;
-		for (Node *n = LIST_HEAD(areas); NODE_SUCC(n); n = NODE_SUCC(n), areaCount++) {
-			lsDoneObjectDB(OL_NR(n));
+		for (NewObjectNode *n = areas->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ, areaCount++) {
+			lsDoneObjectDB(n->_nr);
 
 			if (ls->p_ObjectRetrievalLists[areaCount]) {
-				RemoveList(ls->p_ObjectRetrievalLists[areaCount]);
-				ls->p_ObjectRetrievalLists[areaCount] = NULL;
+				ls->p_ObjectRetrievalLists[areaCount]->removeList();
+				ls->p_ObjectRetrievalLists[areaCount] = nullptr;
 				ls->ul_ObjectRetrievalAreaId[areaCount] = 0;
 			}
 		}
 
-		RemoveList(areas);
+		areas->removeList();
 
 		lsDoneActivArea(0L);
 

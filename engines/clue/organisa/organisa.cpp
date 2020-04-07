@@ -70,13 +70,13 @@ void tcResetOrganisation() {
 
 static void tcOrganisationSetBuilding() {
 	hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Building);
-	Organisation.BuildingID = OL_NR(LIST_HEAD(ObjectList));
+	Organisation.BuildingID = ObjectList->getListHead()->_nr;
 }
 
 static void tcOrganisationSetCar() {
 	hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Car);
 
-	Organisation.CarID = OL_NR(LIST_HEAD(ObjectList));
+	Organisation.CarID = ObjectList->getListHead()->_nr;
 
 	Car car = (Car)dbGetObject(Organisation.CarID);
 
@@ -87,7 +87,7 @@ static byte tcMakeCarOk() {
 	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_INSERT_STAR,
 	             Object_Person);
 
-	if (GetNrOfNodes(ObjectList) > Organisation.PlacesInCar) {
+	if (ObjectList->getNrOfNodes() > Organisation.PlacesInCar) {
 		SetBubbleType(THINK_BUBBLE);
 		if (GET_OUT ==
 		        Say(BUSINESS_TXT, 0,
@@ -95,22 +95,18 @@ static byte tcMakeCarOk() {
 		            "PLAN_TO_MANY_GUYS"))
 			return 0;
 
-		while (GetNrOfNodes(ObjectList) > Organisation.PlacesInCar) {
-			byte choice;
-
+		while (ObjectList->getNrOfNodes() > Organisation.PlacesInCar) {
 			dbRemObjectNode(ObjectList, Person_Matt_Stuvysunt);
 
 			inpTurnESC(0);
 
-			choice = Bubble(ObjectList, 0, 0L, 0L);
+			byte choice = Bubble((NewList<NewNode> *)ObjectList, 0, 0L, 0L);
 			Organisation.GuyCount--;
-			joined_byUnSet(Person_Matt_Stuvysunt,
-			               OL_NR(GetNthNode(ObjectList, (uint32) choice)));
+			joined_byUnSet(Person_Matt_Stuvysunt, ObjectList->getNthNode((uint32) choice)->_nr);
 
 			inpTurnESC(1);
 
-			joined_byAll(Person_Matt_Stuvysunt,
-			             OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Person);
+			joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Person);
 		}
 	}
 
@@ -118,7 +114,7 @@ static byte tcMakeCarOk() {
 }
 
 uint32 tcOrganisation() {
-	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "ORGANISATION");
+	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "ORGANISATION");
 	byte activ = 0, ende = 0;
 
 	/* activate first or memorized building */
@@ -128,8 +124,8 @@ uint32 tcOrganisation() {
 
 	rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Building);
 
-	if (!LIST_EMPTY(ObjectList))
-		Organisation.BuildingID = OL_NR(LIST_HEAD(ObjectList));
+	if (!ObjectList->isEmpty())
+		Organisation.BuildingID = ObjectList->getListHead()->_nr;
 
 	if (Organisation.BuildingID) {
 		if (!has(Person_Matt_Stuvysunt, Organisation.BuildingID))
@@ -143,8 +139,8 @@ uint32 tcOrganisation() {
 	/* activate first or memorized car */
 	rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Car);
 
-	if (!LIST_EMPTY(ObjectList)) {
-		Organisation.CarID = OL_NR(LIST_HEAD(ObjectList));
+	if (!ObjectList->isEmpty()) {
+		Organisation.CarID = ObjectList->getListHead()->_nr;
 
 		Car car = (Car)dbGetObject(Organisation.CarID);
 
@@ -163,8 +159,8 @@ uint32 tcOrganisation() {
 	/* activate first or memorized driver */
 	rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Person);
 
-	if (!LIST_EMPTY(ObjectList))
-		Organisation.DriverID = OL_NR(LIST_HEAD(ObjectList));
+	if (!ObjectList->isEmpty())
+		Organisation.DriverID = ObjectList->getListHead()->_nr;
 
 	if (!tcMakeCarOk())
 		return 0L;
@@ -233,7 +229,7 @@ uint32 tcOrganisation() {
 		}
 	}
 
-	RemoveList(menu);
+	menu->removeList();
 
 	tcDoneDisplayOrganisation();
 
@@ -282,18 +278,18 @@ uint32 tcChooseDriver(uint32 persID) {
 	joined_byAll(Person_Matt_Stuvysunt,
 	             OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
 	             Object_Person);
-	List *list = ObjectListPrivate;
+	NewObjectList<NewObjectNode> *list = ObjectListPrivate;
 
-	if (LIST_EMPTY(list)) {
+	if (list->isEmpty()) {
 		SetBubbleType(THINK_BUBBLE);
 		Say(BUSINESS_TXT, 0, matt->PictID, "PLAN_TO_FEW_GUYS");
 	} else {
 		Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
-		ExpandObjectList(list, exp);
+		list->expandObjectList(exp);
 
-		byte choice = Bubble(list, 0, 0L, 0L);
+		byte choice = Bubble((NewList<NewNode>*)list, 0, 0L, 0L);
 		if (ChoiceOk(choice, GET_OUT, list)) {
-			uint32 newPersID = OL_NR(GetNthNode(list, (uint32) choice));
+			uint32 newPersID = list->getNthNode((uint32) choice)->_nr;
 
 			if (!has(newPersID, Ability_Autos)) {
 				Person pers = (Person)dbGetObject(newPersID);
@@ -304,16 +300,15 @@ uint32 tcChooseDriver(uint32 persID) {
 
 				rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Person);
 
-				if (!LIST_EMPTY(ObjectList))
-					rememberUnSet(Person_Matt_Stuvysunt,
-					              OL_NR(LIST_HEAD(ObjectList)));
+				if (!ObjectList->isEmpty())
+					rememberUnSet(Person_Matt_Stuvysunt, ObjectList->getListHead()->_nr);
 
 				rememberSet(Person_Matt_Stuvysunt, persID);
 			}
 		}
 	}
 
-	RemoveList(list);
+	list->removeList();
 
 	return (persID);
 }
@@ -323,23 +318,23 @@ uint32 tcChooseDestBuilding(uint32 objID) {
 	       OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
 	       Object_Building);
 
-	List *list = ObjectListPrivate;
+	NewObjectList<NewObjectNode> *list = ObjectListPrivate;
 	Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
-	ExpandObjectList(list, exp);
+	list->expandObjectList(exp);
 
-	byte choice = Bubble(list, 0, nullptr, 0L);
+	byte choice = Bubble((NewList<NewNode>*)list, 0, nullptr, 0L);
 	if (ChoiceOk(choice, GET_OUT, list)) {
-		objID = OL_NR(GetNthNode(list, (uint32) choice));
+		objID = list->getNthNode((uint32) choice)->_nr;
 
 		rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Building);
 
-		if (!LIST_EMPTY(ObjectList))
-			rememberUnSet(Person_Matt_Stuvysunt, OL_NR(LIST_HEAD(ObjectList)));
+		if (!ObjectList->isEmpty())
+			rememberUnSet(Person_Matt_Stuvysunt, ObjectList->getListHead()->_nr);
 
 		rememberSet(Person_Matt_Stuvysunt, objID);
 	}
 
-	RemoveList(list);
+	list->removeList();
 
 	return objID;
 }
@@ -349,30 +344,30 @@ uint32 tcChooseEscapeCar(uint32 objID) {
 	hasAll(Person_Matt_Stuvysunt,
 	       OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST, Object_Car);
 
-	List *l1 = ObjectListPrivate;
+	NewObjectList<NewObjectNode> *l1 = ObjectListPrivate;
 
 	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST, Object_Person);
-	List *l2 = ObjectListPrivate;
+	NewObjectList<NewObjectNode> *l2 = ObjectListPrivate;
 
-	if (!LIST_EMPTY(l1)) {
+	if (!l1->isEmpty()) {
 		Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
-		ExpandObjectList(l1, exp);
+		l1->expandObjectList(exp);
 
-		byte choice = Bubble(l1, 0, 0L, 0L);
+		byte choice = Bubble((NewList<NewNode>*)l1, 0, 0L, 0L);
 		if (ChoiceOk(choice, GET_OUT, l1)) {
-			uint32 newObjID = OL_NR(GetNthNode(l1, (uint32) choice));
+			uint32 newObjID = l1->getNthNode((uint32) choice)->_nr;
 
-			Car car = (Car) OL_DATA(GetNthNode(l1, (uint32) choice));
+			Car car = (Car)l1->getNthNode((uint32) choice)->_data;
 
-			if (GetNrOfNodes(l2) <= car->PlacesInCar) {
+			if (l2->getNrOfNodes() <= car->PlacesInCar) {
 				Organisation.PlacesInCar = car->PlacesInCar;
 				objID = newObjID;
 
 				rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Car);
 
-				if (!LIST_EMPTY(ObjectList))
+				if (!ObjectList->isEmpty())
 					rememberUnSet(Person_Matt_Stuvysunt,
-					              OL_NR(LIST_HEAD(ObjectList)));
+					              ObjectList->getListHead()->_nr);
 
 				rememberSet(Person_Matt_Stuvysunt, objID);
 			} else {
@@ -385,8 +380,8 @@ uint32 tcChooseEscapeCar(uint32 objID) {
 		Say(BUSINESS_TXT, 0, matt->PictID, "PLAN_WITHOUT_CAR");
 	}
 
-	RemoveList(l2);
-	RemoveList(l1);
+	l2->removeList();
+	l1->removeList();
 
 	return objID;
 }
@@ -397,15 +392,15 @@ void tcChooseGuys() {
 	joinAll(Person_Matt_Stuvysunt,
 	        OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
 	        Object_Person);
-	List *list = ObjectListPrivate;
+	NewList<NewObjectNode> *list = ObjectListPrivate;
 
 	dbRemObjectNode(list, Person_Matt_Stuvysunt);
 
-	if (LIST_EMPTY(list)) {
+	if (list->isEmpty()) {
 		SetBubbleType(THINK_BUBBLE);
 		Say(BUSINESS_TXT, 0, matt->PictID, "PLAN_WITHOUT_GUYS");
 	} else {
-		List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "ORG_KOMPLIZEN");
+		NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "ORG_KOMPLIZEN");
 		byte activ = 0;
 
 		ShowMenuBackground();
@@ -430,10 +425,10 @@ void tcChooseGuys() {
 		}
 
 		ShowMenuBackground();
-		RemoveList(menu);
+		menu->removeList();
 	}
 
-	RemoveList(list);
+	list->removeList();
 }
 
 void tcAddGuyToParty() {
@@ -441,21 +436,21 @@ void tcAddGuyToParty() {
 	        OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
 	        Object_Person);
 
-	List *l1 = ObjectListPrivate;
+	NewObjectList<NewObjectNode> *l1 = ObjectListPrivate;
 	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST, Object_Person);
 
-	List *l2 = ObjectListPrivate;
-	if (GetNrOfNodes(l2) < Organisation.PlacesInCar) {
-		for (ObjectNode *n = (ObjectNode *) LIST_HEAD(l2); NODE_SUCC(n); n = (ObjectNode *) NODE_SUCC(n))
-			dbRemObjectNode(l1, OL_NR(n));
+	NewObjectList<NewObjectNode> *l2 = ObjectListPrivate;
+	if (l2->getNrOfNodes() < Organisation.PlacesInCar) {
+		for (NewObjectNode *n = l2->getListHead(); n->_succ; n = (NewObjectNode *) n->_succ)
+			dbRemObjectNode(l1, n->_nr);
 
-		if (!LIST_EMPTY(l1)) {
+		if (!l1->isEmpty()) {
 			Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
-			ExpandObjectList(l1, exp);
+			l1->expandObjectList(exp);
 
-			byte choice = Bubble(l1, 0, nullptr, 0L);
+			byte choice = Bubble((NewList<NewNode>*)l1, 0, nullptr, 0L);
 			if (ChoiceOk(choice, GET_OUT, l1)) {
-				uint32 persID = ((ObjectNode *)GetNthNode(l1, (uint32)choice))->nr;
+				uint32 persID = l1->getNthNode((uint32)choice)->_nr;
 
 				Organisation.GuyCount++;
 				joined_bySet(Person_Matt_Stuvysunt, persID);
@@ -473,8 +468,8 @@ void tcAddGuyToParty() {
 		    ((Person) dbGetObject(Person_Matt_Stuvysunt))->PictID, "PLAN_CAR_FULL");
 	}
 
-	RemoveList(l2);
-	RemoveList(l1);
+	l2->removeList();
+	l1->removeList();
 }
 
 void tcRemGuyFromParty() {
@@ -483,20 +478,20 @@ void tcRemGuyFromParty() {
 	joined_byAll(Person_Matt_Stuvysunt,
 	             OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
 	             Object_Person);
-	List *list = ObjectListPrivate;
+	NewObjectList<NewObjectNode> *list = ObjectListPrivate;
 
 	dbRemObjectNode(list, Person_Matt_Stuvysunt);
 
-	if (LIST_EMPTY(list)) {
+	if (list->isEmpty()) {
 		SetBubbleType(THINK_BUBBLE);
 		Say(BUSINESS_TXT, 0, matt->PictID, "PLAN_TO_FEW_GUYS");
 	} else {
 		Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
-		ExpandObjectList(list, exp);
+		list->expandObjectList(exp);
 
-		byte choice = Bubble(list, 0, 0L, 0L);
+		byte choice = Bubble((NewList<NewNode>*)list, 0, 0L, 0L);
 		if (ChoiceOk(choice, GET_OUT, list)) {
-			uint32 persID = ((ObjectNode *) GetNthNode(list, (uint32) choice))->nr;
+			uint32 persID = list->getNthNode((uint32) choice)->_nr;
 
 			Organisation.GuyCount--;
 			joined_byUnSet(Person_Matt_Stuvysunt, persID);
@@ -504,8 +499,8 @@ void tcRemGuyFromParty() {
 			if (persID == Organisation.DriverID) {
 				rememberAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Person);
 
-				if (!LIST_EMPTY(ObjectList))
-					rememberUnSet(Person_Matt_Stuvysunt, OL_NR(LIST_HEAD(ObjectList)));
+				if (!ObjectList->isEmpty())
+					rememberUnSet(Person_Matt_Stuvysunt, ObjectList->getListHead()->_nr);
 
 				Organisation.DriverID = 0L;
 			}
@@ -514,7 +509,7 @@ void tcRemGuyFromParty() {
 		}
 	}
 
-	RemoveList(list);
+	list->removeList();
 }
 
 } // End of namespace Clue

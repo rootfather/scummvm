@@ -38,7 +38,7 @@ void CloseSystem(struct System *sys);   /* Close all system immedietly */
 void SetActivHandler(struct System *sys, uint32 id);
 
 void SaveSystem(Common::Stream *fh, struct System *sys);
-List *LoadSystem(Common::Stream *fh, struct System *sys);
+NewList<NewNode> *LoadSystem(Common::Stream *fh, struct System *sys);
 
 
 /* System Handler Flags */

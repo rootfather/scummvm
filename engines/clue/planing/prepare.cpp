@@ -22,8 +22,8 @@
 
 namespace Clue {
 
-List *PersonsList = NULL;
-List *BurglarsList = NULL;
+NewObjectList<NewObjectNode> *PersonsList = nullptr;
+NewObjectList<NewObjectNode> *BurglarsList = nullptr;
 
 byte PersonsNr = 0;
 byte BurglarsNr = 0;
@@ -37,27 +37,27 @@ byte Planing_Guard[PLANING_NR_GUARDS];
 
 char Planing_Name[PLANING_NR_PERSONS + PLANING_NR_GUARDS][20];
 
-List *Planing_GuardRoomList[PLANING_NR_GUARDS];
+NewObjectList<NewObjectNode> *Planing_GuardRoomList[PLANING_NR_GUARDS];
 
 uint32 Planing_BldId;
 
 
 /* Handler functions */
-void plBuildHandler(Node *n) {
+void plBuildHandler(NewObjectNode *n) {
 	uint32 flags = SHF_NORMAL;
 
-	if (OL_TYPE(n) == Object_Police)
+	if (n->_type == Object_Police)
 		flags |= SHF_AUTOREVERS;
 
-	InitHandler(plSys, OL_NR(n), flags);
+	InitHandler(plSys, n->_nr, flags);
 }
 
-void plClearHandler(Node *n) {
-	ClearHandler(plSys, OL_NR(n));
+void plClearHandler(NewObjectNode *n) {
+	ClearHandler(plSys, n->_nr);
 }
 
-void plCloseHandler(Node *n) {
-	CloseHandler(plSys, OL_NR(n));
+void plCloseHandler(NewObjectNode *n) {
+	CloseHandler(plSys, n->_nr);
 }
 
 /* Preparation & Unpreparation functions */
@@ -150,15 +150,12 @@ void plPrepareGfx(uint32 objId, byte landscapMode, byte prepareMode) {
 
 	if (prepareMode & PLANING_GFX_SPRITES) {
 		for (uint32 i = 0; i < PersonsNr; i++) {
-			if (dbIsObject(OL_NR(GetNthNode(PersonsList, i)), Object_Person))
+			if (dbIsObject(PersonsList->getNthNode(i)->_nr, Object_Person))
 				plPrepareSprite(i, lsGetActivAreaID());
 			else {
-				((Police) dbGetObject(OL_NR(GetNthNode(PersonsList, i))))->
-				LivingID = i;
+				((Police) dbGetObject(PersonsList->getNthNode(i)->_nr))->LivingID = i;
 				plPrepareSprite(i,
-				                isGuardedbyGet(objId,
-				                               OL_NR(GetNthNode
-				                                     (PersonsList, i))));
+				                isGuardedbyGet(objId, PersonsList->getNthNode(i)->_nr));
 			}
 		}
 
@@ -171,7 +168,7 @@ void plUnprepareGfx() {
 	gfxClearArea(u_gc);
 
 	for (int i = BurglarsNr; i < PersonsNr; i++)
-		RemoveList(Planing_GuardRoomList[i - BurglarsNr]);
+		Planing_GuardRoomList[i - BurglarsNr]->removeList();
 
 	lsDoneLandScape();
 	gfxShow(CurrentBackground, GFX_NO_REFRESH | GFX_BLEND_UP, 0, -1, -1);
@@ -179,17 +176,17 @@ void plUnprepareGfx() {
 
 void plPrepareRel() {
 	consistsOfAll(Planing_BldId, OLF_PRIVATE_LIST, Object_LSArea);
-	List *areas = ObjectListPrivate;
+	NewObjectList<NewObjectNode> *areas = ObjectListPrivate;
 
-	for (Node *n = LIST_HEAD(areas); NODE_SUCC(n); n = NODE_SUCC(n)) {
-		LSArea area = (LSArea)OL_DATA(n);
+	for (NewObjectNode *n = areas->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
+		LSArea area = (LSArea)n->_data;
 
 		if (!CloneRelation
 		        (area->ul_ObjectBaseNr + REL_HAS_LOOT_OFFSET, hasLoot_Clone_RelId))
 			ErrorMsg(No_Mem, ERROR_MODULE_PLANING, 0);
 	}
 
-	RemoveList(areas);
+	areas->removeList();
 
 	if (!AddRelation(take_RelId))
 		ErrorMsg(No_Mem, ERROR_MODULE_PLANING, 0);
@@ -202,7 +199,7 @@ void plUnprepareRel() {
 
 void plPrepareNames() {
 	for (int i = 0; i < PersonsNr; i++) {
-		if (dbIsObject(OL_NR(GetNthNode(PersonsList, i)), Object_Person))
+		if (dbIsObject(PersonsList->getNthNode(i)->_nr, Object_Person))
 			sprintf(Planing_Name[i], "Person_%d", i + 1);
 		else
 			sprintf(Planing_Name[i], "Police_%d",
@@ -217,11 +214,8 @@ void plPrepareSys(uint32 currPer, uint32 objId, byte sysMode) {
 		Planing_BldId = objId;
 
 	if (sysMode & PLANING_INIT_PERSONSLIST) {
-		if (PersonsList)
-			RemoveList(PersonsList);
-
-		if (BurglarsList)
-			RemoveList(BurglarsList);
+		delete PersonsList;
+		delete BurglarsList;
 
 		joined_byAll(Person_Matt_Stuvysunt,
 		             OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
@@ -236,8 +230,8 @@ void plPrepareSys(uint32 currPer, uint32 objId, byte sysMode) {
 		dbSortObjectList(&PersonsList, dbStdCompareObjects);
 		dbSortObjectList(&BurglarsList, dbStdCompareObjects);
 
-		PersonsNr = GetNrOfNodes(PersonsList);
-		BurglarsNr = GetNrOfNodes(BurglarsList);
+		PersonsNr = PersonsList->getNrOfNodes();
+		BurglarsNr = BurglarsList->getNrOfNodes();
 
 		plPrepareNames();
 	}
@@ -246,20 +240,26 @@ void plPrepareSys(uint32 currPer, uint32 objId, byte sysMode) {
 		if (grdAddToList(objId, PersonsList)) {
 			dbSortObjectList(&PersonsList, dbStdCompareObjects);
 
-			PersonsNr = GetNrOfNodes(PersonsList);
+			PersonsNr = PersonsList->getNrOfNodes();
 
 			plPrepareNames();
 		}
 	}
 
-	if (sysMode & PLANING_HANDLER_CLEAR)
-		foreach(BurglarsList, (void (*)(void *)) plClearHandler);
+	if (sysMode & PLANING_HANDLER_CLEAR) {
+		for (NewObjectNode *node = BurglarsList->getListHead(); node->_succ; node = (NewObjectNode *)node->_succ)
+			plClearHandler(node);
+	}
 
-	if (sysMode & PLANING_HANDLER_CLOSE)
-		foreach(PersonsList, (void (*)(void *)) plCloseHandler);
-
-	if (sysMode & PLANING_HANDLER_OPEN)
-		foreach(PersonsList, (void (*)(void *)) plBuildHandler);
+	if (sysMode & PLANING_HANDLER_CLOSE) {
+		for (NewObjectNode *node = PersonsList->getListHead(); node->_succ; node = (NewObjectNode *)node->_succ)
+			plCloseHandler(node);
+	}
+	
+	if (sysMode & PLANING_HANDLER_OPEN) {
+		for (NewObjectNode *node = PersonsList->getListHead(); node->_succ; node = (NewObjectNode *)node->_succ)
+			plBuildHandler(node);
+	}
 
 	if ((sysMode & PLANING_GUARDS_LOAD) && (PersonsNr > BurglarsNr)
 	        && !(GamePlayMode & GP_LEVEL_DESIGN)) {
@@ -267,7 +267,7 @@ void plPrepareSys(uint32 currPer, uint32 objId, byte sysMode) {
 
 		startsWithAll(objId, OLF_NORMAL, Object_LSArea);
 
-		if (grdInit(&fh, 0, Planing_BldId, OL_NR(GetNthNode(ObjectList, 0))))
+		if (grdInit(&fh, 0, Planing_BldId, ObjectList->getNthNode(0)->_nr))
 			grdDo(fh, plSys, PersonsList, BurglarsNr, PersonsNr,
 			      GUARDS_DO_LOAD);
 
@@ -275,20 +275,20 @@ void plPrepareSys(uint32 currPer, uint32 objId, byte sysMode) {
 	}
 
 	if (sysMode & PLANING_HANDLER_SET)
-		SetActivHandler(plSys, OL_NR(GetNthNode(PersonsList, CurrentPerson)));
+		SetActivHandler(plSys, PersonsList->getNthNode(CurrentPerson)->_nr);
 }
 
 void plUnprepareSys() {
 	plPrepareSys(0, 0, PLANING_HANDLER_CLOSE);
 
 	if (PersonsList)
-		RemoveList(PersonsList);
+		PersonsList->removeList();
 
 	if (BurglarsList)
-		RemoveList(BurglarsList);
+		BurglarsList->removeList();
 
-	PersonsList = NULL;
-	BurglarsList = NULL;
+	PersonsList = nullptr;
+	BurglarsList = nullptr;
 }
 
 } // End of namespace Clue

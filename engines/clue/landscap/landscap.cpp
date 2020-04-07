@@ -94,7 +94,7 @@ static void lsShowRooms() {
 
 void lsBuildScrollWindow() {
 	int32 i;
-	Node *node;
+	NewObjectNode *node;
 	LSArea area = (LSArea) dbGetObject(ls->ul_AreaID);
 	uint8 palette[GFX_PALETTE_SIZE];
 
@@ -116,8 +116,8 @@ void lsBuildScrollWindow() {
 	}
 
 	/* Objekte setzen - zuerst Wände */
-	for (node = LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node); node = NODE_SUCC(node)) {
-		LSObject lso = (LSObject)OL_DATA(node);
+	for (node = ls->p_ObjectRetrieval->getListHead(); node->_succ; node = (NewObjectNode *)node->_succ) {
+		LSObject lso = (LSObject)node->_data;
 
 		if (lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_WALL))
 			lsTurnObject(lso, lso->uch_Visible, LS_COLLISION);
@@ -125,16 +125,16 @@ void lsBuildScrollWindow() {
 	}
 
 	/* dann andere */
-	for (node = LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node); node = NODE_SUCC(node)) {
-		LSObject lso = (LSObject)OL_DATA(node);
+	for (node = ls->p_ObjectRetrieval->getListHead(); node->_succ; node = (NewObjectNode*)node->_succ) {
+		LSObject lso = (LSObject)node->_data;
 
 		if (lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_OTHER_0))
 			lsTurnObject(lso, lso->uch_Visible, LS_COLLISION);
 	}
 
 	/* jetzt noch ein paar Sondefälle (Kassa, Vase, ...) */
-	for (node = LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node); node = NODE_SUCC(node)) {
-		LSObject lso = (LSObject)OL_DATA(node);
+	for (node = ls->p_ObjectRetrieval->getListHead(); node->_succ; node = (NewObjectNode*)node->_succ) {
+		LSObject lso = (LSObject)node->_data;
 
 		if (lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_OTHER_1))
 			lsTurnObject(lso, lso->uch_Visible, LS_COLLISION);
@@ -146,31 +146,31 @@ void lsBuildScrollWindow() {
 	}
 
 	/* now refresh all doors and special objects */
-	for (node = LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node); node = NODE_SUCC(node)) {
-		LSObject lso = (LSObject)OL_DATA(node);
+	for (node = ls->p_ObjectRetrieval->getListHead(); node->_succ; node = (NewObjectNode*)node->_succ) {
+		LSObject lso = (LSObject)node->_data;
 
 		if (lsIsObjectADoor(lso))
-			lsInitDoorRefresh(OL_NR(node));
+			lsInitDoorRefresh(node->_nr);
 		else if (lsIsObjectSpecial(lso))
-			lsInitDoorRefresh(OL_NR(node));
+			lsInitDoorRefresh(node->_nr);
 	}
 
 	/* finally build the doors and specials on the PC */
-	for (node = LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node); node = NODE_SUCC(node)) {
-		LSObject lso = (LSObject)OL_DATA(node);
+	for (node = ls->p_ObjectRetrieval->getListHead(); node->_succ; node = (NewObjectNode *)node->_succ) {
+		LSObject lso = (LSObject)node->_data;
 
 		if (lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_SPECIAL))
 			lsTurnObject(lso, lso->uch_Visible, LS_COLLISION);
 	}
 
-	for (node = LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(node); node = NODE_SUCC(node)) {
-		LSObject lso = (LSObject)OL_DATA(node);
+	for (node = ls->p_ObjectRetrieval->getListHead(); node->_succ; node = (NewObjectNode *)node->_succ) {
+		LSObject lso = (LSObject)node->_data;
 
 		if (lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_DOOR)) {
 			if (!(lso->ul_Status & 1 << Const_tcOPEN_CLOSE_BIT))
-				lsTurnObject((LSObject)OL_DATA(node), lso->uch_Visible, LS_COLLISION);
+				lsTurnObject((LSObject)node->_data, lso->uch_Visible, LS_COLLISION);
 			else
-				lsTurnObject((LSObject)OL_DATA(node), lso->uch_Visible, LS_NO_COLLISION);
+				lsTurnObject((LSObject)node->_data, lso->uch_Visible, LS_NO_COLLISION);
 		}
 	}
 
@@ -270,43 +270,43 @@ void lsSetObjectState(uint32 objID, byte bitNr, byte value) {
 	}
 }
 
-static int16 lsSortByXCoord(struct ObjectNode *n1, struct ObjectNode *n2) {
-	LSObject lso1 = (LSObject)OL_DATA(n1);
-	LSObject lso2 = (LSObject)OL_DATA(n2);
+static int16 lsSortByXCoord(NewObjectNode *n1, NewObjectNode *n2) {
+	LSObject lso1 = (LSObject)n1->_data;
+	LSObject lso2 = (LSObject)n2->_data;
 
 	if (lso1->us_DestX > lso2->us_DestX)
-		return (1);
+		return 1;
 
-	return ((int16) - 1);
+	return -1;
 }
 
-static int16 lsSortByYCoord(struct ObjectNode *n1, struct ObjectNode *n2) {
-	LSObject lso1 = (LSObject)OL_DATA(n1);
-	LSObject lso2 = (LSObject)OL_DATA(n2);
+static int16 lsSortByYCoord(NewObjectNode *n1, NewObjectNode *n2) {
+	LSObject lso1 = (LSObject)n1->_data;
+	LSObject lso2 = (LSObject)n2->_data;
 
 	if (lso1->us_DestY < lso2->us_DestY)
-		return (1);
+		return 1;
 
-	return ((int16) - 1);
+	return -1;
 }
 
-static void lsSortObjectList(List **l) {
+static void lsSortObjectList(NewObjectList<NewObjectNode> **l) {
 	LSObject lso1, lso2;
 	byte lastNode = 0;
 
-	if (!LIST_EMPTY(*l)) {
+	if (!(*l)->isEmpty()) {
 		dbSortObjectList(l, lsSortByYCoord);
 
-		for (Node* node = LIST_HEAD(*l); (!lastNode) && NODE_SUCC(NODE_SUCC(node));) {
-			Node* node1 = node;
+		for (NewObjectNode *node = (*l)->_head; !lastNode && node->_succ->_succ;) {
+			NewObjectNode *node1 = node;
 
 			do {
-				node1 = NODE_SUCC(node1);
-				lso1 = (LSObject)OL_DATA(node);
-				lso2 = (LSObject)OL_DATA(node1);
-			} while ((lso1->us_DestY == lso2->us_DestY) && NODE_SUCC(NODE_SUCC(node1)));
+				node1 = (NewObjectNode *)node1->_succ;
+				lso1 = (LSObject)node->_data;
+				lso2 = (LSObject)node1->_data;
+			} while ((lso1->us_DestY == lso2->us_DestY) && node1->_succ->_succ);
 
-			Node* next = node1;
+			NewObjectNode* next = node1;
 
 			/* wenn Abbruch wegen NODE_SUCC(NODE_SUCC(.. erflogte, darf
 			 * nicht der NODE_PRED(node1) genomen werden!
@@ -314,15 +314,15 @@ static void lsSortObjectList(List **l) {
 			 */
 
 			if (lso1->us_DestY != lso2->us_DestY)
-				node1 = NODE_PRED(node1);
+				node1 = (NewObjectNode*)node1->_pred;
 			else
 				lastNode = 1;
 
 			if (node != node1) {
-				dbSortPartOfList(*l, (struct ObjectNode *) node, (struct ObjectNode *) node1, lsSortByXCoord);
+				dbSortPartOfList(*l, node, node1, lsSortByXCoord);
 				node = next;
 			} else
-				node = NODE_SUCC(node);
+				node = (NewObjectNode*)node->_succ;
 		}
 	}
 }
@@ -425,7 +425,7 @@ void lsWalkThroughWindow(LSObject lso, uint16 us_LivXPos, uint16 us_LivYPos, uin
 		deltaY = -25;
 
 	if (lso->ul_Status & (1 << Const_tcHORIZ_VERT_BIT))
-		(*us_XPos) += deltaX;   /* vertikal */
+		(*us_XPos) += deltaX;   /* vertical */
 	else
 		(*us_YPos) += deltaY;   /* horizontal */
 }
@@ -433,8 +433,8 @@ void lsWalkThroughWindow(LSObject lso, uint16 us_LivXPos, uint16 us_LivYPos, uin
 void lsPatchObjects() {
 	((Item) dbGetObject(Item_Fenster))->OffsetFact = 16;
 
-	for (Node* n = LIST_HEAD(ls->p_ObjectRetrieval); NODE_SUCC(n); n = NODE_SUCC(n)) {
-		LSObject lso = (LSObject)OL_DATA(n);
+	for (NewObjectNode* n = ls->p_ObjectRetrieval->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
+		LSObject lso = (LSObject)n->_data;
 
 		Item item = (Item)dbGetObject(lso->Type);
 
@@ -475,12 +475,12 @@ void lsPatchObjects() {
 			}
 		}
 
-		if (OL_NR(n) == tcLAST_BURGLARY_LEFT_CTRL_OBJ)
+		if (n->_nr == tcLAST_BURGLARY_LEFT_CTRL_OBJ)
 			lso->ul_Status |= (1 << Const_tcON_OFF);
 
 		lsSetOldState(lso); /* muß sein! */
 
-		/* change for correcting amiga plans (corrects walls) before using pc level desinger
+		/* change for correcting amiga plans (corrects walls) before using pc level designer
 		   lso->us_DestX -= 9;
 		   lso->us_DestY += 17;
 		 */

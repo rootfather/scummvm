@@ -16,7 +16,6 @@
 #ifndef MODULE_LIST
 #define MODULE_LIST
 
-#include "clue/theclou.h"
 #include "common/str.h"
 
 namespace Common {
@@ -77,20 +76,7 @@ void FreeNode(void *node);
 void *GetNode(List *list, const char *name);
 void *GetNthNode(List *list, uint32 nth);
 uint32 GetNrOfNodes(List *list);
-uint32 GetNodeNrByAddr(List *list, void *node);
-void foreach(List *list, void (*processNode)(void *));
-void Link(List *list, void *node, void *predNode);
-void *UnLinkByAddr(List *list, void *node, Node **predNode);
-void *UnLink(List *list, const char *name, Node **predNode);
-void ReplaceNodeByAddr(List *list, void *node, Node *newNode);
-void ReplaceNode(List *list, const char *name, Node *newNode);
-uint32 ReadList(List *list, size_t size, char *fileName);
-void WriteList(List *list, char *fileName);
 
-#if 0
-void *RemHeadNode(LIST *list);
-uint32 GetNodeNr(LIST *list, const char *name);
-#endif
 } // End of namespace Clue
 
 #endif              /* MODULE_LIST */

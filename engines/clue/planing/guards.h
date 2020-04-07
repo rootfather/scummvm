@@ -39,11 +39,10 @@ struct System;
 struct _GC;
 
 /* main method */
-void grdDo(Common::Stream *fh, struct System *sys, List *PersonsList, uint32 BurglarsNr,
-           uint32 PersonsNr, byte grdAction);
+void grdDo(Common::Stream *fh, struct System *sys, NewObjectList<NewObjectNode> *PersonsList, uint32 BurglarsNr, uint32 PersonsNr, byte grdAction);
 
 /* support */
-bool grdAddToList(uint32 bldId, List *l);
+bool grdAddToList(uint32 bldId, NewObjectList<NewObjectNode>*l);
 bool grdDraw(struct _GC *gc, uint32 bldId, uint32 areaId);
 
 /* con- & destructor */

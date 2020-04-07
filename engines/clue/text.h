@@ -84,6 +84,45 @@ public:
 	~NewTCEventNode() {}
 };
 
+class NewObjectNode : public NewNode {
+public:
+	uint32 _nr;
+	uint32 _type;
+	void *_data;
+
+	NewObjectNode() { _nr = _type = 0; _data = nullptr;  }
+	~NewObjectNode() {}
+};
+
+class IODataNode : public NewNode {
+public:
+	byte _ioData;
+
+	IODataNode() { _ioData = 0; }
+	~IODataNode() {}
+};
+
+class PresentationInfoNode : public NewNode {
+public:
+	char _extendedText[70];
+	uint32 _extendedNr;
+	uint32 _maxNr;
+
+	byte _presentHow;
+
+	PresentationInfoNode() { _extendedText[0] = '\0'; _extendedNr = _maxNr = _presentHow = 0; }
+	~PresentationInfoNode() {}
+};
+
+class NewDynDlgNode  : public NewNode {
+public:
+	byte _knownBefore;       /* wie gut Sie bekannt sein müssen */
+	byte _knownAfter;        /* wie gut Sie danach bekannt sind ! */
+
+	NewDynDlgNode() { _knownBefore = _knownAfter = 0; }
+	~NewDynDlgNode() {}
+};
+
 template <typename T>
 class NewList {
 public:
@@ -96,17 +135,37 @@ public:
 	T *getNthNode(uint32 nth);
 	uint32 getNrOfNodes();
 	void removeList();
-	void removeNode(const char *name);
-	T *getNode(const char *name);
+	void removeNode(Common::String name);
+	T *getNode(Common::String name);
+	uint32 getNodeNrByAddr(T *node);
 	T *remTailNode();
-	void readList(const char *fileName);
+
+	uint32 readList(Common::String fileName);
+	void writeList(Common::String fileName);
+
 	void addNode(T *node, T *predNode);
 	void addTailNode(T *node);
+	void addHeadNode(T *node);
+	void putCharacter(uint16 pos, uint8 c);
 
-	T *createNode(const char *name);
+	T *createNode(Common::String name);
+	void link(T *node, T *predNode);
+	T* unLinkByAddr(T *node, T **predNode);
+	T* unLink(Common::String name, T **predNode);
+	void replaceNodeByAddr(T *node, T *newNode);
+	void replaceNode(Common::String name, T *newNode);
 
-	T* getListHead() { return (T *)_head->_succ; }
+	T *getListHead() { return (T *)_head->_succ; }
 	bool isEmpty() { return getListHead()->_succ == nullptr; }
+};
+
+template <typename T>
+class NewObjectList : public NewList<T> {
+public:
+	NewObjectList() {};
+	~NewObjectList() {};
+
+	void expandObjectList(Common::String expandItem);
 };
 
 /* private structures */
@@ -153,8 +212,8 @@ public:
 	uint32 getKeyAsUint32(uint16 keyNr, const char *key);
 	uint32 getKeyAsUint32(uint16 keyNr, Common::String key);
 
-	List* goKey(uint32 textId, const char *key);
-	List* goKeyAndInsert(uint32 textId, const char *key, ...);
+	NewList<NewNode> *goKey(uint32 textId, const char *key);
+	NewList<NewNode> *goKeyAndInsert(uint32 textId, const char *key, ...);
 
 	bool keyExists(uint32 textId, const char *key);
 	uint32 countKey(Common::String key);
@@ -162,7 +221,6 @@ public:
 	/* public prototypes - STRING */
 	Common::String getNthString(uint32 textId, const char *key, uint32 nth);
 	Common::String getFirstLine(uint32 textId, const char *key);
-	void putCharacter(List *list, uint16 pos, uint8 c);
 };
 
 // Template code
@@ -194,15 +252,20 @@ void NewList<T>::addNode(T* node, T* predNode) {
 }
 
 template <typename T>
+void NewList<T>::addHeadNode(T* node) {
+	addNode(node, _head);
+}
+
+template <typename T>
 void NewList<T>::addTailNode(T* node) {
 	addNode(node, (T*)_tail->_pred);
 }
 
 template <typename T>
 T* NewList<T>::getNthNode(uint32 nth) {
-	for (NewNode* node = _head->_succ; node->_succ; node = node->_succ) {
+	for (T* node = getListHead(); node->_succ; node = (T *)node->_succ) {
 		if (nth == 0)
-			return (T*)node;
+			return node;
 		nth--;
 	}
 
@@ -212,7 +275,7 @@ T* NewList<T>::getNthNode(uint32 nth) {
 template <typename T>
 uint32 NewList<T>::getNrOfNodes() {
 	uint32 i = 0;
-	for (NewNode* node = _head->_succ; node->_succ; node = node->_succ)
+	for (T *node = getListHead(); node->_succ; node = (T *)node->_succ)
 		++i;
 
 	return i;
@@ -227,35 +290,39 @@ void NewList<T>::removeList() {
 template <typename T>
 T* NewList<T>::remTailNode() {
 	T* result = nullptr;
-	if (!_head->_succ) {
+	if (!isEmpty()) {
 		result = _tail;
+		NewNode *old = _tail->_pred;
 		_tail->_pred->remNode();
+		delete old;
 	}
 
 	return result;
 }
 
 template <typename T>
-void NewList<T>::removeNode(const char* name) {
+void NewList<T>::removeNode(Common::String name) {
 	T* node;
-	if (name) {
+	if (!name.empty()) {
 		if ((node = getNode(name))) {
 			node->remNode();
 			delete node;
 		}
-	}
-	else if (_head->_succ) {
-		while ((node = remTailNode()))
-			delete node;
+	} else if (!isEmpty()) {
+		node = remTailNode();
+		while (node) {
+			// delete node;
+			node = remTailNode();
+		}
 	}
 }
 
 template <typename T>
-T* NewList<T>::createNode(const char* name) {
+T* NewList<T>::createNode(Common::String name) {
 	T* node = new T;
 	node->_succ = nullptr;
 	node->_pred = nullptr;
-	node->_name = Common::String(name);
+	node->_name = name;
 
 	addTailNode(node);
 
@@ -263,8 +330,8 @@ T* NewList<T>::createNode(const char* name) {
 }
 
 template <typename T>
-T* NewList<T>::getNode(const char* name) {
-	for (T* node = (T *)_head->_succ; node->_succ; node = (T *)node->_succ) {
+T* NewList<T>::getNode(Common::String name) {
+	for (T* node = getListHead(); node->_succ; node = (T *)node->_succ) {
 		if (node->_name.equals(name))
 			return node;
 	}
@@ -273,17 +340,92 @@ T* NewList<T>::getNode(const char* name) {
 }
 
 template <typename T>
-void NewList<T>::readList(const char* fileName) {
-	Common::Stream* fh = dskOpen(fileName, 0);
+uint32 NewList<T>::getNodeNrByAddr(T *node) {
+	uint32 i = 0;
+
+	for (T* s = getListHead(); s->_succ && (s != node); s = (T *)s->_succ, i++)
+		;
+
+	return i;
+}
+
+template <typename T>
+uint32 NewList<T>::readList(Common::String fileName) {
+	uint32 i = 0;
+	Common::Stream* fh = dskOpen(fileName.c_str(), 0);
 	if (fh) {
 		char buffer[256];
 		while (dskGetLine(buffer, sizeof(buffer), fh)) {
-			if (buffer[0] != ';') // skip comments
+			if (buffer[0] != ';') { // skip comments
 				createNode(buffer);
+				++i;
+			}
 		}
 
 		dskClose(fh);
 	}
+	return i;
+}
+
+template <typename T>
+void NewList<T>::putCharacter(uint16 pos, uint8 c) {
+	for (T *node = _head; node->_succ; node = (T *)node->_succ)
+		node->_name.setChar(c, pos);
+}
+
+template <typename T>
+void NewList<T>::link(T *node, T *predNode) {
+	if (predNode)
+		addNode(node, predNode);
+	else
+		addTailNode(node);
+}
+
+template <typename T>
+T *NewList<T>::unLinkByAddr(T* node, T** predNode) {
+	if (predNode)
+		*predNode = (T *)node->_pred;
+
+	return node;
+}
+
+template <typename T>
+T *NewList<T>::unLink(Common::String name, T** predNode) {
+	return unLinkByAddr(getNode(name), predNode);
+}
+
+template <typename T>
+void NewList<T>::replaceNodeByAddr(T* node, T* newNode) {
+	T* predNode;
+	if ((node = unLinkByAddr(node, &predNode))) {
+		link(newNode, predNode);
+		delete node;
+	}
+}
+
+template <typename T>
+void NewList<T>::replaceNode(Common::String name, T* newNode) {
+	replaceNodeByAddr(getNode(name), newNode);
+}
+
+template <typename T>
+void NewList<T>::writeList(Common::String fileName) {
+	Common::Stream *fh = dskOpen(fileName.c_str(), 1);
+	if (fh) {
+		for (T *node = getListHead(); node->_succ; node = (T *)node->_succ)
+			dskSetLine(fh, node->_name.c_str());
+
+		dskClose(fh);
+	}
+}
+
+template <typename T>
+void NewObjectList<T>::expandObjectList(Common::String expandItem) {
+	T *objNode = (T *) this->createNode(expandItem);
+
+	objNode->_nr = 0;
+	objNode->_type = 0;
+	objNode->_data = nullptr;
 }
 
 } // End of namespace Clue

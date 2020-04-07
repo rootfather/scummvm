@@ -142,7 +142,7 @@ bool lsIsObjectAnAddOn(LSObject lso) {
 }
 
 uint16 lsGetObjectCount() {
-	return ((uint16) GetNrOfNodes(ls->p_ObjectRetrieval));
+	return (uint16)ls->p_ObjectRetrieval->getNrOfNodes();
 }
 
 byte lsGetLoudness(uint16 x, uint16 y) {
@@ -179,7 +179,7 @@ byte lsGetLoudness(uint16 x, uint16 y) {
 uint32 lsGetObjectState(uint32 objID) {
 	LSObject obj = (LSObject)dbGetObject(objID);
 
-	return (lsGetNewState(obj));
+	return lsGetNewState(obj);
 }
 
 uint32 lsGetStartArea() {
@@ -187,9 +187,9 @@ uint32 lsGetStartArea() {
 
 	startsWithAll(ls->ul_BuildingID, OLF_NORMAL, Object_LSArea);
 
-	areaID = OL_NR(LIST_HEAD(ObjectList));
+	areaID = ObjectList->getListHead()->_nr;
 
-	return (areaID);
+	return areaID;
 }
 
 uint16 lsGetFloorIndex(uint16 x, uint16 y) {
@@ -203,30 +203,28 @@ uint16 lsGetFloorIndex(uint16 x, uint16 y) {
 	return (uint16)(line * fpl + row);
 }
 
-static void lsExtendGetList(List *list, uint32 nr, uint32 type, void *data) {
-	struct ObjectNode *newNode =
+static void lsExtendGetList(NewObjectList<NewObjectNode> *list, uint32 nr, uint32 type, void *data) {
+	NewObjectNode *newNode =
 	    dbAddObjectNode(list, type, OLF_INCLUDE_NAME | OLF_INSERT_STAR);
 
-	newNode->nr = nr;
-	newNode->type = type;
-	newNode->data = data;
+	newNode->_nr = nr;
+	newNode->_type = type;
+	newNode->_data = data;
 }
 
-List *lsGetObjectsByList(uint16 x, uint16 y, uint16 width, uint16 height,
+NewObjectList<NewObjectNode> *lsGetObjectsByList(uint16 x, uint16 y, uint16 width, uint16 height,
                          byte showInvisible, byte addLootBags) {
-	List *list = CreateList();
+	NewObjectList<NewObjectNode> *list = new NewObjectList<NewObjectNode>;
 
 	/* diverse Objekte eintragen */
-	for (ObjectNode* node = (ObjectNode*)LIST_HEAD(ls->p_ObjectRetrieval);
-	        NODE_SUCC(node);
-	        node = (ObjectNode *) NODE_SUCC(node)) {
-		LSObject lso = (LSObject) OL_DATA(node);
+	for (NewObjectNode* node = ls->p_ObjectRetrieval->getListHead(); node->_succ; node = (NewObjectNode *) node->_succ) {
+		LSObject lso = (LSObject) node->_data;
 
 		if ((lso->ul_Status & (1L << Const_tcACCESS_BIT))
 		        || (GamePlayMode & GP_LEVEL_DESIGN))
 			if (showInvisible || lso->uch_Visible)
 				if (lsIsInside(lso, x, y, x + width, y + height))
-					lsExtendGetList(list, OL_NR(node), lso->Type, lso);
+					lsExtendGetList(list, node->_nr, lso->Type, lso);
 	}
 
 	/* Ausnahme: Beutesack eintragen! */
@@ -255,17 +253,16 @@ uint32 lsGetActivAreaID() {
 	return (ls->ul_AreaID);
 }
 
-List *lsGetRoomsOfArea(uint32 ul_AreaId) {
+NewObjectList<NewObjectNode> *lsGetRoomsOfArea(uint32 ul_AreaId) {
 	LSArea area = (LSArea) dbGetObject(ul_AreaId);
 	uint32 roomRelId = area->ul_ObjectBaseNr + REL_HAS_ROOM_OFFSET;
-	Node *room;
 
 	SetObjectListAttr(OLF_PRIVATE_LIST, Object_LSRoom);
 	AskAll(area, roomRelId, BuildObjectList);
 
 
-	for (room = LIST_HEAD(ObjectListPrivate); NODE_SUCC(room); room = NODE_SUCC(room)) {
-		LSRoom myroom = (LSRoom)OL_DATA(room);
+	for (NewObjectNode* room = ObjectListPrivate->getListHead(); room->_succ; room = (NewObjectNode*)room->_succ) {
+		LSRoom myroom = (LSRoom)room->_data;
 
 		if ((int16) myroom->us_LeftEdge < 0)
 			myroom->us_LeftEdge = 0;

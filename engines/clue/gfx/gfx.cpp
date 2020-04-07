@@ -197,56 +197,56 @@ void gfxSetVideoMode(byte uch_NewMode) {
  */
 
 static void gfxInitCollList() {
-	List *tempList = CreateList();
+	NewList<NewNode> *tempList = new NewList<NewNode>;
 	CollectionList = CreateList();
 
 	char pathname[DSK_PATH_MAX];
 	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, COLL_LIST_TXT, pathname);
-	ReadList(tempList, 0, pathname);
+	tempList->readList(pathname);
 
-	for (Node *n = LIST_HEAD(tempList); NODE_SUCC(n); n = NODE_SUCC(n)) {
-		Collection *coll = (Collection *)CreateNode(CollectionList, sizeof(Collection), g_clue->_txtMgr->getKey(2, NODE_NAME(n)));
+	for (NewNode *n = tempList->getListHead(); n->_succ; n = n->_succ) {
+		Collection *coll = (Collection *)CreateNode(CollectionList, sizeof(Collection), g_clue->_txtMgr->getKey(2, n->_name.c_str()));
 
-		coll->us_CollId = (uint16)g_clue->_txtMgr->getKeyAsUint32(1, NODE_NAME(n));
+		coll->us_CollId = (uint16)g_clue->_txtMgr->getKeyAsUint32(1, n->_name);
 
 		coll->puch_Filename = NODE_NAME(coll);
 		coll->prepared = NULL;
 
-		coll->us_TotalWidth = (uint16)g_clue->_txtMgr->getKeyAsUint32(3, NODE_NAME(n));
-		coll->us_TotalHeight = (uint16)g_clue->_txtMgr->getKeyAsUint32(4, NODE_NAME(n));
+		coll->us_TotalWidth = (uint16)g_clue->_txtMgr->getKeyAsUint32(3, n->_name);
+		coll->us_TotalHeight = (uint16)g_clue->_txtMgr->getKeyAsUint32(4, n->_name);
 
-		coll->uch_ColorRangeStart = (uint16)g_clue->_txtMgr->getKeyAsUint32(5, NODE_NAME(n));
-		coll->uch_ColorRangeEnd = (uint16)g_clue->_txtMgr->getKeyAsUint32(6, NODE_NAME(n));
+		coll->uch_ColorRangeStart = (uint16)g_clue->_txtMgr->getKeyAsUint32(5, n->_name);
+		coll->uch_ColorRangeEnd = (uint16)g_clue->_txtMgr->getKeyAsUint32(6, n->_name);
 	}
 
-	RemoveList(tempList);
+	tempList->removeList();
 }
 
 static void gfxInitPictList() {
-	List *tempList = CreateList();
+	NewList<NewNode> *tempList = new NewList<NewNode>;
 	PictureList = CreateList();
 
 	char pathname[DSK_PATH_MAX];
 	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, PICT_LIST_TXT, pathname);
-	ReadList(tempList, 0, pathname);
+	tempList->readList(pathname);
 
-	for (Node *n = LIST_HEAD(tempList); NODE_SUCC(n); n = NODE_SUCC(n)) {
-		Picture *pict = (Picture *)CreateNode(PictureList, sizeof(*pict), NULL);
+	for (NewNode *n = tempList->getListHead(); n->_succ; n = n->_succ) {
+		Picture *pict = (Picture *)CreateNode(PictureList, sizeof(*pict), nullptr);
 
-		pict->us_PictId = (uint16)g_clue->_txtMgr->getKeyAsUint32(1, NODE_NAME(n));
-		pict->us_CollId = (uint16)g_clue->_txtMgr->getKeyAsUint32(2, NODE_NAME(n));
+		pict->us_PictId = (uint16)g_clue->_txtMgr->getKeyAsUint32(1, n->_name);
+		pict->us_CollId = (uint16)g_clue->_txtMgr->getKeyAsUint32(2, n->_name);
 
-		pict->us_XOffset = (uint16)g_clue->_txtMgr->getKeyAsUint32(3, NODE_NAME(n));
-		pict->us_YOffset = (uint16)g_clue->_txtMgr->getKeyAsUint32(4, NODE_NAME(n));
+		pict->us_XOffset = (uint16)g_clue->_txtMgr->getKeyAsUint32(3, n->_name);
+		pict->us_YOffset = (uint16)g_clue->_txtMgr->getKeyAsUint32(4, n->_name);
 
-		pict->us_Width = (uint16)g_clue->_txtMgr->getKeyAsUint32(5, NODE_NAME(n));
-		pict->us_Height = (uint16)g_clue->_txtMgr->getKeyAsUint32(6, NODE_NAME(n));
+		pict->us_Width = (uint16)g_clue->_txtMgr->getKeyAsUint32(5, n->_name);
+		pict->us_Height = (uint16)g_clue->_txtMgr->getKeyAsUint32(6, n->_name);
 
-		pict->us_DestX = (uint16)g_clue->_txtMgr->getKeyAsUint32(7, NODE_NAME(n));
-		pict->us_DestY = (uint16)g_clue->_txtMgr->getKeyAsUint32(8, NODE_NAME(n));
+		pict->us_DestX = (uint16)g_clue->_txtMgr->getKeyAsUint32(7, n->_name);
+		pict->us_DestY = (uint16)g_clue->_txtMgr->getKeyAsUint32(8, n->_name);
 	}
 
-	RemoveList(tempList);
+	tempList->removeList();
 }
 
 struct Rectangle {

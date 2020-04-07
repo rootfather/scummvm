@@ -45,13 +45,14 @@ NewNode::NewNode() {
 }
 
 NewNode::~NewNode() {
-	delete _pred;
-	delete _succ;
 }
 
 void NewNode::remNode() {
 	_pred->_succ = _succ;
 	_succ->_pred = _pred;
+
+	_succ = nullptr;
+	_pred = nullptr;
 }
 
 Text::Text() {
@@ -252,8 +253,8 @@ uint32 TextMgr::getKeyAsUint32(uint16 keyNr, Common::String key) {
 	return getKeyAsUint32(keyNr, key.c_str());
 }
 
-List * TextMgr::goKey(uint32 textId, const char *key) {
-	List *txtList = nullptr;
+NewList<NewNode> *TextMgr::goKey(uint32 textId, const char *key) {
+	NewList<NewNode> *txtList = nullptr;
 
 	Text *txt = _txtBase->getNthNode(textId);
 	if (txt) {
@@ -293,37 +294,35 @@ List * TextMgr::goKey(uint32 textId, const char *key) {
 					uint8 i = 1;
 					char *line;
 
-					txtList = CreateList();
+					txtList = new NewList<NewNode>;
 
 					while ((line = getLine(txt, i++)))
-						CreateNode(txtList, 0, line);
+						txtList->createNode(line);
 					break;
 				}
 			}
 		}
-
 	}
 
-	if (!txtList) {
+	if (!txtList)
 		DebugMsg(ERR_ERROR, ERROR_MODULE_TXT, "NOT FOUND KEY '%s'", key);
-	}
 
 	return txtList;
 }
 
-List * TextMgr::goKeyAndInsert(uint32 textId, const char *key, ...) {
-	List *txtList = CreateList();
+NewList<NewNode> *TextMgr::goKeyAndInsert(uint32 textId, const char *key, ...) {
+	NewList<NewNode> *txtList = new NewList<NewNode>;
 
 	va_list argument;
 	va_start(argument, key);
 
-	List *originList = goKey(textId, key);
+	NewList<NewNode> *originList = goKey(textId, key);
 
-	for (Node *node = LIST_HEAD(originList); NODE_SUCC(node); node = NODE_SUCC(node)) {
+	for (NewNode *node = originList->_head; node->_succ; node = node->_succ) {
 		char originLine[256], txtLine[256];
 
-		strcpy(originLine, NODE_NAME(node));
-		strcpy(txtLine, NODE_NAME(node));
+		strcpy(originLine, node->_name.c_str());
+		strcpy(txtLine, node->_name.c_str());
 
 		for (size_t i = 2; i < strlen(originLine); i++) {
 			if (originLine[i - 2] == '%') {
@@ -332,10 +331,11 @@ List * TextMgr::goKeyAndInsert(uint32 textId, const char *key, ...) {
 			}
 		}
 
-		CreateNode(txtList, 0, txtLine);
+		txtList->createNode(txtLine);
 	}
 
-	RemoveList(originList);
+	originList->removeList();
+
 	va_end(argument);
 	return txtList;
 }
@@ -379,23 +379,19 @@ uint32 TextMgr::countKey(Common::String key) {
 /* functions - STRING */
 Common::String TextMgr::getNthString(uint32 textId, const char *key, uint32 nth) {
 	Common::String dest;
-	List *txtList = goKey(textId, key);
-	void *src = GetNthNode(txtList, nth);
+	NewList<NewNode> *txtList = goKey(textId, key);
+	NewNode *src = txtList->getNthNode(nth);
 
 	if (src)
-		dest = Common::String(NODE_NAME(src));
+		dest = src->_name;
 
-	RemoveList(txtList);
+	txtList->removeList();
+
 	return dest;
 }
 
 Common::String TextMgr::getFirstLine(uint32 id, const char *key) {
 	return Common::String(getNthString(id, key, 0));
-}
-
-void TextMgr::putCharacter(List *list, uint16 pos, uint8 c) {
-	for (Node *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node))
-		NODE_NAME(node)[pos] = c;
 }
 
 } // End of namespace Clue

@@ -32,20 +32,19 @@ static void FadeInsideObject() {
 }
 
 uint32 tcGoInsideOfHouse(uint32 buildingID) {
-	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "INSIDE_MENU"), *areas;
+	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "INSIDE_MENU");
 	uint32 areaID = 0;
 
-	consistsOfAll(buildingID, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME,
-	              Object_LSArea);
-	areas = ObjectListPrivate;
+	consistsOfAll(buildingID, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME, Object_LSArea);
+	NewObjectList<NewObjectNode> *areas = ObjectListPrivate;
 	dbSortObjectList(&areas, dbStdCompareObjects);
 
-	uint32 count = GetNrOfNodes(areas) + 1;
+	uint32 count = areas->getNrOfNodes() + 1;
 
 	if (count > 2) {
 		uint32 i;
 		for (i = count; i < 5; i++)
-			RemoveNode(menu, NODE_NAME(GetNthNode(menu, count)));
+			menu->removeNode(menu->getNthNode(count)->_name);
 
 		ShowMenuBackground();
 
@@ -58,21 +57,21 @@ uint32 tcGoInsideOfHouse(uint32 buildingID) {
 		consistsOfAll(buildingID, OLF_NORMAL, Object_LSArea);
 
 		if (i)
-			areaID = OL_NR(GetNthNode(areas, i - 1));
+			areaID = areas->getNthNode(i - 1)->_nr;
 	}
 
 	ShowMenuBackground();
 	ShowTime(0);
 
-	RemoveList(areas);
-	RemoveList(menu);
+	areas->removeList();
+	menu->removeList();
 
-	return (areaID);
+	return areaID;
 }
 
 void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 	LSArea area = (LSArea)dbGetObject(areaID);
-	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "LookMenu");
+	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "LookMenu");
 
 	Common::String alarm = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "PROTECTED");
 	Common::String power = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "SUPPLIED");
@@ -83,22 +82,22 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 	/* liste und node initialisieren */
 	SetObjectListAttr(OLF_PRIVATE_LIST, Object_LSObject);
 	AskAll(area, ConsistOfRelationID, BuildObjectList);
-	List *objects = ObjectListPrivate;
+	NewObjectList<NewObjectNode> *objects = ObjectListPrivate;
 
 	/*lsSortObjectList(&objects);*/
 
-	uint32 count = (GetNrOfNodes(objects) * perc) / 255;
-	Node *node = lsGetSuccObject(LIST_HEAD(objects));
+	uint32 count = (objects->getNrOfNodes() * perc) / 255;
+	NewObjectNode *node = lsGetSuccObject(objects->getListHead());
 
 	CurrAreaId = areaID;
 
-	if ((GetNodeNrByAddr(objects, node)) > count) {
+	if (objects->getNodeNrByAddr(node) > count) {
 		SetBubbleType(THINK_BUBBLE);
 		Say(BUSINESS_TXT, 0, MATT_PICTID, "CANT_LOOK");
 	} else {
 		uint32 action = 0;
 		while (action != 4) {
-			LSObject lso = (LSObject) OL_DATA(node);
+			LSObject lso = (LSObject) node->_data;
 			Common::String name = dbGetObjectName(lso->Type);
 
 			if (lso->uch_Chained) {
@@ -142,8 +141,8 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 
 			switch (action) {
 			case 0: {
-				Node *n = lsGetSuccObject(node);
-				if (GetNodeNrByAddr(objects, n) < (count - 1))
+				NewObjectNode *n = lsGetSuccObject(node);
+				if (objects->getNodeNrByAddr(n) < (count - 1))
 					node = n;
 				}
 				break;
@@ -155,7 +154,7 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 				break;
 			case 3:
 				isGuardedbyAll(buildingID, OLF_NORMAL, Object_Police);
-				if (!(LIST_EMPTY(ObjectList))) {
+				if (!ObjectList->isEmpty()) {
 					gfxSetPens(l_gc, 4, GFX_SAME_PEN, GFX_SAME_PEN);
 					grdDraw(l_gc, buildingID, areaID);
 				} else
@@ -168,35 +167,35 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 				break;
 			}
 
-			lso = (LSObject) OL_DATA(node);
+			lso = (LSObject) node->_data;
 			lsFadeRasterObject(areaID, lso, 1);
 		}
 	}
 
-	RemoveList(menu);
-	RemoveList(objects);
+	menu->removeList();
+	objects->removeList();
 	inpSetWaitTicks(0);
 }
 
-void tcShowObjectData(uint32 areaID, Node *node, byte perc) {
+void tcShowObjectData(uint32 areaID, NewObjectNode *node, byte perc) {
 	/* Objekt selbst präsentieren */
-	Present(OL_NR(node), "RasterObject", InitObjectPresent);
+	Present(node->_nr, "RasterObject", InitObjectPresent);
 
 	/* Inhalt zusammenstellen */
 	SetObjectListAttr(OLF_NORMAL, Object_Loot);
-	AskAll(OL_DATA(node), hasLootRelationID, BuildObjectList);
+	AskAll(node->_data, hasLootRelationID, BuildObjectList);
 
-	if (!LIST_EMPTY(ObjectList)) {
+	if (!ObjectList->isEmpty()) {
 		/* alle Loots durchgehen und anzeigen! */
-		for (Node *n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
+		for (NewObjectNode *n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
 			/* zur Variablenübergabe... (DIRTY, DIRTY...) */
-			SetP(OL_DATA(n), hasLootRelationID, OL_DATA(n),
-			     GetP(OL_DATA(node), hasLootRelationID, OL_DATA(n)));
+			SetP(n->_data, hasLootRelationID, n->_data,
+			     GetP(node->_data, hasLootRelationID, n->_data));
 
-			Present(OL_NR(n), "RasterObject", InitOneLootPresent);
+			Present(n->_nr, "RasterObject", InitOneLootPresent);
 
 			/* kill these dirty things! */
-			UnSet(OL_DATA(n), hasLootRelationID, OL_DATA(n));
+			UnSet(n->_data, hasLootRelationID, n->_data);
 		}
 	}
 

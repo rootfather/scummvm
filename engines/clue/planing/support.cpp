@@ -48,7 +48,7 @@ bool plLivingsPosAtCar(uint32 bldId) {
 		uint16 xpos = livGetXPos(Planing_Name[i]);
 		uint16 ypos = livGetYPos(Planing_Name[i]);
 
-		if (livWhereIs(Planing_Name[i]) != OL_NR(LIST_HEAD(ObjectList))) {
+		if (livWhereIs(Planing_Name[i]) != ObjectList->getListHead()->_nr) {
 			atCar = false;
 			break;
 		}
@@ -73,17 +73,17 @@ bool plAllInCar(uint32 bldId) {
 	byte maxPerson = 0;
 	uint32 maxTimer = 0L;
 	for (byte i = 0; i < BurglarsNr; i++) {
-		SetActivHandler(plSys, OL_NR(GetNthNode(PersonsList, i)));
+		SetActivHandler(plSys, PersonsList->getNthNode(i)->_nr);
 		if (maxTimer < GetMaxTimer(plSys)) {
 			maxTimer = GetMaxTimer(plSys);
 			maxPerson = i;
 		}
 	}
 
-	SetActivHandler(plSys, OL_NR(GetNthNode(PersonsList, maxPerson)));
+	SetActivHandler(plSys, PersonsList->getNthNode(maxPerson)->_nr);
 
 	if (maxPerson != realCurrentPerson) {
-		SetActivHandler(plSys, OL_NR(GetNthNode(PersonsList, maxPerson)));
+		SetActivHandler(plSys, PersonsList->getNthNode(maxPerson)->_nr);
 		plMessage("PERSON_NOTES", PLANING_MSG_REFRESH);
 		plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys),
 		       GetMaxTimer(plSys) - oldTimer, 1);
@@ -95,7 +95,7 @@ bool plAllInCar(uint32 bldId) {
 	CurrentPerson = realCurrentPerson;
 
 	if (maxPerson != realCurrentPerson) {
-		SetActivHandler(plSys, OL_NR(GetNthNode(PersonsList, CurrentPerson)));
+		SetActivHandler(plSys, PersonsList->getNthNode(CurrentPerson)->_nr);
 		plMessage("PERSON_NOTES", PLANING_MSG_REFRESH);
 		plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), maxTimer - GetMaxTimer(plSys), 0);
 	}
@@ -193,11 +193,11 @@ void plWork(uint32 current) {
 	}
 }
 
-List *plGetObjectsList(uint32 current, byte addLootBags) {
-	List *list = NULL;
-	uint32 areaId = livWhereIs(Planing_Name[current]), oldAreaId;
+NewObjectList<NewObjectNode> *plGetObjectsList(uint32 current, byte addLootBags) {
+	NewObjectList<NewObjectNode> *list = nullptr;
 
-	oldAreaId = lsGetCurrObjectRetrieval();
+	uint32 areaId = livWhereIs(Planing_Name[current]);
+	uint32 oldAreaId = lsGetCurrObjectRetrieval();
 	lsSetObjectRetrievalList(areaId);
 
 	switch (livGetViewDirection(Planing_Name[current])) {
@@ -230,14 +230,14 @@ List *plGetObjectsList(uint32 current, byte addLootBags) {
 	return list;
 }
 
-void plInsertGuard(List *list, uint32 current, uint32 guard) {
+void plInsertGuard(NewObjectList<NewObjectNode> *list, uint32 current, uint32 guard) {
 	switch (livGetViewDirection(Planing_Name[current])) {
 	case ANM_MOVE_LEFT:
 		tcInsertGuard(list, Planing_GuardRoomList[guard - BurglarsNr],
 		              livGetXPos(Planing_Name[current]) - 9,
 		              livGetYPos(Planing_Name[current]),
 		              14, 14,
-		              OL_NR(GetNthNode(PersonsList, guard)),
+		              PersonsList->getNthNode(guard)->_nr,
 		              guard + 1 + (PLANING_NR_PERSONS - BurglarsNr),
 		              livWhereIs(Planing_Name[current]));
 		break;
@@ -247,7 +247,7 @@ void plInsertGuard(List *list, uint32 current, uint32 guard) {
 		              livGetXPos(Planing_Name[current]) + 9,
 		              livGetYPos(Planing_Name[current]),
 		              14, 14,
-		              OL_NR(GetNthNode(PersonsList, guard)),
+		              PersonsList->getNthNode(guard)->_nr,
 		              guard + 1 + (PLANING_NR_PERSONS - BurglarsNr),
 		              livWhereIs(Planing_Name[current]));
 		break;
@@ -257,7 +257,7 @@ void plInsertGuard(List *list, uint32 current, uint32 guard) {
 		              livGetXPos(Planing_Name[current]),
 		              livGetYPos(Planing_Name[current]) - 9,
 		              14, 14,
-		              OL_NR(GetNthNode(PersonsList, guard)),
+		              PersonsList->getNthNode(guard)->_nr,
 		              guard + 1 + (PLANING_NR_PERSONS - BurglarsNr),
 		              livWhereIs(Planing_Name[current]));
 		break;
@@ -267,7 +267,7 @@ void plInsertGuard(List *list, uint32 current, uint32 guard) {
 		              livGetXPos(Planing_Name[current]),
 		              livGetYPos(Planing_Name[current]) + 9,
 		              14, 14,
-		              OL_NR(GetNthNode(PersonsList, guard)),
+		              PersonsList->getNthNode(guard)->_nr,
 		              guard + 1 + (PLANING_NR_PERSONS - BurglarsNr),
 		              livWhereIs(Planing_Name[current]));
 		break;
@@ -275,19 +275,18 @@ void plInsertGuard(List *list, uint32 current, uint32 guard) {
 }
 
 bool plObjectInReach(uint32 current, uint32 objId) {
-	List *actionList = plGetObjectsList(current, 1);
+	NewObjectList<NewObjectNode> *actionList = plGetObjectsList(current, 1);
 	bool ret = false;
 
 	for (byte i = BurglarsNr; i < PersonsNr; i++)
 		plInsertGuard(actionList, current, i);
 
-	if (!LIST_EMPTY(actionList)) {
+	if (!actionList->isEmpty()) {
 		if (dbHasObjectNode(actionList, objId))
 			ret = true;
 	}
 
-	RemoveList(actionList);
-
+	actionList->removeList();
 	return ret;
 }
 

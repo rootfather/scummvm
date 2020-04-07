@@ -26,30 +26,30 @@ namespace Clue {
 
 struct System *plSys = NULL;
 
-char txtTooLoud[20];
-char txtTimer[20];
-char txtWeight[20];
-char txtSeconds[20];
+Common::String txtTooLoud;
+Common::String txtTimer;
+Common::String txtWeight;
+Common::String txtSeconds;
 
 
 /* System functions */
 void plInit() {
 	/* Get texts */
-	List *l = g_clue->_txtMgr->goKey(PLAN_TXT, "TXT_TOO_LOUD");
-	sprintf(txtTooLoud, "%s", NODE_NAME(LIST_HEAD(l)));
-	RemoveList(l);
+	NewList<NewNode> *l = g_clue->_txtMgr->goKey(PLAN_TXT, "TXT_TOO_LOUD");
+	txtTooLoud = l->getListHead()->_name;
+	l->removeList();
 
 	l = g_clue->_txtMgr->goKey(PLAN_TXT, "TXT_TIMER");
-	sprintf(txtTimer, "%s", NODE_NAME(LIST_HEAD(l)));
-	RemoveList(l);
+	txtTimer = l->getListHead()->_name;
+	l->removeList();
 
 	l = g_clue->_txtMgr->goKey(PLAN_TXT, "TXT_WEIGHT");
-	sprintf(txtWeight, "%s", NODE_NAME(LIST_HEAD(l)));
-	RemoveList(l);
+	txtWeight = l->getListHead()->_name;
+	l->removeList();
 
 	l = g_clue->_txtMgr->goKey(PLAN_TXT, "TXT_SECONDS");
-	sprintf(txtSeconds, "%s", NODE_NAME(LIST_HEAD(l)));
-	RemoveList(l);
+	txtSeconds = l->getListHead()->_name;
+	l->removeList();
 
 	plSys = InitSystem();
 }

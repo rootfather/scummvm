@@ -21,6 +21,7 @@
 #include "clue/planing/system.h"
 
 #include "clue/clue.h"
+#include "clue/data/database_p.h"
 
 #define FILE_SYSTEM_ID      "SYS "  /* SYStem plan start */
 #define FILE_HANDLER_ID     "HAND"  /* HANDler x needed  */
@@ -106,29 +107,30 @@ void SaveSystem(Common::Stream *fh, System *sys) {
 	}
 }
 
-List *LoadSystem(Common::Stream *fh, struct System *sys) {
-	List *l = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_GUYS_MISSING_1");
+NewList<NewNode> *LoadSystem(Common::Stream *fh, struct System *sys) {
+	NewList<NewNode> *l = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_GUYS_MISSING_1");
 	bool foundAll = true;
 	uint8 knowsSomebody = 1, handlerNr = 0;
 
 	if (fh) {
 		char buffer[64];
-		if (dskGetLine(buffer, sizeof(buffer), fh)
-		        && strcmp(buffer, FILE_SYSTEM_ID) == 0) {
-			while (dskGetLine(buffer, sizeof(buffer), fh)
-			        && strcmp(buffer, FILE_HANDLER_ID) == 0) {
+		if (dskGetLine(buffer, sizeof(buffer), fh) && strcmp(buffer, FILE_SYSTEM_ID) == 0) {
+			while (dskGetLine(buffer, sizeof(buffer), fh) && strcmp(buffer, FILE_HANDLER_ID) == 0) {
 				uint32 id;
 
-				if (dskGetLine_U32(fh, &id)
-				        && !dbIsObject(id, Object_Police)) {
+				if (dskGetLine_U32(fh, &id) && !dbIsObject(id, Object_Police)) {
 					handlerNr++;
 
 					if (!FindHandler(sys, id)) {
 						if (knows(Person_Matt_Stuvysunt, id)) {
 							knowsSomebody++;
-							dbAddObjectNode(l, id, OLF_INCLUDE_NAME);
+							// CHECKME: The original code was mixing node types.
+							// The new node doesn't, but needs extra testing.
+							// dbAddObjectNode(l, id, OLF_INCLUDE_NAME);
+							warning("CHECKME - Code modified in LoadSystem");
+							dbObject *obj = dbGetObjectReal(dbGetObject(id));
+							l->createNode(obj->link.Name);
 						}
-
 						foundAll = false;
 					}
 				}
@@ -137,10 +139,10 @@ List *LoadSystem(Common::Stream *fh, struct System *sys) {
 	}
 
 	if (foundAll) {
-		RemoveList(l);
-		l = NULL;
+		l->removeList();
+		l = nullptr;
 	} else {
-		List *extList = NULL;
+		NewList<NewNode> *extList = nullptr;
 
 		if (knowsSomebody == 1)
 			extList = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_GUYS_MISSING_3");
@@ -150,10 +152,10 @@ List *LoadSystem(Common::Stream *fh, struct System *sys) {
 			extList = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_GUYS_MISSING_4");
 
 		if (extList) {
-			for (Node *n = LIST_HEAD(extList); NODE_SUCC(n); n = NODE_SUCC(n))
-				CreateNode(l, 0, NODE_NAME(n));
+			for (NewNode *n = extList->getListHead(); n->_succ; n = n->_succ)
+				l->createNode(n->_name);
 
-			RemoveList(extList);
+			extList->removeList();
 		}
 	}
 
@@ -161,7 +163,7 @@ List *LoadSystem(Common::Stream *fh, struct System *sys) {
 }
 
 Handler *InitHandler(struct System *sys, uint32 id, uint32 flags) {
-	Handler *h = NULL;
+	Handler *h = nullptr;
 
 	if (sys && !FindHandler(sys, id)) {
 		if ((h = (Handler *) CreateNode(sys->Handlers, sizeof(*h), NULL))) {
@@ -524,9 +526,9 @@ byte ActionEnded(struct System *sys) {
 }
 
 void RemLastAction(struct System *sys) {
-	Handler *h;
+	Handler *h = (Handler *)sys->ActivHandler;
 
-	if (sys && (h = (Handler *) sys->ActivHandler)) {
+	if (sys && h) {
 		if (!LIST_EMPTY(h->Actions)) {
 			if (GetNrOfNodes(h->Actions) > 1) {
 				Node *n = (Node *) RemTailNode(h->Actions);

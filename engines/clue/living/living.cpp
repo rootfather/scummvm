@@ -353,19 +353,19 @@ static void livRem(struct Living *liv) {
 }
 
 static void livLoadTemplates() {
-	List *l = CreateList();
+	NewList<NewNode> *l = new NewList<NewNode>;
 
 	char pathname[DSK_PATH_MAX];
 	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, LIV_ANIM_TEMPLATE_LIST, pathname);
 
-	uint16 cnt = ReadList(l, 0L, pathname);
+	uint16 cnt = l->readList(pathname);
 	if (!cnt)
 		ErrorMsg(Disk_Defect, ERROR_MODULE_LIVING, 3);
 
 	for (uint16 i = 0; i < cnt; i++) {
-		char *line = NODE_NAME(GetNthNode(l, i));
+		Common::String line = l->getNthNode(i)->_name;
 
-		AnimTemplate *tlt = (AnimTemplate *) CreateNode(sc->p_Template, sizeof(struct AnimTemplate), g_clue->_txtMgr->getKey(1, line));
+		AnimTemplate *tlt = (AnimTemplate *) CreateNode(sc->p_Template, sizeof(struct AnimTemplate), g_clue->_txtMgr->getKey(1, line.c_str()));
 
 		tlt->us_Width = (uint16)g_clue->_txtMgr->getKeyAsUint32(2, line);
 		tlt->us_Height = (uint16)g_clue->_txtMgr->getKeyAsUint32(3, line);
@@ -373,7 +373,7 @@ static void livLoadTemplates() {
 		tlt->us_FrameOffsetNr = (uint16)g_clue->_txtMgr->getKeyAsUint32(4, line);
 	}
 
-	RemoveList(l);
+	l->removeList();
 }
 
 static void livRemTemplate(struct AnimTemplate *tlt) {
@@ -381,19 +381,19 @@ static void livRemTemplate(struct AnimTemplate *tlt) {
 }
 
 static void livLoadLivings() {
-	List *l = CreateList();
+	NewList<NewNode> *l = new NewList<NewNode>;
 
 	char pathname[DSK_PATH_MAX];
 	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, LIV_LIVINGS_LIST, pathname);
 
-	uint16 cnt = ReadList(l, 0L, pathname);
+	uint16 cnt = l->readList(pathname);
 	if (!cnt)
 		ErrorMsg(Disk_Defect, ERROR_MODULE_LIVING, 2);
 
 	for (uint16 i = 0; i < cnt; i++) {
-		char *line = NODE_NAME(GetNthNode(l, i));
-		Common::String name = g_clue->_txtMgr->getKey(1, line);
-		Common::String templateName = g_clue->_txtMgr->getKey(2, line);
+		Common::String line = l->getNthNode(i)->_name;
+		Common::String name = g_clue->_txtMgr->getKey(1, line.c_str());
+		Common::String templateName = g_clue->_txtMgr->getKey(2, line.c_str());
 
 		livAdd(name,
 		       templateName,
@@ -403,7 +403,7 @@ static void livLoadLivings() {
 		       (int16)g_clue->_txtMgr->getKeyAsUint32(6, line));
 	}
 
-	RemoveList(l);
+	l->removeList();
 }
 
 static void livHide(struct Living *liv) {

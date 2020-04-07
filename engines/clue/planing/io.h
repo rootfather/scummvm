@@ -50,7 +50,7 @@ void plLoad(uint32 objId);
 void plSave(uint32 objId);
 void plSaveChanged(uint32 objId);
 
-List *plLoadTools(Common::Stream *fh);
+NewList<NewNode> *plLoadTools(Common::Stream *fh);
 void plSaveTools(Common::Stream *fh);
 
 } // End of namespace Clue

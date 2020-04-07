@@ -37,11 +37,6 @@ namespace Clue {
 #define OLF_ADD_SUCC_STRING   (1 << 4)
 #define OLF_ALIGNED           (1 << 5)
 
-#define OL_NAME(n)         ((const char *)NODE_NAME((Node *)n))
-#define OL_NR(n)           (((struct ObjectNode *)n)->nr)
-#define OL_TYPE(n)         (((struct ObjectNode *)n)->type)
-#define OL_DATA(n)         (((struct ObjectNode *)n)->data)
-
 #define OBJ_HASH_SIZE      31
 
 
@@ -59,17 +54,9 @@ struct dbObjectHeader {
 	uint32 size;
 };
 
-struct ObjectNode {
-	Node Link;
-	uint32 nr;
-	uint32 type;
-	void *data;
-};
-
-
 /* public global data */
-extern List *ObjectList;
-extern List *ObjectListPrivate;
+extern NewObjectList<NewObjectNode>* ObjectList;
+extern NewObjectList<NewObjectNode>* ObjectListPrivate;
 extern uint32 ObjectListWidth;
 extern Common::String (*ObjectListPrevString)(uint32, uint32, void *);
 extern Common::String (*ObjectListSuccString)(uint32, uint32, void *);
@@ -87,7 +74,7 @@ uint32 dbGetObjectCountOfDB(uint32 offset, uint32 size);
 void dbSetLoadObjectsMode(uint8 mode);
 
 /* public prototypes - OBJECT */
-void *dbNewObject(uint32 nr, uint32 type, uint32 size, char *name, uint32 realNr);
+void *dbNewObject(uint32 nr, uint32 type, uint32 size, Common::String name, uint32 realNr);
 
 void *dbGetObject(uint32 nr);
 uint32 dbGetObjectNr(void *key);
@@ -96,26 +83,20 @@ Common::String dbGetObjectName(uint32 nr);
 void *dbIsObject(uint32 nr, uint32 type);
 
 /* public prototypes - OBJECTNODE */
-struct ObjectNode *dbAddObjectNode(List *objectList, uint32 nr, uint32 flags);
-void dbRemObjectNode(List *objectList, uint32 nr);
-struct ObjectNode *dbHasObjectNode(List *objectList, uint32 nr);
+NewObjectNode *dbAddObjectNode(NewObjectList<NewObjectNode> *objectList, uint32 nr, uint32 flags);
+void dbRemObjectNode(NewList<NewObjectNode> *objectList, uint32 nr);
+NewObjectNode *dbHasObjectNode(NewList<NewObjectNode> *objectList, uint32 nr);
 
 void SetObjectListAttr(uint32 flags, uint32 type);
 void BuildObjectList(void *key);
-void ExpandObjectList(List *objectList, char *expandItem);
-void ExpandObjectList(List *objectList, Common::String expandItem);
 
-int16 dbStdCompareObjects(struct ObjectNode *obj1, struct ObjectNode *obj2);
-int32 dbSortObjectList(List **objectList,
-                       int16(*processNode)(struct ObjectNode *,
-                               struct ObjectNode *));
-void dbSortPartOfList(List *objectList, struct ObjectNode *start,
-                      struct ObjectNode *end,
-                      int16(*processNode)(struct ObjectNode *,
-                              struct ObjectNode *));
+int16 dbStdCompareObjects(NewObjectNode *obj1, NewObjectNode *obj2);
+int32 dbSortObjectList(NewObjectList<NewObjectNode> **objectList,
+					int16(*processNode)(NewObjectNode *, NewObjectNode *));
+void dbSortPartOfList(NewObjectList<NewObjectNode>* l, NewObjectNode* start, NewObjectNode* end,
+					int16(*processNode)(NewObjectNode*, NewObjectNode*));
 
-
-struct ObjectNode *dbAddObjectNode(List *objectList, uint32 nr, uint32 flags);
+NewObjectNode *dbAddObjectNode(NewObjectList<NewObjectNode> *objectList, uint32 nr, uint32 flags);
 void dbRemObjectNode(List *objectList, uint32 nr);
 
 /* public prototypes */

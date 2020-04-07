@@ -59,7 +59,7 @@ void tcDealerDlg() {
 		case 1:     /* offer */
 			hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Loot);
 
-			if (LIST_EMPTY(ObjectList)) {
+			if (ObjectList->isEmpty()) {
 				Say(BUSINESS_TXT, 0, dealer->PictID, "NO_LOOT");
 				AddVTime(17);
 			} else
@@ -83,7 +83,7 @@ void tcDealerOffer(Person dealer, byte which) {
 	};
 	CompleteLoot comp = (CompleteLoot)dbGetObject(CompleteLoot_LastLoot);
 
-	RemoveList(tcMakeLootList(Person_Matt_Stuvysunt, Relation_has));
+	tcMakeLootList(Person_Matt_Stuvysunt, Relation_has)->removeList();
 
 	if (comp->Bild)
 		tcDealerSays(dealer, 0, Price[which][0]);
@@ -108,10 +108,10 @@ void tcDealerOffer(Person dealer, byte which) {
 }
 
 void tcDealerSays(Person dealer, byte textNr, int32 perc) {
-	List *lootNames = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_LootE");
-	List *specialLoot = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_LootNameE");
-	List *dealerText = g_clue->_txtMgr->goKey(BUSINESS_TXT, "DEALER_OFFER");
-	List *dealerOffer = CreateList();
+	NewList<NewNode> *lootNames = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_LootE");
+	NewList<NewNode> *specialLoot = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_LootNameE");
+	NewList<NewNode> *dealerText = g_clue->_txtMgr->goKey(BUSINESS_TXT, "DEALER_OFFER");
+	NewList<NewNode> *dealerOffer = new NewList<NewNode>;
 	Player player = (Player)dbGetObject(Player_Player_1);
 
 	Person others[3];
@@ -121,11 +121,9 @@ void tcDealerSays(Person dealer, byte textNr, int32 perc) {
 
 	char line[TXT_KEY_LENGTH];
 	if (perc == 0) {
-		sprintf(line, NODE_NAME(GetNthNode(dealerText, 4)),
-		        NODE_NAME(GetNthNode(lootNames, (uint32) textNr)));
-		CreateNode(dealerOffer, 0L, line);
-
-		CreateNode(dealerOffer, 0L, NODE_NAME(GetNthNode(dealerText, 5)));
+		sprintf(line, dealerText->getNthNode(4)->_name.c_str(), lootNames->getNthNode((uint32) textNr)->_name.c_str());
+		dealerOffer->createNode(line);
+		dealerOffer->createNode(dealerText->getNthNode(5)->_name);
 
 		SetPictID(dealer->PictID);
 		Bubble(dealerOffer, 0, 0L, 0L);
@@ -133,42 +131,41 @@ void tcDealerSays(Person dealer, byte textNr, int32 perc) {
 		hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Loot);
 		perc = tcGetDealerPerc(dealer, perc);
 
-		for (ObjectNode *n = (ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n);
-		        n = (ObjectNode *) NODE_SUCC(n)) {
-			Loot loot = (Loot)OL_DATA(n);
-			uint32 price = hasGet(Person_Matt_Stuvysunt, OL_NR(n));
+		for (NewObjectNode *n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode *) n->_succ) {
+			Loot loot = (Loot)n->_data;
+			uint32 price = hasGet(Person_Matt_Stuvysunt, n->_nr);
 
 			uint32 offer = tcGetDealerOffer(price, perc);
 			offer = MAX(offer, 1u);
 
-			RemoveNode(dealerOffer, NULL);
+			dealerOffer->removeNode(NULL);
 
 			if (loot->Type == textNr) {
 				byte symp;
 				if (loot->Name) {
 					symp = 10;
 
-					sprintf(line, NODE_NAME(GetNthNode(dealerText, 2)),
-					        NODE_NAME(GetNthNode(specialLoot, (uint32) loot->Name)));
-					CreateNode(dealerOffer, 0L, line);
+					sprintf(line, dealerText->getNthNode(2)->_name.c_str(),
+					        specialLoot->getNthNode((uint32) loot->Name)->_name.c_str());
+					dealerOffer->createNode(line);
 
-					sprintf(line, NODE_NAME(GetNthNode(dealerText, 3)), offer);
-					CreateNode(dealerOffer, 0L, line);
+					sprintf(line, dealerText->getNthNode(3)->_name.c_str(), offer);
+					dealerOffer->createNode(line);
 				} else {
 					symp = 1;
 
-					sprintf(line, NODE_NAME(GetNthNode(dealerText, 0)), NODE_NAME(GetNthNode(lootNames, (uint32) textNr)));
-					CreateNode(dealerOffer, 0L, line);
+					sprintf(line, dealerText->getNthNode(0)->_name.c_str(), lootNames->getNthNode((uint32) textNr)->_name.c_str());
+					dealerOffer->createNode(line);
 
-					sprintf(line, NODE_NAME(GetNthNode(dealerText, 1)), price, offer);
-					CreateNode(dealerOffer, 0L, line);
+					sprintf(line, dealerText->getNthNode(1)->_name.c_str(), price, offer);
+					dealerOffer->createNode(line);
 				}
 
 				SetPictID(dealer->PictID);
 				Bubble(dealerOffer, 0, 0L, 0L);
 
 				if (!(Say(BUSINESS_TXT, 0, MATT_PICTID, "DEALER_ANSWER"))) {
-					hasUnSet(Person_Matt_Stuvysunt, OL_NR(n));
+					hasUnSet(Person_Matt_Stuvysunt, n->_nr);
 
 					int32 mattsMoney = MAX((((int32)offer * (player->MattsPart)) / 100), 1);
 
@@ -187,23 +184,23 @@ void tcDealerSays(Person dealer, byte textNr, int32 perc) {
 		}
 	}
 
-	RemoveList(specialLoot);
-	RemoveList(dealerOffer);
-	RemoveList(dealerText);
-	RemoveList(lootNames);
+	specialLoot->removeList();
+	dealerOffer->removeList();
+	dealerText->removeList();
+	lootNames->removeList();
 }
 
-List *tcMakeLootList(uint32 containerID, uint32 relID) {
+NewList<NewNode>* tcMakeLootList(uint32 containerID, uint32 relID) {
 	CompleteLoot comp = (CompleteLoot)dbGetObject(CompleteLoot_LastLoot);
-	List *lootE = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_LootE");
-	List *lootNameE = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_LootNameE");
-	List *out = CreateList();
+	NewList<NewNode> *lootE = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_LootE");
+	NewList<NewNode> *lootNameE = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_LootNameE");
+	NewList<NewNode> *out = new NewList<NewNode>;
 
 	/* Listen initialisieren */
 
 	SetObjectListAttr(OLF_PRIVATE_LIST, Object_Loot);
 	AskAll(dbGetObject(containerID), relID, BuildObjectList);
-	List *loots = ObjectListPrivate;
+	NewList<NewObjectNode> *loots = ObjectListPrivate;
 
 	comp->Bild = comp->Gold = comp->Geld = comp->Juwelen = 0;
 	comp->Delikates = comp->Statue = comp->Kuriositaet = 0;
@@ -213,10 +210,10 @@ List *tcMakeLootList(uint32 containerID, uint32 relID) {
 
 	/* Liste durcharbeiten */
 
-	if (!(LIST_EMPTY(loots))) {
-		for (Node *n = LIST_HEAD(loots); NODE_SUCC(n); n = NODE_SUCC(n)) {
-			if (OL_TYPE(n) == Object_Loot) {
-				Loot loot = (Loot)OL_DATA(n);
+	if (!loots->isEmpty()) {
+		for (NewObjectNode *n = loots->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
+			if (n->_type == Object_Loot) {
+				Loot loot = (Loot)n->_data;
 				uint32 value = GetP(dbGetObject(containerID), relID, loot);
 
 				switch (loot->Type) {
@@ -259,29 +256,29 @@ List *tcMakeLootList(uint32 containerID, uint32 relID) {
 
 				char data[TXT_KEY_LENGTH];
 				if (loot->Name)
-					strcpy(data, NODE_NAME(GetNthNode(lootNameE, loot->Name)));
+					strcpy(data, lootNameE->getNthNode(loot->Name)->_name.c_str());
 				else
-					strcpy(data, NODE_NAME(GetNthNode(lootE, loot->Type)));
+					strcpy(data, lootE->getNthNode(loot->Type)->_name.c_str());
 
-				CreateNode(out, 0L, data);
+				out->createNode(data);
 
 				sprintf(data, "%u", value);
-				CreateNode(out, 0L, data);
+				out->createNode(data);
 
 				sprintf(data, "%u", loot->Volume);
-				CreateNode(out, 0L, data);
+				out->createNode(data);
 
 				sprintf(data, "%u", loot->Weight);
-				CreateNode(out, 0L, data);
+				out->createNode(data);
 			}
 		}
 	}
 
-	RemoveList(lootE);
-	RemoveList(lootNameE);
-	RemoveList(loots);
+	lootE->removeList();
+	lootNameE->removeList();
+	loots->removeList();
 
-	return (out);
+	return out;
 }
 
 } // End of namespace Clue

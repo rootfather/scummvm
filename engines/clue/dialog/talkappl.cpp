@@ -30,11 +30,11 @@ void tcJobOffer(Person p) {
 
 	byte choice = Say(BUSINESS_TXT, 0, MATT_PICTID, "PERS_ANZ");
 	int32 part = tcGetPersOffer(p, (choice + 2));
-	List *bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "JOB_ANSWER", (uint32) part, NULL);
+	NewList<NewNode> *bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "JOB_ANSWER", (uint32) part, NULL);
 
 	SetPictID(p->PictID);
 	Bubble(bubble, 0, 0L, 0L);
-	RemoveList(bubble);
+	bubble->removeList();
 
 	choice = Say(BUSINESS_TXT, 0, MATT_PICTID, "NEW_THEEF");
 
@@ -49,51 +49,51 @@ void tcJobOffer(Person p) {
 }
 
 void tcMyJobAnswer(Person p) {
-	List *bubble = CreateList();
-	List *jobs = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_JobE");
+	NewList<NewNode> *bubble = new NewList<NewNode>;
+	NewList<NewNode> *jobs = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_JobE");
 	char job[TXT_KEY_LENGTH];
 
 	Common::String line;
-	strcpy(job, NODE_NAME(GetNthNode(jobs, p->Job)));
+	strcpy(job, jobs->getNthNode(p->Job)->_name.c_str());
 
-	if (strcmp(job, NODE_NAME(GetNthNode(jobs, 10)))) {
+	if (strcmp(job, jobs->getNthNode(10)->_name.c_str())) {
 		Common::String temp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "MY_JOB_IS");
 		line = Common::String::format(temp.c_str(), job);
 	} else
 		line = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_JOB");
 
 	SetPictID(p->PictID);
-	CreateNode(bubble, 0L, line);
+	bubble->createNode(line);
 	Bubble(bubble, 0, nullptr, 0L);
 
-	RemoveList(jobs);
-	RemoveList(bubble);
+	jobs->removeList();
+	bubble->removeList();
 }
 
 void tcPrisonAnswer(Person p) {
-	List *bubble = CreateList();
-	List *source = g_clue->_txtMgr->goKey(BUSINESS_TXT, "IN_PRISON_ANSWER");
+	NewList<NewNode> *bubble = new NewList<NewNode>;
+	NewList<NewNode> *source = g_clue->_txtMgr->goKey(BUSINESS_TXT, "IN_PRISON_ANSWER");
 	char line[TXT_KEY_LENGTH];
 
-	strcpy(line, NODE_NAME(GetNthNode(source, p->KnownToPolice / 52)));
+	strcpy(line, source->getNthNode(p->KnownToPolice / 52)->_name.c_str());
 
 	SetPictID(p->PictID);
-	CreateNode(bubble, 0L, line);
+	bubble->createNode(line);
 	Bubble(bubble, 0, 0, 0);
 
-	RemoveList(source);
-	RemoveList(bubble);
+	source->removeList();
+	bubble->removeList();
 }
 
 void tcAbilityAnswer(uint32 personID) {
 	Person p = (Person)dbGetObject(personID);
 
 	Common::String name = dbGetObjectName(personID);
-	List *bubble = g_clue->_txtMgr->goKey(ABILITY_TXT, name.c_str());
+	NewList<NewNode> *bubble = g_clue->_txtMgr->goKey(ABILITY_TXT, name.c_str());
 	SetPictID(p->PictID);
 	Bubble(bubble, 0, 0, 0);
 
-	RemoveList(bubble);
+	bubble->removeList();
 }
 
 } // End of namespace Clue

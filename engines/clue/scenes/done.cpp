@@ -24,32 +24,32 @@ namespace Clue {
 
 void DoneTaxi() {
 	static byte i = 0;
-	List *locs = CreateList();
+	NewObjectList<NewObjectNode> *locs = new NewObjectList<NewObjectNode>;
 
 	knowsSet(Person_Matt_Stuvysunt, Person_Dan_Stanford);
 	taxiAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Location);
 
-	for (ObjectNode *n = (ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n); n = (ObjectNode *) NODE_SUCC(n)) {
-		Location loc = (Location)OL_DATA(n);
+	for (NewObjectNode *n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode *) n->_succ) {
+		Location loc = (Location)n->_data;
 		uint32 locNr = loc->LocationNr;
 
 		char name[TXT_KEY_LENGTH];
 		sprintf(name, "*%s", film->loc_names->getNthNode(locNr)->_name.c_str());
 
-		ObjectNode *newNode = (ObjectNode *) CreateNode(locs, sizeof(ObjectNode), name);
-		newNode->nr = locNr + 1;    /* because of ChoiceOk */
+		NewObjectNode *newNode = locs->createNode(name);
+		newNode->_nr = locNr + 1;    /* because of ChoiceOk */
 	}
 
-	i = MIN((uint32)i, GetNrOfNodes(locs) - 1);
+	i = MIN((uint32)i, locs->getNrOfNodes() - 1);
 
 	Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
-	ExpandObjectList(locs, exp);
+	locs->expandObjectList(exp);
 
-	byte j = Bubble(locs, i, nullptr, 0L);
+	byte j = Bubble((NewList<NewNode>*)locs, i, nullptr, 0L);
 	if (ChoiceOk(j, GET_OUT, locs)) {
 		i = j;
 
-		uint32 locNr = OL_NR(GetNthNode(locs, i)) - 1;
+		uint32 locNr = locs->getNthNode(i)->_nr - 1;
 		_sceneArgs._returnValue = GetLocScene(locNr)->EventNr;
 	} else {
 		Say(BUSINESS_TXT, 0, MATT_PICTID, "LOVELY_TAXI");
@@ -60,12 +60,13 @@ void DoneTaxi() {
 	_sceneArgs._overwritten = true;
 	_sceneArgs._options = 0L;
 
-	RemoveList(locs);
+	locs->removeList();
+
 	gfxChangeColors(l_gc, 2L, GFX_FADE_OUT, 0L);
 }
 
 void DoneInsideHouse() {
-	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
+	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 
 	_sceneArgs._returnValue = 0;
 	_sceneArgs._overwritten = true;
@@ -77,8 +78,8 @@ void DoneInsideHouse() {
 
 	/* jetzt alle Stockwerke laden */
 	uint32 areaID;
-	for (Node *node = LIST_HEAD(ObjectList); NODE_SUCC(node); node = NODE_SUCC(node)) {
-		areaID = OL_NR(node);
+	for (NewObjectNode *node = ObjectList->getListHead(); node->_succ; node = (NewObjectNode *)node->_succ) {
+		areaID = node->_nr;
 
 		lsInitRelations(areaID);
 		lsInitObjectDB(buildingID, areaID);
@@ -86,7 +87,7 @@ void DoneInsideHouse() {
 
 	startsWithAll(buildingID, OLF_NORMAL, Object_LSArea);
 
-	areaID = OL_NR(LIST_HEAD(ObjectList));
+	areaID = ObjectList->getListHead()->_nr;
 	lsLoadGlobalData(buildingID, areaID);   /* Stechuhren und so... */
 	/* muß nur einmal geladen werden.. */
 
@@ -137,17 +138,17 @@ void DoneInsideHouse() {
 	consistsOfAll(buildingID, OLF_NORMAL, Object_LSArea);
 
 	/* jetzt alle Stockwerke entfernen */
-	for (Node *node = LIST_HEAD(ObjectList); NODE_SUCC(node); node = NODE_SUCC(node))
-		lsDoneObjectDB(OL_NR(node));
+	for (NewObjectNode *node = ObjectList->getListHead(); node->_succ; node = (NewObjectNode *)node->_succ)
+		lsDoneObjectDB(node->_nr);
 
 	StopAnim();
 	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
 
-	RemoveList(menu);
+	menu->removeList();
 }
 
 void DoneTools() {
-	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
+	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 
 	_sceneArgs._overwritten = true;
 
@@ -177,13 +178,13 @@ void DoneTools() {
 
 	livesInSet(London_London_1, Person_Mary_Bolton);
 
-	RemoveList(menu);
+	menu->removeList();
 	StopAnim();
 	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
 }
 
 void DoneDealer() {
-	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
+	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 
 	_sceneArgs._overwritten = true;
 	_sceneArgs._returnValue = 0L;
@@ -216,14 +217,14 @@ void DoneDealer() {
 	livesInSet(London_London_1, Person_Eric_Pooly);
 	livesInSet(London_London_1, Person_Helen_Parker);
 
-	RemoveList(menu);
+	menu->removeList();
 	StopAnim();
 	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
 }
 
 void DoneParking() {
-	List *bubble = g_clue->_txtMgr->goKey(BUSINESS_TXT, "PARKING");
-	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
+	NewList<NewNode> *bubble = g_clue->_txtMgr->goKey(BUSINESS_TXT, "PARKING");
+	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 	Person marc = (Person)dbGetObject(Person_Marc_Smith);
 
 	_sceneArgs._overwritten = true;
@@ -275,14 +276,15 @@ void DoneParking() {
 		}
 	}
 
-	RemoveList(bubble);
-	RemoveList(menu);
+	bubble->removeList();
+	menu->removeList();
+
 	StopAnim();
 	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
 }
 
 void DoneGarage() {
-	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
+	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 	byte activ = 0;
 	Person marc = (Person)dbGetObject(Person_Marc_Smith);
 
@@ -319,7 +321,7 @@ void DoneGarage() {
 		}
 	}
 
-	RemoveList(menu);
+	menu->removeList();
 	StopAnim();
 	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
 }

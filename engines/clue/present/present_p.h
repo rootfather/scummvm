@@ -26,14 +26,4 @@ struct PresentControl {
 	byte uch_TCol;
 };
 
-struct presentationInfo {
-	Node link;
-
-	char extendedText[70];
-	uint32 extendedNr;
-	uint32 maxNr;
-
-	byte presentHow;
-};
-
 } // End of namespace Clue

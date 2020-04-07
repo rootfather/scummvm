@@ -22,16 +22,15 @@
 
 namespace Clue {
 
-void grdDo(Common::Stream *fh, struct System *sys, List *personsList, uint32 burglarsNr,
-           uint32 personsNr, byte grdAction) {
+void grdDo(Common::Stream *fh, struct System *sys, NewObjectList<NewObjectNode> *personsList, uint32 burglarsNr, uint32 personsNr, byte grdAction) {
 	for (uint32 i = burglarsNr; i < personsNr; i++) {
 		switch (grdAction) {
 		case GUARDS_DO_SAVE:
-			SaveHandler(fh, sys, OL_NR(GetNthNode(personsList, i)));
+			SaveHandler(fh, sys, personsList->getNthNode(i)->_nr);
 			break;
 
 		case GUARDS_DO_LOAD:
-			LoadHandler(fh, sys, OL_NR(GetNthNode(personsList, i)));
+			LoadHandler(fh, sys, personsList->getNthNode(i)->_nr);
 			break;
 		}
 	}
@@ -55,13 +54,12 @@ void grdDone(Common::Stream *fh) {
 	dskClose(fh);
 }
 
-bool grdAddToList(uint32 bldId, List *l) {
+bool grdAddToList(uint32 bldId, NewObjectList<NewObjectNode> *l) {
 	isGuardedbyAll(bldId, OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Police);
 
-	if (!LIST_EMPTY(ObjectList)) {
-		for (ObjectNode *n = (ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n);
-		        n = (ObjectNode *) NODE_SUCC(n))
-			dbAddObjectNode(l, OL_NR(n), OLF_INCLUDE_NAME | OLF_INSERT_STAR);
+	if (!ObjectList->isEmpty()) {
+		for (NewObjectNode *n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode *) n->_succ)
+			dbAddObjectNode(l, n->_nr, OLF_INCLUDE_NAME | OLF_INSERT_STAR);
 
 		return true;
 	}
@@ -71,18 +69,17 @@ bool grdAddToList(uint32 bldId, List *l) {
 
 bool grdDraw(_GC *gc, uint32 bldId, uint32 areaId) {
 	bool ret = false;
-	List *GuardsList = CreateList();
+	NewObjectList<NewObjectNode> *GuardsList = new NewObjectList<NewObjectNode>;
 	if (grdAddToList(bldId, GuardsList)) {
 		Common::Stream *fh;
 		if (grdInit(&fh, 0, bldId, areaId)) {
 			uint16 xpos = 0, ypos = 0;
 
-			uint32 GuardsNr = GetNrOfNodes(GuardsList);
+			uint32 GuardsNr = GuardsList->getNrOfNodes();
 			struct System *grdSys = InitSystem();
 
 			for (uint32 i = 0; i < GuardsNr; i++) {
-				InitHandler(grdSys, OL_NR(GetNthNode(GuardsList, i)),
-				            SHF_AUTOREVERS);
+				InitHandler(grdSys, GuardsList->getNthNode(i)->_nr, SHF_AUTOREVERS);
 			}
 
 			grdDo(fh, grdSys, GuardsList, 0, GuardsNr, GUARDS_DO_LOAD);
@@ -91,8 +88,8 @@ bool grdDraw(_GC *gc, uint32 bldId, uint32 areaId) {
 			dbSortObjectList(&GuardsList, dbStdCompareObjects);
 
 			for (uint32 i = 0; i < GuardsNr; i++) {
-				if (areaId == isGuardedbyGet(bldId, OL_NR(GetNthNode(GuardsList, i)))) {
-					struct Handler *h = FindHandler(grdSys, OL_NR(GetNthNode(GuardsList, i)));
+				if (areaId == isGuardedbyGet(bldId, GuardsList->getNthNode(i)->_nr)) {
+					struct Handler *h = FindHandler(grdSys, GuardsList->getNthNode(i)->_nr);
 
 					/* getting start coordinates */
 					switch (i) {
@@ -158,14 +155,13 @@ bool grdDraw(_GC *gc, uint32 bldId, uint32 areaId) {
 			ret = true;
 
 			for (uint32 i = 0; i < GuardsNr; i++)
-				CloseHandler(grdSys, OL_NR(GetNthNode(GuardsList, i)));
+				CloseHandler(grdSys, GuardsList->getNthNode(i)->_nr);
 
 			CloseSystem(grdSys);
 		}
 	}
 
-	RemoveList(GuardsList);
-
+	GuardsList->removeList();
 	return ret;
 }
 

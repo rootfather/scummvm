@@ -23,16 +23,16 @@
 
 namespace Clue {
 
-static uint32 tcShowPatrol(List *bubble_l, Common::String c_time, Common::String patr, byte first,
+static uint32 tcShowPatrol(NewList<NewNode> *bubble_l, Common::String c_time, Common::String patr, byte first,
                            Building bui, uint32 raise) {
 	uint32 choice = 0;
-	Common::String patrolie = c_time + ' ' + patr;
+	Common::String patrol = c_time + ' ' + patr;
 
-	CreateNode(bubble_l, 0L, patrolie);
+	bubble_l->createNode(patrol);
 
 	SetBubbleType(THINK_BUBBLE);
 
-	Bubble(bubble_l, (byte) first, nullptr, 140L);
+	Bubble(bubble_l, first, nullptr, 140L);
 	choice = GetExtBubbleActionInfo();
 
 	tcAddBuildExactlyness(bui, raise);
@@ -43,7 +43,7 @@ static uint32 tcShowPatrol(List *bubble_l, Common::String c_time, Common::String
 }
 
 void Investigate(const char *location) {
-	Node *n, *nextMsg;
+	NewNode *nextMsg;
 	uint32 minutes = 0, choice = 0, first = 0;
 
 	uint32 buiID = GetObjNrOfBuilding(GetLocation);
@@ -51,10 +51,10 @@ void Investigate(const char *location) {
 
 	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		if (buiID == Building_Buckingham_Palace) {
-			List *bubble_l = g_clue->_txtMgr->goKey(INVESTIGATIONS_TXT, "BuckinghamBeobachtet");
+			NewList<NewNode> *bubble_l = g_clue->_txtMgr->goKey(INVESTIGATIONS_TXT, "BuckinghamBeobachtet");
 			SetBubbleType(THINK_BUBBLE);
 			Bubble(bubble_l, 0, 0L, 0L);
-			RemoveList(bubble_l);
+			bubble_l->removeList();
 			return;
 		}
 	}
@@ -62,7 +62,7 @@ void Investigate(const char *location) {
 	if (!(GamePlayMode & GP_MUSIC_OFF))
 		sndPlaySound("invest.bk", 0);
 
-	inpTurnESC(0);
+	inpTurnESC(false);
 
 	ShowMenuBackground();   /* Bildschirmaufbau */
 	ShowTime(0);
@@ -77,9 +77,9 @@ void Investigate(const char *location) {
 	gfxPrint(m_gc, line, 24, GFX_PRINT_CENTER);
 
 	/* Beobachtungstexte von Disk lesen */
-	List *origin = g_clue->_txtMgr->goKey(INVESTIGATIONS_TXT, location);
-	List *bubble_l = CreateList();
-	uint32 count = GetNrOfNodes(origin);
+	NewList<NewNode> *origin = g_clue->_txtMgr->goKey(INVESTIGATIONS_TXT, location);
+	NewList<NewNode> *bubble_l = new NewList<NewNode>;
+	uint32 count = origin->getNrOfNodes();
 	uint32 guarding = (uint32) tcRGetGRate(bui);
 	uint32 patrolCount = (270 - guarding) / 4 + 1;
 
@@ -95,14 +95,14 @@ void Investigate(const char *location) {
 	hasSet(Person_Matt_Stuvysunt, buiID);
 
 	/* bis zur 1. Meldung Zeit vergehen lassen! */
-	for (nextMsg = 0; nextMsg == 0;) {
+	for (nextMsg = nullptr; nextMsg == nullptr;) {
 		Common::String c_time = BuildTime(GetMinute);
 
 		if (!(GetMinute % 60))
 			ShowTime(0);
 
-		for (n = LIST_HEAD(origin); NODE_SUCC(n); n = NODE_SUCC(n)) {
-			if (strncmp(NODE_NAME(n), c_time.c_str(), 5) == 0)
+		for (NewNode *n = origin->getListHead(); n->_succ; n = n->_succ) {
+			if (strncmp(n->_name.c_str(), c_time.c_str(), 5) == 0)
 				nextMsg = n;
 		}
 
@@ -132,25 +132,25 @@ void Investigate(const char *location) {
 
 		/* Überprüfen ob zur aktuellen Zeit (time) etwas geschieht : */
 		if (!choice) {
-			if (strncmp(NODE_NAME(nextMsg), c_time.c_str(), 5) == 0) {
+			if (strncmp(nextMsg->_name.c_str(), c_time.c_str(), 5) == 0) {
 				if ((GetMinute % 60) != 0)
 					ShowTime(0);
 
-				n = (Node *)CreateNode(bubble_l, 0L, NODE_NAME(nextMsg));
+				bubble_l->createNode(nextMsg->_name);
 
 				SetBubbleType(THINK_BUBBLE);
 
-				Bubble(bubble_l, (byte) first++, 0, 140L);
+				Bubble(bubble_l, (byte) first++, nullptr, 140L);
 				choice = GetExtBubbleActionInfo();
 
 				tcAddBuildExactlyness(bui, raise);
 
 				ShowTime(0);
 
-				if (NODE_SUCC(NODE_SUCC(nextMsg)))
-					nextMsg = NODE_SUCC(nextMsg);
+				if (nextMsg->_succ->_succ)
+					nextMsg = nextMsg->_succ;
 				else
-					nextMsg = LIST_HEAD(origin);
+					nextMsg = origin->getListHead();
 			}
 		}
 
@@ -166,16 +166,16 @@ void Investigate(const char *location) {
 			    inpWaitFor(INP_TIME | INP_LBUTTONP | INP_RBUTTONP | INP_ESC);
 	}
 
-	RemoveList(bubble_l);
+	bubble_l->removeList();
 
 	if (minutes >= 1440) {  /* wurde 24 Stunden lang beobachtet ? */
 		bubble_l = g_clue->_txtMgr->goKey(INVESTIGATIONS_TXT, "24StundenBeobachtet");
 		SetBubbleType(THINK_BUBBLE);
-		Bubble(bubble_l, 0, 0L, 0L);
-		RemoveList(bubble_l);
+		Bubble(bubble_l, 0, nullptr, 0L);
+		bubble_l->removeList();
 	}
 
-	RemoveList(origin);
+	origin->removeList();
 
 	Present(buiID, "Building", InitBuildingPresent);
 
@@ -217,7 +217,7 @@ void Investigate(const char *location) {
 		ContinueAnim();
 	}
 
-	inpTurnESC(1);
+	inpTurnESC(true);
 }
 
 } // End of namespace Clue

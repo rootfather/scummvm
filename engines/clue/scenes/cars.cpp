@@ -75,24 +75,24 @@ void tcBuyCar() {
 		hasAll(Person_Marc_Smith,
 		       OLF_ALIGNED | OLF_PRIVATE_LIST | OLF_INCLUDE_NAME |
 		       OLF_INSERT_STAR | OLF_ADD_SUCC_STRING, Object_Car);
-		List *bubble = ObjectListPrivate;
+		NewObjectList<NewObjectNode> *bubble = ObjectListPrivate;
 
 		ObjectListSuccString = nullptr;
 		ObjectListWidth = 0;
 
-		if (!LIST_EMPTY(bubble)) {
+		if (!bubble->isEmpty()) {
 			Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "THANKS");
-			ExpandObjectList(bubble, exp);
+			bubble->expandObjectList(exp);
 
 			ShowMenuBackground();
 
-			if (ChoiceOk(choice = Bubble(bubble, 0, 0L, 0L), GET_OUT, bubble)) {
-				Car matts_car = (Car) dbGetObject(((ObjectNode *)GetNthNode(bubble, (uint32) choice))->nr);
+			if (ChoiceOk(choice = Bubble((NewList<NewNode> *)bubble, 0, 0L, 0L), GET_OUT, bubble)) {
+				Car matts_car = (Car) dbGetObject(bubble->getNthNode((uint32) choice)->_nr);
 
 				SetCarColors((byte) matts_car->ColorIndex);
 				gfxShow((uint16) matts_car->PictID, GFX_NO_REFRESH | GFX_OVERLAY, 0L, -1L, -1L);
 
-				if (Present(((ObjectNode *) GetNthNode(bubble, (uint32) choice))->nr, "Car", InitCarPresent)) {
+				if (Present(bubble->getNthNode((uint32) choice)->_nr, "Car", InitCarPresent)) {
 					choice1 = Say(BUSINESS_TXT, 0, MATT_PICTID, "AUTOKAUF");
 
 					AddVTime(7);
@@ -101,7 +101,7 @@ void tcBuyCar() {
 						uint32 price = tcGetCarPrice(matts_car);
 
 						if (tcSpendMoney(price, 0)) {
-							uint32 carID = ((ObjectNode *)GetNthNode(bubble, (uint32) choice))->nr;
+							uint32 carID = bubble->getNthNode((uint32) choice)->_nr;
 
 							hasSet(Person_Matt_Stuvysunt, carID);
 							hasUnSet(Person_Marc_Smith, carID);
@@ -123,7 +123,7 @@ void tcBuyCar() {
 			choice = GET_OUT;
 		}
 
-		RemoveList(bubble);
+		bubble->removeList();
 	}
 }
 
@@ -168,23 +168,27 @@ void tcColorCar(Car car) {
 	Person marc = (Person) dbGetObject(Person_Marc_Smith);
 	uint32 costs = (uint32)tcColorCosts(car);
 
-	List *bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "LACKIEREN", (uint32) costs, NULL);
+	NewList<NewNode> *bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "LACKIEREN", (uint32) costs, NULL);
 
 	SetPictID(marc->PictID);
 	Bubble(bubble, 0, 0L, 0L);
-	RemoveList(bubble);
+	bubble->removeList();
 
 	if (Say(BUSINESS_TXT, 0, MATT_PICTID, "LACKIEREN_ANT") == 0) {
-		List *colors = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_ColorE");
+		NewList<NewNode> *colors = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_ColorE");
 
-		g_clue->_txtMgr->putCharacter(colors, 0, '*');
+		colors->putCharacter(0, '*');
 
 		if (tcSpendMoney(costs, 1)) {
 			Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
-			ExpandObjectList(colors, exp);
+			// FIXME : weird call. Replaced by createNode to have something visible for a test
+			// colors->expandObjectList(exp);
+			warning("plOpen - Workaround used - to be fixed.");
+			colors->createNode(exp);
+			// 
 
 			byte choice = Bubble(colors, (byte) car->ColorIndex, 0L, 0L);
-			if (ChoiceOk(choice, GET_OUT, colors)) {
+			if (ChoiceOkHack(choice, GET_OUT, colors)) {
 				car->ColorIndex = (ColorE) choice;
 
 				SetCarColors(car->ColorIndex);
@@ -204,7 +208,7 @@ void tcColorCar(Car car) {
 			}
 		}
 
-		RemoveList(colors);
+		colors->removeList();
 	}
 
 	AddVTime(137);
@@ -215,7 +219,7 @@ void tcSellCar(uint32 ObjectID) {
 	Car car = (Car) dbGetObject(ObjectID);
 	uint32 offer = tcGetCarTraderOffer(car);
 
-	List *bubble;
+	NewList<NewNode> *bubble;
 	if (tcRGetCarAge(car) < 1)
 		bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "ANGEBOT_1", tcRGetCarValue(car), offer, NULL);
 	else
@@ -223,7 +227,7 @@ void tcSellCar(uint32 ObjectID) {
 
 	SetPictID(marc->PictID);
 	Bubble(bubble, 0, 0L, 0L);
-	RemoveList(bubble);
+	bubble->removeList();
 
 	if ((Say(BUSINESS_TXT, 0, MATT_PICTID, "VERKAUF")) == 0) {
 		tcAddPlayerMoney(offer);
@@ -237,11 +241,11 @@ void tcSellCar(uint32 ObjectID) {
 }
 
 void tcRepairCar(Car car, const char *repairWhat) {
-	List *presentationData = CreateList();
+	NewList<PresentationInfoNode> *presentationData = new NewList<PresentationInfoNode>;
 	bool enough = true;
 	Person marc = (Person) dbGetObject(Person_Marc_Smith);
 
-	List *list = NULL;
+	NewList<NewNode> *list = NULL;
 	byte *item = NULL;
 	uint32 costs = 0;
 	byte type = 7;
@@ -290,9 +294,9 @@ void tcRepairCar(Car car, const char *repairWhat) {
 		AddPresentLine(presentationData, PRESENT_AS_NUMBER, totalCosts, 0L, list, line++);
 		AddPresentLine(presentationData, PRESENT_AS_NUMBER, (uint32) tcGetPlayerMoney, 0L, list, line++);
 
-		DrawPresent(presentationData, 0, u_gc, (byte) GetNrOfNodes(presentationData));
+		DrawPresent(presentationData, 0, u_gc, (byte)presentationData->getNrOfNodes());
 
-		RemoveNode(presentationData, NULL);
+		presentationData->removeNode(NULL);
 
 		choice = inpWaitFor(INP_LBUTTONP | INP_TIME);
 
@@ -338,29 +342,29 @@ void tcRepairCar(Car car, const char *repairWhat) {
 	/*gfxShow(26,GFX_NO_REFRESH|GFX_ONE_STEP,0L,-1L,-1L);*/
 	/*gfxShow((uint16)car->PictID,GFX_NO_REFRESH|GFX_OVERLAY,1L,-1L,-1L);*/
 
-	RemoveList(presentationData);
-	RemoveList(list);
+	presentationData->removeList();
+	list->removeList();
 }
 
 uint32 tcChooseCar(uint32 backgroundNr) {
 	hasAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Car);
 
-	List *bubble = ObjectListPrivate;
+	NewObjectList<NewObjectNode> *bubble = ObjectListPrivate;
 	uint32 carID = 0L;
-	if (!(LIST_EMPTY(bubble))) {
-		uint32 carCount = GetNrOfNodes(bubble);
+	if (!bubble->isEmpty()) {
+		uint32 carCount = bubble->getNrOfNodes();
 		byte choice;
 		if (carCount == 1) {
-			carID = OL_NR(LIST_HEAD(bubble));
+			carID = bubble->getListHead()->_nr;
 			choice = 1;
 		} else {
 			Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
-			ExpandObjectList(bubble, exp);
+			bubble->expandObjectList(exp);
 
 			Say(BUSINESS_TXT, 0, 7, "ES GEHT UM..");
 
-			if (ChoiceOk((choice = Bubble(bubble, 0, 0L, 0L)), GET_OUT, bubble))
-				carID = OL_NR(GetNthNode(bubble, (uint32) choice));
+			if (ChoiceOk(choice = Bubble((NewList<NewNode>*)bubble, 0, 0L, 0L), GET_OUT, bubble))
+				carID = bubble->getNthNode((uint32) choice)->_nr;
 			else
 				choice = GET_OUT;
 		}
@@ -373,9 +377,9 @@ uint32 tcChooseCar(uint32 backgroundNr) {
 		}
 	}
 
-	RemoveList(bubble);
+	bubble->removeList();
 
-	return (carID);
+	return carID;
 }
 
 void tcCarGeneralOverhoul(Car car) {
@@ -383,10 +387,10 @@ void tcCarGeneralOverhoul(Car car) {
 
 	SetPictID(marc->PictID);
 
-	List *bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "GENERAL_OVERHOUL",
+	NewList<NewNode> *bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "GENERAL_OVERHOUL",
 	                      (uint32)((tcCostsPerTotalRepair(car) * 255) / 8), NULL);
 	Bubble(bubble, 0, 0L, 0L);
-	RemoveList(bubble);
+	bubble->removeList();
 
 	byte choice = Say(BUSINESS_TXT, 0, MATT_PICTID, "GENERAL_OVERHOUL_QUEST");
 

@@ -41,17 +41,17 @@ byte tcBuyTool(byte choice) {
 	hasAll(Person_Mary_Bolton,
 	       OLF_ALIGNED | OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR |
 	       OLF_ADD_SUCC_STRING, Object_Tool);
-	List *tools = ObjectListPrivate;
+	NewObjectList<NewObjectNode> *tools = ObjectListPrivate;
 
 	ObjectListSuccString = NULL;
 	ObjectListWidth = 0;
 
 	Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "THANKS");
-	ExpandObjectList(tools, exp);
+	tools->expandObjectList(exp);
 
 	SetBubbleType(THINK_BUBBLE);
 
-	uint32 count = GetNrOfNodes(tools) - 1;
+	uint32 count = tools->getNrOfNodes() - 1;
 
 	choice = MIN((uint32)choice, count);
 	uint8 oldChoice = GET_OUT;
@@ -60,9 +60,10 @@ byte tcBuyTool(byte choice) {
 
 		oldChoice = choice;
 
-		if (ChoiceOk(choice = Bubble(tools, choice, 0L, 0L), GET_OUT, tools)) {
-			Node *node = (Node *)GetNthNode(tools, (uint32) choice);
-			uint32 toolID = OL_NR(node);
+		choice = Bubble((NewList<NewNode>*)tools, choice, 0L, 0L);
+		if (ChoiceOk(choice, GET_OUT, tools)) {
+			NewObjectNode *node = tools->getNthNode((uint32) choice);
+			uint32 toolID = node->_nr;
 			Tool tool = (Tool) dbGetObject(toolID);
 			uint32 price = tcGetToolPrice(tool);
 
@@ -78,9 +79,8 @@ byte tcBuyTool(byte choice) {
 			choice = GET_OUT;
 	}
 
-	RemoveList(tools);
-
-	return (oldChoice);
+	tools->removeList();
+	return oldChoice;
 }
 
 byte tcDescTool(byte choice) {
@@ -93,36 +93,36 @@ byte tcDescTool(byte choice) {
 	hasAll(Person_Mary_Bolton,
 	       OLF_ALIGNED | OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR |
 	       OLF_ADD_SUCC_STRING, Object_Tool);
-	List *tools = ObjectListPrivate;
+	NewObjectList<NewObjectNode> *tools = ObjectListPrivate;
 
 	ObjectListWidth = 0;
 	ObjectListSuccString = nullptr;
 
 	Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "THANKS");
-	ExpandObjectList(tools, exp);
+	tools->expandObjectList(exp);
 
-	choice = MIN((uint32)choice, (GetNrOfNodes(tools) - 1));
+	choice = MIN((uint32)choice, tools->getNrOfNodes() - 1);
 
 	while (choice != GET_OUT) {
 		SetPictID(MATT_PICTID);
 
 		oldChoice = choice;
+		choice = Bubble((NewList<NewNode>*)tools, choice, 0L, 0L);
 
-		if (ChoiceOk(choice = Bubble(tools, choice, 0L, 0L), GET_OUT, tools)) {
-			Common::String line = dbGetObjectName(OL_NR(GetNthNode(tools, (uint32) choice)));
-			List* desc = g_clue->_txtMgr->goKey(TOOLS_TXT, line.c_str());
+		if (ChoiceOk(choice, GET_OUT, tools)) {
+			Common::String line = dbGetObjectName(tools->getNthNode((uint32) choice)->_nr);
+			NewList<NewNode> *desc = g_clue->_txtMgr->goKey(TOOLS_TXT, line.c_str());
 
 			SetPictID(mary->PictID);
 			Bubble(desc, 0, nullptr, 0L);
 
-			RemoveList(desc);
+			desc->removeList();
 		} else
 			choice = GET_OUT;
 	}
 
-	RemoveList(tools);
-
-	return (oldChoice);
+	tools->removeList();
+	return oldChoice;
 }
 
 byte tcShowTool(byte choice) {
@@ -134,70 +134,71 @@ byte tcShowTool(byte choice) {
 	hasAll(Person_Mary_Bolton,
 	       OLF_ALIGNED | OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR |
 	       OLF_ADD_SUCC_STRING, Object_Tool);
-	List *tools = ObjectListPrivate;
+	NewObjectList<NewObjectNode> *tools = ObjectListPrivate;
 
-	ObjectListSuccString = NULL;
+	ObjectListSuccString = nullptr;
 	ObjectListWidth = 0;
 
 	Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "THANKS");
-	ExpandObjectList(tools, exp);
+	tools->expandObjectList(exp);
 
-	choice = MIN((uint32)choice, (GetNrOfNodes(tools) - 1));
+	choice = MIN((uint32)choice, tools->getNrOfNodes() - 1);
 
 	while (choice != GET_OUT) {
 		SetPictID(MATT_PICTID);
 
 		oldChoice = choice;
-
-		if (ChoiceOk(choice = Bubble(tools, choice, 0L, 0L), GET_OUT, tools)) {
-			Node *node = (Node *)GetNthNode(tools, (uint32) choice);
-			uint32 toolID = OL_NR(node);
+		choice = Bubble((NewList<NewNode>*)tools, choice, 0L, 0L);
+		if (ChoiceOk(choice, GET_OUT, tools)) {
+			NewObjectNode *node = tools->getNthNode((uint32) choice);
+			uint32 toolID = node->_nr;
 
 			Present(toolID, "Tool", InitToolPresent);
 		} else
 			choice = GET_OUT;
 	}
 
-	RemoveList(tools);
+	tools->removeList();
 
-	return (oldChoice);
+	return oldChoice;
 }
 
 void tcSellTool() {
 	Person mary = (Person) dbGetObject(Person_Mary_Bolton);
 
 	hasAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Tool);
-	List *tools = ObjectListPrivate;
+	NewObjectList<NewObjectNode> *tools = ObjectListPrivate;
 
 	dbRemObjectNode(tools, Tool_Hand);
 	dbRemObjectNode(tools, Tool_Fusz);
 
-	if (LIST_EMPTY(tools))
+	if (tools->isEmpty())
 		Say(BUSINESS_TXT, 0, MATT_PICTID, "MATT_HAS_NO_TOOL");
 
 	byte choice = 0;
-	while ((choice != GET_OUT) && (!LIST_EMPTY(tools))) {
+	while ((choice != GET_OUT) && !tools->isEmpty()) {
 		Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
-		ExpandObjectList(tools, exp);
+		tools->expandObjectList(exp);
 
 		SetPictID(MATT_PICTID);
-		if (ChoiceOk(choice = Bubble(tools, 0, NULL, 0L), GET_OUT, tools)) {
+		choice = Bubble((NewList<NewNode>*)tools, 0, NULL, 0L);
+		if (ChoiceOk(choice, GET_OUT, tools)) {
 			byte choice2 = 0;
-			Node *node = (Node *)GetNthNode(tools, (uint32) choice);
-			uint32 toolID = OL_NR(node);
+			NewObjectNode *node = tools->getNthNode((uint32)choice);
+			uint32 toolID = node->_nr;
 
 			Tool tool = (Tool) dbGetObject(toolID);
 			uint32 price = tcGetToolTraderOffer(tool);
 
-			List *bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "ANGEBOT_WERKZ", price);
+			NewList<NewNode> *bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "ANGEBOT_WERKZ", price);
 
 			SetPictID(mary->PictID);
 			Bubble(bubble, 0, 0L, 0L);
-			RemoveList(bubble);
+			bubble->removeList();
 
 			bubble = g_clue->_txtMgr->goKey(BUSINESS_TXT, "VERKAUF");
-
-			if (ChoiceOk(choice2 = Bubble(bubble, choice2, 0L, 0L), GET_OUT, bubble)) {
+			choice2 = Bubble(bubble, choice2, 0L, 0L);
+			if (ChoiceOkHack(choice2, GET_OUT, bubble)) {
 				if (choice2 == 0) {
 					tcAddPlayerMoney(price);
 					hasSet(Person_Mary_Bolton, toolID);
@@ -205,11 +206,11 @@ void tcSellTool() {
 				}
 			}
 
-			RemoveList(bubble);
+			bubble->removeList();
 		} else
 			choice = GET_OUT;
 
-		RemoveList(tools);
+		tools->removeList();
 
 		hasAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Tool);
 		tools = ObjectListPrivate;
@@ -218,7 +219,7 @@ void tcSellTool() {
 		dbRemObjectNode(tools, Tool_Fusz);
 	}
 
-	RemoveList(tools);
+	tools->removeList();
 }
 
 void tcToolsShop() {

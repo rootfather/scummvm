@@ -97,14 +97,14 @@ static struct {
 
 static void CheckSurrounding(uint32 current) {
 #ifndef PLAN_IS_PERFECT
-	if (has(OL_NR(GetNthNode(PersonsList, current)), Ability_Aufpassen)) {
+	if (has(PersonsList->getNthNode(current)->_nr, Ability_Aufpassen)) {
 		int32 watch = 0;
 
 		if (Search.EscapeBits & FAHN_QUIET_ALARM)
-			watch = tcWatchDogWarning(OL_NR(GetNthNode(PersonsList, current)));
+			watch = tcWatchDogWarning(PersonsList->getNthNode(current)->_nr);
 		else
 			watch =
-			    tcWrongWatchDogWarning(OL_NR(GetNthNode(PersonsList, current)));
+			    tcWrongWatchDogWarning(PersonsList->getNthNode(current)->_nr);
 
 		if (watch) {
 			plSay("PLAYER_WATCHDOG", current);
@@ -118,9 +118,7 @@ static void CheckSurrounding(uint32 current) {
 
 static void UnableToWork(uint32 current, uint32 action) {
 	PD.currLoudness[current] = PLANING_LOUDNESS_STD;
-	Search.Exhaust[current] =
-	    tcGuyIsWaiting(OL_NR(GetNthNode(PersonsList, current)),
-	                   Search.Exhaust[current]);
+	Search.Exhaust[current] = tcGuyIsWaiting(PersonsList->getNthNode(current)->_nr, Search.Exhaust[current]);
 	Search.WaitTime[current]++;
 
 	livAnimate(Planing_Name[current], ANM_STAND, 0, 0);
@@ -175,7 +173,7 @@ static byte plGetMood(uint32 time) {
 		guyId[i] = 0L;
 
 	for (uint16 i = 0; i < BurglarsNr; i++)
-		guyId[i] = OL_NR(GetNthNode(PersonsList, i));
+		guyId[i] = PersonsList->getNthNode(i)->_nr;
 
 	return (byte) tcGetTeamMood(guyId, time);
 }
@@ -245,7 +243,7 @@ static void plPersonLearns(uint32 persId, uint32 toolId) {
 }
 
 static byte plCarTooFull() {
-	List *l = tcMakeLootList(Person_Matt_Stuvysunt, Relation_has);
+	NewList<NewNode> *l = tcMakeLootList(Person_Matt_Stuvysunt, Relation_has);
 
 	CompleteLoot complete = (CompleteLoot) dbGetObject(CompleteLoot_LastLoot);
 	Car car = (Car) dbGetObject(Organisation.CarID);
@@ -254,7 +252,7 @@ static byte plCarTooFull() {
 	if (complete->TotalVolume > car->Capacity)
 		ret = 1;
 
-	RemoveList(l);
+	l->removeList();
 
 	return ret;
 }
@@ -408,7 +406,7 @@ static void plPlayerAction() {
 
 	for (uint32 i = 0; i < PersonsNr; i++) {
 		if ((i >= BurglarsNr) || !PD.handlerEnded[i]) {
-			SetActivHandler(plSys, OL_NR(GetNthNode(PersonsList, i)));
+			SetActivHandler(plSys, PersonsList->getNthNode(i)->_nr);
 
 			if ((i >= BurglarsNr) && PD.guardKO[i - BurglarsNr]) {
 				switch (PD.guardKO[i - BurglarsNr]) {
@@ -447,10 +445,7 @@ static void plPlayerAction() {
 							Search.EscapeBits |= FAHN_ALARM | FAHN_ALARM_GUARD;
 
 							PD.guardKO[((Police)
-							            dbGetObject(OL_NR
-							                        (GetNthNode
-							                         (PersonsList,
-							                          i))))->LivingID -
+							            dbGetObject(PersonsList->getNthNode(i)->_nr))->LivingID -
 							           BurglarsNr] = 3;
 							break;
 						}
@@ -496,10 +491,7 @@ static void plPlayerAction() {
 								PD.currLoudness[i] = tcGetWalkLoudness();
 								PD.unableToWork[i] = 0;
 
-								Search.Exhaust[i] =
-								    tcGuyInAction(OL_NR
-								                  (GetNthNode(PersonsList, i)),
-								                  Search.Exhaust[i]);
+								Search.Exhaust[i] = tcGuyInAction(PersonsList->getNthNode(i)->_nr, Search.Exhaust[i]);
 								Search.WalkTime[i]++;
 
 								if (i == CurrentPerson) {
@@ -534,7 +526,7 @@ static void plPlayerAction() {
 						if (ActionStarted(plSys)) {
 							Search.CallCount++;
 
-							InitSignal(plSys, OL_NR(GetNthNode(PersonsList, i)),
+							InitSignal(plSys, PersonsList->getNthNode(i)->_nr,
 							           ActionData(PD.action,
 							                      ActionSignal *)->
 							           ReceiverId);
@@ -549,7 +541,7 @@ static void plPlayerAction() {
 						if (ActionEnded(plSys)) {
 							plSignal *sig =
 							    IsSignal(plSys,
-							             OL_NR(GetNthNode(PersonsList, i)),
+							             PersonsList->getNthNode(i)->_nr,
 							             ActionData(PD.action,
 							                        ActionSignal *)->
 							             ReceiverId);
@@ -567,7 +559,7 @@ static void plPlayerAction() {
 						             ActionData(PD.action,
 						                        ActionWaitSignal *)->
 						             SenderId,
-						             OL_NR(GetNthNode(PersonsList, i)));
+						             PersonsList->getNthNode(i)->_nr);
 
 						if (sig)
 							CloseSignal(sig);
@@ -580,7 +572,7 @@ static void plPlayerAction() {
 					if (i < BurglarsNr) {
 						Search.WorkTime[i]++;
 						Search.Exhaust[i] =
-						    tcGuyInAction(OL_NR(GetNthNode(PersonsList, i)),
+						    tcGuyInAction(PersonsList->getNthNode(i)->_nr,
 						                  Search.Exhaust[i]);
 						PD.unableToWork[i] = 0;
 
@@ -613,10 +605,8 @@ static void plPlayerAction() {
 									                    ActionUse *)->
 									         ItemId)) {
 										PD.currLoudness[i] =
-										    tcGetToolLoudness(OL_NR
-										                      (GetNthNode
-										                       (PersonsList,
-										                        i)),
+										    tcGetToolLoudness(
+										                      PersonsList->getNthNode(i)->_nr,
 										                      ActionData(PD.
 										                                 action,
 										                                 struct
@@ -634,10 +624,7 @@ static void plPlayerAction() {
 										PD.changeCount += 5;
 
 										realTime =
-										    tcGuyUsesToolInPlayer(OL_NR
-										                          (GetNthNode
-										                           (PersonsList,
-										                            i)),
+										    tcGuyUsesToolInPlayer(PersonsList->getNthNode(i)->_nr,
 										                          PD.bldObj,
 										                          ActionData(PD.
 										                                     action,
@@ -668,10 +655,7 @@ static void plPlayerAction() {
 									           ActionUse *)->ItemId),
 									         Const_tcLOCK_UNLOCK_BIT))
 										PD.currLoudness[i] =
-										    tcGetToolLoudness(OL_NR
-										                      (GetNthNode
-										                       (PersonsList,
-										                        i)),
+										    tcGetToolLoudness(PersonsList->getNthNode(i)->_nr,
 										                      ActionData(PD.
 										                                 action,
 										                                 struct
@@ -709,7 +693,7 @@ static void plPlayerAction() {
 									}
 #ifndef PLAN_IS_PERFECT
 									if (tcGetDanger
-									        (OL_NR(GetNthNode(PersonsList, i)),
+									        (PersonsList->getNthNode(i)->_nr,
 									         ActionData(PD.action,
 									                    ActionUse *)->ToolId,
 									         ((LSObject)
@@ -721,10 +705,7 @@ static void plPlayerAction() {
 #endif
 
 									realTime =
-									    tcGuyUsesToolInPlayer(OL_NR
-									                          (GetNthNode
-									                           (PersonsList,
-									                            i)), PD.bldObj,
+									    tcGuyUsesToolInPlayer(PersonsList->getNthNode(i)->_nr, PD.bldObj,
 									                          ActionData(PD.
 									                                     action,
 									                                     struct
@@ -753,8 +734,7 @@ static void plPlayerAction() {
 									                needTime, 0);
 								}
 
-								plPersonLearns(OL_NR
-								               (GetNthNode(PersonsList, i)),
+								plPersonLearns(PersonsList->getNthNode(i)->_nr,
 								               ActionData(PD.action,
 								                          ActionUse *)->
 								               ToolId);
@@ -813,7 +793,7 @@ static void plPlayerAction() {
 								             ActionUse *)->ItemId,
 								            Object_Police)) {
 									if (tcKillTheGuard
-									        (OL_NR(GetNthNode(PersonsList, i)),
+									        (PersonsList->getNthNode(i)->_nr,
 									         PD.bldId))
 										PD.guardKO[((Police)
 										            dbGetObject(ActionData
@@ -1125,25 +1105,21 @@ static void plPlayerAction() {
 								                  LootId));
 
 								if (Ask
-								        (dbGetObject
-								         (OL_NR(GetNthNode(PersonsList, i))),
+								        (dbGetObject(PersonsList->getNthNode(i)->_nr),
 								         take_RelId,
 								         dbGetObject(ActionData
 								                     (PD.action,
 								                      ActionTake *)->
 								                     LootId))) {
 									uint32 oldValue =
-									    GetP(dbGetObject
-									         (OL_NR
-									          (GetNthNode(PersonsList, i))),
+									    GetP(dbGetObject(PersonsList->getNthNode(i)->_nr),
 									         take_RelId,
 									         dbGetObject(ActionData
 									                     (PD.action,
 									                      ActionTake *)->
 									                     LootId));
 
-									SetP(dbGetObject
-									     (OL_NR(GetNthNode(PersonsList, i))),
+									SetP(dbGetObject(PersonsList->getNthNode(i)->_nr),
 									     take_RelId,
 									     dbGetObject(ActionData
 									                 (PD.action,
@@ -1152,7 +1128,7 @@ static void plPlayerAction() {
 									     oldValue + newValue);
 								} else
 									SetP(dbGetObject
-									     (OL_NR(GetNthNode(PersonsList, i))),
+									     (PersonsList->getNthNode(i)->_nr),
 									     take_RelId,
 									     dbGetObject(ActionData
 									                 (PD.action,
@@ -1185,7 +1161,7 @@ static void plPlayerAction() {
 						}
 
 						if (Ask
-						        (dbGetObject(OL_NR(GetNthNode(PersonsList, i))),
+						        (dbGetObject(PersonsList->getNthNode(i)->_nr),
 						         take_RelId,
 						         dbGetObject(ActionData
 						                     (PD.action,
@@ -1198,7 +1174,7 @@ static void plPlayerAction() {
 							if (ActionEnded(plSys)) {
 								uint32 newValue =
 								    GetP(dbGetObject
-								         (OL_NR(GetNthNode(PersonsList, i))),
+								         (PersonsList->getNthNode(i)->_nr),
 								         take_RelId,
 								         dbGetObject(ActionData
 								                     (PD.action,
@@ -1265,7 +1241,7 @@ static void plPlayerAction() {
 								                  ActionDrop *)->LootId),
 								     newValue);
 								UnSet(dbGetObject
-								      (OL_NR(GetNthNode(PersonsList, i))),
+								      (PersonsList->getNthNode(i)->_nr),
 								      take_RelId,
 								      dbGetObject(ActionData
 								                  (PD.action,
@@ -1302,11 +1278,7 @@ static void plPlayerAction() {
 									    FAHN_ALARM | FAHN_ALARM_GUARD;
 								}
 
-								PD.guardKO[((Police)
-								            dbGetObject(OL_NR
-								                        (GetNthNode
-								                         (PersonsList,
-								                          i))))->LivingID -
+								PD.guardKO[((Police)dbGetObject(PersonsList->getNthNode(i)->_nr))->LivingID -
 								           BurglarsNr] = 3;
 
 								break;
@@ -1427,10 +1399,7 @@ static void plPlayerAction() {
 								}
 
 								PD.guardKO[((Police)
-								            dbGetObject(OL_NR
-								                        (GetNthNode
-								                         (PersonsList,
-								                          i))))->LivingID -
+								            dbGetObject(PersonsList->getNthNode(i)->_nr))->LivingID -
 								           BurglarsNr] = 3;
 
 								break;
@@ -1537,8 +1506,7 @@ static void plPlayerAction() {
 						}
 
 						PD.guardKO[((Police)
-						            dbGetObject(OL_NR
-						                        (GetNthNode(PersonsList, i))))->
+						            dbGetObject(PersonsList->getNthNode(i)->_nr))->
 						           LivingID - BurglarsNr] = 3;
 					}
 #endif
@@ -1593,7 +1561,7 @@ static void plPlayerAction() {
 
 int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32)) {
 	Common::Stream *fh = NULL;
-	List *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "PLAYER_MENU");
+	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "PLAYER_MENU");
 	byte activ = 0;
 	uint32 timeLeft = 0, bitset, choice1, choice2;
 	int32 ret = 0;
@@ -1612,9 +1580,10 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 	AnimCounter = 0;
 
 	if ((activ = plOpen(objId, PLANING_OPEN_READ_BURGLARY, &fh)) == PLANING_OPEN_OK) {
-		List *l = LoadSystem(fh, plSys);
+		NewList<NewNode> *l = LoadSystem(fh, plSys);
 		if (!l) {
-			if (!(l = plLoadTools(fh))) {
+			l = plLoadTools(fh);
+			if (!l) {
 				PD.ende = 0;
 				PD.timer = 0L;
 				PD.realTime = 0L;
@@ -1658,7 +1627,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 
 				for (byte i = 0; i < BurglarsNr; i++) {
 					PD.handlerEnded[i] = 0;
-					LoadHandler(fh, plSys, OL_NR(GetNthNode(PersonsList, i)));
+					LoadHandler(fh, plSys, PersonsList->getNthNode(i)->_nr);
 
 					PD.maxTimer = MAX(GetMaxTimer(plSys), PD.maxTimer);
 				}
@@ -1728,15 +1697,13 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 						if (GamePlayMode & GP_GUARD_DESIGN) {
 							if (PersonsNr > 2)
 								choice1 =
-								    (uint32) Bubble(PersonsList, CurrentPerson,
-								                    NULL, 0L);
+								    (uint32) Bubble((NewList<NewNode>*)PersonsList, CurrentPerson, NULL, 0L);
 							else
 								choice1 = ((CurrentPerson) ? 0L : 1L);
 						} else {
 							if (BurglarsNr > 2)
 								choice1 =
-								    (uint32) Bubble(BurglarsList, CurrentPerson,
-								                    NULL, 0L);
+								    (uint32) Bubble((NewList<NewNode>*)BurglarsList, CurrentPerson, NULL, 0L);
 							else
 								choice1 = ((CurrentPerson) ? 0L : 1L);
 						}
@@ -1756,8 +1723,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 							}
 
 							plPrepareSys(choice1, 0, PLANING_HANDLER_SET);
-							lsSetActivLiving(Planing_Name[CurrentPerson],
-							                 (uint16) - 1, (uint16) - 1);
+							lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) -1, (uint16) -1);
 						}
 						break;
 
@@ -1766,10 +1732,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 
 						plMessage("PLAYER_RADIO_ALL", PLANING_MSG_REFRESH);
 
-						SetPictID(((Person)
-						           dbGetObject(OL_NR
-						                       (GetNthNode(BurglarsList, 0))))->
-						          PictID);
+						SetPictID(((Person)dbGetObject(BurglarsList->getNthNode(0)->_nr))->PictID);
 						SetBubbleType(RADIO_BUBBLE);
 
 						if ((choice1 = Bubble(l, 0, NULL, 0L)) != GET_OUT) {
@@ -1779,50 +1742,36 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 							}
 						}
 
-						RemoveList(l);
-						l = NULL;
+						l->removeList();
+						l = nullptr;
 						break;
 
 					case PLANING_PLAYER_RADIO_ONE:
 						if (BurglarsNr > 2) {
-							Node *help;
+							NewObjectNode *help;
 
 							plMessage("RADIO_1", PLANING_MSG_REFRESH);
-							SetPictID(((Person)
-							           dbGetObject(OL_NR
-							                       (GetNthNode
-							                        (BurglarsList,
-							                         0))))->PictID);
-							Node *node = (Node *)UnLink(BurglarsList,
-							                           OL_NAME(GetNthNode(BurglarsList, 0)),
-							                           &help);
+							SetPictID(((Person)dbGetObject(BurglarsList->getNthNode(0)->_nr))->PictID);
+							NewObjectNode* node = BurglarsList->unLink(BurglarsList->getNthNode(0)->_name, &help);
 
 							Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_RADIO");
-							ExpandObjectList(BurglarsList, exp);
+							BurglarsList->expandObjectList(exp);
 
-							choice1 = Bubble(BurglarsList, 0, NULL, 0L);
+							choice1 = Bubble((NewList<NewNode>*)BurglarsList, 0, NULL, 0L);
 
 							if (ChoiceOk(choice1, GET_OUT, BurglarsList))
-								choice1 =
-								    OL_NR(GetNthNode(BurglarsList, choice1));
+								choice1 = BurglarsList->getNthNode(choice1)->_nr;
 							else
 								choice1 = GET_OUT;
 
-							Link(BurglarsList, node, help);
+							BurglarsList->link(node, help);
 							dbRemObjectNode(BurglarsList, 0L);
 						} else
-							choice1 =
-							    CurrentPerson ?
-							    OL_NR(GetNthNode(BurglarsList, 0)) :
-							    OL_NR(GetNthNode(BurglarsList, 1));
+							choice1 = CurrentPerson ? BurglarsList->getNthNode(0)->_nr : BurglarsList->getNthNode(1)->_nr;
 
 						if (choice1 != GET_OUT) {
 							l = g_clue->_txtMgr->goKey(PLAN_TXT, "PLAYER_RADIO_2");
-							SetPictID(((Person)
-							           dbGetObject(OL_NR
-							                       (GetNthNode
-							                        (BurglarsList,
-							                         0))))->PictID);
+							SetPictID(((Person)dbGetObject(BurglarsList->getNthNode(0)->_nr))->PictID);
 							SetBubbleType(RADIO_BUBBLE);
 
 							if ((choice2 =
@@ -1834,8 +1783,8 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 								}
 							}
 
-							RemoveList(l);
-							l = NULL;
+							l->removeList();
+							l = nullptr;
 						}
 						break;
 
@@ -1874,28 +1823,22 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 					Search.GuyYPos[i] = livGetYPos(Planing_Name[i]);
 
 					SetObjectListAttr(OLF_NORMAL, 0L);
-					AskAll(dbGetObject(OL_NR(GetNthNode(PersonsList, i))),
-					       take_RelId, BuildObjectList);
+					AskAll(dbGetObject(PersonsList->getNthNode(i)->_nr), take_RelId, BuildObjectList);
 
-					for (ObjectNode* n = (ObjectNode*)LIST_HEAD(ObjectList);
-					        NODE_SUCC(n); n = (ObjectNode *) NODE_SUCC(n)) {
-						if (has(Person_Matt_Stuvysunt, OL_NR(n))) {
+					for (NewObjectNode* n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
+						if (has(Person_Matt_Stuvysunt, n->_nr)) {
 							uint32 oldValue =
-							    hasGet(Person_Matt_Stuvysunt, OL_NR(n));
+							    hasGet(Person_Matt_Stuvysunt, n->_nr);
 							uint32 newValue =
-							    GetP(dbGetObject
-							         (OL_NR(GetNthNode(PersonsList, i))),
-							         take_RelId, dbGetObject(OL_NR(n)));
+							    GetP(dbGetObject(PersonsList->getNthNode(i)->_nr),
+							         take_RelId, dbGetObject(n->_nr));
 
-							hasSetP(Person_Matt_Stuvysunt, OL_NR(n),
-							        oldValue + newValue);
+							hasSetP(Person_Matt_Stuvysunt, n->_nr, oldValue + newValue);
 						} else {
 							uint32 newValue =
-							    GetP(dbGetObject
-							         (OL_NR(GetNthNode(PersonsList, i))),
-							         take_RelId, dbGetObject(OL_NR(n)));
+							    GetP(dbGetObject(PersonsList->getNthNode(i)->_nr), take_RelId, dbGetObject(n->_nr));
 
-							hasSetP(Person_Matt_Stuvysunt, OL_NR(n), newValue);
+							hasSetP(Person_Matt_Stuvysunt, n->_nr, newValue);
 						}
 					}
 				}
@@ -1910,18 +1853,16 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 						       OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_NORMAL,
 						       Object_Loot);
 
-						if ((choice = Bubble(ObjectList, 0, 0L, 0L)) != GET_OUT)
-							hasUnSet(Person_Matt_Stuvysunt,
-							         OL_NR(GetNthNode
-							               (ObjectList, (uint32) choice)));
+						if ((choice = Bubble((NewList<NewNode>*)ObjectList, 0, 0L, 0L)) != GET_OUT)
+							hasUnSet(Person_Matt_Stuvysunt, ObjectList->getNthNode((uint32) choice)->_nr);
 						else
 							plSay("PLAYER_LEAVE_LOOTS_2", 0);
 					}
 				}
 
-				if ((!(Search.EscapeBits & FAHN_ALARM))
-				        && (!(Search.EscapeBits & FAHN_QUIET_ALARM))
-				        && (!(Search.EscapeBits & FAHN_ESCAPE)))
+				if (!(Search.EscapeBits & FAHN_ALARM)
+				        && !(Search.EscapeBits & FAHN_QUIET_ALARM)
+				        && !(Search.EscapeBits & FAHN_ESCAPE))
 					Search.EscapeBits |= FAHN_STD_ESCAPE;
 
 				lsSetViewPort(0, 0);
@@ -1934,7 +1875,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 
 		if (l) {
 			Bubble(l, 0, NULL, 0L);
-			RemoveList(l);
+			l->removeList();
 		}
 
 		dskClose(fh);
@@ -1950,7 +1891,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 	plUnprepareGfx();
 	plUnprepareSys();
 
-	RemoveList(menu);
+	menu->removeList();
 
 	if (ret)
 		return tcEscapeByCar(Search.EscapeBits, timeLeft);

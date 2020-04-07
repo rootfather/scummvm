@@ -373,8 +373,7 @@ void ClueEngine::setFullEnviroment() {
 }
 
 byte ClueEngine::startupMenu() {
-	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "STARTUP_MENU");
-	uint32 activ;
+	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "STARTUP_MENU");
 	Common::String line;
 	byte ret = 0;
 
@@ -399,7 +398,8 @@ byte ClueEngine::startupMenu() {
 	inpTurnFunctionKey(0);
 	inpTurnESC(0);
 
-	activ = Menu(menu, 7L, 0, nullptr, 0L);
+	void (*dummyFct)(byte) = nullptr;
+	uint32 activ = Menu(menu, 7L, 0, dummyFct, 0L);
 
 	inpTurnESC(1);
 	inpTurnFunctionKey(1);
@@ -424,7 +424,7 @@ byte ClueEngine::startupMenu() {
 		break;
 	}
 
-	RemoveList(menu);
+	menu->removeList();
 
 	return ret;
 }

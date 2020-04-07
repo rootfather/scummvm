@@ -77,11 +77,11 @@ void tcMovePersons(uint32 personCount, uint32 time) {
 		if (livesIn(London_London_1, persID)) {
 			likes_to_beAll(persID, 0, Object_Location);
 
-			if (!(LIST_EMPTY(ObjectList))) {
-				uint32 count = GetNrOfNodes(ObjectList);
+			if (!ObjectList->isEmpty()) {
+				uint32 count = ObjectList->getNrOfNodes();
 				time = time * count / 1441;
 
-				uint32 locID = OL_NR(GetNthNode(ObjectList, time));
+				uint32 locID = ObjectList->getNthNode(time)->_nr;
 
 				tcMoveAPerson(persID, locID);
 			}
@@ -92,9 +92,9 @@ void tcMovePersons(uint32 personCount, uint32 time) {
 void tcMoveAPerson(uint32 persID, uint32 newLocID) {
 	hasAll(persID, 0, Object_Location); /* wo is er denn ? */
 
-	if (!(LIST_EMPTY(ObjectList))) {
-		for (Node *n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
-			uint32 oldLocID = OL_NR(n);
+	if (!ObjectList->isEmpty()) {
+		for (NewObjectNode *n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
+			uint32 oldLocID = n->_nr;
 			hasUnSet(persID, oldLocID);
 			hasUnSet(oldLocID, persID);
 		}
@@ -396,14 +396,14 @@ uint32 StdHandle(uint32 choice) {
 
 			hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Building);
 
-			if (LIST_EMPTY(ObjectList)) {
+			if (ObjectList->isEmpty()) {
 				SetBubbleType(THINK_BUBBLE);
 				Say(THECLOU_TXT, 0, MATT_PICTID, "NO_PLAN");
 				ShowTime(0);
 			} else {
 				hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Car);
 
-				if (LIST_EMPTY(ObjectList)) {
+				if (ObjectList->isEmpty()) {
 					SetBubbleType(THINK_BUBBLE);
 					Say(THECLOU_TXT, 0, MATT_PICTID, "NO_CAR_FOR_PLAN");
 					ShowTime(0);
@@ -455,7 +455,7 @@ uint32 StdHandle(uint32 choice) {
 }
 
 void StdDone() {
-	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
+	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 
 	_sceneArgs._returnValue = 0L;
 
@@ -502,7 +502,7 @@ void StdDone() {
 	if (!_sceneArgs._overwritten)
 		gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
 
-	RemoveList(menu);
+	menu->removeList();
 }
 
 
@@ -688,7 +688,7 @@ bool tcPersonIsHere() {
 
 		hasAll(locNr, 0, Object_Person);
 
-		if (LIST_EMPTY(ObjectList))
+		if (ObjectList->isEmpty())
 			return false;
 
 		return true;
@@ -708,8 +708,8 @@ void tcPersonGreetsMatt() {
 		if (locNr) {
 			hasAll(locNr, 0, Object_Person);
 
-			if (!(LIST_EMPTY(ObjectList))) {
-				uint32 persNr = OL_NR(LIST_HEAD(ObjectList));
+			if (!ObjectList->isEmpty()) {
+				uint32 persNr = ObjectList->getListHead()->_nr;
 
 				if (knows(Person_Matt_Stuvysunt, persNr)) {
 					Person pers = (Person)dbGetObject(persNr);

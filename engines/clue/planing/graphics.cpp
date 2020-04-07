@@ -32,15 +32,15 @@ void plPrintInfo(const char *person) {
 }
 
 void plMessage(const char *msg, byte flags) {
-	List *m = g_clue->_txtMgr->goKey(PLAN_TXT, msg);
+	NewList<NewNode> *m = g_clue->_txtMgr->goKey(PLAN_TXT, msg);
 
 	if (flags & PLANING_MSG_REFRESH)
 		ShowMenuBackground();
 
 	if (m)
-		plPrintInfo((const char *) NODE_NAME(LIST_HEAD(m)));
+		plPrintInfo(m->getListHead()->_name.c_str());
 
-	RemoveList(m);
+	m->removeList();
 
 	if (flags & PLANING_MSG_WAIT) {
 		inpSetWaitTicks(140L);
@@ -64,9 +64,9 @@ void plDisplayTimer(uint32 time, byte doSpotsImmediatly) {
 		char info[80];
 		sprintf(info, "x:%d, y:%d   %s %.2d:%.2d:%.2d %s",
 		        livGetXPos(Planing_Name[CurrentPerson]),
-		        livGetYPos(Planing_Name[CurrentPerson]), txtTimer,
+		        livGetYPos(Planing_Name[CurrentPerson]), txtTimer.c_str(),
 		        (uint32)(time / 3600), (uint32)((time / 60) % 60),
-		        (uint32)(time % 60), txtSeconds);
+		        (uint32)(time % 60), txtSeconds.c_str());
 
 		gfxSetPens(m_gc, 0, 0, 0);
 		gfxRectFill(m_gc, 120, 0, 320, 10);
@@ -76,8 +76,8 @@ void plDisplayTimer(uint32 time, byte doSpotsImmediatly) {
 		gfxPrint(m_gc, info, 2, GFX_PRINT_RIGHT);
 	} else {
 		char info[80];
-		sprintf(info, "%s %.2d:%.2d:%.2d %s", txtTimer, (uint32)(time / 3600),
-		        (uint32)((time / 60) % 60), (uint32)(time % 60), txtSeconds);
+		sprintf(info, "%s %.2d:%.2d:%.2d %s", txtTimer.c_str(), (uint32)(time / 3600),
+		        (uint32)((time / 60) % 60), (uint32)(time % 60), txtSeconds.c_str());
 
 		gfxSetPens(m_gc, 0, 0, 0);
 		gfxRectFill(m_gc, 220, 0, 320, 10);
@@ -94,7 +94,7 @@ void plDisplayTimer(uint32 time, byte doSpotsImmediatly) {
 }
 
 void plDisplayInfo() {
-	Common::String info = dbGetObjectName(OL_NR(GetNthNode(PersonsList, CurrentPerson)));
+	Common::String info = dbGetObjectName(PersonsList->getNthNode(CurrentPerson)->_nr);
 
 	gfxSetPens(m_gc, 0, 0, 0);
 	gfxRectFill(m_gc, 0, 0, 120, 10);
@@ -105,9 +105,9 @@ void plDisplayInfo() {
 }
 
 byte plSay(const char *msg, uint32 persId) {
-	List *l = g_clue->_txtMgr->goKey(PLAN_TXT, msg);
+	NewList<NewNode> *l = g_clue->_txtMgr->goKey(PLAN_TXT, msg);
 
-	SetPictID(((Person) dbGetObject(OL_NR(GetNthNode(PersonsList, persId))))->PictID);
+	SetPictID(((Person) dbGetObject(PersonsList->getNthNode(persId)->_nr))->PictID);
 
 	inpTurnESC(0);
 	inpTurnFunctionKey(0);
@@ -117,7 +117,7 @@ byte plSay(const char *msg, uint32 persId) {
 	inpTurnFunctionKey(1);
 	inpTurnESC(1);
 
-	RemoveList(l);
+	l->removeList();
 
 	plDisplayTimer(0, 1);
 	plDisplayInfo();

@@ -36,7 +36,7 @@ void PrintStatus(Common::String text) {
 }
 	
 uint32 ShowTheClouRequester(int32 error_class) {
-	List *menu;
+	NewList<NewNode> *menu;
 	uint32 answer = 0;
 	byte choices;
 	Player player = (Player)dbGetObject(Player_Player_1);
@@ -85,7 +85,7 @@ uint32 ShowTheClouRequester(int32 error_class) {
 			break;
 		}
 
-		RemoveList(menu);
+		menu->removeList();
 
 		break;
 	case Internal_Error:

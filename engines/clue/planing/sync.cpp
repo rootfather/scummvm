@@ -169,7 +169,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 			uint16 xpos = livGetXPos(Planing_Name[i]);
 			uint16 ypos = livGetYPos(Planing_Name[i]);
 
-			SetActivHandler(plSys, OL_NR(GetNthNode(PersonsList, i)));
+			SetActivHandler(plSys, PersonsList->getNthNode(i)->_nr);
 
 			if (CurrentTimer(plSys) == targetTime)
 				continue;
@@ -616,27 +616,21 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 									                     LootId));
 
 									if (Ask
-									        (dbGetObject
-									         (OL_NR(GetNthNode(BurglarsList, i))),
+									        (dbGetObject(BurglarsList->getNthNode(i)->_nr),
 									         take_RelId,
 									         dbGetObject(ActionData
 									                     (action,
 									                      struct ActionTake *)->
 									                     LootId))) {
 										uint32 oldValue =
-										    GetP(dbGetObject
-										         (OL_NR
-										          (GetNthNode
-										           (BurglarsList, i))),
+										    GetP(dbGetObject(BurglarsList->getNthNode(i)->_nr),
 										         take_RelId,
 										         dbGetObject(ActionData
 										                     (action,
 										                      struct ActionTake
 										                      *)->LootId));
 
-										SetP(dbGetObject
-										     (OL_NR
-										      (GetNthNode(BurglarsList, i))),
+										SetP(dbGetObject(BurglarsList->getNthNode(i)->_nr),
 										     take_RelId,
 										     dbGetObject(ActionData
 										                 (action,
@@ -644,9 +638,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 										                 LootId),
 										     oldValue + newValue);
 									} else
-										SetP(dbGetObject
-										     (OL_NR
-										      (GetNthNode(BurglarsList, i))),
+										SetP(dbGetObject(BurglarsList->getNthNode(i)->_nr),
 										     take_RelId,
 										     dbGetObject(ActionData
 										                 (action,
@@ -705,9 +697,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 									                 (action,
 									                  struct ActionTake *)->
 									                 LootId),
-									     GetP(dbGetObject
-									          (OL_NR
-									           (GetNthNode(PersonsList, i))),
+									     GetP(dbGetObject(PersonsList->getNthNode(i)->_nr),
 									          take_RelId,
 									          dbGetObject(ActionData
 									                      (action,
@@ -756,7 +746,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 								}
 
 								UnSet(dbGetObject
-								      (OL_NR(GetNthNode(PersonsList, i))),
+								      (PersonsList->getNthNode(i)->_nr),
 								      take_RelId,
 								      dbGetObject(ActionData
 								                  (action,
@@ -827,9 +817,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 									                 (action,
 									                  struct ActionDrop *)->
 									                 LootId),
-									     GetP(dbGetObject
-									          (OL_NR
-									           (GetNthNode(PersonsList, i))),
+									     GetP(dbGetObject(PersonsList->getNthNode(i)->_nr),
 									          take_RelId,
 									          dbGetObject(ActionData
 									                      (action,
@@ -877,8 +865,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 									                       *)->LootId)));
 								}
 
-								UnSet(dbGetObject
-								      (OL_NR(GetNthNode(PersonsList, i))),
+								UnSet(dbGetObject(PersonsList->getNthNode(i)->_nr),
 								      take_RelId,
 								      dbGetObject(ActionData
 								                  (action,
@@ -953,27 +940,21 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 									                     LootId));
 
 									if (Ask
-									        (dbGetObject
-									         (OL_NR(GetNthNode(BurglarsList, i))),
+									        (dbGetObject(BurglarsList->getNthNode(i)->_nr),
 									         take_RelId,
 									         dbGetObject(ActionData
 									                     (action,
 									                      struct ActionDrop *)->
 									                     LootId))) {
 										uint32 oldValue =
-										    GetP(dbGetObject
-										         (OL_NR
-										          (GetNthNode
-										           (BurglarsList, i))),
+										    GetP(dbGetObject(BurglarsList->getNthNode(i)->_nr),
 										         take_RelId,
 										         dbGetObject(ActionData
 										                     (action,
 										                      struct ActionDrop
 										                      *)->LootId));
 
-										SetP(dbGetObject
-										     (OL_NR
-										      (GetNthNode(BurglarsList, i))),
+										SetP(dbGetObject(BurglarsList->getNthNode(i)->_nr),
 										     take_RelId,
 										     dbGetObject(ActionData
 										                 (action,
@@ -981,9 +962,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 										                 LootId),
 										     oldValue + newValue);
 									} else
-										SetP(dbGetObject
-										     (OL_NR
-										      (GetNthNode(BurglarsList, i))),
+										SetP(dbGetObject(BurglarsList->getNthNode(i)->_nr),
 										     take_RelId,
 										     dbGetObject(ActionData
 										                 (action,
@@ -1202,7 +1181,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 		}
 	}
 
-	SetActivHandler(plSys, OL_NR(GetNthNode(PersonsList, CurrentPerson)));
+	SetActivHandler(plSys, PersonsList->getNthNode(CurrentPerson)->_nr);
 
 	if (lastAreaId && (lastAreaId != lsGetActivAreaID())) {
 		lsDoneActivArea(lastAreaId);

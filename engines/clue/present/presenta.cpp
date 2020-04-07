@@ -17,7 +17,7 @@
 
 namespace Clue {
 
-void InitEvidencePresent(uint32 nr, List *presentationData, List *texts) {
+void InitEvidencePresent(uint32 nr, NewList<PresentationInfoNode> *presentationData, NewList<NewNode> *texts) {
 	Evidence e = (Evidence)dbGetObject(nr);
 	Common::String data = dbGetObjectName(e->pers);
 
@@ -32,10 +32,10 @@ void InitEvidencePresent(uint32 nr, List *presentationData, List *texts) {
 	AddPresentLine(presentationData, PRESENT_AS_BAR, e->PaperTrail, 255, texts, 7);
 }
 
-void InitLootPresent(uint32 nr, List *presentationData, List *texts) {
+void InitLootPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts) {
 	CompleteLoot comp = (CompleteLoot)dbGetObject(CompleteLoot_LastLoot);
 
-	RemoveList(tcMakeLootList(Person_Matt_Stuvysunt, Relation_has));
+	tcMakeLootList(Person_Matt_Stuvysunt, Relation_has)->removeList();
 
 	uint32 total = comp->Bild + comp->Gold + comp->Geld + comp->Juwelen +
 	        comp->Statue + comp->Kuriositaet + comp->HistKunst +
@@ -54,7 +54,7 @@ void InitLootPresent(uint32 nr, List *presentationData, List *texts) {
 	AddPresentLine(presentationData, PRESENT_AS_NUMBER, total, 0, texts, 10);
 }
 
-void InitOneLootPresent(uint32 nr, List *presentationData, List *texts) {
+void InitOneLootPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts) {
 	Loot loot = (Loot)dbGetObject(nr);
 
 	Common::String data;
@@ -74,7 +74,7 @@ void InitOneLootPresent(uint32 nr, List *presentationData, List *texts) {
 	AddPresentLine(presentationData, PRESENT_AS_NUMBER, loot->Volume, 0, texts, 7);
 }
 
-void InitObjectPresent(uint32 nr, List *presentationData, List *texts) {
+void InitObjectPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts) {
 	LSObject lso = (LSObject)dbGetObject(nr);
 
 	Common::String data = dbGetObjectName(lso->Type);
@@ -90,17 +90,17 @@ void InitObjectPresent(uint32 nr, List *presentationData, List *texts) {
 	if (lso->Type == Item_Stechuhr)
 		AddPresentLine(presentationData, PRESENT_AS_NUMBER, ClockTimerGet(nr, nr), 0, texts, 8);
 
-	List *l = tcMakeLootList(nr, hasLootRelationID);
+	NewList<NewNode> *l = tcMakeLootList(nr, hasLootRelationID);
 
-	if (LIST_EMPTY(l))
+	if (l->isEmpty())
 		AddPresentTextLine(presentationData, NULL, 0, texts, 3);
 
-	RemoveList(l);
+	l->removeList();
 }
 
-void InitToolPresent(uint32 nr, List *presentationData, List *texts) {
-	List *tools = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_ItemE");
-	List *abilities = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_AbilityE");
+void InitToolPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts) {
+	NewList<NewNode> *tools = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_ItemE");
+	NewList<NewNode> *abilities = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_AbilityE");
 
 	Tool obj = (Tool) dbGetObject(nr);
 
@@ -115,25 +115,23 @@ void InitToolPresent(uint32 nr, List *presentationData, List *texts) {
 
 	toolRequiresAll(nr, OLF_INCLUDE_NAME | OLF_NORMAL, Object_Tool);
 
-	Node *n;
+	NewObjectNode *n;
 	byte i;
-	for (n = (Node *) LIST_HEAD(ObjectList), i = 5; NODE_SUCC(n);
-	        n = (Node *) NODE_SUCC(n), i = 6)
-		AddPresentTextLine(presentationData, NODE_NAME(n), 0, texts, i);
+	for (n = ObjectList->getListHead(), i = 5; n->_succ; n = (NewObjectNode *)n->_succ, i = 6)
+		AddPresentTextLine(presentationData, n->_name, 0, texts, i);
 
 	/*** Eigenschaften ***/
 
 	toolRequiresAll(nr, OLF_INCLUDE_NAME | OLF_NORMAL, Object_Ability);
 
-	if (!LIST_EMPTY(ObjectList)) {
+	if (!ObjectList->isEmpty()) {
 		AddPresentTextLine(presentationData, NULL, 0, texts, 8);    /* "benötigt Wissen über..." */
 
-		for (n = (Node *) LIST_HEAD(ObjectList); NODE_SUCC(n);
-		        n = (Node *) NODE_SUCC(n)) {
-			Ability ability = (Ability)OL_DATA(n);
+		for (n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
+			Ability ability = (Ability)n->_data;
 
 			AddPresentLine(presentationData, PRESENT_AS_BAR,
-			               toolRequiresGet(nr, OL_NR(n)), 255, abilities,
+			               toolRequiresGet(nr, n->_nr), 255, abilities,
 			               ability->Name);
 		}
 	}
@@ -142,24 +140,23 @@ void InitToolPresent(uint32 nr, List *presentationData, List *texts) {
 
 	breakAll(nr, OLF_INCLUDE_NAME | OLF_NORMAL, Object_Item);
 
-	if (!(LIST_EMPTY(ObjectList)))
+	if (!ObjectList->isEmpty())
 		AddPresentTextLine(presentationData, NULL, 0, texts, 7);
 
-	for (n = (Node *) LIST_HEAD(ObjectList); NODE_SUCC(n);
-	        n = (Node *) NODE_SUCC(n)) {
-		uint32 itemNr = OL_NR(n);
+	for (n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
+		uint32 itemNr = n->_nr;
 		uint32 time = breakGet(nr, itemNr);
-		Item item = (Item)OL_DATA(n);
+		Item item = (Item)n->_data;
 
 		data = Common::String::format("%.2d:%.2d", time / 60, time % 60);
 		AddPresentTextLine(presentationData, data, 0, tools, item->Type);
 	}
 
-	RemoveList(tools);
-	RemoveList(abilities);
+	tools->removeList();
+	abilities->removeList();
 }
 
-void InitBuildingPresent(uint32 nr, List *presentationData, List *texts) {
+void InitBuildingPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts) {
 	Building obj = (Building) dbGetObject(nr);
 
 	Common::String data = dbGetObjectName(nr);
@@ -181,7 +178,7 @@ void InitBuildingPresent(uint32 nr, List *presentationData, List *texts) {
 }
 
 
-void InitPlayerPresent(uint32 nr, List *presentationData, List *texts) {
+void InitPlayerPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts) {
 	Player player = (Player) dbGetObject(nr);
 
 	AddPresentLine(presentationData, PRESENT_AS_NUMBER, player->Money, 0, texts, 0);
@@ -191,7 +188,7 @@ void InitPlayerPresent(uint32 nr, List *presentationData, List *texts) {
 	AddPresentLine(presentationData, PRESENT_AS_NUMBER, player->NrOfBurglaries, 0, texts, 4);
 }
 
-void InitPersonPresent(uint32 nr, List *presentationData, List *texts) {
+void InitPersonPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts) {
 	Person obj = (Person) dbGetObject(nr);
 
 	Common::String data = dbGetObjectName(nr);
@@ -219,29 +216,28 @@ void InitPersonPresent(uint32 nr, List *presentationData, List *texts) {
 	AddPresentLine(presentationData, PRESENT_AS_BAR, obj->KnownToPolice, 255, texts, 15);
 
 	hasAll(nr, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Ability);
-	List *abilities = ObjectListPrivate;
+	NewList<NewObjectNode> *abilities = ObjectListPrivate;
 
-	if (!(LIST_EMPTY(abilities))) {
+	if (!abilities->isEmpty()) {
 		AddPresentTextLine(presentationData, NULL, 0, texts, 16);
 
 		byte i;
-		Node *node;
-		for (node = (Node *) LIST_HEAD(abilities), i = 0; NODE_SUCC(node);
-			        node = (Node *) NODE_SUCC(node), i++) {
-			uint32 abiNr = ((struct ObjectNode *) GetNthNode(abilities, (uint32) i))->nr;
+		NewNode *node;
+		for (node = (NewNode *) abilities->getListHead(), i = 0; node->_succ; node = (NewNode *) node->_succ, i++) {
+			uint32 abiNr = abilities->getNthNode(i)->_nr;
 			Ability abi = (Ability) dbGetObject(abiNr);
 	
 			data = g_clue->_txtMgr->getNthString(OBJECTS_ENUM_TXT, "enum_AbilityE", abi->Name);
-			CreateNode(texts, 0, data);
+			texts->createNode(data.c_str());
 	
 			AddPresentLine(presentationData, PRESENT_AS_BAR, hasGet(nr, abiNr), 255, texts, 17 + i);
 		}
 	}
 
-	RemoveList(abilities);
+	abilities->removeList();
 }
 
-void InitCarPresent(uint32 nr, List *presentationData, List *texts) {
+void InitCarPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts) {
 	Car obj = (Car) dbGetObject(nr);
 
 	Common::String data = dbGetObjectName(nr);

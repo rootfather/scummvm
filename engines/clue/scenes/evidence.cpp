@@ -66,22 +66,22 @@ static bool tcCarFound(Car car, uint32 time) {
 }
 
 static uint32 tcATraitor(uint32 traitorId) {
-	List *bubble = g_clue->_txtMgr->goKey(BUSINESS_TXT, "A_TRAITOR");
-	List *newList = CreateList();
+	NewList<NewNode> *bubble = g_clue->_txtMgr->goKey(BUSINESS_TXT, "A_TRAITOR");
+	NewList<NewNode> *newList = new NewList<NewNode>;
 	Person john = (Person)dbGetObject(Person_John_Gludo);
 
 	Common::String name = dbGetObjectName(traitorId);
-	Common::String line = Common::String::format(NODE_NAME(LIST_HEAD(bubble)), name.c_str());
+	Common::String line = Common::String::format(bubble->getListHead()->_name.c_str(), name.c_str());
 
-	CreateNode(newList, 0L, line);
-	CreateNode(newList, 0L, NODE_NAME(GetNthNode(bubble, 1)));
-	CreateNode(newList, 0L, NODE_NAME(GetNthNode(bubble, 2)));
+	newList->createNode(line);
+	newList->createNode(bubble->getNthNode(1)->_name);
+	newList->createNode(bubble->getNthNode(2)->_name);
 
 	SetPictID(john->PictID);
 	Bubble(newList, 0, nullptr, 0L);
 
-	RemoveList(bubble);
-	RemoveList(newList);
+	bubble->removeList();
+	newList->removeList();
 
 	Say(BUSINESS_TXT, 0, john->PictID, "ARRESTED");
 
@@ -99,12 +99,12 @@ static uint32 tcIsThereATraitor() {
 			             Object_Person);
 
 			byte symp = 255;
-			for (Node *n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
-				Person pers = (Person)OL_DATA(n);
+			for (NewObjectNode *n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
+				Person pers = (Person)n->_data;
 
-				if (OL_NR(n) != Person_Matt_Stuvysunt) {    /* Matt verrät sich nicht selbst */
+				if (n->_nr != Person_Matt_Stuvysunt) {    /* Matt verrät sich nicht selbst */
 					if ((traitorId == 0) || (pers->Known < symp)) {
-						traitorId = OL_NR(n);
+						traitorId = n->_nr;
 						symp = pers->Known;
 					}
 				}
@@ -129,11 +129,11 @@ uint32 tcStartEvidence() {
 
 	joined_byAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST, Object_Person);
 
-	List *guys = ObjectListPrivate;
+	NewObjectList<NewObjectNode> *guys = ObjectListPrivate;
 	dbSortObjectList(&guys, dbStdCompareObjects);
 
-	byte guyCount = (byte) GetNrOfNodes(guys);
-	List *spuren = g_clue->_txtMgr->goKey(BUSINESS_TXT, "SPUREN");
+	byte guyCount = (byte)guys->getNrOfNodes();
+	NewList<NewNode> *spuren = g_clue->_txtMgr->goKey(BUSINESS_TXT, "SPUREN");
 
 	Person p[4];
 	p[0] = p[1] = p[2] = p[3] = NULL;
@@ -144,17 +144,17 @@ uint32 tcStartEvidence() {
 
 	int32 radio = (int32)((Building) dbGetObject(Search.BuildingId))->RadioGuarding;
 
-	ObjectNode *n;
+	NewObjectNode *n;
 	int i= 0;
 	int32 MyEvidence[4][7];
 	uint32 totalEvidence[7];
 	uint32 shownEvidence[4];
 	uint32 Recognition[4];
 
-	for (n = (ObjectNode *) LIST_HEAD(guys), i = 0; NODE_SUCC(n); n = (ObjectNode *) NODE_SUCC(n), i++) {
+	for (n = guys->getListHead(), i = 0; n->_succ; n = (NewObjectNode *) n->_succ, i++) {
 		int32 div = 380;
 
-		p[i] = (Person)OL_DATA(n);
+		p[i] = (Person)n->_data;
 
 		/* alle folgenden Werte sind zwischen 0 und 255 */
 
@@ -206,7 +206,7 @@ uint32 tcStartEvidence() {
 
 		shownEvidence[i] = Recognition[i] = 0;
 
-		tcPersonLearns(OL_NR(n));
+		tcPersonLearns(n->_nr);
 	}
 
 	prSetBarPrefs(m_gc, 300, 12, 1, 3, 0);
@@ -250,12 +250,12 @@ uint32 tcStartEvidence() {
 
 			if (MyEvidence[guyNr][evidenceNr] > 0) {
 				ShowMenuBackground();
-				PrintStatus(NODE_NAME(GetNthNode(spuren, evidenceNr)));
+				PrintStatus(spuren->getNthNode(evidenceNr)->_name);
 
 				Recognition[guyNr] += MyEvidence[guyNr][evidenceNr];
 
 				evidence->Recognition = Recognition[guyNr] / 3; /* change also: totalEvidence /= 3.... */
-				evidence->pers = (uint32) OL_NR(GetNthNode(guys, (uint32) guyNr));
+				evidence->pers = guys->getNthNode((uint32) guyNr)->_nr;
 
 				/* für alle "Evidences" - stimmt so, da für alle */
 				/* Personen die selbe Evidence Struct benutzt wird -> */
@@ -316,7 +316,7 @@ uint32 tcStartEvidence() {
 			p[i]->KnownToPolice = (byte)(totalEvidence[i]);
 
 			if (p[i]->KnownToPolice > tcPERSON_IS_ARRESTED)
-				caught |= tcPersonWanted(OL_NR(GetNthNode(guys, i)));
+				caught |= tcPersonWanted(guys->getNthNode(i)->_nr);
 
 			if (!caught)
 				if (p[i] == dbGetObject(Person_Robert_Bull))
@@ -349,48 +349,48 @@ uint32 tcStartEvidence() {
 	((Player) dbGetObject(Player_Player_1))->MattsPart = (byte) tcCalcMattsPart();
 	tcForgetGuys();
 
-	RemoveList(spuren);
-	RemoveList(guys);
+	spuren->removeList();
+	guys->removeList();
 
 	return caught;
 }
 
 void tcForgetGuys() {
 	joined_byAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST, Object_Person);
-	List *guys = ObjectListPrivate;
+	NewList<NewObjectNode> *guys = ObjectListPrivate;
 
-	for (Node *node = LIST_HEAD(guys); NODE_SUCC(node); node = NODE_SUCC(node)) {
-		if (OL_NR(node) != Person_Matt_Stuvysunt) {
-			Person pers = (Person)OL_DATA(node);
+	for (NewObjectNode *node = guys->getListHead(); node->_succ; node = (NewObjectNode *)node->_succ) {
+		if (node->_nr != Person_Matt_Stuvysunt) {
+			Person pers = (Person)node->_data;
 
 			pers->TalkBits |= (1 << Const_tcTALK_JOB_OFFER);    /* über Jobs kann man wieder reden! */
 
-			joined_byUnSet(Person_Matt_Stuvysunt, OL_NR(node));
-			joinUnSet(Person_Matt_Stuvysunt, OL_NR(node));
-			rememberUnSet(Person_Matt_Stuvysunt, OL_NR(node));
+			joined_byUnSet(Person_Matt_Stuvysunt, node->_nr);
+			joinUnSet(Person_Matt_Stuvysunt, node->_nr);
+			rememberUnSet(Person_Matt_Stuvysunt, node->_nr);
 		}
 	}
 
-	RemoveList(guys);
+	guys->removeList();
 }
 
 uint32 tcPersonWanted(uint32 persId) {
 	Person john = (Person)dbGetObject(Person_John_Gludo);
 	Person miles = (Person)dbGetObject(Person_Miles_Chickenwing);
-	List *jobs = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_JobE");
+	NewList<NewNode> *jobs = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_JobE");
 
 	Common::String name = dbGetObjectName(persId);
 
-	List *bubble = g_clue->_txtMgr->goKey(BUSINESS_TXT, "BURGLAR_RECOG");
+	NewList<NewNode> *bubble = g_clue->_txtMgr->goKey(BUSINESS_TXT, "BURGLAR_RECOG");
 
-	Common::String line = Common::String::format("%s %s.", NODE_NAME(GetNthNode(bubble, 3)), name.c_str());
+	Common::String line = Common::String::format("%s %s.", bubble->getNthNode(3)->_name.c_str(), name.c_str());
 
-	RemoveNode(bubble, NODE_NAME(GetNthNode(bubble, 3)));
-	CreateNode(bubble, 0L, line);
+	bubble->removeNode(bubble->getNthNode(3)->_name);
+	bubble->createNode(line);
 
 	SetPictID(john->PictID);
 	Bubble(bubble, 0, nullptr, 0L);
-	RemoveList(bubble);
+	bubble->removeList();
 
 	Say(BUSINESS_TXT, 0, miles->PictID, "ARREST_HIM");
 	livesInUnSet(London_London_1, persId);
@@ -415,7 +415,7 @@ uint32 tcPersonWanted(uint32 persId) {
 		caught = tcPersonQuestioning((Person)dbGetObject(persId));
 	}
 
-	RemoveList(jobs);
+	jobs->removeList();
 
 	return caught;
 }

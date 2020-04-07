@@ -27,8 +27,8 @@
 namespace Clue {
 
 /* public declarations */
-List *ObjectList = NULL;
-List *ObjectListPrivate = NULL;
+NewObjectList<NewObjectNode> *ObjectList = nullptr;
+NewObjectList<NewObjectNode> *ObjectListPrivate = nullptr;
 uint32 ObjectListWidth = 0L;
 Common::String (*ObjectListPrevString)(uint32, uint32, void *) = nullptr;
 Common::String (*ObjectListSuccString)(uint32, uint32, void *) = nullptr;
@@ -1165,13 +1165,13 @@ bool dbLoadAllObjects(const char *fileName, uint16 diskId) {
 
 			if ((objHd.nr != (uint32) - 1) && (objHd.type != (uint32) - 1)
 			        && (objHd.size != (uint32) - 1)) {
-				List *list = NULL;
-				char *name = NULL;
+				NewList<NewNode> *list = nullptr;
+				Common::String name = Common::String("");
 				uint32 localSize;
 
 				if (ObjectLoadMode) {
-					if ((list = g_clue->_txtMgr->goKey(OBJECTS_TXT, NULL)))   /* MOD: old version GoNextKey */
-						name = NODE_NAME(LIST_HEAD(list));
+					if ((list = g_clue->_txtMgr->goKey(OBJECTS_TXT, nullptr)))   /* MOD: old version GoNextKey */
+						name = list->getListHead()->_name;
 				}
 
 				localSize = dbGetMemSize(objHd.type);
@@ -1190,7 +1190,7 @@ bool dbLoadAllObjects(const char *fileName, uint16 diskId) {
 				}
 
 				if (list)
-					RemoveList(list);
+					list->removeList();
 
 				dbRWObject(obj, 0, objHd.type, objHd.size, localSize, fh);
 			}
@@ -1268,9 +1268,9 @@ uint32 dbGetObjectCountOfDB(uint32 offset, uint32 size) {
 
 
 /* public functions - OBJECT */
-void *dbNewObject(uint32 nr, uint32 type, uint32 size, char *name, uint32 realNr) {
+void *dbNewObject(uint32 nr, uint32 type, uint32 size, Common::String name, uint32 realNr) {
 	uint8 objHashValue = dbGetObjectHashNr(nr);
-	dbObject *obj = (dbObject *) CreateNode(objHash[objHashValue], sizeof(dbObject) + size, name);
+	dbObject *obj = (dbObject *) CreateNode(objHash[objHashValue], sizeof(dbObject) + size, name.c_str());
 
 	if (!obj)
 		return NULL;
@@ -1291,7 +1291,7 @@ void *dbGetObject(uint32 nr) {
 			return dbGetObjectKey(obj);
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 uint32 dbGetObjectNr(void *key) {
@@ -1328,8 +1328,8 @@ void *dbIsObject(uint32 nr, uint32 type) {
 }
 
 /* public prototypes - OBJECTNODE */
-ObjectNode *dbAddObjectNode(List *objectList, uint32 nr, uint32 flags) {
-	ObjectNode *n = NULL;
+NewObjectNode *dbAddObjectNode(NewObjectList<NewObjectNode> *objectList, uint32 nr, uint32 flags) {
+	NewObjectNode *n = nullptr;
 	dbObject *obj = dbGetObjectReal(dbGetObject(nr));
 	char name[TXT_KEY_LENGTH], *namePtr;
 
@@ -1363,34 +1363,33 @@ ObjectNode *dbAddObjectNode(List *objectList, uint32 nr, uint32 flags) {
 		if ((flags & OLF_ADD_SUCC_STRING) && ObjectListSuccString)
 			strcat(name, succString.c_str());
 	} else
-		namePtr = NULL;
+		namePtr = nullptr;
 
-	if ((n = (ObjectNode *) CreateNode(objectList, sizeof(*n), namePtr))) {
-		n->nr = obj->nr;
-		n->type = obj->type;
-		n->data = dbGetObjectKey(obj);
+	if ((n = objectList->createNode(namePtr))) {
+		n->_nr = obj->nr;
+		n->_type = obj->type;
+		n->_data = dbGetObjectKey(obj);
 	}
 
 	return n;
 }
 
-void dbRemObjectNode(List *objectList, uint32 nr) {
-	ObjectNode *n = dbHasObjectNode(objectList, nr);
+void dbRemObjectNode(NewList<NewObjectNode> *objectList, uint32 nr) {
+	NewObjectNode *n = dbHasObjectNode(objectList, nr);
 
 	if (n) {
-		RemNode(n);
-		FreeNode(n);
+		n->remNode();
+		delete n;
 	}
 }
 
-ObjectNode *dbHasObjectNode(List *objectList, uint32 nr) {
-	for (ObjectNode *n = (ObjectNode *) LIST_HEAD(objectList); NODE_SUCC(n);
-	        n = (ObjectNode *) NODE_SUCC(n)) {
-		if (OL_NR(n) == nr)
+NewObjectNode *dbHasObjectNode(NewList<NewObjectNode> *objectList, uint32 nr) {
+	for (NewObjectNode *n = objectList->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
+		if (n->_nr == nr)
 			return n;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 void SetObjectListAttr(uint32 flags, uint32 type) {
@@ -1398,10 +1397,11 @@ void SetObjectListAttr(uint32 flags, uint32 type) {
 	ObjectListFlags = flags;
 
 	if (ObjectListFlags & OLF_PRIVATE_LIST)
-		ObjectListPrivate = CreateList();
+		ObjectListPrivate = new NewObjectList<NewObjectNode>;
 	else {
-		RemoveList(ObjectList);
-		ObjectList = CreateList();
+		ObjectList->removeList();
+		delete ObjectList;
+		ObjectList = new NewObjectList<NewObjectNode>;
 	}
 }
 
@@ -1409,7 +1409,7 @@ void BuildObjectList(void *key) {
 	dbObject *obj = dbGetObjectReal(key);
 
 	if (!ObjectListType || (obj->type == ObjectListType)) {
-		List *list;
+		NewObjectList<NewObjectNode>* list;
 		if (ObjectListFlags & OLF_PRIVATE_LIST)
 			list = ObjectListPrivate;
 		else
@@ -1419,117 +1419,91 @@ void BuildObjectList(void *key) {
 	}
 }
 
-void ExpandObjectList(List *objectList, char *expandItem) {
-	ObjectNode *objNode = (ObjectNode *) CreateNode(objectList, sizeof(*objNode), expandItem);
-
-	if (!objNode)
-		ErrorMsg(Internal_Error, ERROR_MODULE_DATABASE, 2);
-
-	objNode->nr = 0;
-	objNode->type = 0;
-	objNode->data = NULL;
-}
-
-void ExpandObjectList(List *objectList, Common::String expandItem) {
-	ObjectNode *objNode = (ObjectNode *)CreateNode(objectList, sizeof(*objNode), expandItem);
-
-	if (!objNode)
-		ErrorMsg(Internal_Error, ERROR_MODULE_DATABASE, 2);
-
-	objNode->nr = 0;
-	objNode->type = 0;
-	objNode->data = nullptr;
-}
-
-int16 dbStdCompareObjects(ObjectNode *obj1, ObjectNode *obj2) {
-	if (obj1->nr > obj2->nr)
+int16 dbStdCompareObjects(NewObjectNode *obj1, NewObjectNode *obj2) {
+	if (obj1->_nr > obj2->_nr)
 		return -1;
 
-	if (obj1->nr < obj2->nr)
+	if (obj1->_nr < obj2->_nr)
 		return 1;
 
 	return 0;
 }
 
-void dbSortPartOfList(List *l, ObjectNode *start,
-                      ObjectNode *end,
-                      int16(*processNode)(ObjectNode *, ObjectNode *)) {
-	List *newList = CreateList();
-	ObjectNode *n1, *startPred;
+void dbSortPartOfList(NewObjectList<NewObjectNode> *l, NewObjectNode *start, NewObjectNode *end,
+                      int16(*processNode)(NewObjectNode *, NewObjectNode *)) {
+	NewObjectList<NewObjectNode> *newList = new NewObjectList<NewObjectNode>;
+	NewObjectNode *n1, *startPred;
 
-	if (start == (ObjectNode *) LIST_HEAD(l))
-		startPred = 0L;
+	if (start == l->getListHead())
+		startPred = nullptr;
 	else
-		startPred = (ObjectNode *) NODE_PRED(start);
+		startPred = (NewObjectNode *) start->_pred;
 
-	ObjectNode *n;
+	NewObjectNode *n;
 	int32 i;
-	for (n = start, i = 1; n != end; n = (ObjectNode *) NODE_SUCC(n), i++);
+	for (n = start, i = 1; n != end; n = (NewObjectNode *) n->_succ, i++);
 
 	n = start;
 
 	for (int32 j = 0; j < i; j++) {
 		n1 = n;
-		n = (ObjectNode *) NODE_SUCC(n);
+		n = (NewObjectNode*) n->_succ;
 
-		RemNode(n1);
-		AddHeadNode(newList, n1);
+		n1->remNode();
+		newList->addHeadNode(n1);
 	}
 
 	dbSortObjectList(&newList, processNode);
 
-	for (n = (ObjectNode *) LIST_HEAD(newList); NODE_SUCC(n);) {
+	for (n = newList->getListHead(); n->_succ;) {
 		n1 = n;
-		n = (ObjectNode *) NODE_SUCC(n);
+		n = (NewObjectNode *)n->_succ;
 
 		RemNode(n1);
-		AddNode(l, n1, startPred);
+		l->addNode(n1, startPred);
 
 		startPred = n1;
 	}
 
-	RemoveList(newList);
+	newList->removeList();
 }
 
-int32 dbSortObjectList(List **objectList, int16(*processNode)(ObjectNode *, ObjectNode *)) {
+int32 dbSortObjectList(NewObjectList<NewObjectNode> **objectList, int16(*processNode)(NewObjectNode *, NewObjectNode *)) {
 	int32 i = 0;
 
-	if (!LIST_EMPTY(*objectList)) {
-		List *newList = CreateList();
+	if (!(*objectList)->isEmpty()) {
+		NewObjectList<NewObjectNode> *newList = new NewObjectList<NewObjectNode>;
 
-		for (ObjectNode *n1 = (ObjectNode *) LIST_HEAD(*objectList); NODE_SUCC(n1);
-		        n1 = (ObjectNode *) NODE_SUCC(n1), i++) {
-			 ObjectNode *pred = 0;
+		for (NewObjectNode *n1 = (*objectList)->getListHead(); n1->_succ; n1 = (NewObjectNode *) n1->_succ, i++) {
+			 NewObjectNode *pred = nullptr;
 
-			if (!LIST_EMPTY(newList)) {
-				for (ObjectNode *n2 = (ObjectNode *) LIST_HEAD(newList);
-				        !pred && NODE_SUCC(n2);
-				        n2 = (ObjectNode *) NODE_SUCC(n2)) {
+			if (!newList->isEmpty()) {
+				for (NewObjectNode *n2 = newList->getListHead(); !pred && n2->_succ; n2 = (NewObjectNode *) n2->_succ) {
 					if (processNode(n1, n2) >= 0)
 						pred = n2;
 				}
 			}
 
-			ObjectNode *newNode =
-			    (ObjectNode *) CreateNode(NULL, sizeof(*newNode), NODE_NAME(n1));
-			newNode->nr = n1->nr;
-			newNode->type = n1->type;
-			newNode->data = n1->data;
+			NewObjectNode* newNode = new NewObjectNode;
+			newNode->_name = n1->_name;
+			newNode->_nr = n1->_nr;
+			newNode->_type = n1->_type;
+			newNode->_data = n1->_data;
 
 			if (pred) {
-				if (pred == (ObjectNode *) LIST_HEAD(newList))
-					AddHeadNode(newList, newNode);
+				if (pred == (NewObjectNode *) newList->getListHead())
+					newList->addHeadNode(newNode);
 				else
-					AddNode(newList, newNode, NODE_PRED(pred));
+					newList->addNode(newNode, (NewObjectNode *)pred->_pred);
 			} else
-				AddTailNode(newList, newNode);
+				newList->addTailNode(newNode);
 		}
 
-		if (!LIST_EMPTY(newList)) {
-			RemoveList(*objectList);
+		if (!newList->isEmpty()) {
+			(*objectList)->removeList();
 			*objectList = newList;
 		} else
-			RemoveList(newList);
+			newList->removeList();
 	}
 
 	return i;
@@ -1538,8 +1512,7 @@ int32 dbSortObjectList(List **objectList, int16(*processNode)(ObjectNode *, Obje
 
 /* public prototypes */
 void dbInit() {
-	if (!(ObjectList = CreateList()))
-		ErrorMsg(No_Mem, ERROR_MODULE_DATABASE, 3);
+	ObjectList = new NewObjectList<NewObjectNode>;
 
 	for (uint8 objHashValue = 0; objHashValue < OBJ_HASH_SIZE; objHashValue++) {
 		if (!(objHash[objHashValue] = CreateList()))
@@ -1558,7 +1531,7 @@ void dbDone() {
 	}
 
 	if (ObjectList)
-		RemoveList(ObjectList);
+		ObjectList->removeList();
 }
 
 static uint32 getKeyStd(KeyConflictE key) {

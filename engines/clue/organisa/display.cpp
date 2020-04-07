@@ -62,7 +62,7 @@ void tcDisplayOrganisation() {
 }
 
 void tcDisplayCommon() {
-	List *texts = g_clue->_txtMgr->goKey(BUSINESS_TXT, "PLAN_COMMON_DATA");
+	NewList<NewNode> *texts = g_clue->_txtMgr->goKey(BUSINESS_TXT, "PLAN_COMMON_DATA");
 
 	gfxSetGC(l_gc);
 	gfxShow(ORG_PICT_ID, GFX_ONE_STEP | GFX_NO_REFRESH, 0, -1, -1);
@@ -93,7 +93,7 @@ void tcDisplayCommon() {
 	 */
 
 	gfxSetRect(0, 106);
-	line = Common::String(NODE_NAME(GetNthNode(texts, 0L)));
+	line = texts->getNthNode(0L)->_name;
 
 	Common::String name;
 	if (Organisation.CarID) {
@@ -109,7 +109,7 @@ void tcDisplayCommon() {
 	 */
 
 	gfxSetRect(106, 106);
-	line = Common::String(NODE_NAME(GetNthNode(texts, 2L)));
+	line = texts->getNthNode(2L)->_name;
 
 	if (Organisation.CarID) {
 		name = Common::String::format("%d", Organisation.PlacesInCar);
@@ -124,7 +124,7 @@ void tcDisplayCommon() {
 	 */
 
 	gfxSetRect(212, 106);
-	line = Common::String(NODE_NAME(GetNthNode(texts, 1L)));
+	line = texts->getNthNode(1L)->_name;
 
 	if (Organisation.DriverID) {
 		name = dbGetObjectName(Organisation.DriverID);
@@ -139,15 +139,15 @@ void tcDisplayCommon() {
 	 */
 
 	gfxSetRect(0, 106);
-	line = Common::String(NODE_NAME(GetNthNode(texts, 3L)));
+	line = texts->getNthNode(3L)->_name;
 
 	if (Organisation.BuildingID) {
-		List *enums = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_RouteE");
+		NewList<NewNode> *enums = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_RouteE");
 
-		name = Common::String(NODE_NAME(GetNthNode(enums, building->EscapeRoute)));
+		name = enums->getNthNode(building->EscapeRoute)->_name;
 		line += name;
 
-		RemoveList(enums);
+		enums->removeList();
 	} else
 		line += " ? ";
 
@@ -158,7 +158,7 @@ void tcDisplayCommon() {
 	 */
 
 	gfxSetRect(106, 106);
-	line = Common::String(NODE_NAME(GetNthNode(texts, 4L)));
+	line = texts->getNthNode(4L)->_name;
 
 	if (Organisation.BuildingID) {
 		name = Common::String::format("%d (km)", building->EscapeRouteLength);
@@ -173,31 +173,31 @@ void tcDisplayCommon() {
 	 */
 
 	gfxSetRect(212, 106);
-	line = Common::String(NODE_NAME(GetNthNode(texts, 5L)));
+	line = texts->getNthNode(5L)->_name;
 
 	name = Common::String::format(" %d%%", tcCalcMattsPart());
 	line += name;
 
 	gfxPrint(l_gc, line, 35, GFX_PRINT_RIGHT);
 
-	RemoveList(texts);
+	texts->removeList();
 }
 
 void tcDisplayPerson(uint32 displayMode) {
 	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST, Object_Person);
-	List *guys = ObjectListPrivate;
+	NewObjectList<NewObjectNode>* guys = ObjectListPrivate;
 	dbSortObjectList(&guys, dbStdCompareObjects);
 
 	uint32 i;
-	Node *node;
-	for (node = LIST_HEAD(guys), i = 0; NODE_SUCC(node); node = NODE_SUCC(node), i++) {
+	NewObjectNode *node;
+	for (node = guys->getListHead(), i = 0; node->_succ; node = (NewObjectNode *)node->_succ, i++) {
 		char line[TXT_KEY_LENGTH];
-		uint32 objNr = ((struct ObjectNode *) node)->nr;
+		uint32 objNr = node->_nr;
 
-		if (strlen(NODE_NAME(node)) >= 16)
-			tcGetLastName(NODE_NAME(node), line, 15);
+		if (node->_name.size() >= 16)
+			tcGetLastName(node->_name.c_str(), line, 15);
 		else
-			strcpy(line, NODE_NAME(node));
+			strcpy(line, node->_name.c_str());
 
 		gfxSetRect(ORG_DISP_GUY_WIDTH * i + 5, ORG_DISP_GUY_WIDTH - 5);
 		gfxSetPens(l_gc, 248, GFX_SAME_PEN, GFX_SAME_PEN);
@@ -210,27 +210,27 @@ void tcDisplayPerson(uint32 displayMode) {
 			tcDisplayAbilities(objNr, i);
 	}
 
-	RemoveList(guys);
+	guys->removeList();
 }
 
 void tcDisplayAbilities(uint32 personNr, uint32 displayData) {
 	hasAll(personNr, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME, Object_Ability);
 
-	List *abilities = ObjectListPrivate;
+	NewList<NewObjectNode>* abilities = ObjectListPrivate;
 
 	prSetBarPrefs(l_gc, ORG_DISP_GUY_WIDTH - 5, ORG_DISP_LINE + 1, 251, 250, 249);
 
-	if (!(LIST_EMPTY(abilities))) {
-		Node *node;
+	if (!abilities->isEmpty()) {
+		NewObjectNode *node;
 		unsigned i;
 
-		for (node = LIST_HEAD(abilities), i = 0; NODE_SUCC(node); node = NODE_SUCC(node), i++) {
+		for (node = abilities->getListHead(), i = 0; node->_succ; node = (NewObjectNode *)node->_succ, i++) {
 			char line[TXT_KEY_LENGTH];
 
-			uint32 abiNr = ((struct ObjectNode *) GetNthNode(abilities, (uint32) i))->nr;
+			uint32 abiNr = abilities->getNthNode(i)->_nr;
 			uint32 ability = hasGet(personNr, abiNr);
 
-			sprintf(line, "%s %d%%", NODE_NAME(node), (uint16)((ability * 100) / 255));
+			sprintf(line, "%s %d%%", node->_name.c_str(), (uint16)((ability * 100) / 255));
 
 			prDrawTextBar(line, ability, 255L,
 			              displayData * ORG_DISP_GUY_WIDTH + 5,
@@ -243,7 +243,7 @@ void tcDisplayAbilities(uint32 personNr, uint32 displayData) {
 		gfxPrint(l_gc, line, ORG_DISP_ABILITIES_Y + ORG_DISP_LINE, GFX_PRINT_LEFT);
 	}
 
-	RemoveList(abilities);
+	abilities->removeList();
 }
 
 } // End of namespace Clue

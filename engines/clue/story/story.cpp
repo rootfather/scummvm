@@ -410,12 +410,12 @@ bool tcIsDeadlock() {
 
 	hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Car);
 
-	if (LIST_EMPTY(ObjectList)) {
+	if (ObjectList->isEmpty()) {
 		int32 money = tcGetPlayerMoney;
 		bool enough = false;
 
 		/* jetzt zum Geld noch die vorhandene Beute addieren */
-		RemoveList(tcMakeLootList(Person_Matt_Stuvysunt, Relation_has));
+		tcMakeLootList(Person_Matt_Stuvysunt, Relation_has)->removeList();
 
 		int32 total = comp->Bild + comp->Gold + comp->Geld + comp->Juwelen +
 		        comp->Statue + comp->Kuriositaet + comp->HistKunst +
@@ -427,8 +427,8 @@ bool tcIsDeadlock() {
 		hasAll(Person_Marc_Smith, OLF_NORMAL, Object_Car);
 
 		/* get cheapest car! */
-		for (Node *n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
-			Car car = (Car)OL_DATA(n);
+		for (NewObjectNode *n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode*)n->_succ) {
+			Car car = (Car)n->_data;
 
 			if (tcGetCarPrice(car) < money)
 				enough = true;
@@ -1155,12 +1155,12 @@ void tcDoneBirthday() {
 	sndPlayFX();
 
 	knowsAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST, Object_Person);
-	List *persons = ObjectListPrivate;
+	NewList<NewObjectNode> *persons = ObjectListPrivate;
 
-	for (ObjectNode *n = (ObjectNode *) LIST_HEAD(persons); NODE_SUCC(n); n = (ObjectNode *) NODE_SUCC(n)) {
-		Person p = (Person)dbGetObject(OL_NR(n));
+	for (NewObjectNode *n = persons->getListHead(); n->_succ; n = (NewObjectNode *) n->_succ) {
+		Person p = (Person)dbGetObject(n->_nr);
 
-		switch (OL_NR(n)) {
+		switch (n->_nr) {
 		case Person_Sabien_Pardo:
 		case Person_Herbert_Briggs:
 		case Person_John_Gludo:
@@ -1169,8 +1169,8 @@ void tcDoneBirthday() {
 		case Person_Red_Stanson:
 			break;
 		default:
-			if (livesIn(London_London_1, OL_NR(n)) && (g_clue->calcRandomNr(0, 10) < 7)) {
-				tcMoveAPerson(OL_NR(n), Location_Walrus);
+			if (livesIn(London_London_1, n->_nr) && (g_clue->calcRandomNr(0, 10) < 7)) {
+				tcMoveAPerson(n->_nr, Location_Walrus);
 
 				Say(STORY_1_TXT, 0, p->PictID, "ST_11_ALL_0");
 			}
@@ -1181,7 +1181,7 @@ void tcDoneBirthday() {
 	sndPrepareFX("birthd1.voc");    /* cork popping */
 	sndPlayFX();
 
-	RemoveList(persons);
+	persons->removeList();
 
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_11_OLD_0");
 	gfxShow(141, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);
@@ -1407,7 +1407,7 @@ void tcDoneSouthhamptonSabienUnknown() {
 }
 
 static void tcDoneFirstTimeLonelyInSouth() {
-	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "SouthhamptonMenu");
+	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "SouthhamptonMenu");
 	Environment Env = (Environment)dbGetObject(Environment_TheClou);
 	Person Herb = (Person)dbGetObject(Person_Herbert_Briggs);
 
@@ -1502,11 +1502,11 @@ static void tcDoneFirstTimeLonelyInSouth() {
 		ShowTime(0);
 	}
 
-	RemoveList(menu);
+	menu->removeList();
 }
 
 void tcDoneSouthhampton() {
-	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "SouthhamptonMenu");
+	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "SouthhamptonMenu");
 	Environment Env = (Environment)dbGetObject(Environment_TheClou);
 
 	_sceneArgs._overwritten = true;
@@ -1588,7 +1588,7 @@ void tcDoneSouthhampton() {
 	StopAnim();
 	gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
 
-	RemoveList(menu);
+	menu->removeList();
 }
 
 void tcInitTowerBurglary() {
@@ -1600,9 +1600,8 @@ void tcInitTowerBurglary() {
 
 	joined_byAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Person);
 
-	for (Node *node = (Node *) LIST_HEAD(ObjectList); NODE_SUCC(node);
-	        node = (Node *) NODE_SUCC(node))
-		joined_byUnSet(Person_Matt_Stuvysunt, OL_NR(node));
+	for (NewObjectNode *node = ObjectList->getListHead(); node->_succ; node = (NewObjectNode *)node->_succ)
+		joined_byUnSet(Person_Matt_Stuvysunt, node->_nr);
 
 	/* und Personen, Abilities neu setzen! */
 	joined_bySet(Person_Matt_Stuvysunt, Person_Matt_Stuvysunt);
@@ -1726,7 +1725,7 @@ void tcDoneMafia() {
 void tcDoneKaserne() {
 	Environment Env = (Environment)dbGetObject(Environment_TheClou);
 	Car car = (Car)dbGetObject(Car_Cadillac_Club_1952);
-	List *menu = g_clue->_txtMgr->goKey(MENU_TXT, "KaserneMenu");
+	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "KaserneMenu");
 
 	joined_bySet(Person_Matt_Stuvysunt, Person_Matt_Stuvysunt);
 	joined_bySet(Person_Matt_Stuvysunt, Person_Herbert_Briggs);
@@ -1826,7 +1825,7 @@ void tcDoneKaserne() {
 	}
 
 	gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
-	RemoveList(menu);
+	menu->removeList();
 
 	_sceneArgs._returnValue = successor;
 }

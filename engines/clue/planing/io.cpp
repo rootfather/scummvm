@@ -19,14 +19,9 @@
  ****************************************************************************/
 
 #include "clue/base/base.h"
+#include "clue/data/database_p.h"
 
 namespace Clue {
-
-struct IOData {
-	Node io_Link;
-	byte io_Data;
-};
-
 /* Loading & saving functions */
 void plSaveTools(Common::Stream *fh) {
 	if (fh) {
@@ -34,15 +29,15 @@ void plSaveTools(Common::Stream *fh) {
 
 		dskSetLine(fh, PLANING_PLAN_TOOL_BEGIN_ID);
 
-		for (ObjectNode *n = (ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n); n = (ObjectNode *) NODE_SUCC(n))
-			dskSetLine_U32(fh, OL_NR(n));
+		for (NewObjectNode *n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode *) n->_succ)
+			dskSetLine_U32(fh, n->_nr);
 
 		dskSetLine(fh, PLANING_PLAN_TOOL_END_ID);
 	}
 }
 
-List *plLoadTools(Common::Stream *fh) {
-	List *l = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_1");
+NewList<NewNode> *plLoadTools(Common::Stream *fh) {
+	NewList<NewNode> *l = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_1");
 	bool foundAll = true;
 	byte canGet = 2, toolsNr = 0;
 
@@ -59,7 +54,12 @@ List *plLoadTools(Common::Stream *fh) {
 				if (!has(Person_Matt_Stuvysunt, id)) {
 					if (has(Person_Mary_Bolton, id)) {
 						canGet++;
-						dbAddObjectNode(l, id, OLF_INCLUDE_NAME);
+						// CHECKME: The original code was mixing node types.
+						// The new node doesn't, but needs extra testing.
+						// dbAddObjectNode(l, id, OLF_INCLUDE_NAME);
+						warning("CHECKME - Code modified in LoadSystem");
+						dbObject *obj = dbGetObjectReal(dbGetObject(id));
+						l->createNode(obj->link.Name);
 					}
 
 					foundAll = false;
@@ -69,10 +69,10 @@ List *plLoadTools(Common::Stream *fh) {
 	}
 
 	if (foundAll) {
-		RemoveList(l);
-		l = NULL;
+		l->removeList();
+		l = nullptr;
 	} else {
-		List *extList = NULL;
+		NewList<NewNode> *extList = nullptr;
 
 		if (canGet == 2)
 			extList = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_3");
@@ -83,10 +83,10 @@ List *plLoadTools(Common::Stream *fh) {
 			extList = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_4");
 
 		if (extList) {
-			for (Node *n = LIST_HEAD(extList); NODE_SUCC(n); n = NODE_SUCC(n))
-				CreateNode(l, 0, NODE_NAME(n));
+			for (NewNode *n = extList->getListHead(); n->_succ; n = n->_succ)
+				l->createNode(n->_name);
 
-			RemoveList(extList);
+			extList->removeList();
 		}
 	}
 
@@ -117,7 +117,7 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 				name2 = Common::String::format("MODE_%d", mode);
 				plMessage(name2, PLANING_MSG_REFRESH);
 
-				List *PlanList = CreateList();
+				NewObjectList<IODataNode> *PlanList = new NewObjectList<IODataNode>;
 
 				name1 = dbGetObjectName(objId);
 
@@ -125,8 +125,6 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 
 				for (uint32 i = 0; i < PLANING_NR_PLANS; i++) {
 					if ((mode == PLANING_OPEN_WRITE_PLAN) || (pllData & (1L << i))) {
-						IOData *data;
-
 						if (mode == PLANING_OPEN_WRITE_PLAN) {
 							if (pllData & (1L << i))
 								exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "ATTENTION_1");
@@ -136,22 +134,26 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 
 						name2 = Common::String::format("*%s Plan %d    %s", name1.c_str(), i + 1, exp.c_str());
 
-						if ((data = (IOData *)CreateNode(PlanList, sizeof(IOData), name2)))
-							data->io_Data = i;
+						IODataNode* data = PlanList->createNode(name2);
+						data->_ioData = i;
 					}
 				}
 
 				name2 = Common::String::format("EXPAND_MODE_%d", mode);
 				exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, name2.c_str());
-				ExpandObjectList(PlanList, exp);
+				// FIXME : weird call. Replaced by createNode to have something visible for a test
+				// PlanList->expandObjectList(exp);
+				warning("plOpen - Workaround used - to be fixed.");
+				PlanList->createNode(exp);
+				// 
 
-				int i = Bubble(PlanList, 0, NULL, 0L);
+				int i = Bubble((NewList<NewNode>*)PlanList, 0, NULL, 0L);
 
-				if (ChoiceOk(i, GET_OUT, PlanList)) {
-					IOData *data;
+				if (ChoiceOkHack(i, GET_OUT, (NewList<NewNode>*)PlanList)) {
+					IODataNode *data = PlanList->getNthNode(i);
 
-					if ((data = (IOData *)GetNthNode(PlanList, i)))
-						i = data->io_Data;
+					if (data)
+						i = data->_ioData;
 
 					name1 = dbGetObjectName(lsGetActivAreaID());
 					name1.deleteLastChar();
@@ -172,14 +174,13 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 					}
 
 					if (*fh) {
-						RemoveList(PlanList);
+						PlanList->removeList();
 						return PLANING_OPEN_OK;
 					} else
 						ErrorMsg(Disk_Defect, ERROR_MODULE_PLANING, 0);
 				}
 
-				RemoveList(PlanList);
-
+				PlanList->removeList();
 				return PLANING_OPEN_ERR_NO_CHOICE;
 			}
 
@@ -202,7 +203,7 @@ void plSave(uint32 objId) {
 			plSaveTools(fh);
 
 			for (int i = 0; i < BurglarsNr; i++)
-				SaveHandler(fh, plSys, OL_NR(GetNthNode(PersonsList, i)));
+				SaveHandler(fh, plSys, PersonsList->getNthNode(i)->_nr);
 		}
 
 		dskClose(fh);
@@ -211,7 +212,7 @@ void plSave(uint32 objId) {
 
 void plSaveChanged(uint32 objId) {
 	if (PlanChanged) {
-		List *l = g_clue->_txtMgr->goKey(PLAN_TXT, "PLAN_CHANGED");
+		NewList<NewNode> *l = g_clue->_txtMgr->goKey(PLAN_TXT, "PLAN_CHANGED");
 
 		inpTurnESC(0);
 
@@ -225,7 +226,7 @@ void plSaveChanged(uint32 objId) {
 		} else
 			inpTurnESC(1);
 
-		RemoveList(l);
+		l->removeList();
 	}
 }
 
@@ -243,32 +244,31 @@ void plLoad(uint32 objId) {
 			grdDo(fh, plSys, PersonsList, BurglarsNr, PersonsNr,
 			      GUARDS_DO_LOAD);
 		else {
-			List *l = NULL;
-			byte i;
-			byte goon = 1;
+			NewList<NewNode> *l = NULL;
+			bool goon = true;
 
 			if ((l = LoadSystem(fh, plSys))) {
-				inpTurnESC(0);
+				inpTurnESC(false);
 				Bubble(l, 0, NULL, 0L);
-				inpTurnESC(1);
-				RemoveList(l);
+				inpTurnESC(true);
+				l->removeList();
 
-				goon = 0;
-				l = NULL;
+				goon = false;
+				l = nullptr;
 			}
 
 			if ((l = plLoadTools(fh))) {
-				inpTurnESC(0);
-				Bubble(l, 0, NULL, 0L);
-				inpTurnESC(1);
-				RemoveList(l);
+				inpTurnESC(false);
+				Bubble(l, 0, nullptr, 0L);
+				inpTurnESC(true);
+				l->removeList();
 
-				goon = 0;
+				goon = false;
 			}
 
 			if (goon) {
-				for (i = 0; i < BurglarsNr; i++)
-					LoadHandler(fh, plSys, OL_NR(GetNthNode(PersonsList, i)));
+				for (byte i = 0; i < BurglarsNr; i++)
+					LoadHandler(fh, plSys, PersonsList->getNthNode(i)->_nr);
 			}
 		}
 

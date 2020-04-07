@@ -32,10 +32,10 @@ namespace Clue {
 
 extern struct System *plSys;
 
-extern char txtTooLoud[20];
-extern char txtTimer[20];
-extern char txtWeight[20];
-extern char txtSeconds[20];
+extern Common::String txtTooLoud;
+extern Common::String txtTimer;
+extern Common::String txtWeight;
+extern Common::String txtSeconds;
 
 void plInit();
 void plDone();

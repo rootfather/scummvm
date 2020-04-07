@@ -109,7 +109,7 @@ extern void lsSetViewPort(uint16 x, uint16 y);
 extern void lsSetDarkness(byte value);
 extern void lsSetCollMode(byte collMode);
 
-extern List *lsGetRoomsOfArea(uint32 ul_AreaId);
+extern NewObjectList<NewObjectNode> *lsGetRoomsOfArea(uint32 ul_AreaId);
 
 extern void lsSetObjectRetrievalList(uint32 ul_AreaId);
 extern uint32 lsGetCurrObjectRetrieval();
@@ -123,7 +123,7 @@ extern void lsScrollCorrectData(int32 dx, int32 dy);
 extern byte lsScrollLandScape(byte direction);
 extern byte lsInitScrollLandScape(byte direction, byte mode);
 
-extern List *lsGetObjectsByList(uint16 x, uint16 y, uint16 width, uint16 height,
+extern NewObjectList<NewObjectNode> *lsGetObjectsByList(uint16 x, uint16 y, uint16 width, uint16 height,
                                 byte showInvisible, byte addLootBags);
 
 void lsInitActivArea(uint32 areaID, uint16 x, uint16 y, char *livingName);

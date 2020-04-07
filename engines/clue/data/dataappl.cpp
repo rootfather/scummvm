@@ -289,14 +289,14 @@ void tcPersonLearns(uint32 pId) {
 	/* Abilites */
 	hasAll(pId, OLF_NORMAL, Object_Ability);
 
-	for (ObjectNode *n = (ObjectNode *) LIST_HEAD(ObjectList); NODE_SUCC(n); n = (ObjectNode *) NODE_SUCC(n)) {
-		int32 ability = hasGet(pId, OL_NR(n));    /* Jetztzustand der Fähigkeit */
+	for (NewObjectNode *n = (NewObjectNode *)ObjectList->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
+		int32 ability = hasGet(pId, n->_nr);    /* Jetztzustand der Fähigkeit */
 
-		if (learned(pId, OL_NR(n))) {   /* er hat dazugelernt ! */
-			int32 count = learnedGet(pId, OL_NR(n));  /* wie oft er gelernt hat ! */
+		if (learned(pId, n->_nr)) {   /* er hat dazugelernt ! */
+			int32 count = learnedGet(pId, n->_nr);  /* wie oft er gelernt hat ! */
 
 			growth = 7 + count * 4;
-			learnedUnSet(pId, OL_NR(n));    /* Gelerntes nicht nocheinmal lernen! */
+			learnedUnSet(pId, n->_nr);    /* Gelerntes nicht nocheinmal lernen! */
 		} else
 			growth = 10;
 
@@ -304,9 +304,9 @@ void tcPersonLearns(uint32 pId) {
                          * x Punkten oder x Prozent    */
 
 		if (ability + growth < 255)
-			hasSetP(pId, OL_NR(n), ability + growth);
+			hasSetP(pId, n->_nr, ability + growth);
 		else
-			hasSetP(pId, OL_NR(n), 255);
+			hasSetP(pId, n->_nr, 255);
 	}
 
 	/* other attributes ! */
@@ -342,15 +342,15 @@ int32 tcGetTeamMood(uint32 *guyId, uint32 timer) {
 	int32 team = 0;
 	int8 i;
 	/* Summe aus Einzelstimmungen */
-	for (i = 0; (i < 4) && (guyId[i]); i++) {
-		int32 mood = tcGetPersMood((dbGetObject(guyId[i])));  /* Stimmung eines Einzelnen */
+	for (i = 0; (i < 4) && guyId[i]; i++) {
+		int32 mood = tcGetPersMood(dbGetObject(guyId[i]));  /* Stimmung eines Einzelnen */
 		team += mood;
 	}
 
 	team /= i;
 	TeamMood = CalcValue(team, 0, 255, (tcIsPlanPerfect(timer) * 20) / 35, 100);
 
-	return ((int32) TeamMood);
+	return (int32) TeamMood;
 }
 
 /*
@@ -838,19 +838,19 @@ int32 tcCalcMattsPart() {
 
 	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST,
 	             Object_Person);
-	List* guys = ObjectListPrivate;
+	NewList<NewObjectNode>* guys = ObjectListPrivate;
 
-	count = GetNrOfNodes(guys);
+	count = guys->getNrOfNodes();
 
-	for (Node* node = LIST_HEAD(guys); NODE_SUCC(node); node = NODE_SUCC(node)) {
-		if (OL_NR(node) != Person_Matt_Stuvysunt)
-			part += tcGetPersOffer((Person)(OL_DATA(node)), count);
+	for (NewObjectNode* node = guys->getListHead(); node->_succ; node = (NewObjectNode*)node->_succ) {
+		if (node->_nr != Person_Matt_Stuvysunt)
+			part += tcGetPersOffer((Person)node->_data, count);
 	}
 
 	if (part > 99)
 		part = 99;
 
-	RemoveList(guys);
+	guys->removeList();
 
 	return 100 - part;
 }
@@ -876,8 +876,8 @@ bool tcCheckTimeClocks(uint32 buildId) {
 
 	/* und kontrollieren, ob die Zeit abgelaufen ist */
 
-	for (Node* n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
-		uint32 timerId = OL_NR(n);
+	for (NewObjectNode* n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode*)n->_succ) {
+		uint32 timerId = n->_nr;
 		int32 time = (int32) ClockTimerGet(timerId, timerId);
 
 		if (time - 1)
@@ -891,12 +891,11 @@ bool tcCheckTimeClocks(uint32 buildId) {
 
 /* stellt fest, ob 2 Positionen innerhalb des selben Raumes sind */
 
-static bool tcInsideSameRoom(List *roomsList, int16 polX, int16 polY, int16 livX,
-                             int16 livY) {
+static bool tcInsideSameRoom(NewObjectList<NewObjectNode> *roomsList, int16 polX, int16 polY, int16 livX, int16 livY) {
 	bool detected = false;
 
-	for (Node* node = LIST_HEAD(roomsList); NODE_SUCC(node) && detected == 0; node = NODE_SUCC(node)) {
-		LSRoom room = (LSRoom)OL_DATA(node);
+	for (NewObjectNode* node = roomsList->getListHead(); node->_succ && detected == 0; node = (NewObjectNode *)node->_succ) {
+		LSRoom room = (LSRoom)node->_data;
 
 		if ((polX >= room->us_LeftEdge)
 		        && (polX <= room->us_LeftEdge + room->us_Width)
@@ -918,7 +917,7 @@ static bool tcInsideSameRoom(List *roomsList, int16 polX, int16 polY, int16 livX
 /* XPos, YPos = Position des Wächters */
 /* wenn 1 -> Alarm! */
 
-bool tcGuardDetectsGuy(List *roomsList, uint16 us_XPos, uint16 us_YPos,
+bool tcGuardDetectsGuy(NewObjectList<NewObjectNode> *roomsList, uint16 us_XPos, uint16 us_YPos,
                        uint8 uch_ViewDirection, char *puch_GuardName,
                        char *puch_LivingName) {
 	bool detected = false;
@@ -960,20 +959,20 @@ bool tcAlarmByPowerLoss(uint32 powerId) {
 
 	SetObjectListAttr(OLF_PRIVATE_LIST, Object_LSObject);
 	AskAll(dbGetObject(powerId), hasPowerRelationID, BuildObjectList);
-	List* friendlyList = ObjectListPrivate;
+	NewList<NewObjectNode>* friendlyList = ObjectListPrivate;
 
 	/* eine davon mit einer Alarmanlage verbunden? */
 
-	for (Node* n = LIST_HEAD(friendlyList); NODE_SUCC(n); n = NODE_SUCC(n)) {
-		LSObject lso = (LSObject)OL_DATA(n);
+	for (NewObjectNode* n = friendlyList->getListHead(); n->_succ; n = (NewObjectNode*)n->_succ) {
+		LSObject lso = (LSObject)n->_data;
 
-		if ((lso->ul_Status & Const_tcCHAINED_TO_ALARM) && tcIsConnectedWithEnabledAlarm(OL_NR(n))) {
-			RemoveList(friendlyList);
+		if ((lso->ul_Status & Const_tcCHAINED_TO_ALARM) && tcIsConnectedWithEnabledAlarm(n->_nr)) {
+			friendlyList->removeList();
 			return true;
 		}
 	}
 
-	RemoveList(friendlyList);
+	friendlyList->removeList();
 	return false;
 }
 
@@ -985,8 +984,8 @@ static bool tcIsConnectedWithEnabledAlarm(uint32 lsoId) {
 
 	/* ist eine davon eingeschalten? */
 
-	for (Node* n = LIST_HEAD(ObjectList); NODE_SUCC(n); n = NODE_SUCC(n)) {
-		LSObject alarm = (LSObject)OL_DATA(n);
+	for (NewObjectNode* n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode*)n->_succ) {
+		LSObject alarm = (LSObject)n->_data;
 
 		if (!(alarm->ul_Status & (1L << Const_tcON_OFF)))
 			return true;
@@ -999,7 +998,7 @@ static int32 tcGetWeightOfNerves(int32 teamMood) {
 	return 255 - teamMood;
 }
 
-void tcInsertGuard(List *list, List *roomsList, uint16 x, uint16 y, uint16 width,
+void tcInsertGuard(NewObjectList<NewObjectNode> *list, NewObjectList<NewObjectNode> *roomsList, uint16 x, uint16 y, uint16 width,
                    uint16 height, uint32 guardId, uint8 livId, uint32 areaId) {
 	char name[TXT_KEY_LENGTH];
 	uint32 guardedArea = isGuardedbyGet(lsGetCurrBuildingID(), guardId);

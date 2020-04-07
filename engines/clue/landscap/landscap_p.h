@@ -126,8 +126,8 @@ struct LandScape {
 	struct LSFloorSquare *p_AllFloors[3];
 	uint32 ul_FloorAreaId[3];
 
-	List *p_ObjectRetrieval;
-	List *p_ObjectRetrievalLists[3];
+	NewObjectList<NewObjectNode> *p_ObjectRetrieval;
+	NewObjectList<NewObjectNode> *p_ObjectRetrievalLists[3];
 	uint32 ul_ObjectRetrievalAreaId[3];
 
 	List *p_DoorRefreshList;

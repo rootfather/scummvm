@@ -27,7 +27,7 @@ namespace Clue {
 
 struct PresentControl PresentControl = { NULL, 0, 0 };
 
-void DrawPresent(List *present, uint8 firstLine, _GC *gc, uint8 max) {
+void DrawPresent(NewList<PresentationInfoNode> *present, uint8 firstLine, _GC *gc, uint8 max) {
 	gfxScreenFreeze();
 	gfxSetPens(gc, 224, 224, 224);
 	gfxRectFill(gc, 88, 3, 320, 49);
@@ -45,18 +45,18 @@ void DrawPresent(List *present, uint8 firstLine, _GC *gc, uint8 max) {
 	for (uint i = firstLine, j = 4;
 	        (max < firstLine + NRBLINES) ? i < max : i < firstLine + NRBLINES;
 	        i++, j += 9) {
-		struct presentationInfo *p = (struct presentationInfo *) GetNthNode(present, i);
+		PresentationInfoNode *p = present->getNthNode(i);
 
 		char txt[70];
-		strcpy(txt, NODE_NAME(p));
+		strcpy(txt, p->_name.c_str());
 
-		switch (p->presentHow) {
+		switch (p->_presentHow) {
 		case PRESENT_AS_TEXT:
-			if (p->extendedText) {
-				for (uint k = 0; k < (57 - strlen(NODE_NAME(p)) - strlen(p->extendedText)); k++)
+			if (p->_extendedText) {
+				for (uint k = 0; k < (57 - p->_name.size() - strlen(p->_extendedText)); k++)
 					strcat(txt, " ");
 
-				strcat(txt, p->extendedText);
+				strcat(txt, p->_extendedText);
 			}
 			break;
 
@@ -65,13 +65,13 @@ void DrawPresent(List *present, uint8 firstLine, _GC *gc, uint8 max) {
 			gfxRectFill(gc, 205, j, 315, j + 7);
 			gfxSetPens(gc, 251, 251, 251);
 			gfxRectFill(gc, 205, j,
-			            205 + ((315 - 205) * p->extendedNr) / p->maxNr, j + 7);
+			            205 + ((315 - 205) * p->_extendedNr) / p->_maxNr, j + 7);
 
 			gfxSetPens(gc, 249, 252, 253);
 
 			gfxSetRect(206, 315 - 205);
 			char s[10];
-			sprintf(s, "%u %%", (p->extendedNr * 100) / (p->maxNr));
+			sprintf(s, "%u %%", (p->_extendedNr * 100) / p->_maxNr);
 
 			gfxPrint(gc, s, j, GFX_PRINT_CENTER);
 			break;
@@ -87,8 +87,8 @@ void DrawPresent(List *present, uint8 firstLine, _GC *gc, uint8 max) {
 	gfxScreenThaw(gc, 88, 3, 228, 46);
 }
 
-uint8 Present(uint32 nr, const char *presentationText, void (*initPresentation)(uint32, List *, List *)) {
-	List *presentationData = CreateList(), *list;
+uint8 Present(uint32 nr, const char *presentationText, void (*initPresentation)(uint32, NewList<PresentationInfoNode> *, NewList<NewNode> *)) {
+	NewList<PresentationInfoNode> *presentationData = new NewList<PresentationInfoNode>;
 
 	SuspendAnim();
 
@@ -115,12 +115,12 @@ uint8 Present(uint32 nr, const char *presentationText, void (*initPresentation)(
 
 	gfxShow((uint16) BIG_SHEET, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);   /* nur die Farben ! */
 
-	list = g_clue->_txtMgr->goKey(PRESENT_TXT, presentationText);
+	NewList<NewNode> *list = g_clue->_txtMgr->goKey(PRESENT_TXT, presentationText);
 
 	if (list)
 		initPresentation(nr, presentationData, list);
 
-	uint8 max = GetNrOfNodes(presentationData);
+	uint8 max = presentationData->getNrOfNodes();
 
 	gfxSetDrMd(u_gc, GFX_JAM_1);
 	gfxSetFont(u_gc, bubbleFont);
@@ -177,8 +177,8 @@ uint8 Present(uint32 nr, const char *presentationText, void (*initPresentation)(
 		}
 	}
 
-	RemoveList(list);
-	RemoveList(presentationData);
+	list->removeList();
+	presentationData->removeList();
 
 	gfxRefresh();
 
@@ -190,47 +190,45 @@ uint8 Present(uint32 nr, const char *presentationText, void (*initPresentation)(
 		return ((uint8)(exit - 1));
 }
 
-static struct presentationInfo *AddPresentInfo(List *l, uint32 max,
-        List *texts, uint16 textNr) {
-	char *name = NULL;
+static PresentationInfoNode *AddPresentInfo(NewList<PresentationInfoNode> *l, uint32 max, NewList<NewNode> *texts, uint16 textNr) {
+	Common::String name = Common::String("");
 
-	if (textNr != ((uint16) - 1))
-		name = NODE_NAME(GetNthNode(texts, (uint32) textNr));
+	if (textNr != ((uint16) -1))
+		name = texts->getNthNode(textNr)->_name;
 
-	struct presentationInfo *p = (struct presentationInfo *) CreateNode(l,
-	        sizeof(struct presentationInfo), name);
+	PresentationInfoNode *p = l->createNode(name);
+	p->_maxNr = max;
 
-	p->maxNr = max;
 	return p;
 }
 
 
-void AddPresentTextLine(List *l, Common::String data, uint32 max, List *texts, uint16 textNr) {
-	struct presentationInfo *p = AddPresentInfo(l, max, texts, textNr);
-	p->presentHow = PRESENT_AS_TEXT;
+void AddPresentTextLine(NewList<PresentationInfoNode> *l, Common::String data, uint32 max, NewList<NewNode>*texts, uint16 textNr) {
+	PresentationInfoNode* p = AddPresentInfo(l, max, texts, textNr);
+	p->_presentHow = PRESENT_AS_TEXT;
 
 	if (!data.empty())
-		strcpy(p->extendedText, data.c_str());
+		strcpy(p->_extendedText, data.c_str());
 	else
-		strcpy(p->extendedText, "");
+		strcpy(p->_extendedText, "");
 }
 
 /* XXX: ONLY FOR NUMBERIC VALUES! */
-void AddPresentLine(List *l, uint8 presentHow, uint32 data, uint32 max, List *texts, uint16 textNr) {
-	struct presentationInfo *p = AddPresentInfo(l, max, texts, textNr);
-	p->presentHow = presentHow;
+void AddPresentLine(NewList<PresentationInfoNode> *l, uint8 presentHow, uint32 data, uint32 max, NewList<NewNode> *texts, uint16 textNr) {
+	PresentationInfoNode *p = AddPresentInfo(l, max, texts, textNr);
+	p->_presentHow = presentHow;
 
 	if (presentHow == PRESENT_AS_TEXT)
 		ErrorMsg(Internal_Error, ERROR_MODULE_PRESENT, 0);
 
 	if (presentHow == PRESENT_AS_NUMBER) {
-		sprintf(p->extendedText, "%u", data);
+		sprintf(p->_extendedText, "%u", data);
 
-		p->presentHow = PRESENT_AS_TEXT;
+		p->_presentHow = PRESENT_AS_TEXT;
 	}
 
 	if (presentHow == PRESENT_AS_BAR)
-		p->extendedNr = data;
+		p->_extendedNr = data;
 }
 
 void prSetBarPrefs(_GC *gc, uint16 us_BarWidth,

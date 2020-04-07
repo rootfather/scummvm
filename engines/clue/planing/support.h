@@ -53,8 +53,8 @@ byte plIgnoreLock(uint32 objId);
 void plMove(uint32 current, byte direction);
 void plWork(uint32 current);
 
-List *plGetObjectsList(uint32 current, byte addLootBags);
-void plInsertGuard(List *list, uint32 current, uint32 guard);
+NewObjectList<NewObjectNode> *plGetObjectsList(uint32 current, byte addLootBags);
+void plInsertGuard(NewObjectList<NewObjectNode> *list, uint32 current, uint32 guard);
 bool plObjectInReach(uint32 current, uint32 objId);
 
 } // End of namespace Clue

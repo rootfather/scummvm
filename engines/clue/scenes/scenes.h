@@ -74,7 +74,7 @@ int32 tcEscapeByCar(uint32 escBits, int32 timeLeft);
 
 uint32 tcChooseCar(uint32 backgroundNr);
 
-List *tcMakeLootList(uint32 containerID, uint32 relID);
+NewList<NewNode>* tcMakeLootList(uint32 containerID, uint32 relID);
 
 Common::String tcShowPriceOfCar(uint32 nr, uint32 type, void *data);
 Common::String tcShowPriceOfTool(uint32 nr, uint32 type, void *data);
@@ -95,7 +95,7 @@ uint32 tcStartEvidence();
 uint32 tcGoInsideOfHouse(uint32 buildingID);
 
 void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc);
-void tcShowObjectData(uint32 areaID, Node *node, byte perc);
+void tcShowObjectData(uint32 areaID, NewObjectNode *node, byte perc);
 
 } // End of namespace Clue
 

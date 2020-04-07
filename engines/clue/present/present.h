@@ -32,24 +32,24 @@ namespace Clue {
 
 struct _GC;
 
-extern byte Present(uint32 nr, const char *presentationText, void (*initPresentation)(uint32, List *, List *));
+extern byte Present(uint32 nr, const char *presentationText, void (*initPresentation)(uint32, NewList<PresentationInfoNode> *, NewList<NewNode> *));
 
-extern void InitPersonPresent(uint32 nr, List *presentationData, List *texts);
-extern void InitCarPresent(uint32 nr, List *presentationData, List *texts);
-extern void InitPlayerPresent(uint32 nr, List *presentationData, List *texts);
-extern void InitBuildingPresent(uint32 nr, List *presentationData, List *texts);
-extern void InitToolPresent(uint32 nr, List *presentationData, List *texts);
-extern void InitObjectPresent(uint32 nr, List *presentationData, List *texts);
-extern void InitEvidencePresent(uint32 nr, List *presentationData, List *texts);
-extern void InitLootPresent(uint32 nr, List *presentationData, List *texts);
-extern void InitOneLootPresent(uint32 nr, List *presentationData, List *texts);
+extern void InitPersonPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts);
+extern void InitCarPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts);
+extern void InitPlayerPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts);
+extern void InitBuildingPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts);
+extern void InitToolPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts);
+extern void InitObjectPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts);
+extern void InitEvidencePresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts);
+extern void InitLootPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts);
+extern void InitOneLootPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts);
 
 extern void prSetBarPrefs(struct _GC *gc, uint16 us_BarWidth, uint16 us_BarHeight, byte uch_FCol, byte uch_BCol, byte uch_TCol);
 extern void prDrawTextBar(const char *puch_Text, uint32 ul_Value, uint32 ul_Max, uint16 us_XPos, uint16 us_YPos);
 
-extern void DrawPresent(List *present, uint8 firstLine, struct _GC *gc, uint8 max);
-void AddPresentTextLine(List *l, Common::String data, uint32 max, List *texts, uint16 textNr);
-void AddPresentLine(List *l, uint8 presentHow, uint32 data, uint32 max, List *texts, uint16 textNr);
+extern void DrawPresent(NewList<PresentationInfoNode> *present, uint8 firstLine, struct _GC *gc, uint8 max);
+void AddPresentTextLine(NewList<PresentationInfoNode> *l, Common::String data, uint32 max, NewList<NewNode> *texts, uint16 textNr);
+void AddPresentLine(NewList<PresentationInfoNode> *l, uint8 presentHow, uint32 data, uint32 max, NewList<NewNode> *texts, uint16 textNr);
 
 } // End of namespace Clue
 
