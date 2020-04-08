@@ -46,7 +46,6 @@ MODULE_OBJS = \
 	planing/sync.o \
 	present/present.o \
 	present/interac.o \
-	random/random.o \
 	scenes/cars.o \
 	scenes/dealer.o \
 	scenes/done.o \
