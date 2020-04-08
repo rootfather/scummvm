@@ -507,7 +507,7 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 								activ--;
 								cl--;
 								
-								if (bubble->getNthNode(activ)->_name[0] == '*')
+								if (bubble->getNthNode(activ)->_name.c_str()[0] == '*')
 									break;
 							}
 
@@ -529,7 +529,7 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 								activ++;
 								cl--;
 
-								if (bubble->getNthNode(activ)->_name[0] == '*')
+								if (bubble->getNthNode(activ)->_name.c_str()[0] == '*')
 									break;
 							}
 
@@ -548,7 +548,7 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 	}
 
 	if (activ != GET_OUT) {
-		if (bubble->getNthNode(0L)->_name[0] != '*')
+		if (bubble->getNthNode(0L)->_name.c_str()[0] != '*')
 			activ = 0;
 	}
 
