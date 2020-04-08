@@ -8,6 +8,7 @@
  ****************************************************************************/
 
 #include "clue/landscap/landscap.h"
+#include "clue/living/bob.h"
 #include "common/util.h"
 
 namespace Clue {

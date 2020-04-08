@@ -22,7 +22,6 @@
 #define MODULE_LIVING
 
 #include "clue/landscap/landscap.h"
-#include "clue/living/bob.h"
 
 namespace Clue {
 
@@ -86,11 +85,6 @@ extern void livAnimate(const char *uch_Name, byte uch_Action, int16 s_XSpeed,
                        int16 s_YSpeed);
 extern void livPrepareAnims();
 extern void livDoAnims(byte uch_Play, byte uch_Move);
-
-#if 0
-extern void livStopAll();
-extern byte livGetOldAction(const char *uch_Name);
-#endif
 
 /* uint16 spotInit(bitmap, uint16 1 = 48, 2 = 32, 3 = 16 ); */
 /* uint16 spotDone */

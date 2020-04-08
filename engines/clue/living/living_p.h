@@ -35,8 +35,8 @@ namespace Clue {
 
 
 struct SpriteControl {
-	List *p_Livings;
-	List *p_Template;
+	NewList<NewLiving> *p_Livings;
+	NewList<NewAnimTemplate> *p_Template;
 
 	uint32 ul_SprPlayMode;
 	uint32 ul_ActivAreaId;
@@ -56,58 +56,10 @@ struct SpriteControl {
 	char ch_PlayDirection;
 };
 
-struct AnimTemplate {
-	Node Link;
-
-	uint16 us_Width;
-	uint16 us_Height;
-
-	uint16 us_FrameOffsetNr;
-};
-
-struct Living {
-	/* komplette Daten einer Instanz   *//* eines Lebewesens                */
-	Node Link;
-
-	uint32 ul_LivesInAreaId;    /* Area -> LandScap */
-
-	uint16 us_LivingNr;
-
-	struct AnimTemplate *p_OriginTemplate;
-
-	byte uch_XSize;
-	byte uch_YSize;
-
-	int16 s_XSpeed;
-	int16 s_YSpeed;
-
-	uint16 us_XPos;     /* absolut */
-	uint16 us_YPos;
-
-	byte uch_ViewDirection; /* 0 .. left, right, up, down */
-
-	byte uch_Action;
-	byte uch_OldAction;
-
-	char ch_CurrFrameNr;
-
-	byte uch_Status;        /* enabled or disabled */
-};
-
-static struct SpriteControl *sc = NULL;
-
-static struct Living *livGet(const char *uch_Name);
+static struct SpriteControl *sc = nullptr;
 
 static void livLoadTemplates();
 static void livLoadLivings();
-static void livRemTemplate(struct AnimTemplate *tlt);
-static void livRem(struct Living *liv);
-static void livHide(struct Living *liv);
-static void livShow(struct Living *liv);
 
-static void livAdd(Common::String uch_Name, Common::String uch_TemplateName, byte uch_XSize,
-                   byte uch_YSize, int16 s_XSpeed, int16 s_YSpeed);
-
-static bool livIsVisible(struct Living *liv);
 
 } // End of namespace Clue
