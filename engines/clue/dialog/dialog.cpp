@@ -236,13 +236,12 @@ void PlayFromCDROM() {
 }
 
 byte Say(uint32 TextID, byte activ, uint16 person, const char *text) {
-	byte choice;
+	NewList<NewNode> *bubble = g_clue->_txtMgr->goKey(TextID, text);
+
+	if (person != (uint16)-1)
+		SetPictID(person);
+
 	if (g_clue->getFeatures() & ADGF_CD) {
-		NewList<NewNode> *bubble = g_clue->_txtMgr->goKey(TextID, text);
-
-		if (person != (uint16) - 1)
-			SetPictID(person);
-
 		/* speech output must be started out of the bubble because
 		   after starting it there must be no access to the CDROM
 		   (neither pictures or text, nor any other directory) or
@@ -252,37 +251,26 @@ byte Say(uint32 TextID, byte activ, uint16 person, const char *text) {
 			Common::String keys = g_clue->_txtMgr->getFirstLine(CDROM_TXT, text);
 
 			StartFrame = (g_clue->_txtMgr->getKeyAsUint32(1, keys) * 60L +
-					g_clue->_txtMgr->getKeyAsUint32(2, keys)) * 75L + g_clue->_txtMgr->getKeyAsUint32(3, keys);
+				g_clue->_txtMgr->getKeyAsUint32(2, keys)) * 75L + g_clue->_txtMgr->getKeyAsUint32(3, keys);
 			EndFrame = (g_clue->_txtMgr->getKeyAsUint32(4, keys) * 60L +
-					g_clue->_txtMgr->getKeyAsUint32(5, keys)) * 75L + g_clue->_txtMgr->getKeyAsUint32(6, keys);
-
-			choice = Bubble(bubble, activ, nullptr, 0L);
+				g_clue->_txtMgr->getKeyAsUint32(5, keys)) * 75L + g_clue->_txtMgr->getKeyAsUint32(6, keys);
 		} else {
 			StartFrame = DLG_NO_SPEECH;
 			EndFrame = DLG_NO_SPEECH;
-
-			choice = Bubble(bubble, activ, nullptr, 0L);
 		}
+	}
 
-		if (g_clue->getFeatures() & ADGF_CD) {
-			CDROM_StopAudioTrack();
-			sndFading(0);
-		}
+	byte choice = Bubble(bubble, activ, nullptr, 0L);
+
+	if (g_clue->getFeatures() & ADGF_CD) {
+		CDROM_StopAudioTrack();
+		sndFading(0);
 
 		StartFrame = DLG_NO_SPEECH;
 		EndFrame = DLG_NO_SPEECH;
-
-		bubble->removeList();
-	} else {
-		NewList<NewNode> *bubble = g_clue->_txtMgr->goKey(TextID, text);
-
-		if (person != (uint16) -1)
-			SetPictID(person);
-
-		choice = Bubble(bubble, activ, nullptr, 0L);
-		bubble->removeList();
 	}
-
+	
+	bubble->removeList();
 	return choice;
 }
 
@@ -321,7 +309,7 @@ uint32 Talk() {
 
 	// CHECKME: Is there a reason to return something?
 	uint32 succ_event_nr = 0L;
-	return (succ_event_nr);
+	return succ_event_nr;
 }
 
 } // End of namespace Clue
