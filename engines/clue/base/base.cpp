@@ -45,7 +45,7 @@ void tcDone() {
 
 		gfxDone();
 
-		if (g_clue->getFeatures() & GF_CDAUDIO) {
+		if (g_clue->getFeatures() & ADGF_CD) {
 			if (CDRomInstalled) {
 				CDROM_StopAudioTrack();
 				CDROM_UnInstall();
@@ -71,11 +71,8 @@ bool ClueEngine::tcInit() {
 		return false;
 	}
 	 
-	if (g_clue->getFeatures() & GF_CDAUDIO) {
-		if ((CDRomInstalled = CDROM_Install())) {
-			CDROM_WaitForMedia();
-			return false;
-		}
+	if (g_clue->getFeatures() & ADGF_CD) {
+		CDRomInstalled = CDROM_Install();
 	}
 
 	gfxInit();

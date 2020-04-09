@@ -6,6 +6,8 @@
   distribution.
  ****************************************************************************/
 #include "clue/cdrom/cdrom.h"
+#include "backends/audiocd/audiocd.h"
+#include "clue/clue.h"
 
 namespace Clue {
 
@@ -15,53 +17,25 @@ unsigned int CDRomInstalled = 0;
 static SDL_CD *cdrom;
 */
 int CDROM_Install() {
-	/*
-	   if (SDL_InitSubSystem(SDL_INIT_CDROM) != 0) {
-	       printf("SDL_InitSubSystem: %s\n", SDL_GetError());
-	       return 0;
-	   }
-
-	   if (!(cdrom = SDL_CDOpen(0))) {
-	       printf("Couldn't open drive: %s\n", SDL_GetError());
-	       return 0;
-	   }
-
-	   CDRomInstalled = 1;*/
-	return 1;
+	return g_system->getAudioCDManager()->open() ? 1 : 0;
 }
 
 void CDROM_UnInstall() {
-	/*
-	   CDRomInstalled = 0;
-
-	   if (cdrom) {
-	       SDL_CDClose(cdrom);
-	       cdrom = NULL;
-	   }
-
-	   if (SDL_WasInit(SDL_INIT_VIDEO) != 0) {
-	       SDL_QuitSubSystem(SDL_INIT_CDROM);
-	   }*/
+	g_system->getAudioCDManager()->close();
 }
 
 void CDROM_WaitForMedia() {
-	/*
-	   if (cdrom && CD_INDRIVE(SDL_CDStatus(cdrom))) {
-	   }*/
+	// No wait required
 }
 
 void CDROM_PlayAudioSequence(uint8 TrackNum, uint32 StartOffset, uint32 EndOffset) {
-	/*
-	   if (cdrom && CD_INDRIVE(SDL_CDStatus(cdrom))) {
-	       SDL_CDPlayTracks(cdrom,TrackNum,StartOffset,1,EndOffset-StartOffset);
-	   }*/
+	// Assumption that extracted audio tracks are named Track1 -> 23. The original starts counting at 2.
+	g_system->getAudioCDManager()->play(TrackNum - 1, 1, StartOffset, EndOffset - StartOffset);
+
 }
 
 void CDROM_StopAudioTrack() {
-	/*
-	   if (cdrom) {
-	       SDL_CDStop(cdrom);
-	   }*/
+	g_system->getAudioCDManager()->stop();
 }
 
 } // End of namespace Clue

@@ -402,7 +402,7 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 
 	gfxScreenThaw(u_gc, 0, 0, 320, 67);
 
-	if (g_clue->getFeatures() & GF_CDAUDIO) {
+	if (g_clue->getFeatures() & ADGF_CD) {
 		PlayFromCDROM();
 	}
 

@@ -264,7 +264,7 @@ byte Say(uint32 TextID, byte activ, uint16 person, const char *text) {
 			choice = Bubble(bubble, activ, nullptr, 0L);
 		}
 
-		if (g_clue->getFeatures() & GF_CDAUDIO) {
+		if (g_clue->getFeatures() & ADGF_CD) {
 			CDROM_StopAudioTrack();
 			sndFading(0);
 		}

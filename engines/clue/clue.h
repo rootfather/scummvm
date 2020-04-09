@@ -32,8 +32,7 @@
 namespace Clue {
 	
 enum ClueGameFeatures {
-	GF_PROFIDISK = (1 << 0), // Expansion pack
-	GF_CDAUDIO   = (1 << 1)  // TODO: Might not be a feature flag
+	GF_PROFIDISK = (1 << 0) // Expansion pack
 };
 
 class TextMgr;
