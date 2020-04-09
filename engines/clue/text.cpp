@@ -317,7 +317,7 @@ NewList<NewNode> *TextMgr::goKeyAndInsert(uint32 textId, const char *key, ...) {
 
 	NewList<NewNode> *originList = goKey(textId, key);
 
-	for (NewNode *node = originList->_head; node->_succ; node = node->_succ) {
+	for (NewNode *node = originList->getListHead(); node->_succ; node = node->_succ) {
 		char originLine[256], txtLine[256];
 
 		strcpy(originLine, node->_name.c_str());

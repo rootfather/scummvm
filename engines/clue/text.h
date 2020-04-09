@@ -177,9 +177,9 @@ public:
 
 template <typename T>
 class NewList {
+	T* _head;
+	T* _tail;
 public:
-	T *_head;
-	T *_tail;
 
 	NewList();
 	~NewList();

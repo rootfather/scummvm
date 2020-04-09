@@ -298,7 +298,7 @@ static void lsSortObjectList(NewObjectList<NewObjectNode> **l) {
 	if (!(*l)->isEmpty()) {
 		dbSortObjectList(l, lsSortByYCoord);
 
-		for (NewObjectNode *node = (*l)->_head; !lastNode && node->_succ->_succ;) {
+		for (NewObjectNode *node = (*l)->getListHead(); !lastNode && node->_succ->_succ;) {
 			NewObjectNode *node1 = node;
 
 			do {
