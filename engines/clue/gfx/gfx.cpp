@@ -126,14 +126,14 @@ void gfxInit() {
 }
 
 void gfxDone() {
-	if (PictureList) {
-		RemoveList(PictureList);
-		PictureList = NULL;
+	if (_pictureList) {
+		_pictureList->removeList();
+		_pictureList = nullptr;
 	}
 
-	if (CollectionList) {
-		RemoveList(CollectionList);
-		CollectionList = NULL;
+	if (_collectionList) {
+		_collectionList->removeList();
+		_collectionList = nullptr;
 	}
 
 	gfxCloseFont(bubbleFont);
@@ -198,25 +198,25 @@ void gfxSetVideoMode(byte uch_NewMode) {
 
 static void gfxInitCollList() {
 	NewList<NewNode> *tempList = new NewList<NewNode>;
-	CollectionList = CreateList();
+	_collectionList = new NewList<CollectionNode>;
 
 	char pathname[DSK_PATH_MAX];
 	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, COLL_LIST_TXT, pathname);
 	tempList->readList(pathname);
 
 	for (NewNode *n = tempList->getListHead(); n->_succ; n = n->_succ) {
-		Collection *coll = (Collection *)CreateNode(CollectionList, sizeof(Collection), g_clue->_txtMgr->getKey(2, n->_name.c_str()));
+		CollectionNode *coll = _collectionList->createNode(g_clue->_txtMgr->getKey(2, n->_name.c_str()));
 
-		coll->us_CollId = (uint16)g_clue->_txtMgr->getKeyAsUint32(1, n->_name);
+		coll->_collId = (uint16)g_clue->_txtMgr->getKeyAsUint32(1, n->_name);
 
-		coll->puch_Filename = NODE_NAME(coll);
-		coll->prepared = NULL;
+		coll->_filename = coll->_name;
+		coll->_prepared = nullptr;
 
-		coll->us_TotalWidth = (uint16)g_clue->_txtMgr->getKeyAsUint32(3, n->_name);
-		coll->us_TotalHeight = (uint16)g_clue->_txtMgr->getKeyAsUint32(4, n->_name);
+		coll->_totalWidth = (uint16)g_clue->_txtMgr->getKeyAsUint32(3, n->_name);
+		coll->_totalHeight = (uint16)g_clue->_txtMgr->getKeyAsUint32(4, n->_name);
 
-		coll->uch_ColorRangeStart = (uint16)g_clue->_txtMgr->getKeyAsUint32(5, n->_name);
-		coll->uch_ColorRangeEnd = (uint16)g_clue->_txtMgr->getKeyAsUint32(6, n->_name);
+		coll->_colorRangeStart = (uint16)g_clue->_txtMgr->getKeyAsUint32(5, n->_name);
+		coll->_colorRangeEnd = (uint16)g_clue->_txtMgr->getKeyAsUint32(6, n->_name);
 	}
 
 	tempList->removeList();
@@ -224,26 +224,26 @@ static void gfxInitCollList() {
 
 static void gfxInitPictList() {
 	NewList<NewNode> *tempList = new NewList<NewNode>;
-	PictureList = CreateList();
+	_pictureList = new NewList<PictureNode>;
 
 	char pathname[DSK_PATH_MAX];
 	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, PICT_LIST_TXT, pathname);
 	tempList->readList(pathname);
 
 	for (NewNode *n = tempList->getListHead(); n->_succ; n = n->_succ) {
-		Picture *pict = (Picture *)CreateNode(PictureList, sizeof(*pict), nullptr);
+		PictureNode *pict = _pictureList->createNode(nullptr);
 
-		pict->us_PictId = (uint16)g_clue->_txtMgr->getKeyAsUint32(1, n->_name);
-		pict->us_CollId = (uint16)g_clue->_txtMgr->getKeyAsUint32(2, n->_name);
+		pict->_pictId = (uint16)g_clue->_txtMgr->getKeyAsUint32(1, n->_name);
+		pict->_collId = (uint16)g_clue->_txtMgr->getKeyAsUint32(2, n->_name);
 
-		pict->us_XOffset = (uint16)g_clue->_txtMgr->getKeyAsUint32(3, n->_name);
-		pict->us_YOffset = (uint16)g_clue->_txtMgr->getKeyAsUint32(4, n->_name);
+		pict->_xOffset = (uint16)g_clue->_txtMgr->getKeyAsUint32(3, n->_name);
+		pict->_yOffset = (uint16)g_clue->_txtMgr->getKeyAsUint32(4, n->_name);
 
-		pict->us_Width = (uint16)g_clue->_txtMgr->getKeyAsUint32(5, n->_name);
-		pict->us_Height = (uint16)g_clue->_txtMgr->getKeyAsUint32(6, n->_name);
+		pict->_width = (uint16)g_clue->_txtMgr->getKeyAsUint32(5, n->_name);
+		pict->_height = (uint16)g_clue->_txtMgr->getKeyAsUint32(6, n->_name);
 
-		pict->us_DestX = (uint16)g_clue->_txtMgr->getKeyAsUint32(7, n->_name);
-		pict->us_DestY = (uint16)g_clue->_txtMgr->getKeyAsUint32(8, n->_name);
+		pict->_destX = (uint16)g_clue->_txtMgr->getKeyAsUint32(7, n->_name);
+		pict->_destY = (uint16)g_clue->_txtMgr->getKeyAsUint32(8, n->_name);
 	}
 
 	tempList->removeList();
@@ -520,12 +520,12 @@ uint16 gfxTextWidth(_GC *gc, Common::String txt) {
  * access & calc functions
  */
 
-Collection *gfxGetCollection(uint16 us_CollId) {
-	return (Collection *)GetNthNode(CollectionList, (uint32)(us_CollId - 1));
+CollectionNode *gfxGetCollection(uint16 us_CollId) {
+	return _collectionList->getNthNode((uint32)(us_CollId - 1));
 }
 
-Picture *gfxGetPicture(uint16 us_PictId) {
-	return (Picture *)GetNthNode(PictureList, (uint32)(us_PictId - 1));
+PictureNode *gfxGetPicture(uint16 us_PictId) {
+	return _pictureList->getNthNode((uint32)(us_PictId - 1));
 }
 
 /* the collection must have been prepared (PrepareColl) beforehand */
@@ -545,19 +545,19 @@ static int32 gfxGetRealDestY(_GC *gc, int32 destY) {
 
 /* nach dieser Funktion befindet sich im ScratchRP die entpackte Collection */
 void gfxPrepareColl(uint16 collId) {
-	Collection *coll = gfxGetCollection(collId);
+	CollectionNode *coll = gfxGetCollection(collId);
 	if (!coll) {
 		DebugMsg(ERR_DEBUG, ERROR_MODULE_GFX, "gfxPrepareColl");
 		return;
 	}
 
-	if (coll->prepared) {
-		gfxScratchFromMem(coll->prepared);
+	if (coll->_prepared) {
+		gfxScratchFromMem(coll->_prepared);
 	} else {
 		char pathname[DSK_PATH_MAX];
 
 		/* Dateiname erstellen */
-		dskBuildPathName(DISK_CHECK_FILE, PICTURE_DIRECTORY, coll->puch_Filename, pathname);
+		dskBuildPathName(DISK_CHECK_FILE, PICTURE_DIRECTORY, coll->_filename.c_str(), pathname);
 
 		gfxLoadILBM(pathname);
 
@@ -567,7 +567,7 @@ void gfxPrepareColl(uint16 collId) {
 		 * werden als nicht vorbereitet betrachtet, da der ScratchRP ständig
 		 * durch andere Bilder überschrieben wird
 		     */
-		coll->prepared = NULL;
+		coll->_prepared = nullptr;
 	}
 }
 
@@ -590,18 +590,18 @@ void gfxCollToMem(uint16 collId, MemRastPort *rp) {
 	 * nun aus dem MemRastPort "entfernt"
 	 */
 	if (rp->collId != GFX_NO_COLL_IN_MEM && collId != rp->collId) {
-		Collection *oldColl = gfxGetCollection(rp->collId);
+		CollectionNode *oldColl = gfxGetCollection(rp->collId);
 		if (oldColl)
-			oldColl->prepared = NULL;
+			oldColl->_prepared = nullptr;
 	}
 
 	gfxPrepareColl(collId);
 	gfxScratchToMem(rp);
 
 	/* enter the MemRastPort in the new collection */
-	Collection *coll = gfxGetCollection(collId);
+	CollectionNode *coll = gfxGetCollection(collId);
 	if (coll)
-		coll->prepared = rp;
+		coll->_prepared = rp;
 
 	rp->collId = collId;
 }
@@ -939,16 +939,16 @@ void gfxChangeColors(_GC *gc, uint32 delay, uint32 mode, uint8 *palette) {
 
 
 void gfxShow(uint16 us_PictId, uint32 ul_Mode, int32 l_Delay, int32 l_XPos, int32 l_YPos) {
-	Picture *pict = gfxGetPicture(us_PictId);
+	PictureNode *pict = gfxGetPicture(us_PictId);
 	if (!pict)
 		return;
 
-	Collection *coll = gfxGetCollection(pict->us_CollId);
+	CollectionNode *coll = gfxGetCollection(pict->_collId);
 	if (!coll)
 		return;
 
-	uint16 destX = pict->us_DestX;
-	uint16 destY = pict->us_DestY;
+	uint16 destX = pict->_destX;
+	uint16 destY = pict->_destY;
 
 	if (l_XPos != -1)
 		destX = l_XPos;
@@ -964,7 +964,7 @@ void gfxShow(uint16 us_PictId, uint32 ul_Mode, int32 l_Delay, int32 l_XPos, int3
 
 	destY = gfxGetRealDestY(gc, destY);
 
-	gfxPrepareColl(pict->us_CollId);
+	gfxPrepareColl(pict->_collId);
 
 	if (!(ul_Mode & GFX_NO_REFRESH))
 		gfxPrepareRefresh();
@@ -973,28 +973,28 @@ void gfxShow(uint16 us_PictId, uint32 ul_Mode, int32 l_Delay, int32 l_XPos, int3
 		gfxClearArea(gc);
 
 	if (ul_Mode & GFX_FADE_OUT) {
-		gfxSetColorRange(coll->uch_ColorRangeStart, coll->uch_ColorRangeEnd);
+		gfxSetColorRange(coll->_colorRangeStart, coll->_colorRangeEnd);
 		gfxChangeColors(NULL, l_Delay, GFX_FADE_OUT, NULL);
 	}
 
 	if (!l_Delay && (ul_Mode & GFX_BLEND_UP)) {
-		gfxSetColorRange(coll->uch_ColorRangeStart, coll->uch_ColorRangeEnd);
+		gfxSetColorRange(coll->_colorRangeStart, coll->_colorRangeEnd);
 		gfxChangeColors(NULL, l_Delay, GFX_BLEND_UP, ScratchRP.palette);
 	}
 
 	gfxScreenFreeze();
 	if (ul_Mode & GFX_OVERLAY)
-		gfxBlit(gc, &ScratchRP, pict->us_XOffset, pict->us_YOffset,
-		        destX, destY, pict->us_Width, pict->us_Height, true);
+		gfxBlit(gc, &ScratchRP, pict->_xOffset, pict->_yOffset,
+		        destX, destY, pict->_width, pict->_height, true);
 	if (ul_Mode & GFX_ONE_STEP)
-		gfxBlit(gc, &ScratchRP, pict->us_XOffset, pict->us_YOffset,
-		        destX, destY, pict->us_Width, pict->us_Height, false);
+		gfxBlit(gc, &ScratchRP, pict->_xOffset, pict->_yOffset,
+		        destX, destY, pict->_width, pict->_height, false);
 
 	if (l_Delay && (ul_Mode & GFX_BLEND_UP)) {
-		gfxSetColorRange(coll->uch_ColorRangeStart, coll->uch_ColorRangeEnd);
+		gfxSetColorRange(coll->_colorRangeStart, coll->_colorRangeEnd);
 		gfxChangeColors(NULL, l_Delay, GFX_BLEND_UP, ScratchRP.palette);
 	}
-	gfxScreenThaw(gc, destX, destY, pict->us_Width, pict->us_Height);
+	gfxScreenThaw(gc, destX, destY, pict->_width, pict->_height);
 
 	gfxSetGC(NULL);
 }

@@ -102,8 +102,8 @@ struct ColorRange GlobalColorRange;
 
 struct GfxBase GfxBase;
 
-List *CollectionList = NULL;
-List *PictureList = NULL;
+NewList<CollectionNode> *_collectionList = nullptr;
+NewList<PictureNode> *_pictureList = nullptr;
 
 _GC *l_gc;
 _GC *m_gc;

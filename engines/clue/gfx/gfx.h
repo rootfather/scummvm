@@ -23,6 +23,7 @@
 
 #include "graphics/surface.h"
 #include "clue/list/list.h"
+#include "clue/text.h"
 
 namespace Clue {
 struct _GC;
@@ -94,39 +95,41 @@ struct Rect {
 	uint16 h;
 };
 
-struct Collection {
-	Node Link;
+class CollectionNode : public NewNode {
+public:
+	uint16 _collId;
+	Common::String _filename;
 
-	uint16 us_CollId;
+	MemRastPort *_prepared;
+	void *_colorTable;     /* not always correct (only as long as nothing
+			                   else modified the buffer!) */
 
-	char *puch_Filename;
+	uint16 _totalWidth;
+	uint16 _totalHeight;
 
-	MemRastPort *prepared;
+	byte _colorRangeStart;
+	byte _colorRangeEnd;
 
-	void *p_ColorTable;     /* not always correct (only as long as nothing
-                   else modified the buffer!) */
+	CollectionNode() { /* TODO - Initialize members */ }
+	~CollectionNode() { /* TODO - Implement destructor */ }
+}; 
 
-	uint16 us_TotalWidth;
-	uint16 us_TotalHeight;
+class PictureNode : public NewNode {
+public:
+	uint16 _pictId;
+	uint16 _collId;       /* in welcher Collection sich dieses Bild befindet */
 
-	byte uch_ColorRangeStart;
-	byte uch_ColorRangeEnd;
-};
+	uint16 _xOffset;      /* innerhalb der Collection */
+	uint16 _yOffset;
 
-struct Picture {
-	Node Link;
+	uint16 _width;
+	uint16 _height;
 
-	uint16 us_PictId;
-	uint16 us_CollId;       /* in welcher Collection sich dieses Bild befindet */
+	uint16 _destX;
+	uint16 _destY;
 
-	uint16 us_XOffset;      /* innerhalb der Collection */
-	uint16 us_YOffset;
-
-	uint16 us_Width;
-	uint16 us_Height;
-
-	uint16 us_DestX;
-	uint16 us_DestY;
+	PictureNode() { /* TODO - Initialize members */ }
+	// No need for a specific destructor
 };
 
 struct Font {
@@ -203,8 +206,8 @@ extern void gfxGetPalette(uint16 collId, uint8 *palette);
 void gfxPrepareColl(uint16 collId);
 void gfxUnPrepareColl(uint16 collId);
 
-extern struct Collection *gfxGetCollection(uint16 us_CollId);
-extern struct Picture *gfxGetPicture(uint16 us_PictId);
+extern CollectionNode *gfxGetCollection(uint16 us_CollId);
+extern PictureNode *gfxGetPicture(uint16 us_PictId);
 
 void gfxLoadILBM(const char *fileName);
 

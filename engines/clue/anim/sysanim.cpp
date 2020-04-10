@@ -115,7 +115,7 @@ static void PrepareAnim(const char *AnimID)
 	Common::String pict_list = GetAnim(AnimID);
 
 	if ((uint32)g_clue->_txtMgr->countKey(pict_list) > PIC_1_ID_POS) {
-		struct Collection* coll = gfxGetCollection(g_clue->_txtMgr->getKeyAsUint32(ANIM_COLL_ID_POS, pict_list));
+		CollectionNode* coll = gfxGetCollection(g_clue->_txtMgr->getKeyAsUint32(ANIM_COLL_ID_POS, pict_list));
 		Handler.frameCount = g_clue->_txtMgr->getKeyAsUint32(PIC_COUNT_POS, pict_list);
 
 		Handler.width = (uint16)g_clue->_txtMgr->getKeyAsUint32(PHASE_WIDTH_POS, pict_list);
@@ -130,12 +130,12 @@ static void PrepareAnim(const char *AnimID)
 		 * but 244 / 3 is only 2, even though there are 3 images in
 		     * this row!
 		 */
-		Handler.pictsPerRow = (coll->us_TotalWidth + Handler.offset) / (Handler.width + Handler.offset);
-		Handler.totalWidth = coll->us_TotalWidth;
-		Handler.AnimCollection = coll->us_CollId;
+		Handler.pictsPerRow = (coll->_totalWidth + Handler.offset) / (Handler.width + Handler.offset);
+		Handler.totalWidth = coll->_totalWidth;
+		Handler.AnimCollection = coll->_collId;
 
 		/* jetzt die Animphasen vorbereiten und ins Mem kopieren */
-		gfxCollToMem(coll->us_CollId, &ANIM_FRAME_MEM_RP);
+		gfxCollToMem(coll->_collId, &ANIM_FRAME_MEM_RP);
 	}
 }
 
@@ -205,10 +205,10 @@ void StopAnim() {
 			Common::String pict_list = GetAnim(Handler.RunningAnimID);
 
 			/* "unprepare" pictures for the sake of completeness */
-			struct Picture *pict = gfxGetPicture((uint16)g_clue->_txtMgr->getKeyAsUint32((uint16) PIC_1_ID_POS, pict_list));
+			PictureNode *pict = gfxGetPicture((uint16)g_clue->_txtMgr->getKeyAsUint32((uint16) PIC_1_ID_POS, pict_list));
 
 			if (pict)
-				gfxUnPrepareColl((uint16) pict->us_CollId);
+				gfxUnPrepareColl(pict->_collId);
 
 			if (g_clue->_txtMgr->countKey(pict_list) > PIC_1_ID_POS)
 				gfxUnPrepareColl((uint16)g_clue->_txtMgr->getKeyAsUint32((uint16) ANIM_COLL_ID_POS, pict_list));
