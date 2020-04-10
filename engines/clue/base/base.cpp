@@ -92,7 +92,7 @@ bool ClueEngine::tcInit() {
 	/* Start game. */
 	inpOpenAllInputDevs();
 
-	g_clue->_txtMgr->init(g_clue->getTxtLanguage());
+	g_clue->_txtMgr->init();
 
 	InitAnimHandler();
 

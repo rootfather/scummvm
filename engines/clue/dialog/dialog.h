@@ -22,8 +22,19 @@
 #define MODULE_DIALOG
 
 #include "clue/cdrom/cdrom.h"
+#include "clue/text.h"
 
 namespace Clue {
+
+class NewNode;
+class NewDynDlgNode : public NewNode {
+public:
+	byte _knownBefore;       /* wie gut Sie bekannt sein müssen */
+	byte _knownAfter;        /* wie gut Sie danach bekannt sind ! */
+
+	NewDynDlgNode() { _knownBefore = _knownAfter = 0; }
+	~NewDynDlgNode() {}
+};
 
 void PlayFromCDROM();
 

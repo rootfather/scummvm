@@ -69,9 +69,9 @@ Text::~Text() {
 
 	
 /* TextMgr */
-TextMgr::TextMgr(ClueEngine* vm, char lang) : _vm(vm) {
+TextMgr::TextMgr(ClueEngine* vm) : _vm(vm) {
 	_txtBase = nullptr;
-	init(lang);
+	init();
 }
 
 TextMgr::~TextMgr() {
@@ -122,8 +122,8 @@ char *TextMgr::getLine(Text *txt, uint8 lineNr) {
 }
 
 /*  public functions - TEXT */
-void TextMgr::init(char lang) {
-	_txtBase = new TextControl(lang);
+void TextMgr::init() {
+	_txtBase = new NewList<Text>;
 
 	char txtListPath[DSK_PATH_MAX];
 	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, TXT_LIST, txtListPath);
@@ -140,7 +140,7 @@ void TextMgr::load(uint32 textId) {
 		if (!txt->_handle) {
 			char txtPath[DSK_PATH_MAX];
 
-			Common::String txtFile = txt->_name + Common::String::format("%c%s", _txtBase->_language, TXT_SUFFIX);
+			Common::String txtFile = txt->_name + g_clue->getTxtLanguage() + TXT_SUFFIX;
 			dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, txtFile.c_str(), txtPath);
 
 			size_t length = dskFileLength(txtPath);

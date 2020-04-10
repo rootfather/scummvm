@@ -33,6 +33,57 @@ namespace Clue {
 
 #define LIV_TEMPL_BULLE_NAME    ("bullemax")
 
+class NewAnimTemplate : public NewNode {
+public:
+	uint16 us_Width;
+	uint16 us_Height;
+	uint16 us_FrameOffsetNr;
+
+	NewAnimTemplate() { us_Width = us_Height = us_FrameOffsetNr = 0; }
+	~NewAnimTemplate() {}
+
+	void livRemTemplate() { /* dummy function */ };
+};
+
+class NewLiving : public NewNode {
+public:
+	/* komplette Daten einer Instanz   *//* eines Lebewesens                */
+	// Node Link;
+
+	uint32 ul_LivesInAreaId;    /* Area -> LandScap */
+	uint16 us_LivingNr;
+
+	NewAnimTemplate *p_OriginTemplate;
+
+	byte uch_XSize;
+	byte uch_YSize;
+
+	int16 s_XSpeed;
+	int16 s_YSpeed;
+
+	uint16 us_XPos;     /* absolut */
+	uint16 us_YPos;
+
+	byte uch_ViewDirection; /* 0 .. left, right, up, down */
+
+	byte uch_Action;
+	byte uch_OldAction;
+
+	char ch_CurrFrameNr;
+
+	byte uch_Status;        /* enabled or disabled */
+
+	NewLiving() { p_OriginTemplate = nullptr; } // TODO : initialize the other members properly and move the constructor to the CPP file
+	~NewLiving() {}
+
+	void livAnimate(byte action, int16 xSpeed, int16 ySpeed);
+	void livCorrectViewDirection();
+	void livAdd(Common::String templateName, byte xSize, byte ySize, int16 xSpeed, int16 ySpeed);
+	void livRem();
+	void livHide();
+	void livShow();
+	bool livIsVisible();
+};
 
 struct SpriteControl {
 	NewList<NewLiving> *p_Livings;

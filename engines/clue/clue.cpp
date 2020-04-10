@@ -44,7 +44,7 @@ ClueEngine::ClueEngine(OSystem *syst, const ADGameDescription *gameDesc) : Engin
 	rnd = new Common::RandomSource("clue");
 	const char* path = ConfMan.get("path").c_str();
 	dskSetRootPath(path);
-	_txtMgr = new TextMgr(g_clue, g_clue->getTxtLanguage());
+	_txtMgr = new TextMgr(g_clue);
 }
 
 ClueEngine::~ClueEngine() {
