@@ -57,7 +57,7 @@ struct AnimHandler {
 	uint16 pictsPerRow;
 	uint16 totalWidth;
 
-	uint16 NrOfAnims;
+	uint16 NrOfAnims;          // Not Used
 	uint16 PictureRate;        /* playback rate of the animation */
 	uint16 Repeatation;        /* total number of repetitions */
 
@@ -145,7 +145,6 @@ static void PrepareAnim(const char *AnimID)
  */
 
 void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode) {
-	uint16 pict_id = 0;
 	Common::String pict_list = GetAnim(AnimID);
 
 	if (pict_list.empty())
@@ -155,6 +154,7 @@ void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode) {
 
 		PrepareAnim(AnimID);
 
+		uint16 pict_id = 0;
 		if (!(mode & GFX_DONT_SHOW_FIRST_PIC)) {
 			if (!mode)
 				mode = g_clue->_txtMgr->getKeyAsUint32((uint16) PIC_MODE_POS, pict_list);
@@ -190,7 +190,7 @@ void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode) {
 
 			Handler.WaitCounter = 1;
 
-			/* DoAnim ist ready to play and our anim is decrunched */
+			/* DoAnim is ready to play and our anim is decrunched */
 			strcpy(Handler.RunningAnimID, AnimID);
 
 			ContinueAnim(); /* in case anim has been suspended */

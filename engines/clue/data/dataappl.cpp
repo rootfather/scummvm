@@ -55,50 +55,48 @@ bool tcSpendMoney(uint32 money, uint8 breakAnim) {
  * automatisch demotivierend.
  */
 void tcCalcCallValue(uint32 callNr, uint32 timer, uint32 persId) {
+	if (!persId)
+		error("tcCalcCallValue - Invalid parameter persId 0");
+
 	int32 callCount = Search.CallCount;
 	int32 callWeight = ChangeAbs(255, callCount * (-30), 0, 255);
-	int32 perfect = tcIsPlanPerfect(timer), situation;
-	int32 good = -15, nerves;
-	Person guy;
+	int32 perfect = tcIsPlanPerfect(timer);
+	int32 good = -15;
 
-	if (persId) {
-		guy = (Person)dbGetObject(persId);
-		nerves = 255 - guy->Panic;
+	Person guy = (Person)dbGetObject(persId);
+	int32 nerves = 255 - guy->Panic;
 
-		situation = (perfect * callWeight) / 255;
+	int32 situation = (perfect * callWeight) / 255;
 
-		switch (callNr) {
-		case 0:     /* hervorragend! */
-			if (situation > 200)
-				good = situation - 200;
-			break;
-		case 1:     /* Streng Dich an! */
-			if (situation > 80 && situation < 200)
-				good = 15;
-			break;
-		case 2:     /* Beeile Dich sonst... */
-			if ((nerves + situation > 235) && (situation < 80))
-				good = nerves + situation - 235;
-			break;
-		case 3:     /* Beeile Dich, Du hast genug Zeit */
-			if ((situation < 80) && (nerves + situation < 180))
-				good = 15;
-			break;
-		case 4:     /* Du Trottel! */
-			if ((perfect < 100) && (nerves > 200))
-				good = 50;
+	switch (callNr) {
+	case 0:     /* hervorragend! */
+		if (situation > 200)
+			good = situation - 200;
+		break;
+	case 1:     /* Streng Dich an! */
+		if (situation > 80 && situation < 200)
+			good = 15;
+		break;
+	case 2:     /* Beeile Dich sonst... */
+		if ((nerves + situation > 235) && (situation < 80))
+			good = nerves + situation - 235;
+		break;
+	case 3:     /* Beeile Dich, Du hast genug Zeit */
+		if ((situation < 80) && (nerves + situation < 180))
+			good = 15;
+		break;
+	case 4:     /* Du Trottel! */
+		if ((perfect < 100) && (nerves > 200))
+			good = 50;
 
-			guy->Known = CalcValue(guy->Known, 0, 255, 0, 20);
-			break;
-		default:
-			break;
-		}
-
-		if (good > 0)
-			guy->Known = CalcValue(guy->Known, 0, 255, 0, 6);
-	} else {
-		assert(0);
+		guy->Known = CalcValue(guy->Known, 0, 255, 0, 20);
+		break;
+	default:
+		break;
 	}
+
+	if (good > 0)
+		guy->Known = CalcValue(guy->Known, 0, 255, 0, 6);
 
 	Search.CallValue = ChangeAbs(Search.CallValue, good, -500, 500);
 }

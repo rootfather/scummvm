@@ -30,8 +30,6 @@ struct Bob list[BOB_MAX];
 
 struct Bob bob_zero;
 
-MemRastPort BobRP;
-
 void gfxNCH4Refresh();
 
 void BobInitLists() {

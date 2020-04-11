@@ -62,32 +62,31 @@ void InitStory(const char *story_filename) {
 }
 
 void CloseStory() {
-	uint32 i;
+	if (!film)
+		return;
 
-	if (film) {
-		if (film->loc_names) {
-			film->loc_names->removeList();
-			delete film->loc_names;
-			film->loc_names = nullptr;
-		}
-
-		for (i = 0; i < film->AmountOfScenes; i++) {
-			if (film->gameplay[i].bed)
-				FreeConditions(&film->gameplay[i]);
-			if (film->gameplay[i].std_succ) {
-				delete film->gameplay[i].std_succ;
-				film->gameplay[i].std_succ = nullptr;
-			}
-		}
-
-		if (film->gameplay)
-			TCFreeMem(film->gameplay,
-			          sizeof(Scene) * film->AmountOfScenes);
-
-		TCFreeMem(film, sizeof(*film));
-
-		film = NULL;
+	if (film->loc_names) {
+		film->loc_names->removeList();
+		delete film->loc_names;
+		film->loc_names = nullptr;
 	}
+
+	for (uint32 i = 0; i < film->AmountOfScenes; i++) {
+		if (film->gameplay[i].bed)
+			FreeConditions(&film->gameplay[i]);
+		if (film->gameplay[i].std_succ) {
+			delete film->gameplay[i].std_succ;
+			film->gameplay[i].std_succ = nullptr;
+		}
+	}
+
+	if (film->gameplay)
+		TCFreeMem(film->gameplay,
+		          sizeof(Scene) * film->AmountOfScenes);
+
+	TCFreeMem(film, sizeof(*film));
+
+	film = nullptr;
 }
 
 void SetEnabledChoices(uint32 ChoiceMask) {
@@ -114,38 +113,39 @@ void InitLocations() {
 }
 
 void PatchStory() {
-	if (!(GamePlayMode & GP_DEMO)) {
-		GetScene(26214400L)->bed->Ort = 3;  /* 4th Burglary, Hotelzimmer */
-		GetScene(26738688L)->bed->Ort = 7;  /* Arrest, Polizei!          */
+	if (GamePlayMode & GP_DEMO)
+		return;
 
-		GetScene(SCENE_KASERNE_OUTSIDE)->Moeglichkeiten = 15;
-		GetScene(SCENE_KASERNE_INSIDE)->Moeglichkeiten = 265;
+	GetScene(26214400L)->bed->Ort = 3;  /* 4th Burglary, Hotelzimmer */
+	GetScene(26738688L)->bed->Ort = 7;  /* Arrest, Polizei!          */
 
-		GetScene(SCENE_KASERNE_OUTSIDE)->LocationNr = 66;
-		GetScene(SCENE_KASERNE_INSIDE)->LocationNr = 65;
+	GetScene(SCENE_KASERNE_OUTSIDE)->Moeglichkeiten = 15;
+	GetScene(SCENE_KASERNE_INSIDE)->Moeglichkeiten = 265;
 
-		GetScene(SCENE_KASERNE_OUTSIDE)->Dauer = 17;
-		GetScene(SCENE_KASERNE_INSIDE)->Dauer = 57;
+	GetScene(SCENE_KASERNE_OUTSIDE)->LocationNr = 66;
+	GetScene(SCENE_KASERNE_INSIDE)->LocationNr = 65;
 
-		GetScene(SCENE_STATION)->Moeglichkeiten |= WAIT;
+	GetScene(SCENE_KASERNE_OUTSIDE)->Dauer = 17;
+	GetScene(SCENE_KASERNE_INSIDE)->Dauer = 57;
 
-		if (g_clue->getFeatures() & GF_PROFIDISK) {
-			GetScene(SCENE_PROFI_26)->LocationNr = 75;
-		}
+	GetScene(SCENE_STATION)->Moeglichkeiten |= WAIT;
 
-		/* change possibilites in story_9 too! */
-
-		/* für die Kaserne hier einen Successor eingetragen! */
-		GetLocScene(65)->std_succ = new NewList<NewTCEventNode>;
-		NewTCEventNode *node = GetLocScene(65)->std_succ->createNode(nullptr);
-		node->_eventNr = SCENE_KASERNE_OUTSIDE;  /* wurscht... */
-
-		GetLocScene(66)->std_succ = new NewList<NewTCEventNode>;
-		node = GetLocScene(66)->std_succ->createNode(nullptr);
-		node->_eventNr = SCENE_KASERNE_INSIDE;   /* wurscht... */
-
-		film->StartScene = SCENE_STATION;
+	if (g_clue->getFeatures() & GF_PROFIDISK) {
+		GetScene(SCENE_PROFI_26)->LocationNr = 75;
 	}
+
+	/* change possibilites in story_9 too! */
+
+	/* für die Kaserne hier einen Successor eingetragen! */
+	GetLocScene(65)->std_succ = new NewList<NewTCEventNode>;
+	NewTCEventNode *node = GetLocScene(65)->std_succ->createNode(nullptr);
+	node->_eventNr = SCENE_KASERNE_OUTSIDE;  /* wurscht... */
+
+	GetLocScene(66)->std_succ = new NewList<NewTCEventNode>;
+	node = GetLocScene(66)->std_succ->createNode(nullptr);
+	node->_eventNr = SCENE_KASERNE_INSIDE;   /* wurscht... */
+
+	film->StartScene = SCENE_STATION;
 }
 
 uint32 PlayStory() {
