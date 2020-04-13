@@ -455,7 +455,7 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 								if (func)
 									func(activ);
 
-								gfxWaitTOS();
+								inpDelay(20);
 
 								gfxGetMouseXY(u_gc, NULL, &y);
 							}
@@ -472,7 +472,7 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 								if (func)
 									func(activ);
 
-								gfxWaitTOS();
+								inpDelay(20);
 
 								gfxGetMouseXY(u_gc, NULL, &y);
 							}

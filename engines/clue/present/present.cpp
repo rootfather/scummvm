@@ -130,7 +130,7 @@ uint8 Present(uint32 nr, const char *presentationText, void (*initPresentation)(
 
 	uint8 exit = 0;
 	while (!exit) {
-		uint32 action = inpWaitFor(INP_UP + INP_DOWN + INP_LBUTTONP + INP_RBUTTONP);
+		uint32 action = inpWaitFor(INP_UP | INP_DOWN | INP_LBUTTONP | INP_RBUTTONP);
 
 		if ((action & INP_ESC) || (action & INP_RBUTTONP))
 			exit = 1;
@@ -147,7 +147,7 @@ uint8 Present(uint32 nr, const char *presentationText, void (*initPresentation)(
 				firstVis--;
 				DrawPresent(presentationData, firstVis, u_gc, max);
 
-				gfxWaitTOS();
+				inpDelay(20);
 
 				gfxGetMouseXY(u_gc, NULL, &y);
 			}
@@ -156,7 +156,7 @@ uint8 Present(uint32 nr, const char *presentationText, void (*initPresentation)(
 				firstVis++;
 				DrawPresent(presentationData, firstVis, u_gc, max);
 
-				gfxWaitTOS();
+				inpDelay(20);
 
 				gfxGetMouseXY(u_gc, NULL, &y);
 			}

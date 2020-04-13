@@ -211,10 +211,6 @@ extern PictureNode *gfxGetPicture(uint16 us_PictId);
 
 void gfxLoadILBM(const char *fileName);
 
-void gfxWaitTOF();
-void gfxWaitTOR();
-void gfxWaitTOS();
-
 void gfxRAWBlit(uint8 *sp, uint8 *dp, const int x1, const int y1, const int x2,
                 const int y2, const int w, const int h, const int sw,
                 const int dw);

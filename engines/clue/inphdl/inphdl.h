@@ -27,7 +27,10 @@
 
 namespace Clue {
 
-#define INP_AS_FAST_AS_POSSIBLE     1
+#define INP_TICKS_PER_SECOND	60	// 2014-07-04
+#define INP_TICKS_TO_MS(t)		(((t) * 1000) / INP_TICKS_PER_SECOND)
+
+#define INP_AS_FAST_AS_POSSIBLE		2
 
 #define INP_UP                (1)
 #define INP_DOWN              (1<<1)
@@ -48,9 +51,9 @@ namespace Clue {
 #define INP_SPACE             (1<<14)
 #define INP_MOUSE             (1<<15)
 
-#define INP_BUTTON      (INP_LBUTTONP+INP_RBUTTONP)
-#define INP_MOVEMENT    (INP_UP+INP_DOWN+INP_LEFT+INP_RIGHT)
-#define INP_ALL_MODES   (INP_UP+INP_DOWN+INP_LEFT+INP_RIGHT+INP_ESC+INP_LBUTTONP+INP_LBUTTONR+INP_RBUTTONP+INP_RBUTTONR+INP_TIME+INP_MOUSE+INP_KEYBOARD+INP_SPACE)
+#define INP_BUTTON      (INP_LBUTTONP|INP_RBUTTONP)
+#define INP_MOVEMENT    (INP_UP|INP_DOWN|INP_LEFT|INP_RIGHT)
+#define INP_ALL_MODES   (INP_UP|INP_DOWN|INP_LEFT|INP_RIGHT|INP_ESC|INP_LBUTTONP|INP_LBUTTONR|INP_RBUTTONP|INP_RBUTTONR|INP_TIME|INP_MOUSE|INP_KEYBOARD|INP_SPACE)
 
 /* global functions */
 
@@ -67,7 +70,7 @@ void inpTurnESC(bool us_NewStatus);     /* 0 means off, 1 means on */
 void inpTurnFunctionKey(bool us_NewStatus); /* 0 means off, 1 means on */
 void inpTurnMouse(bool us_NewStatus);       /* 0 means off, 1 means on */
 
-extern void inpDelay(int32 l_Ticks);
+extern void inpDelay(uint32 l_Ticks);
 extern void inpSetKeyRepeat(unsigned char rate);
 
 } // End of namespace Clue

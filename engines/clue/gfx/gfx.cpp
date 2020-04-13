@@ -794,36 +794,21 @@ static _GC *gfxGetGC(int32 l_DestY) {
 	return gc;
 }
 
-static uint32 timeLeft(uint32 interval) {
-	static uint32 next_time = 0;
-	uint32 now = g_system->getMillis();
-	if (next_time <= now) {
-		next_time = now + interval;
-		return (0);
-	}
-	return (next_time - now);
+void wfr()
+// fueür Bildschirmsync verwenden!!!
+{
+	g_system->delayMillis(10);
+	// TODO: Only refresh if screen changed
+	g_system->updateScreen();
 }
 
-
-void gfxWaitTOF() {
-	g_system->delayMillis(timeLeft(40));
-}
-
-void gfxWaitTOR() {
-	g_system->delayMillis(timeLeft(20));
-}
-
-void gfxWaitTOS() {
-	const uint32 interval = 250;
-	uint32 now = g_system->getMillis();
-
-	uint32 next_time = now + interval;
-	while (now < next_time) {
-		inpWaitFor(INP_ALL_MODES);
-		g_system->updateScreen();
-		g_system->delayMillis(10);
-		now = g_system->getMillis();
-	}
+void wfd()
+// sperrt im Gegensatz zu wfr die Interrupts nicht
+// wenn die Musik laeuft kann es daher vorkommen, dass
+// dieses wfd einmal aussetzt
+// !!! NICHT fueür Bildschirmsync verwenden!!
+{
+	wfr();
 }
 
 void gfxClearArea(_GC *gc) {
@@ -869,7 +854,6 @@ void gfxGetPaletteFromReg(uint8 *palette, uint32 start, uint32 num) {
 }
 
 void gfxChangeColors(_GC *gc, uint32 delay, uint32 mode, uint8 *palette) {
-/* l_Delay is min 1 */
 	uint16 st, en;
 	if (gc) {
 		st = gc->colorStart;
@@ -880,6 +864,8 @@ void gfxChangeColors(_GC *gc, uint32 delay, uint32 mode, uint8 *palette) {
 	}
 	gfxRealRefreshArea(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 	delay = MAX(delay, 1u); /* delay must not be zero! */
+	inpSetWaitTicks(delay);
+
 	int32 time = delay;
 	byte back[3];
 	gfxGetPaletteFromReg(back, 0, 1);
@@ -893,7 +879,7 @@ void gfxChangeColors(_GC *gc, uint32 delay, uint32 mode, uint8 *palette) {
 		fakt = 128 / time;
 
 		for (int32 s = time; s >= 0; s--) {
-			gfxWaitTOR();
+			inpWaitFor(INP_TIME);
 
 			for (uint16 t = st; t <= en; t++) {
 				rgb[t * 3 + 0] = back[0] + (((int32)cols[t * 3 + 0] - back[0]) * (fakt * s)) / 128;
@@ -915,7 +901,7 @@ void gfxChangeColors(_GC *gc, uint32 delay, uint32 mode, uint8 *palette) {
 
 		fakt = 128 / time;
 		for (int32 s = 0; s <= time; s++) {
-			gfxWaitTOR();
+			inpWaitFor(INP_TIME);
 
 			for (uint16 t = st; t <= en; t++) {
 				rgb[t * 3 + 0] = back[0] + (((int32)palette[t * 3 + 0] - back[0]) * (fakt * s)) / 128;
@@ -925,7 +911,7 @@ void gfxChangeColors(_GC *gc, uint32 delay, uint32 mode, uint8 *palette) {
 			gfxSetRGBRange(&rgb[st * 3], st, en - st + 1);
 		}
 
-		gfxWaitTOR();
+		inpWaitFor(INP_TIME);
 
 		for (uint16 t = st; t <= en; t++) {
 			rgb[t * 3 + 0] = palette[t * 3 + 0];
@@ -1341,7 +1327,7 @@ void ShowIntro() {
 
 			XMSOffset += rsize;
 
-			gfxChangeColors(NULL, 20, GFX_BLEND_UP, colorTABLE);
+			gfxChangeColors(NULL, 4, GFX_BLEND_UP, colorTABLE);
 			gfxClearArea(NULL);
 
 			/* copy from file to A & B */
@@ -1354,25 +1340,6 @@ void ShowIntro() {
 			bool showA;
 			int t;
 			for (t = 0, showA = true; t < frames[anims]; t++, showA = !showA) {
-				Common::Event ev;
-
-				while (g_system->getEventManager()->pollEvent(ev)) {
-					switch (ev.type) {
-					case Common::EVENT_KEYDOWN:
-					case Common::EVENT_LBUTTONDOWN:
-					case Common::EVENT_RBUTTONDOWN:
-						endi = true;
-						goto endit;
-
-					case Common::EVENT_QUIT:
-						tcDone();
-						g_system->quit(); // TODO: Hack
-						break;
-
-					default:
-						break;
-					}
-				}
 
 				gfxScreenFreeze();
 
@@ -1385,13 +1352,16 @@ void ShowIntro() {
 				}
 
 				if (t == 0) {
-					gfxChangeColors(NULL, 20, GFX_BLEND_UP, ScratchRP.palette);
+					gfxChangeColors(NULL, 4, GFX_BLEND_UP, ScratchRP.palette);
 				}
 
 				gfxScreenThaw(&ScreenGC, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-				for (int s = 0; s < rate[anims]; s++) {
-					gfxWaitTOF();
+				inpSetWaitTicks(rate[anims]);
+				int32 action = inpWaitFor(INP_TIME | INP_KEYBOARD | INP_BUTTON);
+				if (action & (INP_KEYBOARD | INP_BUTTON)) {
+					endi = true;
+					goto endit;
 				}
 
 				if (showA) {

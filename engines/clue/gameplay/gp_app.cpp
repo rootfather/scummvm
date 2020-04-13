@@ -23,11 +23,15 @@
 
 namespace Clue {
 
+// 2018-09-26 LucyG: in-game time was too fast
+#define GP_TICKS_PER_MINUTE		10
+#define GP_TICKS_PER_DAY		30
+
 void tcAsTimeGoesBy(uint32 untilMinute) {
 	untilMinute %= 1440;
 
 	while (GetMinute != untilMinute) {
-		inpDelay(1);
+		inpDelay(GP_TICKS_PER_MINUTE);
 
 		AddVTime(1);
 
@@ -38,7 +42,7 @@ void tcAsTimeGoesBy(uint32 untilMinute) {
 
 void tcAsDaysGoBy(uint32 day, uint32 stepSize) {
 	while (GetDay < day) {
-		inpDelay(3);
+		inpDelay(GP_TICKS_PER_DAY);
 
 		uint32 add = g_clue->calcRandomNr(stepSize - stepSize / 30, stepSize + stepSize / 30);
 

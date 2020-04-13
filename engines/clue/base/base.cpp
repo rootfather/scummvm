@@ -82,6 +82,9 @@ bool ClueEngine::tcInit() {
 	if (!(GamePlayMode & GP_NO_SAMPLES))
 		sndInitFX();
 
+	inpOpenAllInputDevs();
+	inpMousePtrOff();
+
 	ShowIntro();
 
 	hscReset();
@@ -90,7 +93,7 @@ bool ClueEngine::tcInit() {
 	gfxSetRGB(NULL, 255, 255, 255, 255);    /* mouse */
 
 	/* Start game. */
-	inpOpenAllInputDevs();
+	inpMousePtrOn();
 
 	g_clue->_txtMgr->init();
 

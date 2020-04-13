@@ -65,12 +65,21 @@ void inpInitMouse() {
 	CursorMan.showMouse(true);
 }
 
-
-void gfxWaitTOF();
-
-
 static void inpDoPseudoMultiTasking() {
-	animator();
+	// 2014-06-30 LucyG : rewritten
+	static uint32 timePrev = 0;
+	uint32 timeNow = g_system->getMillis();
+	if (!timePrev) {
+		timePrev = timeNow;
+	}
+	uint32 timePassed = timeNow - timePrev;
+	if (timePassed >= INP_TICKS_TO_MS(1)) {
+		timePrev = timeNow;
+
+		// sndDoFading(); // 2014-07-17 LucyG
+
+		animator();
+	}
 }
 
 void inpOpenAllInputDevs() {
@@ -88,11 +97,11 @@ void inpOpenAllInputDevs() {
 }
 
 void inpMousePtrOn() {
-	//CursorMan.showMouse(true);
+	CursorMan.showMouse(true);
 }
 
 void inpMousePtrOff() {
-	//CursorMan.showMouse(false);
+	CursorMan.showMouse(false);
 }
 
 int32 inpWaitFor(int32 l_Mask) {
@@ -106,15 +115,9 @@ int32 inpWaitFor(int32 l_Mask) {
 
 	/* Nun wird auf den Event gewartet... */
 	uint32 WaitTime = 0;
+	uint32 timePrev = g_system->getMillis();
 
 	while (action == 0) {
-		gfxWaitTOF();
-
-		WaitTime++;
-		/* Abfrage des Zeit-Flags */
-		if ((l_Mask & INP_TIME) && WaitTime >= IHandler.ul_WaitTicks)
-			action |= INP_TIME;
-
 		Common::Event ev;
 		while (g_system->getEventManager()->pollEvent(ev)) {
 			switch (ev.type) {
@@ -122,34 +125,34 @@ int32 inpWaitFor(int32 l_Mask) {
 				switch (ev.kbd.keycode) {
 				case Common::KEYCODE_LEFT:
 					if ((l_Mask & INP_LEFT))
-						action |= INP_KEYBOARD + INP_LEFT;
+						action |= INP_KEYBOARD | INP_LEFT;
 					break;
 
 				case Common::KEYCODE_RIGHT:
 					if ((l_Mask & INP_RIGHT))
-						action |= INP_KEYBOARD + INP_RIGHT;
+						action |= INP_KEYBOARD | INP_RIGHT;
 					break;
 
 				case Common::KEYCODE_UP:
 					if ((l_Mask & INP_UP))
-						action |= INP_KEYBOARD + INP_UP;
+						action |= INP_KEYBOARD | INP_UP;
 					break;
 
 				case Common::KEYCODE_DOWN:
 					if ((l_Mask & INP_DOWN))
-						action |= INP_KEYBOARD + INP_DOWN;
+						action |= INP_KEYBOARD | INP_DOWN;
 					break;
 
 				case Common::KEYCODE_SPACE:
 				case Common::KEYCODE_RETURN:
 				case Common::KEYCODE_KP_ENTER:
 					if ((l_Mask & (INP_LBUTTONP | INP_LBUTTONR)))
-						action |= INP_KEYBOARD + INP_LBUTTONP;
+						action |= INP_KEYBOARD | INP_LBUTTONP;
 					break;
 
 				case Common::KEYCODE_ESCAPE:
 					if (IHandler.EscStatus)
-						action |= INP_KEYBOARD + INP_ESC;
+						action |= INP_KEYBOARD | INP_ESC;
 					break;
 
 				case Common::KEYCODE_F1:
@@ -168,7 +171,7 @@ int32 inpWaitFor(int32 l_Mask) {
 				case Common::KEYCODE_F14:
 				case Common::KEYCODE_F15:
 					if (IHandler.FunctionKeyStatus)
-						action |= INP_KEYBOARD + INP_FUNCTION_KEY;
+						action |= INP_KEYBOARD | INP_FUNCTION_KEY;
 					break;
 
 				default:
@@ -180,38 +183,36 @@ int32 inpWaitFor(int32 l_Mask) {
 			case Common::EVENT_MOUSEMOVE:
 				if (IHandler.MouseExists && IHandler.MouseStatus) {
 					if (l_Mask & INP_LEFT)
-						action |= INP_MOUSE + INP_LEFT;
+						action |= INP_MOUSE | INP_LEFT;
 					if (l_Mask & INP_RIGHT)
-						action |= INP_MOUSE + INP_RIGHT;
+						action |= INP_MOUSE | INP_RIGHT;
 					if (l_Mask & INP_UP)
-						action |= INP_MOUSE + INP_UP;
+						action |= INP_MOUSE | INP_UP;
 					if (l_Mask & INP_DOWN)
-						action |= INP_MOUSE + INP_DOWN;
+						action |= INP_MOUSE | INP_DOWN;
 					/*
 					if ((l_Mask & INP_LEFT) && (ev.motion.xrel < 0))
-					action |= INP_MOUSE + INP_LEFT;
+					action |= INP_MOUSE | INP_LEFT;
 					if ((l_Mask & INP_RIGHT) && (ev.motion.xrel > 0))
-					action |= INP_MOUSE + INP_RIGHT;
+					action |= INP_MOUSE | INP_RIGHT;
 					if ((l_Mask & INP_UP) && (ev.motion.yrel < 0))
-					action |= INP_MOUSE + INP_UP;
+					action |= INP_MOUSE | INP_UP;
 					if ((l_Mask & INP_DOWN) && (ev.motion.yrel > 0))
-					action |= INP_MOUSE + INP_DOWN;
+					action |= INP_MOUSE | INP_DOWN;
 					*/
-					g_system->delayMillis(10);
-					g_system->updateScreen();
 				}
 				break;
 
 			case Common::EVENT_LBUTTONDOWN:
 				if (IHandler.MouseExists && IHandler.MouseStatus) {
 					if (l_Mask & INP_LBUTTONP)
-						action |= INP_MOUSE + INP_LBUTTONP;
+						action |= INP_MOUSE | INP_LBUTTONP;
 				}
 				break;
 			case Common::EVENT_RBUTTONDOWN:
 				if (IHandler.MouseExists && IHandler.MouseStatus) {
 					if (l_Mask & INP_RBUTTONP)
-						action |= INP_MOUSE + INP_RBUTTONP;
+						action |= INP_MOUSE | INP_RBUTTONP;
 				}
 				break;
 
@@ -226,12 +227,21 @@ int32 inpWaitFor(int32 l_Mask) {
 		}
 
 		inpDoPseudoMultiTasking();
+		wfd();
+
+		WaitTime = g_system->getMillis() - timePrev;
+		if ((l_Mask & INP_TIME) && (WaitTime >= INP_TICKS_TO_MS(IHandler.ul_WaitTicks)))
+			action |= INP_TIME;
 	}
 
 	return action;
 }
 
 void inpSetWaitTicks(uint32 l_Ticks) {
+	// 2018-09-26 : timing fixes
+	if (l_Ticks < INP_AS_FAST_AS_POSSIBLE) {
+		l_Ticks = INP_AS_FAST_AS_POSSIBLE;
+	}
 	IHandler.ul_WaitTicks = l_Ticks;
 }
 
@@ -248,11 +258,14 @@ void inpTurnMouse(bool us_NewStatus) {
 	//CursorMan.showMouse(us_NewStatus);
 }
 
-void inpDelay(int32 l_Ticks) {
-	int32 i;
-
-	for (i = 0; i < l_Ticks; i++) {
-		gfxWaitTOF();
+void inpDelay(uint32 l_Ticks) {
+	// 2014-07-03 LucyG : rewritten
+	uint32 timePrev = g_system->getMillis();
+	l_Ticks = INP_TICKS_TO_MS(l_Ticks);
+	Common::Event ev;
+	while ((g_system->getMillis() - timePrev) < l_Ticks) {
+		while (g_system->getEventManager()->pollEvent(ev));
+		wfr();
 		inpDoPseudoMultiTasking();
 	}
 }
