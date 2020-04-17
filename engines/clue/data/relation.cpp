@@ -193,11 +193,6 @@ void AskAll(dbObjectNode *leftKey, RELATION id, void (*UseKey)(dbObjectNode *)) 
 	if (rd && CompareKey) {
 		for (struct relation *r = rd->rd_relationsTable; r; r = r->r_next) {
 			if (CompareKey(r->r_leftKey, leftKey)) {
-				for (int ii = 0; ii < OBJ_HASH_SIZE; ++ii) {
-					auto test = objHash[ii]->_tail->_pred->_succ->_pred;
-					//		warning("%s", test->_name.c_str());
-				}
-				
 				if (UseKey)
 					UseKey(r->r_rightKey);
 			}
