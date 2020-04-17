@@ -22,7 +22,7 @@
 
 namespace Clue {
 
-void PrintStatus(const char *text) {
+void PrintStatus(Common::String text) {
 	gfxSetDrMd(m_gc, GFX_JAM_1);
 	gfxSetRect(0, 320);
 
@@ -31,10 +31,6 @@ void PrintStatus(const char *text) {
 	gfxPrint(m_gc, text, 10, GFX_PRINT_SHADOW | GFX_PRINT_CENTER);
 }
 
-void PrintStatus(Common::String text) {
-	PrintStatus(text.c_str());
-}
-	
 uint32 ShowTheClouRequester(int32 error_class) {
 	NewList<NewNode> *menu;
 	uint32 answer = 0;

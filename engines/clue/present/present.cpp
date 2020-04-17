@@ -70,8 +70,7 @@ void DrawPresent(NewList<PresentationInfoNode> *present, uint8 firstLine, _GC *g
 			gfxSetPens(gc, 249, 252, 253);
 
 			gfxSetRect(206, 315 - 205);
-			char s[10];
-			sprintf(s, "%u %%", (p->_extendedNr * 100) / p->_maxNr);
+			Common::String s = Common::String::format("%u %%", (p->_extendedNr * 100) / p->_maxNr);
 
 			gfxPrint(gc, s, j, GFX_PRINT_CENTER);
 			break;
@@ -242,8 +241,7 @@ void prSetBarPrefs(_GC *gc, uint16 us_BarWidth,
 	PresentControl.uch_TCol = uch_TCol;
 }
 
-void prDrawTextBar(const char *puch_Text, uint32 ul_Value, uint32 ul_Max,
-                   uint16 us_XPos, uint16 us_YPos) {
+void prDrawTextBar(const char *puch_Text, uint32 ul_Value, uint32 ul_Max, uint16 us_XPos, uint16 us_YPos) {
 	_GC *gc = PresentControl.gc;
 	uint16 us_Width = PresentControl.us_BarWidth;
 	uint16 us_Height = PresentControl.us_BarHeight;

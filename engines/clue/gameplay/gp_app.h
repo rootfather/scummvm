@@ -39,7 +39,6 @@ extern void tcPersonGreetsMatt();
 extern uint32 StdHandle(uint32 choice);
 
 extern void SetFunc(struct Scene *sc, void (*init)(), void (*done)());
-void PrintStatus(const char *text);
 void PrintStatus(Common::String text);
 extern void InitTaxiLocations();
 extern void LinkScenes();
