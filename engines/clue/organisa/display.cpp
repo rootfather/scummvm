@@ -76,9 +76,9 @@ void tcDisplayCommon() {
 	gfxSetPens(l_gc, 249, 254, GFX_SAME_PEN);
 
 	Common::String line;
-	Building building = NULL;
+	BuildingNode *building = nullptr;
 	if (Organisation.BuildingID) {
-		building = (Building) dbGetObject(Organisation.BuildingID);
+		building = (BuildingNode *)dbGetObject(Organisation.BuildingID);
 
 		line = dbGetObjectName(Organisation.BuildingID);
 		gfxPrint(l_gc, line, 9, GFX_PRINT_CENTER | GFX_PRINT_SHADOW);
@@ -185,12 +185,12 @@ void tcDisplayCommon() {
 
 void tcDisplayPerson(uint32 displayMode) {
 	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST, Object_Person);
-	NewObjectList<NewObjectNode>* guys = ObjectListPrivate;
+	NewObjectList<dbObjectNode>* guys = ObjectListPrivate;
 	dbSortObjectList(&guys, dbStdCompareObjects);
 
 	uint32 i;
-	NewObjectNode *node;
-	for (node = guys->getListHead(), i = 0; node->_succ; node = (NewObjectNode *)node->_succ, i++) {
+	dbObjectNode *node;
+	for (node = guys->getListHead(), i = 0; node->_succ; node = (dbObjectNode *)node->_succ, i++) {
 		char line[TXT_KEY_LENGTH];
 		uint32 objNr = node->_nr;
 
@@ -216,15 +216,15 @@ void tcDisplayPerson(uint32 displayMode) {
 void tcDisplayAbilities(uint32 personNr, uint32 displayData) {
 	hasAll(personNr, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME, Object_Ability);
 
-	NewList<NewObjectNode>* abilities = ObjectListPrivate;
+	NewList<dbObjectNode>* abilities = ObjectListPrivate;
 
 	prSetBarPrefs(l_gc, ORG_DISP_GUY_WIDTH - 5, ORG_DISP_LINE + 1, 251, 250, 249);
 
 	if (!abilities->isEmpty()) {
-		NewObjectNode *node;
+		dbObjectNode *node;
 		unsigned i;
 
-		for (node = abilities->getListHead(), i = 0; node->_succ; node = (NewObjectNode *)node->_succ, i++) {
+		for (node = abilities->getListHead(), i = 0; node->_succ; node = (dbObjectNode *)node->_succ, i++) {
 			char line[TXT_KEY_LENGTH];
 
 			uint32 abiNr = abilities->getNthNode(i)->_nr;

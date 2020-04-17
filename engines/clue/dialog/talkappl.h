@@ -25,9 +25,9 @@
 
 namespace Clue {
 
-extern void tcJobOffer(Person p);
-extern void tcMyJobAnswer(Person p);
-extern void tcPrisonAnswer(Person p);
+extern void tcJobOffer(PersonNode *p);
+extern void tcMyJobAnswer(PersonNode *p);
+extern void tcPrisonAnswer(PersonNode *p);
 extern void tcAbilityAnswer(uint32 personID);
 
 } // End of namespace Clue

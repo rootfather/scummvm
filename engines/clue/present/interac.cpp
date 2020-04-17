@@ -40,7 +40,7 @@ void SetMenuTimeOutFunc(void (*func)()) {
 	MenuTimeOutFunc = func;
 }
 
-bool ChoiceOk(byte choice, byte exit, NewObjectList<NewObjectNode> *l) {
+bool ChoiceOk(byte choice, byte exit, NewObjectList<dbObjectNode> *l) {
 	if (choice == GET_OUT)
 		return false;
 
@@ -48,9 +48,9 @@ bool ChoiceOk(byte choice, byte exit, NewObjectList<NewObjectNode> *l) {
 		return false;
 
 	if (l && !l->isEmpty()) {
-		NewObjectNode *objNode = l->getNthNode(choice);
+		dbObjectNode *objNode = l->getNthNode(choice);
 
-		if (!objNode->_nr && !objNode->_type && !objNode->_data)
+		if (!objNode->_nr && !objNode->_type)
 			return false;
 	}
 
@@ -62,7 +62,7 @@ bool ChoiceOkHack(byte choice, byte exit, NewList<NewNode> *l) {
 		return false;
 
 	// The original was calling ChoiceOK with lists of NewNode in some cases.
-	// This accidentally work as the extra fields of NewObjectNode were in fact
+	// This accidentally work as the extra fields of dbObjectNode were in fact
 	// the pointers of the next node, and thus were never set to 0.
 	// So, when the function was called, as a node is behind (or the tail), the
 	// check was never fulfilled and the function was never returning false.

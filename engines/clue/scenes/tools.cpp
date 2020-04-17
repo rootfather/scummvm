@@ -23,8 +23,8 @@
 
 namespace Clue {
 
-Common::String tcShowPriceOfTool(uint32 nr, uint32 type, void *data) {
-	Tool tool = (Tool) data;
+Common::String tcShowPriceOfTool(uint32 nr, uint32 type, dbObjectNode *node) {
+	ToolNode *tool = (ToolNode *) node;
 
 	Common::String line1 = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "PRICE_AND_MONEY");
 	Common::String line = Common::String::format(line1.c_str(), tool->Value);
@@ -33,7 +33,7 @@ Common::String tcShowPriceOfTool(uint32 nr, uint32 type, void *data) {
 }
 
 byte tcBuyTool(byte choice) {
-	Person mary = (Person)dbGetObject(Person_Mary_Bolton);
+	PersonNode *mary = (PersonNode *)dbGetObject(Person_Mary_Bolton);
 
 	ObjectListSuccString = tcShowPriceOfTool;
 	ObjectListWidth = 48;
@@ -41,9 +41,9 @@ byte tcBuyTool(byte choice) {
 	hasAll(Person_Mary_Bolton,
 	       OLF_ALIGNED | OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR |
 	       OLF_ADD_SUCC_STRING, Object_Tool);
-	NewObjectList<NewObjectNode> *tools = ObjectListPrivate;
+	NewObjectList<dbObjectNode> *tools = ObjectListPrivate;
 
-	ObjectListSuccString = NULL;
+	ObjectListSuccString = nullptr;
 	ObjectListWidth = 0;
 
 	Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "THANKS");
@@ -62,9 +62,9 @@ byte tcBuyTool(byte choice) {
 
 		choice = Bubble((NewList<NewNode>*)tools, choice, 0L, 0L);
 		if (ChoiceOk(choice, GET_OUT, tools)) {
-			NewObjectNode *node = tools->getNthNode((uint32) choice);
+			dbObjectNode *node = tools->getNthNode((uint32) choice);
 			uint32 toolID = node->_nr;
-			Tool tool = (Tool) dbGetObject(toolID);
+			ToolNode *tool = (ToolNode *) dbGetObject(toolID);
 			uint32 price = tcGetToolPrice(tool);
 
 			if (has(Person_Matt_Stuvysunt, toolID))
@@ -85,7 +85,7 @@ byte tcBuyTool(byte choice) {
 
 byte tcDescTool(byte choice) {
 	uint8 oldChoice = GET_OUT;
-	Person mary = (Person) dbGetObject(Person_Mary_Bolton);
+	PersonNode *mary = (PersonNode *) dbGetObject(Person_Mary_Bolton);
 
 	ObjectListSuccString = tcShowPriceOfTool;
 	ObjectListWidth = 48;
@@ -93,7 +93,7 @@ byte tcDescTool(byte choice) {
 	hasAll(Person_Mary_Bolton,
 	       OLF_ALIGNED | OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR |
 	       OLF_ADD_SUCC_STRING, Object_Tool);
-	NewObjectList<NewObjectNode> *tools = ObjectListPrivate;
+	NewObjectList<dbObjectNode> *tools = ObjectListPrivate;
 
 	ObjectListWidth = 0;
 	ObjectListSuccString = nullptr;
@@ -134,7 +134,7 @@ byte tcShowTool(byte choice) {
 	hasAll(Person_Mary_Bolton,
 	       OLF_ALIGNED | OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR |
 	       OLF_ADD_SUCC_STRING, Object_Tool);
-	NewObjectList<NewObjectNode> *tools = ObjectListPrivate;
+	NewObjectList<dbObjectNode> *tools = ObjectListPrivate;
 
 	ObjectListSuccString = nullptr;
 	ObjectListWidth = 0;
@@ -150,7 +150,7 @@ byte tcShowTool(byte choice) {
 		oldChoice = choice;
 		choice = Bubble((NewList<NewNode>*)tools, choice, 0L, 0L);
 		if (ChoiceOk(choice, GET_OUT, tools)) {
-			NewObjectNode *node = tools->getNthNode((uint32) choice);
+			dbObjectNode *node = tools->getNthNode((uint32) choice);
 			uint32 toolID = node->_nr;
 
 			Present(toolID, "Tool", InitToolPresent);
@@ -164,10 +164,10 @@ byte tcShowTool(byte choice) {
 }
 
 void tcSellTool() {
-	Person mary = (Person) dbGetObject(Person_Mary_Bolton);
+	PersonNode *mary = (PersonNode *) dbGetObject(Person_Mary_Bolton);
 
 	hasAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Tool);
-	NewObjectList<NewObjectNode> *tools = ObjectListPrivate;
+	NewObjectList<dbObjectNode> *tools = ObjectListPrivate;
 
 	dbRemObjectNode(tools, Tool_Hand);
 	dbRemObjectNode(tools, Tool_Fusz);
@@ -184,10 +184,10 @@ void tcSellTool() {
 		choice = Bubble((NewList<NewNode>*)tools, 0, NULL, 0L);
 		if (ChoiceOk(choice, GET_OUT, tools)) {
 			byte choice2 = 0;
-			NewObjectNode *node = tools->getNthNode((uint32)choice);
+			dbObjectNode *node = tools->getNthNode((uint32)choice);
 			uint32 toolID = node->_nr;
 
-			Tool tool = (Tool) dbGetObject(toolID);
+			ToolNode *tool = (ToolNode *) dbGetObject(toolID);
 			uint32 price = tcGetToolTraderOffer(tool);
 
 			NewList<NewNode> *bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "ANGEBOT_WERKZ", price);

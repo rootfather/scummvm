@@ -24,19 +24,19 @@ namespace Clue {
 
 void DoneTaxi() {
 	static byte i = 0;
-	NewObjectList<NewObjectNode> *locs = new NewObjectList<NewObjectNode>;
+	NewObjectList<dbObjectNode> *locs = new NewObjectList<dbObjectNode>;
 
 	knowsSet(Person_Matt_Stuvysunt, Person_Dan_Stanford);
 	taxiAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Location);
 
-	for (NewObjectNode *n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode *) n->_succ) {
-		Location loc = (Location)n->_data;
+	for (dbObjectNode *n = ObjectList->getListHead(); n->_succ; n = (dbObjectNode *) n->_succ) {
+		LocationNode *loc = (LocationNode *)n;
 		uint32 locNr = loc->LocationNr;
 
 		char name[TXT_KEY_LENGTH];
 		sprintf(name, "*%s", film->loc_names->getNthNode(locNr)->_name.c_str());
 
-		NewObjectNode *newNode = locs->createNode(name);
+		dbObjectNode *newNode = locs->createNode(name);
 		newNode->_nr = locNr + 1;    /* because of ChoiceOk */
 	}
 
@@ -78,7 +78,7 @@ void DoneInsideHouse() {
 
 	/* jetzt alle Stockwerke laden */
 	uint32 areaID;
-	for (NewObjectNode *node = ObjectList->getListHead(); node->_succ; node = (NewObjectNode *)node->_succ) {
+	for (dbObjectNode *node = ObjectList->getListHead(); node->_succ; node = (dbObjectNode *)node->_succ) {
 		areaID = node->_nr;
 
 		lsInitRelations(areaID);
@@ -93,7 +93,7 @@ void DoneInsideHouse() {
 
 	lsSetRelations(areaID);
 
-	byte perc = ((Building) dbGetObject(buildingID))->Exactlyness;
+	byte perc = ((BuildingNode *) dbGetObject(buildingID))->Exactlyness;
 	lsShowRaster(areaID, perc);
 	gfxShow(154, GFX_FADE_OUT | GFX_BLEND_UP, 5, -1, -1);
 
@@ -138,7 +138,7 @@ void DoneInsideHouse() {
 	consistsOfAll(buildingID, OLF_NORMAL, Object_LSArea);
 
 	/* jetzt alle Stockwerke entfernen */
-	for (NewObjectNode *node = ObjectList->getListHead(); node->_succ; node = (NewObjectNode *)node->_succ)
+	for (dbObjectNode *node = ObjectList->getListHead(); node->_succ; node = (dbObjectNode *)node->_succ)
 		lsDoneObjectDB(node->_nr);
 
 	StopAnim();
@@ -225,7 +225,7 @@ void DoneDealer() {
 void DoneParking() {
 	NewList<NewNode> *bubble = g_clue->_txtMgr->goKey(BUSINESS_TXT, "PARKING");
 	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
-	Person marc = (Person)dbGetObject(Person_Marc_Smith);
+	PersonNode *marc = (PersonNode *)dbGetObject(Person_Marc_Smith);
 
 	_sceneArgs._overwritten = true;
 	_sceneArgs._returnValue = 0;
@@ -286,7 +286,7 @@ void DoneParking() {
 void DoneGarage() {
 	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 	byte activ = 0;
-	Person marc = (Person)dbGetObject(Person_Marc_Smith);
+	PersonNode *marc = (PersonNode *)dbGetObject(Person_Marc_Smith);
 
 	_sceneArgs._overwritten = true;
 	_sceneArgs._returnValue = 0;
@@ -327,7 +327,7 @@ void DoneGarage() {
 }
 
 void tcInitFahndung() {
-	Player player = (Player)dbGetObject(Player_Player_1);
+	PlayerNode *player = (PlayerNode *)dbGetObject(Player_Player_1);
 
 	tcMattGoesTo(59);       /* Büro */
 
@@ -339,7 +339,7 @@ void tcDoneFahndung() {
 		tcDonePrison();
 		_sceneArgs._returnValue = SCENE_NEW_GAME;
 	} else {
-		switch (((Player)(dbGetObject(Player_Player_1)))->NrOfBurglaries) {
+		switch (((PlayerNode *)(dbGetObject(Player_Player_1)))->NrOfBurglaries) {
 		case 3:
 			_sceneArgs._returnValue = SCENE_STATION;
 			break;

@@ -24,7 +24,7 @@ namespace Clue {
 
 void tcSaveTheClou() {
 	NewList<class NewNode> *games = new NewList<class NewNode>;
-	Player player = (Player)dbGetObject(Player_Player_1);
+	PlayerNode *player = (PlayerNode *)dbGetObject(Player_Player_1);
 
 	/* in welche Datei ?? */
 	ShowMenuBackground();
@@ -186,7 +186,7 @@ bool tcLoadTheClou() {
 		games->removeList();
 		origin->removeList();
 
-		Player player = (Player)dbGetObject(Player_Player_1);
+		PlayerNode *player = (PlayerNode *)dbGetObject(Player_Player_1);
 		if (player) {  /* MOD 04-02 */
 			player->CurrScene = film->act_scene->EventNr;
 
@@ -205,7 +205,7 @@ bool tcLoadTheClou() {
 }
 
 void tcRefreshAfterLoad(bool loaded) {
-	Player player = (Player)dbGetObject(Player_Player_1);   /* muß hier geholt werden -> sonst alte Adresse */
+	PlayerNode *player = (PlayerNode *)dbGetObject(Player_Player_1);   /* muß hier geholt werden -> sonst alte Adresse */
 
 	if (!loaded) {
 		if (player)

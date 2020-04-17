@@ -78,7 +78,7 @@ static struct {
 	byte mood;
 
 	uint32 bldId;
-	Building bldObj;
+	BuildingNode *bldObj;
 
 	uint16 changeCount;
 	uint16 totalCount;
@@ -245,8 +245,8 @@ static void plPersonLearns(uint32 persId, uint32 toolId) {
 static byte plCarTooFull() {
 	NewList<NewNode> *l = tcMakeLootList(Person_Matt_Stuvysunt, Relation_has);
 
-	CompleteLoot complete = (CompleteLoot) dbGetObject(CompleteLoot_LastLoot);
-	Car car = (Car) dbGetObject(Organisation.CarID);
+	CompleteLootNode *complete = (CompleteLootNode *) dbGetObject(CompleteLoot_LastLoot);
+	CarNode *car = (CarNode *) dbGetObject(Organisation.CarID);
 	byte ret = 0;
 
 	if (complete->TotalVolume > car->Capacity)
@@ -444,7 +444,7 @@ static void plPlayerAction() {
 							Search.DeriTime += PLANING_DERI_ALARM;
 							Search.EscapeBits |= FAHN_ALARM | FAHN_ALARM_GUARD;
 
-							PD.guardKO[((Police)
+							PD.guardKO[((PoliceNode *)
 							            dbGetObject(PersonsList->getNthNode(i)->_nr))->LivingID -
 							           BurglarsNr] = 3;
 							break;
@@ -614,7 +614,7 @@ static void plPlayerAction() {
 										                                 *)->
 										                      ToolId,
 										                      Item_Wache);
-										PD.guardKO[((Police)
+										PD.guardKO[((PoliceNode *)
 										            dbGetObject(ActionData
 										                        (PD.action,
 										                         struct
@@ -662,14 +662,14 @@ static void plPlayerAction() {
 										                                 ActionUse
 										                                 *)->
 										                      ToolId,
-										                      ((LSObject)
+										                      ((LSObjectNode *)
 										                       dbGetObject
 										                       (ActionData
 										                        (PD.action,
 										                         struct
 										                         ActionUse *)->
 										                        ItemId))->Type);
-									else if ((((LSObject)
+									else if ((((LSObjectNode *)
 									           dbGetObject(ActionData
 									                       (PD.action,
 									                        ActionUse
@@ -696,7 +696,7 @@ static void plPlayerAction() {
 									        (PersonsList->getNthNode(i)->_nr,
 									         ActionData(PD.action,
 									                    ActionUse *)->ToolId,
-									         ((LSObject)
+									         ((LSObjectNode *)
 									          dbGetObject(ActionData
 									                      (PD.action,
 									                       ActionUse *)->
@@ -712,7 +712,7 @@ static void plPlayerAction() {
 									                                     ActionUse
 									                                     *)->
 									                          ToolId,
-									                          ((LSObject)
+									                          ((LSObjectNode *)
 									                           dbGetObject
 									                           (ActionData
 									                            (PD.action,
@@ -795,7 +795,7 @@ static void plPlayerAction() {
 									if (tcKillTheGuard
 									        (PersonsList->getNthNode(i)->_nr,
 									         PD.bldId))
-										PD.guardKO[((Police)
+										PD.guardKO[((PoliceNode *)
 										            dbGetObject(ActionData
 										                        (PD.action,
 										                         struct
@@ -807,7 +807,7 @@ static void plPlayerAction() {
 										        (Search.
 										         EscapeBits & FAHN_ALARM_GUARD)) {
 											plSay("PLAYER_GUARD_ALARM_5",
-											      ((Police)
+											      ((PoliceNode *)
 											       dbGetObject(ActionData
 											                   (PD.action,
 											                    ActionUse
@@ -822,7 +822,7 @@ static void plPlayerAction() {
 										}
 
 										PD.handlerEnded[i] = 32;
-										PD.guardKO[((Police)
+										PD.guardKO[((PoliceNode *)
 										            dbGetObject(ActionData
 										                        (PD.action,
 										                         struct
@@ -846,7 +846,7 @@ static void plPlayerAction() {
 										                 Const_tcLOCK_UNLOCK_BIT,
 										                 1);
 
-										if (((Tool)
+										if (((ToolNode *)
 										        dbGetObject(ActionData
 										                    (PD.action,
 										                     ActionUse *)->
@@ -858,7 +858,7 @@ static void plPlayerAction() {
 											                  *)->ItemId,
 											                 Const_tcOPEN_CLOSE_BIT,
 											                 1);
-											plCorrectOpened((LSObject)
+											plCorrectOpened((LSObjectNode *)
 											                dbGetObject
 											                (ActionData
 											                 (PD.action,
@@ -878,7 +878,7 @@ static void plPlayerAction() {
 											                              *)->
 											                   ItemId);
 									} else {
-										if ((((LSObject)
+										if ((((LSObjectNode *)
 										        dbGetObject(ActionData
 										                    (PD.action,
 										                     ActionUse *)->
@@ -886,7 +886,7 @@ static void plPlayerAction() {
 										        Item_Fenster)) {
 											uint16 xpos, ypos;
 
-											lsWalkThroughWindow((LSObject)
+											lsWalkThroughWindow((LSObjectNode *)
 											                    dbGetObject
 											                    (ActionData
 											                     (PD.action,
@@ -1040,13 +1040,13 @@ static void plPlayerAction() {
 								                     LootId));
 
 								Planing_Weight[i] +=
-								    ((Loot)
+								    ((LootNode *)
 								     dbGetObject(ActionData
 								                 (PD.action,
 								                  ActionTake *)->
 								                 LootId))->Weight;
 								Planing_Volume[i] +=
-								    ((Loot)
+								    ((LootNode *)
 								     dbGetObject(ActionData
 								                 (PD.action,
 								                  ActionTake *)->
@@ -1083,7 +1083,7 @@ static void plPlayerAction() {
 										                  ActionTake *)->
 										                 ItemId,
 										                 Const_tcACCESS_BIT, 0);
-										lsTurnObject((LSObject)
+										lsTurnObject((LSObjectNode *)
 										             dbGetObject(ActionData
 										                         (PD.action,
 										                          struct
@@ -1182,13 +1182,13 @@ static void plPlayerAction() {
 								                     LootId));
 
 								Planing_Weight[i] -=
-								    ((Loot)
+								    ((LootNode *)
 								     dbGetObject(ActionData
 								                 (PD.action,
 								                  ActionDrop *)->
 								                 LootId))->Weight;
 								Planing_Volume[i] -=
-								    ((Loot)
+								    ((LootNode *)
 								     dbGetObject(ActionData
 								                 (PD.action,
 								                  ActionDrop *)->
@@ -1222,7 +1222,7 @@ static void plPlayerAction() {
 									          (PD.action,
 									           ActionTake *)->ItemId),
 									         Const_tcTAKE_BIT))
-										lsTurnObject((LSObject)
+										lsTurnObject((LSObjectNode *)
 										             dbGetObject(ActionData
 										                         (PD.action,
 										                          struct
@@ -1278,7 +1278,7 @@ static void plPlayerAction() {
 									    FAHN_ALARM | FAHN_ALARM_GUARD;
 								}
 
-								PD.guardKO[((Police)dbGetObject(PersonsList->getNthNode(i)->_nr))->LivingID -
+								PD.guardKO[((PoliceNode *)dbGetObject(PersonsList->getNthNode(i)->_nr))->LivingID -
 								           BurglarsNr] = 3;
 
 								break;
@@ -1343,7 +1343,7 @@ static void plPlayerAction() {
 									                 0);
 								}
 
-								if ((((LSObject)
+								if ((((LSObjectNode *)
 								        dbGetObject(ActionData
 								                    (PD.action,
 								                     ActionOpen *)->
@@ -1358,7 +1358,7 @@ static void plPlayerAction() {
 								                  ActionOpen *)->ItemId,
 								                 Const_tcOPEN_CLOSE_BIT, 1);
 
-								plCorrectOpened((LSObject)
+								plCorrectOpened((LSObjectNode *)
 								                dbGetObject(ActionData
 								                            (PD.action,
 								                             ActionOpen
@@ -1398,7 +1398,7 @@ static void plPlayerAction() {
 									    FAHN_ALARM | FAHN_ALARM_GUARD;
 								}
 
-								PD.guardKO[((Police)
+								PD.guardKO[((PoliceNode *)
 								            dbGetObject(PersonsList->getNthNode(i)->_nr))->LivingID -
 								           BurglarsNr] = 3;
 
@@ -1469,7 +1469,7 @@ static void plPlayerAction() {
 								                  ActionClose *)->ItemId,
 								                 Const_tcOPEN_CLOSE_BIT, 0);
 
-								plCorrectOpened((LSObject)
+								plCorrectOpened((LSObjectNode *)
 								                dbGetObject(ActionData
 								                            (PD.action,
 								                             ActionClose
@@ -1494,7 +1494,7 @@ static void plPlayerAction() {
 				case ACTION_CONTROL:
 #ifndef PLAN_IS_PERFECT
 					if (tcGuardChecksObject
-					        ((LSObject)
+					        ((LSObjectNode *)
 					         dbGetObject(ActionData
 					                     (PD.action,
 					                      ActionControl *)->ItemId))) {
@@ -1505,13 +1505,13 @@ static void plPlayerAction() {
 							Search.EscapeBits |= FAHN_ALARM | FAHN_ALARM_GUARD;
 						}
 
-						PD.guardKO[((Police)
+						PD.guardKO[((PoliceNode *)
 						            dbGetObject(PersonsList->getNthNode(i)->_nr))->
 						           LivingID - BurglarsNr] = 3;
 					}
 #endif
 
-					if (((LSObject)
+					if (((LSObjectNode *)
 					        dbGetObject(ActionData(PD.action, ActionUse *)->
 					                    ItemId))->Type == Item_Stechuhr)
 						tcRefreshTimeClock(PD.bldId,
@@ -1590,13 +1590,13 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 				PD.badPlaning = 0;
 				PD.mood = plGetMood(0L);
 				PD.bldId = objId;
-				PD.bldObj = (Building) dbGetObject(objId);
+				PD.bldObj = (BuildingNode *) dbGetObject(objId);
 				PD.changeCount = 0;
 				PD.totalCount = lsGetObjectCount();
 				PD.patrolCount = 0;
 				PD.alarmTimer = 0L;
 				PD.isItDark =
-				    ((LSArea) dbGetObject(lsGetActivAreaID()))->uch_Darkness;
+				    ((LSAreaNode *) dbGetObject(lsGetActivAreaID()))->uch_Darkness;
 				PD.sndState = 1;
 				PD.actionTime = actionTime;
 				PD.actionFunc = actionFunc;
@@ -1654,8 +1654,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 
 				if (g_clue->getFeatures() & GF_PROFIDISK) {
 					if (objId == Building_Postzug) {
-						Environment env =
-						    (Environment) dbGetObject(Environment_TheClou);
+						EnvironmentNode *env = (EnvironmentNode *) dbGetObject(Environment_TheClou);
 
 						env->PostzugDone = 1;
 					}
@@ -1732,7 +1731,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 
 						plMessage("PLAYER_RADIO_ALL", PLANING_MSG_REFRESH);
 
-						SetPictID(((Person)dbGetObject(BurglarsList->getNthNode(0)->_nr))->PictID);
+						SetPictID(((PersonNode *)dbGetObject(BurglarsList->getNthNode(0)->_nr))->PictID);
 						SetBubbleType(RADIO_BUBBLE);
 
 						if ((choice1 = Bubble(l, 0, NULL, 0L)) != GET_OUT) {
@@ -1748,11 +1747,11 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 
 					case PLANING_PLAYER_RADIO_ONE:
 						if (BurglarsNr > 2) {
-							NewObjectNode *help;
+							dbObjectNode *help;
 
 							plMessage("RADIO_1", PLANING_MSG_REFRESH);
-							SetPictID(((Person)dbGetObject(BurglarsList->getNthNode(0)->_nr))->PictID);
-							NewObjectNode* node = BurglarsList->unLink(BurglarsList->getNthNode(0)->_name, &help);
+							SetPictID(((PersonNode *)dbGetObject(BurglarsList->getNthNode(0)->_nr))->PictID);
+							dbObjectNode* node = BurglarsList->unLink(BurglarsList->getNthNode(0)->_name, &help);
 
 							Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_RADIO");
 							BurglarsList->expandObjectList(exp);
@@ -1771,7 +1770,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 
 						if (choice1 != GET_OUT) {
 							l = g_clue->_txtMgr->goKey(PLAN_TXT, "PLAYER_RADIO_2");
-							SetPictID(((Person)dbGetObject(BurglarsList->getNthNode(0)->_nr))->PictID);
+							SetPictID(((PersonNode *)dbGetObject(BurglarsList->getNthNode(0)->_nr))->PictID);
 							SetBubbleType(RADIO_BUBBLE);
 
 							if ((choice2 =
@@ -1825,7 +1824,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 					SetObjectListAttr(OLF_NORMAL, 0L);
 					AskAll(dbGetObject(PersonsList->getNthNode(i)->_nr), take_RelId, BuildObjectList);
 
-					for (NewObjectNode* n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
+					for (dbObjectNode* n = ObjectList->getListHead(); n->_succ; n = (dbObjectNode *)n->_succ) {
 						if (has(Person_Matt_Stuvysunt, n->_nr)) {
 							uint32 oldValue =
 							    hasGet(Person_Matt_Stuvysunt, n->_nr);

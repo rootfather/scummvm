@@ -33,11 +33,11 @@ namespace Clue {
 #define LS_RASTER_Y_SIZE           4    /* dedection, in pixel */
 
 
-NewObjectNode *lsGetSuccObject(NewObjectNode *start);
-NewObjectNode *lsGetPredObject(NewObjectNode *start);
+dbObjectNode *lsGetSuccObject(dbObjectNode *start);
+dbObjectNode *lsGetPredObject(dbObjectNode *start);
 
-void lsFadeRasterObject(uint32 areaID, LSObject lso, byte status);
-void lsShowAllConnections(uint32 areaID, NewObjectNode *node, byte perc);
+void lsFadeRasterObject(uint32 areaID, LSObjectNode *lso, byte status);
+void lsShowAllConnections(uint32 areaID, dbObjectNode *node, byte perc);
 void lsShowRaster(uint32 areaID, byte perc);
 
 uint16 lsGetRasterXSize(uint32 areaID);

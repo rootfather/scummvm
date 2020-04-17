@@ -44,11 +44,11 @@ namespace Clue {
 #define PLANING_NR_PLANS            NRBLINES-1
 
 /* getting correct has loot relation */
-#define hasLoot(current)            (((LSArea)dbGetObject(livWhereIs(Planing_Name[current])))->ul_ObjectBaseNr + REL_HAS_LOOT_OFFSET)
+#define hasLoot(current)            (((LSAreaNode *)dbGetObject(livWhereIs(Planing_Name[current])))->ul_ObjectBaseNr + REL_HAS_LOOT_OFFSET)
 
 
-extern NewObjectList<NewObjectNode> *PersonsList;
-extern NewObjectList<NewObjectNode> *BurglarsList;
+extern NewObjectList<dbObjectNode> *PersonsList;
+extern NewObjectList<dbObjectNode> *BurglarsList;
 
 extern byte PersonsNr;
 extern byte BurglarsNr;
@@ -62,15 +62,15 @@ extern byte Planing_Guard[PLANING_NR_GUARDS];
 
 extern char Planing_Name[PLANING_NR_PERSONS + PLANING_NR_GUARDS][20];
 
-extern NewObjectList<NewObjectNode> *Planing_GuardRoomList[PLANING_NR_GUARDS];
+extern NewObjectList<dbObjectNode> *Planing_GuardRoomList[PLANING_NR_GUARDS];
 
 extern uint32 Planing_BldId;
 
 
 
-void plBuildHandler(NewObjectNode *n);
-void plClearHandler(NewObjectNode *n);
-void plCloseHandler(NewObjectNode *n);
+void plBuildHandler(dbObjectNode *n);
+void plClearHandler(dbObjectNode *n);
+void plCloseHandler(dbObjectNode *n);
 
 void plPrepareData();
 void plPrepareSprite(uint32 livNr, uint32 areaId);

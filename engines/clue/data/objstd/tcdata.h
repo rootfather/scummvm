@@ -290,8 +290,9 @@ enum LootE { Ein_Bild, Gold, Geld, Juwelen, Delikatessen, Eine_Statue,
 
 
 #define Object_Person              9900L
-#define Object_Person_Size         sizeof(struct _Person)
-struct _Person {
+
+class PersonNode : public dbObjectNode {
+public:
 	uint16 PictID;
 	enum JobE Job;
 	enum SexE Sex;
@@ -311,12 +312,14 @@ struct _Person {
 	uint32 TalkBits;
 	uint8 TalkFileID;
 	uint8 OldHealth;
+
+	PersonNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : dbObjectNode(nr, type, name, realNr) {}
+	void mapper(dbObjectNode *srcNode);
 };
-typedef struct _Person *Person;
 
 #define Object_Player              9901L
-#define Object_Player_Size         sizeof(struct _Player)
-struct _Player {
+class PlayerNode : public dbObjectNode {
+public:
 	uint32 Money;
 	uint32 StolenMoney;
 	uint32 MyStolenMoney;
@@ -327,12 +330,14 @@ struct _Player {
 	uint32 CurrDay;
 	uint32 CurrMinute;
 	uint32 CurrLocation;
+
+	PlayerNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : dbObjectNode(nr, type, name, realNr) {}
+	void mapper(dbObjectNode *srcNode);
 };
-typedef struct _Player *Player;
 
 #define Object_Car              9902L
-#define Object_Car_Size         sizeof(struct _Car)
-struct _Car {
+class CarNode : public dbObjectNode {
+public:
 	uint16 PictID;
 	enum LandE Land;
 	uint32 Value;
@@ -347,29 +352,35 @@ struct _Car {
 	uint8 BodyWorkState;
 	uint8 TyreState;
 	uint8 PlacesInCar;
+
+	CarNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : dbObjectNode(nr, type, name, realNr) {}
+	void mapper(dbObjectNode *srcNode);
 };
-typedef struct _Car *Car;
 
 #define Object_Location              9903L
-#define Object_Location_Size         sizeof(struct _Location)
-struct _Location {
+class LocationNode : public dbObjectNode {
+public:
 	uint32 LocationNr;
 	uint16 OpenFromMinute;
 	uint16 OpenToMinute;
+
+	LocationNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : dbObjectNode(nr, type, name, realNr) {}
+	void mapper(dbObjectNode *srcNode);
 };
-typedef struct _Location *Location;
 
 #define Object_Ability              9904L
-#define Object_Ability_Size         sizeof(struct _Ability)
-struct _Ability {
+class AbilityNode : public dbObjectNode {
+public:
 	enum AbilityE Name;
 	uint32 Use;
+
+	AbilityNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : dbObjectNode(nr, type, name, realNr) {}
+	void mapper(dbObjectNode *srcNode);
 };
-typedef struct _Ability *Ability;
 
 #define Object_Item              9905L
-#define Object_Item_Size         sizeof(struct _Item)
-struct _Item {
+class ItemNode : public dbObjectNode {
+public:
 	enum ItemE Type;
 	uint16 OffsetFact;
 	uint16 HExactXOffset;
@@ -382,23 +393,27 @@ struct _Item {
 	uint16 VExactHeight;
 	uint8 Size;
 	uint8 ColorNr;
+
+	ItemNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : dbObjectNode(nr, type, name, realNr) {}
+	void mapper(dbObjectNode *srcNode);
 };
-typedef struct _Item *Item;
 
 #define Object_Tool              9906L
-#define Object_Tool_Size         sizeof(struct _Tool)
-struct _Tool {
+class ToolNode : public dbObjectNode {
+public:
 	uint16 PictID;
 	uint32 Value;
 	uint8 Danger;
 	uint8 Volume;
 	uint8 Effect;
+
+	ToolNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : dbObjectNode(nr, type, name, realNr) {}
+	void mapper(dbObjectNode *srcNode);
 };
-typedef struct _Tool *Tool;
 
 #define Object_Environment              9907L
-#define Object_Environment_Size         sizeof(struct _Environment)
-struct _Environment {
+class EnvironmentNode : public dbObjectNode {
+public:
 	uint8 MattHasHotelRoom;
 	uint8 MattHasIdentityCard;
 	uint8 WithOrWithoutYou;
@@ -407,19 +422,23 @@ struct _Environment {
 	uint8 Present;
 	uint8 FirstTimeInSouth;
 	uint8 PostzugDone;                     /* PROFIDISK */
+
+	EnvironmentNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : dbObjectNode(nr, type, name, realNr) {}
+	void mapper(dbObjectNode *srcNode);
 };
-typedef struct _Environment *Environment;
 
 #define Object_London              9908L
-#define Object_London_Size         sizeof(struct _London)
-struct _London {
+class LondonNode : public dbObjectNode {
+public:
 	uint8 Useless;
+
+	LondonNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : dbObjectNode(nr, type, name, realNr) {}
+	void mapper(dbObjectNode *srcNode);
 };
-typedef struct _London *London;
 
 #define Object_Evidence              9909L
-#define Object_Evidence_Size         sizeof(struct _Evidence)
-struct _Evidence {
+class EvidenceNode : public dbObjectNode {
+public:
 	uint32 pers;
 	uint8 Recognition;
 	uint8 WalkTrail;
@@ -429,24 +448,27 @@ struct _Evidence {
 	uint8 CallTrail;
 	uint8 PaperTrail;
 	uint8 FotoTrail;
+
+	EvidenceNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : dbObjectNode(nr, type, name, realNr) {}
+	void mapper(dbObjectNode *srcNode);
 };
-typedef struct _Evidence *Evidence;
 
 #define Object_Loot              9910L
-#define Object_Loot_Size         sizeof(struct _Loot)
-struct _Loot {
+class LootNode : public dbObjectNode {
+public:
 	enum LootE Type;
 	enum LootNameE Name;
 	uint32 Volume;
 	uint16 Weight;
 	uint16 PictID;
 
+	LootNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : dbObjectNode(nr, type, name, realNr) {}
+	void mapper(dbObjectNode *srcNode);
 };
-typedef struct _Loot *Loot;
 
 #define Object_CompleteLoot              9911L
-#define Object_CompleteLoot_Size         sizeof(struct _CompleteLoot)
-struct _CompleteLoot {
+class CompleteLootNode : public dbObjectNode {
+public:
 	uint32 Bild;
 	uint32 Gold;
 	uint32 Geld;
@@ -459,19 +481,23 @@ struct _CompleteLoot {
 	uint32 Vase;
 	uint32 TotalWeight;
 	uint32 TotalVolume;
+
+	CompleteLootNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : dbObjectNode(nr, type, name, realNr) {}
+	void mapper(dbObjectNode *srcNode);
 };
-typedef struct _CompleteLoot *CompleteLoot;
 
 #define Object_LSOLock              9912L
-#define Object_LSOLock_Size         sizeof(struct _LSOLock)
-struct _LSOLock {
+class LSOLockNode : public dbObjectNode {
+public:
 	enum LockE Type;
+
+	LSOLockNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : dbObjectNode(nr, type, name, realNr) {}
+	void mapper(dbObjectNode *srcNode);
 };
-typedef struct _LSOLock *LSOLock;
 
 #define Object_LSObject              9913L
-#define Object_LSObject_Size         sizeof(struct _LSObject)
-struct _LSObject {
+class LSObjectNode : public dbObjectNode {
+public:
 	uint16 us_OffsetFact;
 	uint16 us_DestX;
 	uint16 us_DestY;
@@ -484,11 +510,11 @@ struct _LSObject {
 	uint8 uch_Chained;
 	uint32 ul_Status;
 	uint32 Type;
+
+	LSObjectNode() {}
+	LSObjectNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : dbObjectNode(nr, type, name, realNr) {}
+	void mapper(dbObjectNode *srcNode);
 };
-typedef struct _LSObject *LSObject;
-
-
-
 
 /*
  * Data header file created with dc
@@ -533,8 +559,8 @@ enum RouteE { Innenstadt, Stadt, Landstrasse, Autobahn };
 
 
 #define Object_Building              509990L
-#define Object_Building_Size         sizeof(struct _Building)
-struct _Building {
+class BuildingNode : public dbObjectNode {
+public:
 	uint32 LocationNr;
 	uint16 PoliceTime;
 	uint16 GTime;
@@ -550,20 +576,24 @@ struct _Building {
 	uint16 CarXPos;
 	uint16 CarYPos;
 	uint8 DiskId;                      /* PROFIDISK */
+
+	BuildingNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : dbObjectNode(nr, type, name, realNr) {}
+	void mapper(dbObjectNode *srcNode);
 };
-typedef struct _Building *Building;
 
 #define Object_Police              509991L
-#define Object_Police_Size         sizeof(struct _Police)
-struct _Police {
+class PoliceNode : public dbObjectNode {
+public:
 	uint16 PictID;
 	uint8 LivingID;
+
+	PoliceNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : dbObjectNode(nr, type, name, realNr) {}
+	void mapper(dbObjectNode *srcNode);
 };
-typedef struct _Police *Police;
 
 #define Object_LSArea              509992L
-#define Object_LSArea_Size         sizeof(struct _LSArea)
-struct _LSArea {
+class LSAreaNode : public dbObjectNode {
+public:
 	uint16 us_Coll16ID;
 	uint16 us_Coll32ID;
 	uint16 us_Coll48ID;
@@ -589,18 +619,21 @@ struct _LSArea {
 	uint16 us_StartY4;
 	uint16 us_StartY5;
 
+	LSAreaNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : dbObjectNode(nr, type, name, realNr) {}
+	void mapper(dbObjectNode *srcNode);
 };
-typedef struct _LSArea *LSArea;
 
 #define Object_LSRoom              509993L
-#define Object_LSRoom_Size         sizeof(struct _LSRoom)
-struct _LSRoom {
+class LSRoomNode : public dbObjectNode {
+public:
 	uint16 us_LeftEdge;
 	uint16 us_TopEdge;
 	uint16 us_Width;
 	uint16 us_Height;
+
+	LSRoomNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : dbObjectNode(nr, type, name, realNr) {}
+	void mapper(dbObjectNode *srcNode);
 };
-typedef struct _LSRoom *LSRoom;
 
 } // End of namespace Clue
 

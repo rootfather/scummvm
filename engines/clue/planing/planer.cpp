@@ -281,9 +281,9 @@ static void plActionWait() {
 			if (has(Person_Matt_Stuvysunt, Tool_Funkgeraet)) {
 				if (BurglarsNr > 2) {
 					plMessage("RADIO_2", PLANING_MSG_REFRESH);
-					SetPictID(((Person)dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr))->PictID);
-					NewObjectNode *help;
-					NewObjectNode *node = BurglarsList->unLink(BurglarsList->getNthNode(CurrentPerson)->_name.c_str(), &help);
+					SetPictID(((PersonNode *)dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr))->PictID);
+					dbObjectNode *help;
+					dbObjectNode *node = BurglarsList->unLink(BurglarsList->getNthNode(CurrentPerson)->_name.c_str(), &help);
 
 					Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_RADIO");
 					BurglarsList->expandObjectList(exp);
@@ -327,7 +327,7 @@ static void plActionWait() {
 	menu->removeList();
 }
 
-static void plLevelDesigner(LSObject lso) {
+static void plLevelDesigner(LSObjectNode *lso) {
 	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_8");
 	byte ende = 0, activ = 0;
 	uint16 originX = lso->us_DestX, originY = lso->us_DestY;
@@ -397,7 +397,7 @@ static void plLevelDesigner(LSObject lso) {
 			dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, areaName.c_str(), fileName);
 
 			dbSaveAllObjects(fileName,
-			                 ((LSArea) dbGetObject(area))->ul_ObjectBaseNr,
+			                 ((LSAreaNode *) dbGetObject(area))->ul_ObjectBaseNr,
 			                 10000, 0);
 		}
 
@@ -425,7 +425,7 @@ static void plLevelDesigner(LSObject lso) {
 }
 
 static void plActionOpenClose(uint16 what) {
-	NewObjectList<NewObjectNode> *actionList = plGetObjectsList(CurrentPerson, 0);
+	NewObjectList<dbObjectNode> *actionList = plGetObjectsList(CurrentPerson, 0);
 
 	if (actionList->isEmpty())
 		plMessage("NO_OBJECTS", PLANING_MSG_WAIT);
@@ -438,7 +438,7 @@ static void plActionOpenClose(uint16 what) {
 		Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 
 		actionList->expandObjectList(exp);
-		SetPictID(((Person) dbGetObject(PersonsList->getNthNode(CurrentPerson)->_nr))->PictID);
+		SetPictID(((PersonNode *) dbGetObject(PersonsList->getNthNode(CurrentPerson)->_nr))->PictID);
 
 		uint32 choice1 = Bubble((NewList<NewNode>*)actionList, 0, NULL, 0L);
 
@@ -446,13 +446,13 @@ static void plActionOpenClose(uint16 what) {
 			choice1 = actionList->getNthNode(choice1)->_nr;
 
 			if (GamePlayMode & GP_LEVEL_DESIGN)
-				plLevelDesigner((LSObject)dbGetObject(choice1));
+				plLevelDesigner((LSObjectNode*)dbGetObject(choice1));
 			else if ((CurrentPerson >= BurglarsNr) || !CHECK_STATE(lsGetObjectState(choice1), Const_tcIN_PROGRESS_BIT)) {
 				if ((CurrentPerson >= BurglarsNr) || plIgnoreLock(choice1) || CHECK_STATE(lsGetObjectState(choice1), Const_tcLOCK_UNLOCK_BIT)) {
 					uint32 state = CHECK_STATE(lsGetObjectState(choice1), Const_tcOPEN_CLOSE_BIT);
 
 					if ((what == ACTION_OPEN) ? !state : state) {
-						if (InitAction(plSys, what, choice1, 0L, opensGet(((LSObject) dbGetObject(choice1))->Type,
+						if (InitAction(plSys, what, choice1, 0L, opensGet(((LSObjectNode *) dbGetObject(choice1))->Type,
 						                  Tool_Hand) * PLANING_CORRECT_TIME)) {
 							PlanChanged = true;
 
@@ -460,7 +460,7 @@ static void plActionOpenClose(uint16 what) {
 								plWork(CurrentPerson);
 
 							plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys),
-							       opensGet(((LSObject) dbGetObject(choice1))->
+							       opensGet(((LSObjectNode *) dbGetObject(choice1))->
 							                Type,
 							                Tool_Hand) * PLANING_CORRECT_TIME,
 							       1);
@@ -469,10 +469,10 @@ static void plActionOpenClose(uint16 what) {
 							                 ((what == ACTION_OPEN) ? 1 : 0));
 
 							if (what == ACTION_OPEN)
-								plCorrectOpened((LSObject) dbGetObject(choice1),
+								plCorrectOpened((LSObjectNode *) dbGetObject(choice1),
 								                1);
 							else
-								plCorrectOpened((LSObject) dbGetObject(choice1),
+								plCorrectOpened((LSObjectNode *) dbGetObject(choice1),
 								                0);
 
 							plRefresh(choice1);
@@ -496,14 +496,16 @@ static void plActionOpenClose(uint16 what) {
 }
 
 static void plActionTake() {
-	NewList<NewObjectNode> *actionList = plGetObjectsList(CurrentPerson, 1);
+	error("STUB - plActionTake");
+#if 0
+	NewList<dbObjectNode> *actionList = plGetObjectsList(CurrentPerson, 1);
 
 	if (actionList->isEmpty())
 		plMessage("NO_OBJECTS", PLANING_MSG_WAIT);
 	else {
-		NewObjectList<NewObjectNode> *takeableList = new NewObjectList<NewObjectNode>;
+		NewObjectList<dbObjectNode> *takeableList = new NewObjectList<dbObjectNode>;
 
-		for (NewObjectNode *n = actionList->getListHead(); n->_succ; n = (NewObjectNode *) n->_succ) {
+		for (dbObjectNode *n = actionList->getListHead(); n->_succ; n = (dbObjectNode *) n->_succ) {
 			SetObjectListAttr(OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_NORMAL, 0L);
 			AskAll(dbGetObject(n->_nr), hasLoot(CurrentPerson), BuildObjectList);
 
@@ -511,16 +513,16 @@ static void plActionTake() {
 
 			if (!ObjectList->isEmpty()) {
 				if (CHECK_STATE(state, Const_tcTAKE_BIT)) {
-					NewObjectNode *h2 = ObjectList->getListHead();
+					dbObjectNode *h2 = ObjectList->getListHead();
 
-					NewObjectNode *h = takeableList->createNode(h2->_name);
+					dbObjectNode *h = takeableList->createNode(h2->_name);
 					h->_nr = h2->_nr;  /* Loot */
 					h->_type = n->_nr; /* Original */
 					h->_data = NULL;
 				} else {
 					if (CHECK_STATE(state, Const_tcOPEN_CLOSE_BIT)) {
-						for (NewObjectNode *h2 = ObjectList->getListHead(); h2->_succ; h2 = (NewObjectNode *) h2->_succ) {
-							NewObjectNode *h = takeableList->createNode(h2->_name);
+						for (dbObjectNode *h2 = ObjectList->getListHead(); h2->_succ; h2 = (dbObjectNode *) h2->_succ) {
+							dbObjectNode *h = takeableList->createNode(h2->_name);
 							h->_nr = h2->_nr;  /* Loot */
 							h->_type = n->_nr; /* Original */
 							h->_data = (void *) 1L;
@@ -533,7 +535,7 @@ static void plActionTake() {
 		if (!takeableList->isEmpty()) {
 			plMessage("TAKE", PLANING_MSG_REFRESH);
 
-			SetPictID(((Person) dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr))->PictID);
+			SetPictID(((PersonNode *) dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr))->PictID);
 
 			Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 			takeableList->expandObjectList(exp);
@@ -542,15 +544,15 @@ static void plActionTake() {
 
 			if (ChoiceOk(choice, GET_OUT, takeableList)) {
 				uint32 weightPerson =
-				    tcWeightPersCanCarry((Person)dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr));
+				    tcWeightPersCanCarry((PersonNode *)dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr));
 				uint32 volumePerson =
-				    tcVolumePersCanCarry((Person)dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr));
+				    tcVolumePersCanCarry((PersonNode *)dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr));
 
 				uint32 choice1 = takeableList->getNthNode(choice)->_nr;
 				uint32 choice2 = takeableList->getNthNode(choice)->_type;
 
-				uint32 weightLoot = ((Loot)dbGetObject(choice1))->Weight;
-				uint32 volumeLoot = ((Loot)dbGetObject(choice1))->Volume;
+				uint32 weightLoot = ((LootNode *)dbGetObject(choice1))->Weight;
+				uint32 volumeLoot = ((LootNode *)dbGetObject(choice1))->Volume;
 
 				if ((Planing_Weight[CurrentPerson] + weightLoot) <=
 				        weightPerson) {
@@ -565,12 +567,12 @@ static void plActionTake() {
 							plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys),
 							       PLANING_TIME_TAKE * PLANING_CORRECT_TIME, 1);
 
-							if (!takeableList->getNthNode(choice)->_data) {
+							if (!takeableList->getNthNode(choice)) {
 								if ((choice2 >= 9701) && (choice2 <= 9708)) {
 									lsRemLootBag(choice2);
 									Planing_Loot[choice2 - 9701] = 0;
 								} else {
-									lsTurnObject((LSObject)
+									lsTurnObject((LSObjectNode *)
 									             dbGetObject(choice2),
 									             LS_OBJECT_INVISIBLE,
 									             LS_NO_COLLISION);
@@ -624,21 +626,22 @@ static void plActionTake() {
 	}
 
 	actionList->removeList();
+#endif
 }
 
-static Common::String plSetUseString(uint32 nr, uint32 type, void *data) {
+static Common::String plSetUseString(uint32 nr, uint32 type, dbObjectNode *node) {
 	uint32 actLoudness =
 	    lsGetLoudness(livGetXPos(Planing_Name[CurrentPerson]),
 	                  livGetYPos(Planing_Name[CurrentPerson]));
-	uint32 objLoudness = soundGet(((LSObject) dbGetObject(UseObject))->Type, nr);
+	uint32 objLoudness = soundGet(((LSObjectNode *) dbGetObject(UseObject))->Type, nr);
 
 	Common::String useString;
 
-	if (break_(((LSObject) dbGetObject(UseObject))->Type, nr)) {
+	if (break_(((LSObjectNode *) dbGetObject(UseObject))->Type, nr)) {
 		useString = Common::String::format("%u %s",
 		        tcGuyUsesTool(PersonsList->getNthNode(CurrentPerson)->_nr,
-		                      (Building) dbGetObject(Planing_BldId), nr,
-		                      ((LSObject) dbGetObject(UseObject))->Type),
+		                      (BuildingNode *) dbGetObject(Planing_BldId), nr,
+		                      ((LSObjectNode *) dbGetObject(UseObject))->Type),
 		        txtSeconds.c_str());
 
 		if (objLoudness >= actLoudness) {
@@ -654,9 +657,9 @@ static bool plCheckAbilities(uint32 persId, uint32 checkToolId) {
 	bool ret = true;
 
 	toolRequiresAll(checkToolId, OLF_PRIVATE_LIST, Object_Ability);
-	NewList<NewObjectNode> *requires = ObjectListPrivate;
+	NewList<dbObjectNode> *requires = ObjectListPrivate;
 
-	for (NewObjectNode *n = requires->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
+	for (dbObjectNode *n = requires->getListHead(); n->_succ; n = (dbObjectNode *)n->_succ) {
 		if (!has(persId, n->_nr)) {
 			ret = false;
 			break;
@@ -676,16 +679,16 @@ static bool plCheckRequiredTools(uint32 checkToolId) {
 	bool ret = true;
 
 	toolRequiresAll(checkToolId, OLF_PRIVATE_LIST, Object_Tool);
-	NewList<NewObjectNode> *trl = ObjectListPrivate;
+	NewList<dbObjectNode> *trl = ObjectListPrivate;
 
 	hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Tool);
 
-	for (NewObjectNode *n = trl->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
+	for (dbObjectNode *n = trl->getListHead(); n->_succ; n = (dbObjectNode *)n->_succ) {
 		bool found = false;
 
 		ret = false;
 
-		for (NewObjectNode *h = ObjectList->getListHead(); h->_succ; h = (NewObjectNode *)h->_succ) {
+		for (dbObjectNode *h = ObjectList->getListHead(); h->_succ; h = (dbObjectNode *)h->_succ) {
 			if (n->_nr == h->_nr)
 				found = true;
 		}
@@ -722,7 +725,7 @@ static void plCorrectToolsList(uint32 flags) {
 }
 
 static void plActionUse() {
-	NewObjectList<NewObjectNode> *actionList = plGetObjectsList(CurrentPerson, 0);
+	NewObjectList<dbObjectNode> *actionList = plGetObjectsList(CurrentPerson, 0);
 
 	if (CurrentPerson < BurglarsNr) {
 		for (byte i = BurglarsNr; i < PersonsNr; i++)
@@ -740,7 +743,7 @@ static void plActionUse() {
 			else {
 				plMessage("USE_3", PLANING_MSG_REFRESH);
 
-				SetPictID(((Person)dbGetObject(PersonsList->getNthNode(CurrentPerson)->_nr))->PictID);
+				SetPictID(((PersonNode *)dbGetObject(PersonsList->getNthNode(CurrentPerson)->_nr))->PictID);
 
 				Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 				actionList->expandObjectList(exp);
@@ -783,7 +786,7 @@ static void plActionUse() {
 							plSay("PLANING_END", CurrentPerson);
 					} else if (dbIsObject(choice1, Object_Police)) {
 						if (has(PersonsList->getNthNode(CurrentPerson)->_nr, Ability_Kampf)) {
-							NewObjectList<NewObjectNode> *objList = new NewObjectList<NewObjectNode>;
+							NewObjectList<dbObjectNode> *objList = new NewObjectList<dbObjectNode>;
 
 							dbAddObjectNode(objList, Tool_Hand,
 							                OLF_INCLUDE_NAME | OLF_INSERT_STAR);
@@ -800,7 +803,7 @@ static void plActionUse() {
 
 							plMessage("USE_4", PLANING_MSG_REFRESH);
 
-							SetPictID(((Person)dbGetObject(PersonsList->getNthNode(CurrentPerson)->_nr))->PictID);
+							SetPictID(((PersonNode *)dbGetObject(PersonsList->getNthNode(CurrentPerson)->_nr))->PictID);
 
 							uint32 choice2 = Bubble((NewList<NewNode>*)objList, 0, NULL, 0L);
 
@@ -810,19 +813,17 @@ static void plActionUse() {
 								if (InitAction
 								        (plSys, ACTION_USE, choice1, choice2,
 								         tcGuyUsesTool(PersonsList->getNthNode(CurrentPerson)->_nr,
-											(Building)dbGetObject(Planing_BldId), choice2, Item_Wache) *
+											(BuildingNode *)dbGetObject(Planing_BldId), choice2, Item_Wache) *
 								         PLANING_CORRECT_TIME)) {
 									PlanChanged = true;
 
-									Planing_Guard[((Police)
-									               dbGetObject(choice1))->
-									              LivingID - BurglarsNr] = 2;
+									Planing_Guard[((PoliceNode *)dbGetObject(choice1))->LivingID - BurglarsNr] = 2;
 
 									plWork(CurrentPerson);
 									plSync(PLANING_ANIMATE_NO,
 									       GetMaxTimer(plSys),
 									       tcGuyUsesTool((PersonsList->getNthNode(CurrentPerson)->_nr),
-									                     (Building)dbGetObject(Planing_BldId),
+									                     (BuildingNode *)dbGetObject(Planing_BldId),
 									                     choice2,
 									                     Item_Wache) * PLANING_CORRECT_TIME, 1);
 									livRefreshAll();
@@ -840,7 +841,7 @@ static void plActionUse() {
 							if (plIgnoreLock(choice1)
 							        && !CHECK_STATE(state,
 							                        Const_tcOPEN_CLOSE_BIT)) {
-								switch (((LSObject) dbGetObject(choice1))->Type) {
+								switch (((LSObjectNode *) dbGetObject(choice1))->Type) {
 								case Item_Alarmanlage_Z3:
 								case Item_Alarmanlage_X3:
 								case Item_Alarmanlage_Top:
@@ -869,13 +870,13 @@ static void plActionUse() {
 									                   OLF_ALIGNED);
 
 									ObjectListWidth = 0L;
-									ObjectListSuccString = NULL;
+									ObjectListSuccString = nullptr;
 									UseObject = 0L;
 
 									exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 									ObjectList->expandObjectList(exp);
 
-									SetPictID(((Person)dbGetObject(PersonsList->getNthNode(CurrentPerson)->_nr))->PictID);
+									SetPictID(((PersonNode *)dbGetObject(PersonsList->getNthNode(CurrentPerson)->_nr))->PictID);
 
 									uint32 choice2 = Bubble((NewList<NewNode>*)ObjectList, 0, NULL, 0L);
 
@@ -884,17 +885,14 @@ static void plActionUse() {
 
 										if (plCheckAbilities(PersonsList->getNthNode(CurrentPerson)->_nr, choice2)) {
 											if (plCheckRequiredTools(choice2)) {
-												if (break_
-												        (((LSObject)
-												          dbGetObject(choice1))->
-												         Type, choice2)) {
+												if (break_(((LSObjectNode *)dbGetObject(choice1))->Type, choice2)) {
 													if (InitAction
 													        (plSys, ACTION_USE,
 													         choice1, choice2,
 													         tcGuyUsesTool(PersonsList->getNthNode(CurrentPerson)->_nr,
-													                       (Building)dbGetObject(Planing_BldId),
+													                       (BuildingNode *)dbGetObject(Planing_BldId),
 													                       choice2,
-													                       ((LSObject) dbGetObject(choice1))->Type) * PLANING_CORRECT_TIME)) {
+													                       ((LSObjectNode *) dbGetObject(choice1))->Type) * PLANING_CORRECT_TIME)) {
 														PlanChanged = true;
 
 														plWork(CurrentPerson);
@@ -902,9 +900,9 @@ static void plActionUse() {
 														(PLANING_ANIMATE_NO,
 														 GetMaxTimer(plSys),
 														 tcGuyUsesTool(PersonsList->getNthNode(CurrentPerson)->_nr,
-														               (Building)dbGetObject(Planing_BldId),
+														               (BuildingNode *)dbGetObject(Planing_BldId),
 														               choice2,
-														               ((LSObject) dbGetObject(choice1))->Type) * PLANING_CORRECT_TIME, 1);
+														               ((LSObjectNode *) dbGetObject(choice1))->Type) * PLANING_CORRECT_TIME, 1);
 
 														if (!plIgnoreLock
 														        (choice1)) {
@@ -913,7 +911,7 @@ static void plActionUse() {
 															 Const_tcLOCK_UNLOCK_BIT,
 															 1);
 
-															if (((Tool)
+															if (((ToolNode *)
 															        dbGetObject
 															        (choice2))->
 															        Effect &
@@ -922,7 +920,7 @@ static void plActionUse() {
 																(choice1,
 																 Const_tcOPEN_CLOSE_BIT,
 																 1);
-																plCorrectOpened((LSObject) dbGetObject(choice1), 1);
+																plCorrectOpened((LSObjectNode *) dbGetObject(choice1), 1);
 															}
 														} else {
 															state =
@@ -1001,7 +999,7 @@ static void plActionUse() {
 											          PLANING_MSG_REFRESH |
 											          PLANING_MSG_WAIT);
 									}
-								} else if ((((LSObject) dbGetObject(choice1))->
+								} else if ((((LSObjectNode *) dbGetObject(choice1))->
 								            Type == Item_Fenster)) {
 
 									if (g_clue->getFeatures() & GF_PROFIDISK && Planing_BldId == Building_Postzug)
@@ -1020,7 +1018,7 @@ static void plActionUse() {
 											         PLANING_CORRECT_TIME)) {
 												PlanChanged = true;
 
-												lsWalkThroughWindow((LSObject)
+												lsWalkThroughWindow((LSObjectNode *)
 												                    dbGetObject
 												                    (choice1),
 												                    livGetXPos
@@ -1070,7 +1068,7 @@ static void plActionUse() {
 		else {
 			plMessage("CONTROL", PLANING_MSG_REFRESH);
 
-			SetPictID(((Person)dbGetObject(PersonsList->getNthNode(CurrentPerson)->_nr))->PictID);
+			SetPictID(((PersonNode *)dbGetObject(PersonsList->getNthNode(CurrentPerson)->_nr))->PictID);
 
 			Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 			actionList->expandObjectList(exp);
@@ -1236,7 +1234,7 @@ static void plAction() {
 			else {
 				plMessage("DROP_2", PLANING_MSG_REFRESH);
 
-				SetPictID(((Person)dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr))->PictID);
+				SetPictID(((PersonNode *)dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr))->PictID);
 				Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 				ObjectList->expandObjectList(exp);
 
@@ -1245,8 +1243,8 @@ static void plAction() {
 				if (ChoiceOk(choice1, GET_OUT, ObjectList)) {
 					choice1 = ObjectList->getNthNode(choice1)->_nr;
 
-					uint32 weightLoot = ((Loot)dbGetObject(choice1))->Weight;
-					uint32 volumeLoot = ((Loot)dbGetObject(choice1))->Volume;
+					uint32 weightLoot = ((LootNode *)dbGetObject(choice1))->Weight;
+					uint32 volumeLoot = ((LootNode *)dbGetObject(choice1))->Volume;
 
 					if ((choice2 = plGetNextLoot())) {
 						if (InitAction
@@ -1283,11 +1281,11 @@ static void plAction() {
 		case PLANING_ACTION_RADIO:
 			if (has(Person_Matt_Stuvysunt, Tool_Funkgeraet)) {
 				if (BurglarsNr > 2) {
-					NewObjectNode *help;
+					dbObjectNode *help;
 
 					plMessage("RADIO_1", PLANING_MSG_REFRESH);
-					SetPictID(((Person) dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr))->PictID);
-					NewObjectNode *node = BurglarsList->unLink(BurglarsList->getNthNode(CurrentPerson)->_name, &help);
+					SetPictID(((PersonNode *) dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr))->PictID);
+					dbObjectNode *node = BurglarsList->unLink(BurglarsList->getNthNode(CurrentPerson)->_name, &help);
 					Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 					BurglarsList->expandObjectList(exp);
 
@@ -1370,7 +1368,7 @@ static void plNoteBook() {
 			hasAll(Person_Matt_Stuvysunt,
 			       OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
 			       Object_Tool);
-			NewObjectList<NewObjectNode> *l = ObjectListPrivate;
+			NewObjectList<dbObjectNode> *l = ObjectListPrivate;
 
 			if (!l->isEmpty()) {
 				Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_NOTEBOOK");

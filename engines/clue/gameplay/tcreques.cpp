@@ -39,7 +39,7 @@ uint32 ShowTheClouRequester(int32 error_class) {
 	NewList<NewNode> *menu;
 	uint32 answer = 0;
 	byte choices;
-	Player player = (Player)dbGetObject(Player_Player_1);
+	PlayerNode *player = (PlayerNode *)dbGetObject(Player_Player_1);
 
 	inpTurnESC(0);
 

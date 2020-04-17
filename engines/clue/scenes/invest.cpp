@@ -24,7 +24,7 @@
 namespace Clue {
 
 static uint32 tcShowPatrol(NewList<NewNode> *bubble_l, Common::String c_time, Common::String patr, byte first,
-                           Building bui, uint32 raise) {
+                           BuildingNode *bui, uint32 raise) {
 	uint32 choice = 0;
 	Common::String patrol = c_time + ' ' + patr;
 
@@ -47,7 +47,7 @@ void Investigate(const char *location) {
 	uint32 minutes = 0, choice = 0, first = 0;
 
 	uint32 buiID = GetObjNrOfBuilding(GetLocation);
-	Building bui = (Building)dbGetObject(buiID);
+	BuildingNode *bui = (BuildingNode *)dbGetObject(buiID);
 
 	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		if (buiID == Building_Buckingham_Palace) {

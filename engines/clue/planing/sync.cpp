@@ -266,18 +266,12 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 							} else if (dbIsObject
 							           (ActionData(action, struct ActionUse *)->
 							            ItemId, Object_Police)) {
-								Police pol =
-								    (Police)
-								    dbGetObject(ActionData
-								                (action,
-								                 struct ActionUse *)->ItemId);
+								PoliceNode *pol = (PoliceNode *) dbGetObject(ActionData(action, struct ActionUse *)->ItemId);
 
 								if (direction)
-									Planing_Guard[pol->LivingID - BurglarsNr] =
-									    1;
+									Planing_Guard[pol->LivingID - BurglarsNr] = 1;
 								else
-									Planing_Guard[pol->LivingID - BurglarsNr] =
-									    0;
+									Planing_Guard[pol->LivingID - BurglarsNr] = 0;
 							} else {
 								if (direction)
 									lsSetObjectState(ActionData
@@ -321,11 +315,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 							} else if (dbIsObject
 							           (ActionData(action, struct ActionUse *)->
 							            ItemId, Object_Police)) {
-								Police pol =
-								    (Police)
-								    dbGetObject(ActionData
-								                (action,
-								                 struct ActionUse *)->ItemId);
+								PoliceNode *pol = (PoliceNode *) dbGetObject(ActionData (action, struct ActionUse *)->ItemId);
 
 								if (direction)
 									Planing_Guard[pol->LivingID - BurglarsNr] = 2;
@@ -357,7 +347,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 											                 Const_tcLOCK_UNLOCK_BIT,
 											                 1);
 
-											if (((Tool)
+											if (((ToolNode *)
 											        dbGetObject(ActionData
 											                    (action,
 											                     struct ActionUse
@@ -370,7 +360,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 												                 ItemId,
 												                 Const_tcOPEN_CLOSE_BIT,
 												                 1);
-												plCorrectOpened((LSObject)
+												plCorrectOpened((LSObjectNode *)
 												                dbGetObject
 												                (ActionData
 												                 (action,
@@ -379,13 +369,13 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 												                 ItemId), 1);
 											}
 										} else {
-											if ((((LSObject)
+											if ((((LSObjectNode *)
 											        dbGetObject(ActionData
 											                    (action,
 											                     struct ActionUse
 											                     *)->ItemId))->
 											        Type == Item_Fenster)) {
-												lsWalkThroughWindow((LSObject)
+												lsWalkThroughWindow((LSObjectNode *)
 												                    dbGetObject
 												                    (ActionData
 												                     (action,
@@ -421,7 +411,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 										          (action,
 										           struct ActionUse *)->ItemId),
 										         Const_tcLOCK_UNLOCK_BIT)) {
-											if ((((LSObject)
+											if ((((LSObjectNode *)
 											        dbGetObject(ActionData
 											                    (action,
 											                     struct ActionUse
@@ -430,7 +420,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 											        && !ActionData(action,
 											                       struct ActionUse
 											                       *)->ToolId) {
-												lsWalkThroughWindow((LSObject)
+												lsWalkThroughWindow((LSObjectNode *)
 												                    dbGetObject
 												                    (ActionData
 												                     (action,
@@ -454,7 +444,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 												                 Const_tcLOCK_UNLOCK_BIT,
 												                 0);
 
-												if (((Tool)
+												if (((ToolNode *)
 												        dbGetObject(ActionData
 												                    (action,
 												                     struct
@@ -469,7 +459,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 													                 ItemId,
 													                 Const_tcOPEN_CLOSE_BIT,
 													                 0);
-													plCorrectOpened((LSObject)
+													plCorrectOpened((LSObjectNode *)
 													                dbGetObject
 													                (ActionData
 													                 (action,
@@ -551,13 +541,13 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 						if (ActionEnded(plSys)) {
 							if (direction) {
 								uint32 weightLoot =
-								    ((Loot)
+								    ((LootNode *)
 								     dbGetObject(ActionData
 								                 (action,
 								                  struct ActionTake *)->
 								                 LootId))->Weight;
 								uint32 volumeLoot =
-								    ((Loot)
+								    ((LootNode *)
 								     dbGetObject(ActionData
 								                 (action,
 								                  struct ActionTake *)->
@@ -587,7 +577,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 									          (action,
 									           struct ActionTake *)->ItemId),
 									         Const_tcTAKE_BIT)) {
-										lsTurnObject((LSObject)
+										lsTurnObject((LSObjectNode *)
 										             dbGetObject(ActionData
 										                         (action,
 										                          struct
@@ -658,13 +648,13 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 								Planing_Volume[i] += volumeLoot;
 							} else {
 								uint32 weightLoot =
-								    ((Loot)
+								    ((LootNode *)
 								     dbGetObject(ActionData
 								                 (action,
 								                  struct ActionTake *)->
 								                 LootId))->Weight;
 								uint32 volumeLoot =
-								    ((Loot)
+								    ((LootNode *)
 								     dbGetObject(ActionData
 								                 (action,
 								                  struct ActionTake *)->
@@ -710,7 +700,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 									          (action,
 									           struct ActionTake *)->ItemId),
 									         Const_tcTAKE_BIT)) {
-										lsTurnObject((LSObject)
+										lsTurnObject((LSObjectNode *)
 										             dbGetObject(ActionData
 										                         (action,
 										                          struct
@@ -778,13 +768,13 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 						if (ActionEnded(plSys)) {
 							if (direction) {
 								uint32 weightLoot =
-								    ((Loot)
+								    ((LootNode *)
 								     dbGetObject(ActionData
 								                 (action,
 								                  struct ActionDrop *)->
 								                 LootId))->Weight;
 								uint32 volumeLoot =
-								    ((Loot)
+								    ((LootNode *)
 								     dbGetObject(ActionData
 								                 (action,
 								                  struct ActionDrop *)->
@@ -830,7 +820,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 									          (action,
 									           struct ActionTake *)->ItemId),
 									         Const_tcTAKE_BIT)) {
-										lsTurnObject((LSObject)
+										lsTurnObject((LSObjectNode *)
 										             dbGetObject(ActionData
 										                         (action,
 										                          struct
@@ -875,13 +865,13 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 								Planing_Volume[i] -= volumeLoot;
 							} else {
 								uint32 weightLoot =
-								    ((Loot)
+								    ((LootNode *)
 								     dbGetObject(ActionData
 								                 (action,
 								                  struct ActionDrop *)->
 								                 LootId))->Weight;
 								uint32 volumeLoot =
-								    ((Loot)
+								    ((LootNode *)
 								     dbGetObject(ActionData
 								                 (action,
 								                  struct ActionDrop *)->
@@ -911,7 +901,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 									          (action,
 									           struct ActionTake *)->ItemId),
 									         Const_tcTAKE_BIT)) {
-										lsTurnObject((LSObject)
+										lsTurnObject((LSObjectNode *)
 										             dbGetObject(ActionData
 										                         (action,
 										                          struct
@@ -1022,7 +1012,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 								                  struct ActionOpen *)->ItemId,
 								                 Const_tcOPEN_CLOSE_BIT, 1);
 
-								plCorrectOpened((LSObject)
+								plCorrectOpened((LSObjectNode *)
 								                dbGetObject(ActionData
 								                            (action,
 								                             struct ActionOpen
@@ -1041,7 +1031,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 								                  struct ActionOpen *)->ItemId,
 								                 Const_tcOPEN_CLOSE_BIT, 0);
 
-								plCorrectOpened((LSObject)
+								plCorrectOpened((LSObjectNode *)
 								                dbGetObject(ActionData
 								                            (action,
 								                             struct ActionOpen
@@ -1088,7 +1078,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 								                  struct ActionClose *)->ItemId,
 								                 Const_tcOPEN_CLOSE_BIT, 0);
 
-								plCorrectOpened((LSObject)
+								plCorrectOpened((LSObjectNode *)
 								                dbGetObject(ActionData
 								                            (action,
 								                             struct ActionClose
@@ -1107,7 +1097,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 								                  struct ActionClose *)->ItemId,
 								                 Const_tcOPEN_CLOSE_BIT, 1);
 
-								plCorrectOpened((LSObject)
+								plCorrectOpened((LSObjectNode *)
 								                dbGetObject(ActionData
 								                            (action,
 								                             struct ActionClose

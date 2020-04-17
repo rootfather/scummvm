@@ -45,49 +45,49 @@ extern void tcRefreshTimeClock(uint32 buildId, uint32 timerId);
 // TODO: Check and remove if unused
 extern uint32 tcGetItemID(uint32 itemType);
 #endif
-extern uint32 tcGetPersOffer(Person person, uint8 persCount);
+extern uint32 tcGetPersOffer(PersonNode *person, uint8 persCount);
 
 extern int32 tcCalcEscapeTime();
 extern bool tcKillTheGuard(uint32 guyId, uint32 buildingId);
 extern bool tcAlarmByPowerLoss(uint32 powerId);
 extern bool tcAlarmByTouch(uint32 lsoId);
-extern bool tcGuardDetectsGuy(NewObjectList<NewObjectNode> *roomsList, uint16 us_XPos, uint16 us_YPos,
+extern bool tcGuardDetectsGuy(NewObjectList<dbObjectNode> *roomsList, uint16 us_XPos, uint16 us_YPos,
                               uint8 uch_ViewDirection, char *puch_GuardName,
                               char *puch_LivingName);
-extern int32 tcGetCarStrike(Car car);
+extern int32 tcGetCarStrike(CarNode *car);
 extern int32 tcCalcEscapeOfTeam();
-extern uint32 tcGuyTellsAll(Person p);
-extern uint32 tcGuyCanEscape(Person p);
-extern int32 tcGetCarTraderOffer(Car car);
+extern uint32 tcGuyTellsAll(PersonNode *p);
+extern uint32 tcGuyCanEscape(PersonNode *p);
+extern int32 tcGetCarTraderOffer(CarNode *car);
 extern int32 tcGetTeamMood(uint32 *guyId, uint32 timer);    /* ptr auf 4 U32s */
 extern int32 tcGuyInAction(uint32 persId, int32 exhaustion);
 extern int32 tcGuyIsWaiting(uint32 persId, int32 exhaustion);
 extern int32 tcIsPlanPerfect(uint32 timer);
-extern int32 tcGetTrail(Person p, uint8 which);
+extern int32 tcGetTrail(PersonNode *p, uint8 which);
 extern int32 tcGetDanger(uint32 persId, uint32 toolId, uint32 itemId);
 extern int32 tcGetToolLoudness(uint32 persId, uint32 toolId, uint32 itemId);
 extern int32 tcGetWalkLoudness();
 extern int32 tcGetTotalLoudness(int32 loudp0, int32 loudp1, int32 loudp2, int32 loudp3);
-extern bool tcAlarmByLoudness(Building b, int32 totalLoudness);
-extern bool tcAlarmByRadio(Building b);
+extern bool tcAlarmByLoudness(BuildingNode *b, int32 totalLoudness);
+extern bool tcAlarmByRadio(BuildingNode *b);
 extern bool tcAlarmByMicro(uint16 us_XPos, uint16 us_YPos, int32 loudness);
 extern bool tcAlarmByPatrol(uint16 objChangedCount, uint16 totalCount,
                             uint8 patrolCount);
 extern bool tcWatchDogWarning(uint32 persId);
 extern bool tcWrongWatchDogWarning(uint32 persId);
 extern int32 tcGetGuyState(uint32 persId);
-extern bool tcIsCarRecognised(Car car, uint32 time);
-extern bool tcGuardChecksObject(LSObject lso);
+extern bool tcIsCarRecognised(CarNode *car, uint32 time);
+extern bool tcGuardChecksObject(LSObjectNode *lso);
 extern bool tcCheckTimeClocks(uint32 builId);
 
 extern int32 tcCalcMattsPart();
 
 extern uint32 tcGuyEscapes();
-extern uint32 tcGuyUsesTool(uint32 persId, Building b, uint32 toolId, uint32 itemId);
-extern uint32 tcGuyUsesToolInPlayer(uint32 persId, Building b, uint32 toolId, uint32 itemId,
+extern uint32 tcGuyUsesTool(uint32 persId, BuildingNode *b, uint32 toolId, uint32 itemId);
+extern uint32 tcGuyUsesToolInPlayer(uint32 persId, BuildingNode *b, uint32 toolId, uint32 itemId,
                                     uint32 neededTime);
 
-extern void tcInsertGuard(NewObjectList<NewObjectNode> *list, NewObjectList<NewObjectNode> *roomsList, uint16 x, uint16 y,
+extern void tcInsertGuard(NewObjectList<dbObjectNode> *list, NewObjectList<dbObjectNode> *roomsList, uint16 x, uint16 y,
                           uint16 width, uint16 height, uint32 guardId, uint8 livId,
                           uint32 areaId);
 
@@ -99,7 +99,7 @@ extern void tcInsertGuard(NewObjectList<NewObjectNode> *list, NewObjectList<NewO
 #define   tcChgPersPopularity(p, v)     ((p)->Popularity = (uint8) ChangeAbs((p)->Popularity, v, 0, 255))
 
 #define   tcGetPersHealth(p)            ((p)->Health)
-#define   tcGetPersMood(p)              (((Person)p)->Mood)
+#define   tcGetPersMood(p)              (((PersonNode *)p)->Mood)
 
 #define   tcWeightPersCanCarry(p)       (((int32)(p)->Stamina + (int32)(p)->Strength) * 200)    /* 0 - 100000 (100 kg) in gramm ! */
 #define   tcVolumePersCanCarry(p)       (((int32)(p)->Stamina + (int32)(p)->Strength) * 200)    /* in cm3 -> max 1 m3 für eine Person */
@@ -138,9 +138,9 @@ extern void tcInsertGuard(NewObjectList<NewObjectNode> *list, NewObjectList<NewO
 #define   tcSetCarTyreState(car,v)      {car->TyreState = (uint8)ChangeAbs((int32)car->TyreState,(int32)v, 0, 255); tcCalcCarState(car);}
 
 /* defines for object Player */
-#define   tcGetPlayerMoney              (((Player)dbGetObject(Player_Player_1))->Money)
-#define   tcSetPlayerMoney(amount)      (((Player)dbGetObject(Player_Player_1))->Money = amount)
-#define   tcAddPlayerMoney(amount)      (((Player)dbGetObject(Player_Player_1))->Money = (tcGetPlayerMoney + amount))
+#define   tcGetPlayerMoney              (((PlayerNode *)dbGetObject(Player_Player_1))->Money)
+#define   tcSetPlayerMoney(amount)      (((PlayerNode *)dbGetObject(Player_Player_1))->Money = amount)
+#define   tcAddPlayerMoney(amount)      (((PlayerNode *)dbGetObject(Player_Player_1))->Money = (tcGetPlayerMoney + amount))
 
 /* defines for object Building */
 #define   tcRGetGRate(bui)              (bui->GRate)
@@ -149,7 +149,7 @@ extern void tcInsertGuard(NewObjectList<NewObjectNode> *list, NewObjectList<NewO
 #define   tcGetBuildPoliceT(bui)        (bui->PoliceTime)
 #define   tcGetBuildGRate(bui)          (bui->GRate)
 
-uint32 tcGetBuildValues(Building bui);
+uint32 tcGetBuildValues(BuildingNode *bui);
 
 #define   tcAddBuildExactlyness(bui,v)  (bui->Exactlyness = (uint8)ChangeAbs((int32)bui->Exactlyness,(int32)v, 0, 255))
 #define   tcAddBuildStrike(bui,v)       (bui->Strike = (uint8)ChangeAbs((int32)bui->Strike,(int32)v, 0, 255))

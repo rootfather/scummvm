@@ -100,7 +100,7 @@ extern void lsRefreshAllLootBags();
 
 extern void lsShowEscapeCar();
 
-extern void lsFastRefresh(LSObject lso);
+extern void lsFastRefresh(LSObjectNode *lso);
 
 extern void lsSetObjectState(uint32 objID, byte bitNr, byte value);
 
@@ -109,7 +109,7 @@ extern void lsSetViewPort(uint16 x, uint16 y);
 extern void lsSetDarkness(byte value);
 extern void lsSetCollMode(byte collMode);
 
-extern NewObjectList<NewObjectNode> *lsGetRoomsOfArea(uint32 ul_AreaId);
+extern NewObjectList<dbObjectNode> *lsGetRoomsOfArea(uint32 ul_AreaId);
 
 extern void lsSetObjectRetrievalList(uint32 ul_AreaId);
 extern uint32 lsGetCurrObjectRetrieval();
@@ -123,30 +123,30 @@ extern void lsScrollCorrectData(int32 dx, int32 dy);
 extern byte lsScrollLandScape(byte direction);
 extern byte lsInitScrollLandScape(byte direction, byte mode);
 
-extern NewObjectList<NewObjectNode> *lsGetObjectsByList(uint16 x, uint16 y, uint16 width, uint16 height,
+extern NewObjectList<dbObjectNode> *lsGetObjectsByList(uint16 x, uint16 y, uint16 width, uint16 height,
                                 byte showInvisible, byte addLootBags);
 
 void lsInitActivArea(uint32 areaID, uint16 x, uint16 y, char *livingName);
 extern void lsDoneActivArea(uint32 newAreaID);
-extern void lsTurnObject(LSObject lso, byte status, byte Collis);
+extern void lsTurnObject(LSObjectNode *lso, byte status, byte Collis);
 
-extern void lsCalcExactSize(LSObject lso, uint16 *x0, uint16 *y0, uint16 *x1,
+extern void lsCalcExactSize(LSObjectNode *lso, uint16 *x0, uint16 *y0, uint16 *x1,
                             uint16 *y1);
 
 extern void lsInitDoorRefresh(uint32 ObjId);
-extern void lsDoDoorRefresh(LSObject lso);
+extern void lsDoDoorRefresh(LSObjectNode *lso);
 
 extern uint16 lsGetFloorIndex(uint16 x, uint16 y);
 
 extern void lsGuyInsideSpot(uint16 *us_XPos, uint16 *us_YPos, uint32 *areaId);
 
-extern bool lsIsObjectAWall(LSObject lso);
-extern bool lsIsObjectAnAddOn(LSObject lso);
-extern bool lsIsObjectADoor(LSObject lso);
-extern bool lsIsObjectAStdObj(LSObject lso);
-extern bool lsIsObjectSpecial(LSObject lso);
+extern bool lsIsObjectAWall(LSObjectNode *lso);
+extern bool lsIsObjectAnAddOn(LSObjectNode *lso);
+extern bool lsIsObjectADoor(LSObjectNode *lso);
+extern bool lsIsObjectAStdObj(LSObjectNode *lso);
+extern bool lsIsObjectSpecial(LSObjectNode *lso);
 
-extern bool lsIsLSObjectInActivArea(LSObject lso);
+extern bool lsIsLSObjectInActivArea(LSObjectNode *lso);
 
 extern byte lsIsCollision(int32 x, int32 y, byte direction);    /* sprite needs it */
 
@@ -161,7 +161,7 @@ extern void lsSetRelations(uint32 areaID);
 
 extern void lsBlitFloor(uint16 floorIndex, uint16 destx, uint16 desty);
 
-extern void lsWalkThroughWindow(LSObject lso, uint16 us_LivXPos,
+extern void lsWalkThroughWindow(LSObjectNode *lso, uint16 us_LivXPos,
                                 uint16 us_LivYPos, uint16 *us_XPos,
                                 uint16 *us_YPos);
 
@@ -170,16 +170,16 @@ extern void lsPatchObjects();
 
 extern void lsSetVisibleWindow(uint16 x, uint16 y);
 
-extern byte lsIsInside(LSObject lso, uint16 x, uint16 y, uint16 x1, uint16 y1);
+extern byte lsIsInside(LSObjectNode *lso, uint16 x, uint16 y, uint16 x1, uint16 y1);
 
 extern uint32 lsGetStartArea();
 
 extern void lsInitObjects();
 
 extern void lsBuildScrollWindow();
-extern void lsShowAlarmAndPower(LSObject lso, uint32 x, uint32 y);
+extern void lsShowAlarmAndPower(LSObjectNode *lso, uint32 x, uint32 y);
 
-extern bool lsShowOneObject(LSObject lso, int16 destx, int16 desty,
+extern bool lsShowOneObject(LSObjectNode *lso, int16 destx, int16 desty,
                              uint32 ObjTypeFilter);
 
 void  lsSafeRectFill(uint16 x0, uint16 y0, uint16 x1, uint16 y1, uint8 color);

@@ -16,11 +16,12 @@
 
 //#include <limits.h>
 #include "clue/memory/memory.h"
+#include "database.h"
+
 
 namespace Clue {
 
 #define RELATION           uint32
-#define KEY                void *
 #define PARAMETER          uint32
 #define COMPARSION         uint8
 
@@ -50,26 +51,23 @@ struct relationDef {
 struct relation {
 	struct relation *r_next;
 
-	KEY r_leftKey;
-	KEY r_rightKey;
+	dbObjectNode *r_leftKey;
+	dbObjectNode *r_rightKey;
 	PARAMETER r_parameter;
 };
 
 
-extern int (*CompareKey)(KEY, KEY);
-extern KEY(*EncodeKey)(char *);
-extern char *(*DecodeKey)(KEY);
-
+extern int (*CompareKey)(dbObjectNode *, dbObjectNode *);
 
 RELATION AddRelation(RELATION);
 RELATION CloneRelation(RELATION, RELATION);
 RELATION RemRelation(RELATION);
 
-RELATION SetP(KEY, RELATION, KEY, PARAMETER);
-RELATION UnSet(KEY, RELATION, KEY);
-PARAMETER GetP(KEY, RELATION, KEY);
-RELATION AskP(KEY, RELATION, KEY, PARAMETER, COMPARSION);
-void AskAll(KEY, RELATION, void (*)(void *));
+RELATION SetP(dbObjectNode *, RELATION, dbObjectNode *, PARAMETER);
+RELATION UnSet(dbObjectNode *, RELATION, dbObjectNode *);
+PARAMETER GetP(dbObjectNode *, RELATION, dbObjectNode *);
+RELATION AskP(dbObjectNode *, RELATION, dbObjectNode *, PARAMETER, COMPARSION);
+void AskAll(dbObjectNode *, RELATION, void (*)(dbObjectNode *));
 
 int SaveRelations(const char *, uint32, uint32, uint16 disk_id);
 bool LoadRelations(const char *, uint16 disk_id);

@@ -55,8 +55,8 @@ void SetCarColors(byte index) {
 	          (uint32) Col[index][3][1] << 3, (uint32) Col[index][3][2] << 3);
 }
 
-Common::String tcShowPriceOfCar(uint32 nr, uint32 type, void *data) {
-	Car car = (Car) data;
+Common::String tcShowPriceOfCar(uint32 nr, uint32 type, dbObjectNode *node) {
+	CarNode *car = (CarNode *) node;
 
 	Common::String line1 = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "PRICE_AND_MONEY");
 	Common::String line = Common::String::format(line1.c_str(), tcGetCarPrice(car));
@@ -65,7 +65,7 @@ Common::String tcShowPriceOfCar(uint32 nr, uint32 type, void *data) {
 }
 
 void tcBuyCar() {
-	Person marc = (Person) dbGetObject(Person_Marc_Smith);
+	PersonNode *marc = (PersonNode *) dbGetObject(Person_Marc_Smith);
 
 	byte choice = 0, choice1 = 0;
 	while ((choice1 != 2) && (choice != GET_OUT)) {
@@ -75,7 +75,7 @@ void tcBuyCar() {
 		hasAll(Person_Marc_Smith,
 		       OLF_ALIGNED | OLF_PRIVATE_LIST | OLF_INCLUDE_NAME |
 		       OLF_INSERT_STAR | OLF_ADD_SUCC_STRING, Object_Car);
-		NewObjectList<NewObjectNode> *bubble = ObjectListPrivate;
+		NewObjectList<dbObjectNode> *bubble = ObjectListPrivate;
 
 		ObjectListSuccString = nullptr;
 		ObjectListWidth = 0;
@@ -87,7 +87,7 @@ void tcBuyCar() {
 			ShowMenuBackground();
 
 			if (ChoiceOk(choice = Bubble((NewList<NewNode> *)bubble, 0, 0L, 0L), GET_OUT, bubble)) {
-				Car matts_car = (Car) dbGetObject(bubble->getNthNode((uint32) choice)->_nr);
+				CarNode *matts_car = (CarNode *) dbGetObject(bubble->getNthNode((uint32) choice)->_nr);
 
 				SetCarColors((byte) matts_car->ColorIndex);
 				gfxShow((uint16) matts_car->PictID, GFX_NO_REFRESH | GFX_OVERLAY, 0L, -1L, -1L);
@@ -128,8 +128,8 @@ void tcBuyCar() {
 }
 
 void tcCarInGarage(uint32 carID) {
-	Person marc = (Person) dbGetObject(Person_Marc_Smith);
-	Car matts_car = (Car) dbGetObject(carID);
+	PersonNode *marc = (PersonNode *) dbGetObject(Person_Marc_Smith);
+	CarNode *matts_car = (CarNode *) dbGetObject(carID);
 
 	byte choice1 = 0;
 	while (choice1 != 5) {
@@ -164,8 +164,8 @@ void tcCarInGarage(uint32 carID) {
 	}
 }
 
-void tcColorCar(Car car) {
-	Person marc = (Person) dbGetObject(Person_Marc_Smith);
+void tcColorCar(CarNode *car) {
+	PersonNode *marc = (PersonNode *) dbGetObject(Person_Marc_Smith);
 	uint32 costs = (uint32)tcColorCosts(car);
 
 	NewList<NewNode> *bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "LACKIEREN", (uint32) costs, NULL);
@@ -215,8 +215,8 @@ void tcColorCar(Car car) {
 }
 
 void tcSellCar(uint32 ObjectID) {
-	Person marc = (Person) dbGetObject(Person_Marc_Smith);
-	Car car = (Car) dbGetObject(ObjectID);
+	PersonNode *marc = (PersonNode *) dbGetObject(Person_Marc_Smith);
+	CarNode *car = (CarNode *) dbGetObject(ObjectID);
 	uint32 offer = tcGetCarTraderOffer(car);
 
 	NewList<NewNode> *bubble;
@@ -240,10 +240,10 @@ void tcSellCar(uint32 ObjectID) {
 	AddVTime(97);
 }
 
-void tcRepairCar(Car car, const char *repairWhat) {
+void tcRepairCar(CarNode *car, const char *repairWhat) {
 	NewList<PresentationInfoNode> *presentationData = new NewList<PresentationInfoNode>;
 	bool enough = true;
-	Person marc = (Person) dbGetObject(Person_Marc_Smith);
+	PersonNode *marc = (PersonNode *) dbGetObject(Person_Marc_Smith);
 
 	NewList<NewNode> *list = NULL;
 	byte *item = NULL;
@@ -349,7 +349,7 @@ void tcRepairCar(Car car, const char *repairWhat) {
 uint32 tcChooseCar(uint32 backgroundNr) {
 	hasAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Car);
 
-	NewObjectList<NewObjectNode> *bubble = ObjectListPrivate;
+	NewObjectList<dbObjectNode> *bubble = ObjectListPrivate;
 	uint32 carID = 0L;
 	if (!bubble->isEmpty()) {
 		uint32 carCount = bubble->getNrOfNodes();
@@ -370,7 +370,7 @@ uint32 tcChooseCar(uint32 backgroundNr) {
 		}
 
 		if (choice != GET_OUT) {
-			Car matts_car = (Car) dbGetObject(carID);
+			CarNode *matts_car = (CarNode *) dbGetObject(carID);
 			SetCarColors((byte) matts_car->ColorIndex);
 			gfxShow(backgroundNr, GFX_NO_REFRESH | GFX_ONE_STEP, 0L, -1L, -1L);
 			gfxShow((uint16) matts_car->PictID, GFX_NO_REFRESH | GFX_OVERLAY, 1L, -1L, -1L);
@@ -382,8 +382,8 @@ uint32 tcChooseCar(uint32 backgroundNr) {
 	return carID;
 }
 
-void tcCarGeneralOverhoul(Car car) {
-	Person marc = (Person)dbGetObject(Person_Marc_Smith);
+void tcCarGeneralOverhoul(CarNode *car) {
+	PersonNode *marc = (PersonNode *)dbGetObject(Person_Marc_Smith);
 
 	SetPictID(marc->PictID);
 

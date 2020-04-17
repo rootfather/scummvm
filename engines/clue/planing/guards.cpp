@@ -22,7 +22,7 @@
 
 namespace Clue {
 
-void grdDo(Common::Stream *fh, struct System *sys, NewObjectList<NewObjectNode> *personsList, uint32 burglarsNr, uint32 personsNr, byte grdAction) {
+void grdDo(Common::Stream *fh, struct System *sys, NewObjectList<dbObjectNode> *personsList, uint32 burglarsNr, uint32 personsNr, byte grdAction) {
 	for (uint32 i = burglarsNr; i < personsNr; i++) {
 		switch (grdAction) {
 		case GUARDS_DO_SAVE:
@@ -54,11 +54,11 @@ void grdDone(Common::Stream *fh) {
 	dskClose(fh);
 }
 
-bool grdAddToList(uint32 bldId, NewObjectList<NewObjectNode> *l) {
+bool grdAddToList(uint32 bldId, NewObjectList<dbObjectNode> *l) {
 	isGuardedbyAll(bldId, OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Police);
 
 	if (!ObjectList->isEmpty()) {
-		for (NewObjectNode *n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode *) n->_succ)
+		for (dbObjectNode *n = ObjectList->getListHead(); n->_succ; n = (dbObjectNode *) n->_succ)
 			dbAddObjectNode(l, n->_nr, OLF_INCLUDE_NAME | OLF_INSERT_STAR);
 
 		return true;
@@ -69,7 +69,7 @@ bool grdAddToList(uint32 bldId, NewObjectList<NewObjectNode> *l) {
 
 bool grdDraw(_GC *gc, uint32 bldId, uint32 areaId) {
 	bool ret = false;
-	NewObjectList<NewObjectNode> *GuardsList = new NewObjectList<NewObjectNode>;
+	NewObjectList<dbObjectNode> *GuardsList = new NewObjectList<dbObjectNode>;
 	if (grdAddToList(bldId, GuardsList)) {
 		Common::Stream *fh;
 		if (grdInit(&fh, 0, bldId, areaId)) {
@@ -95,14 +95,14 @@ bool grdDraw(_GC *gc, uint32 bldId, uint32 areaId) {
 					switch (i) {
 					case 0:
 					case 2:
-						xpos = (((LSArea) dbGetObject(areaId))->us_StartX4) / 2;
-						ypos = (((LSArea) dbGetObject(areaId))->us_StartY4) / 2;
+						xpos = (((LSAreaNode *) dbGetObject(areaId))->us_StartX4) / 2;
+						ypos = (((LSAreaNode *) dbGetObject(areaId))->us_StartY4) / 2;
 						break;
 
 					case 1:
 					case 3:
-						xpos = (((LSArea) dbGetObject(areaId))->us_StartX5) / 2;
-						ypos = (((LSArea) dbGetObject(areaId))->us_StartY5) / 2;
+						xpos = (((LSAreaNode *) dbGetObject(areaId))->us_StartX5) / 2;
+						ypos = (((LSAreaNode *) dbGetObject(areaId))->us_StartY5) / 2;
 						break;
 					}
 

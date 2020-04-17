@@ -119,8 +119,8 @@ static NewList<NewDynDlgNode> *ParseTalkText(NewList<NewNode> *origin, NewList<N
 
 void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode) {
 	const char *Extension[4] = { "_UNKNOWN", "_KNOWN", "_FRIENDLY", "_BUSINESS" };
-	Person p1 = (Person) dbGetObject(Person1ID);
-	Person p2 = (Person) dbGetObject(Person2ID);
+	PersonNode *p1 = (PersonNode *) dbGetObject(Person1ID);
+	PersonNode *p2 = (PersonNode *) dbGetObject(Person2ID);
 	NewList<NewNode> *bubble = new NewList<NewNode>;
 
 	tcChgPersPopularity(p1, 5); /* Bekanntheit steigt sehr gering */
@@ -281,7 +281,7 @@ uint32 Talk() {
 
 	if (locNr) {
 		hasAll(locNr, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Person);
-		NewObjectList<NewObjectNode> *bubble = ObjectListPrivate;
+		NewObjectList<dbObjectNode> *bubble = ObjectListPrivate;
 
 		if (!bubble->isEmpty()) {
 			inpTurnESC(1);

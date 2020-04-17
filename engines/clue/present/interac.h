@@ -37,7 +37,7 @@ namespace Clue {
 
 #define TXT_MENU_TIMEOUT        (-2)
 
-extern bool ChoiceOk(byte choice, byte exit, NewObjectList<NewObjectNode> *l);
+extern bool ChoiceOk(byte choice, byte exit, NewObjectList<dbObjectNode> *l);
 extern bool ChoiceOkHack(byte choice, byte exit, NewList<NewNode>* l);
 
 extern byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 waitTime);

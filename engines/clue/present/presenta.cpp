@@ -18,7 +18,7 @@
 namespace Clue {
 
 void InitEvidencePresent(uint32 nr, NewList<PresentationInfoNode> *presentationData, NewList<NewNode> *texts) {
-	Evidence e = (Evidence)dbGetObject(nr);
+	EvidenceNode *e = (EvidenceNode *)dbGetObject(nr);
 	Common::String data = dbGetObjectName(e->pers);
 
 	AddPresentTextLine(presentationData, data, 0, texts, 0);
@@ -33,7 +33,7 @@ void InitEvidencePresent(uint32 nr, NewList<PresentationInfoNode> *presentationD
 }
 
 void InitLootPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts) {
-	CompleteLoot comp = (CompleteLoot)dbGetObject(CompleteLoot_LastLoot);
+	CompleteLootNode *comp = (CompleteLootNode *)dbGetObject(CompleteLoot_LastLoot);
 
 	tcMakeLootList(Person_Matt_Stuvysunt, Relation_has)->removeList();
 
@@ -55,7 +55,7 @@ void InitLootPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData,
 }
 
 void InitOneLootPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts) {
-	Loot loot = (Loot)dbGetObject(nr);
+	LootNode *loot = (LootNode *)dbGetObject(nr);
 
 	Common::String data;
 	if (loot->Name == Kein_Name)
@@ -75,7 +75,7 @@ void InitOneLootPresent(uint32 nr, NewList<PresentationInfoNode>* presentationDa
 }
 
 void InitObjectPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts) {
-	LSObject lso = (LSObject)dbGetObject(nr);
+	LSObjectNode *lso = (LSObjectNode *)dbGetObject(nr);
 
 	Common::String data = dbGetObjectName(lso->Type);
 
@@ -102,7 +102,7 @@ void InitToolPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData,
 	NewList<NewNode> *tools = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_ItemE");
 	NewList<NewNode> *abilities = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_AbilityE");
 
-	Tool obj = (Tool) dbGetObject(nr);
+	ToolNode *obj = (ToolNode *) dbGetObject(nr);
 
 	Common::String data = dbGetObjectName(nr);
 
@@ -115,9 +115,9 @@ void InitToolPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData,
 
 	toolRequiresAll(nr, OLF_INCLUDE_NAME | OLF_NORMAL, Object_Tool);
 
-	NewObjectNode *n;
+	dbObjectNode *n;
 	byte i;
-	for (n = ObjectList->getListHead(), i = 5; n->_succ; n = (NewObjectNode *)n->_succ, i = 6)
+	for (n = ObjectList->getListHead(), i = 5; n->_succ; n = (dbObjectNode *)n->_succ, i = 6)
 		AddPresentTextLine(presentationData, n->_name, 0, texts, i);
 
 	/*** Eigenschaften ***/
@@ -127,8 +127,8 @@ void InitToolPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData,
 	if (!ObjectList->isEmpty()) {
 		AddPresentTextLine(presentationData, NULL, 0, texts, 8);    /* "benötigt Wissen über..." */
 
-		for (n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
-			Ability ability = (Ability)n->_data;
+		for (n = ObjectList->getListHead(); n->_succ; n = (dbObjectNode *)n->_succ) {
+			AbilityNode *ability = (AbilityNode *)n;
 
 			AddPresentLine(presentationData, PRESENT_AS_BAR,
 			               toolRequiresGet(nr, n->_nr), 255, abilities,
@@ -143,10 +143,10 @@ void InitToolPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData,
 	if (!ObjectList->isEmpty())
 		AddPresentTextLine(presentationData, NULL, 0, texts, 7);
 
-	for (n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
+	for (n = ObjectList->getListHead(); n->_succ; n = (dbObjectNode *)n->_succ) {
 		uint32 itemNr = n->_nr;
 		uint32 time = breakGet(nr, itemNr);
-		Item item = (Item)n->_data;
+		ItemNode *item = (ItemNode *)n;
 
 		data = Common::String::format("%.2d:%.2d", time / 60, time % 60);
 		AddPresentTextLine(presentationData, data, 0, tools, item->Type);
@@ -157,7 +157,7 @@ void InitToolPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData,
 }
 
 void InitBuildingPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts) {
-	Building obj = (Building) dbGetObject(nr);
+	BuildingNode *obj = (BuildingNode *) dbGetObject(nr);
 
 	Common::String data = dbGetObjectName(nr);
 	AddPresentTextLine(presentationData, data, 0, texts, 0);
@@ -179,7 +179,7 @@ void InitBuildingPresent(uint32 nr, NewList<PresentationInfoNode>* presentationD
 
 
 void InitPlayerPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts) {
-	Player player = (Player) dbGetObject(nr);
+	PlayerNode *player = (PlayerNode *) dbGetObject(nr);
 
 	AddPresentLine(presentationData, PRESENT_AS_NUMBER, player->Money, 0, texts, 0);
 	AddPresentLine(presentationData, PRESENT_AS_NUMBER, player->StolenMoney, 0, texts, 1);
@@ -189,7 +189,7 @@ void InitPlayerPresent(uint32 nr, NewList<PresentationInfoNode>* presentationDat
 }
 
 void InitPersonPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts) {
-	Person obj = (Person) dbGetObject(nr);
+	PersonNode *obj = (PersonNode *)dbGetObject(nr);
 
 	Common::String data = dbGetObjectName(nr);
 	AddPresentTextLine(presentationData, data, 0, texts, 0);
@@ -216,7 +216,7 @@ void InitPersonPresent(uint32 nr, NewList<PresentationInfoNode>* presentationDat
 	AddPresentLine(presentationData, PRESENT_AS_BAR, obj->KnownToPolice, 255, texts, 15);
 
 	hasAll(nr, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Ability);
-	NewList<NewObjectNode> *abilities = ObjectListPrivate;
+	NewList<dbObjectNode> *abilities = ObjectListPrivate;
 
 	if (!abilities->isEmpty()) {
 		AddPresentTextLine(presentationData, NULL, 0, texts, 16);
@@ -225,7 +225,7 @@ void InitPersonPresent(uint32 nr, NewList<PresentationInfoNode>* presentationDat
 		NewNode *node;
 		for (node = (NewNode *) abilities->getListHead(), i = 0; node->_succ; node = (NewNode *) node->_succ, i++) {
 			uint32 abiNr = abilities->getNthNode(i)->_nr;
-			Ability abi = (Ability) dbGetObject(abiNr);
+			AbilityNode *abi = (AbilityNode *) dbGetObject(abiNr);
 	
 			data = g_clue->_txtMgr->getNthString(OBJECTS_ENUM_TXT, "enum_AbilityE", abi->Name);
 			texts->createNode(data.c_str());
@@ -238,7 +238,7 @@ void InitPersonPresent(uint32 nr, NewList<PresentationInfoNode>* presentationDat
 }
 
 void InitCarPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts) {
-	Car obj = (Car) dbGetObject(nr);
+	CarNode *obj = (CarNode *) dbGetObject(nr);
 
 	Common::String data = dbGetObjectName(nr);
 	AddPresentTextLine(presentationData, data, 0, texts, 0);

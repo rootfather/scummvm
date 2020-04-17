@@ -126,8 +126,8 @@ struct LandScape {
 	struct LSFloorSquare *p_AllFloors[3];
 	uint32 ul_FloorAreaId[3];
 
-	NewObjectList<NewObjectNode> *p_ObjectRetrieval;
-	NewObjectList<NewObjectNode> *p_ObjectRetrievalLists[3];
+	NewObjectList<dbObjectNode> *p_ObjectRetrieval;
+	NewObjectList<dbObjectNode> *p_ObjectRetrievalLists[3];
 	uint32 ul_ObjectRetrievalAreaId[3];
 
 	List *p_DoorRefreshList;
@@ -154,7 +154,7 @@ struct LSFloorSquare {
 struct LSDoorRefreshNode {  /* für jede Tür existiert eine Node */
 	Node Link;
 
-	LSObject lso;
+	LSObjectNode *lso;
 
 	uint16 us_XOffset;
 	uint16 us_YOffset;
@@ -162,6 +162,6 @@ struct LSDoorRefreshNode {  /* für jede Tür existiert eine Node */
 
 extern struct LandScape *ls;
 
-void lsRefreshStatue(LSObject lso);
+void lsRefreshStatue(LSObjectNode *lso);
 
 } // End of namespace Clue

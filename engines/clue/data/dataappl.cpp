@@ -63,7 +63,7 @@ void tcCalcCallValue(uint32 callNr, uint32 timer, uint32 persId) {
 	int32 perfect = tcIsPlanPerfect(timer);
 	int32 good = -15;
 
-	Person guy = (Person)dbGetObject(persId);
+	PersonNode *guy = (PersonNode *)dbGetObject(persId);
 	int32 nerves = 255 - guy->Panic;
 
 	int32 situation = (perfect * callWeight) / 255;
@@ -106,7 +106,7 @@ void tcCalcCallValue(uint32 callNr, uint32 timer, uint32 persId) {
 /* vernachlässigt Stockwerke und Personen */
 int32 tcCalcEscapeTime() {
 	int32 time = 0;
-	Building build = (Building)dbGetObject(Search.BuildingId);
+	BuildingNode *build = (BuildingNode *)dbGetObject(Search.BuildingId);
 
 	for (int32 i = 0; i < 4; i++) {
 		if ((Search.GuyXPos[i] != -1) && (Search.GuyYPos[i] != -1)) {
@@ -129,8 +129,8 @@ int32 tcCalcEscapeTime() {
 /* bestimmt den Ausgang eines Kampfes */
 /* Werkzeug wirkt sich nur in Geschwindigkeit und Verletzung aus */
 bool tcKillTheGuard(uint32 guyId, uint32 buildingId) {
-	Person p = (Person)dbGetObject(guyId);
-	Building b = (Building)dbGetObject(buildingId);
+	PersonNode *p = (PersonNode *)dbGetObject(guyId);
+	BuildingNode *b = (BuildingNode *)dbGetObject(buildingId);
 	uint32 power = hasGet(guyId, Ability_Kampf);
 
 	if (power >= b->GuardStrength)
@@ -142,7 +142,7 @@ bool tcKillTheGuard(uint32 guyId, uint32 buildingId) {
 	return false;
 }
 
-int32 tcGetCarStrike(Car car) {
+int32 tcGetCarStrike(CarNode *car) {
 	uint32 strike = car->Strike;
 
 	/* XXX: had to reoder & cast some stuff to stop underflow bugs... */
@@ -152,7 +152,7 @@ int32 tcGetCarStrike(Car car) {
 	return strike;
 }
 
-uint32 tcGuyCanEscape(Person p) {
+uint32 tcGuyCanEscape(PersonNode *p) {
 	/* XXX: reordered some stuff just in case... */
 	uint32 v = (255 + p->Intelligence - p->Panic) / 2;
 
@@ -162,15 +162,15 @@ uint32 tcGuyCanEscape(Person p) {
 	return v;           /* the higher the better */
 }
 
-uint32 tcGuyTellsAll(Person p) {
+uint32 tcGuyTellsAll(PersonNode *p) {
 	uint32 v = abs(512 - p->Loyality - p->Known) / 2;
 
 	return v;           /* the higher the worser */
 }
 
-int32 tcGetCarTraderOffer(Car car) {
+int32 tcGetCarTraderOffer(CarNode *car) {
 	int32 offer = tcGetCarPrice(car);
-	Person marc = (Person)dbGetObject(Person_Marc_Smith);
+	PersonNode *marc = (PersonNode *)dbGetObject(Person_Marc_Smith);
 
 	offer = CalcValue(offer, 1, 0xffff, 0, 25); /* 25% weniger */
 	offer = CalcValue(offer, 1, 0xffff, 126 + (marc->Known / 2), 30);
@@ -199,13 +199,12 @@ uint32 tcGetItemID(uint32 itemType) {
 
 uint32 GetObjNrOfLocation(uint32 LocNr) {
 	for (uint8 objHashValue = 0; objHashValue < OBJ_HASH_SIZE; objHashValue++) {
-		for (dbObject *obj = (dbObject *) LIST_HEAD(objHash[objHashValue]);
-		        NODE_SUCC(obj); obj = (dbObject *) NODE_SUCC(obj)) {
-			if (obj->type == Object_Location) {
-				Location loc = (Location)((void *)(obj + 1));
+		for (dbObjectNode *obj = objHash[objHashValue]->getListHead(); obj->_succ; obj = (dbObjectNode *) obj->_succ) {
+			if (obj->_type == Object_Location) {
+				LocationNode *loc = (LocationNode *)obj;
 
 				if (loc->LocationNr == LocNr)
-					return (obj->nr);
+					return obj->_nr;
 			}
 		}
 	}
@@ -215,13 +214,12 @@ uint32 GetObjNrOfLocation(uint32 LocNr) {
 
 uint32 GetObjNrOfBuilding(uint32 LocNr) {
 	for (short objHashValue = 0; objHashValue < OBJ_HASH_SIZE; objHashValue++) {
-		for (dbObject* obj = (dbObject*)LIST_HEAD(objHash[objHashValue]);
-		        NODE_SUCC(obj); obj = (dbObject *) NODE_SUCC(obj)) {
-			if (obj->type == Object_Building) {
-				Building bui = (Building)((void*)(obj + 1));
+		for (dbObjectNode* obj = objHash[objHashValue]->getListHead(); obj->_succ; obj = (dbObjectNode *) obj->_succ) {
+			if (obj->_type == Object_Building) {
+				BuildingNode *bui = (BuildingNode *)obj;
 
 				if (bui->LocationNr == LocNr)
-					return obj->nr;
+					return obj->_nr;
 			}
 		}
 	}
@@ -229,12 +227,12 @@ uint32 GetObjNrOfBuilding(uint32 LocNr) {
 	return 0L;
 }
 
-uint32 tcGetPersOffer(Person person, uint8 persCount) {
+uint32 tcGetPersOffer(PersonNode *person, uint8 persCount) {
 	uint32 persCapability = 1, mattCapability = 1;
-	uint32 persID = dbGetObjectNr(person);
+	uint32 persID = person->_nr;
 	uint32 i;
 
-	Person Pers = (Person)dbGetObject(persID);
+	PersonNode *Pers = (PersonNode *)dbGetObject(persID);
 
 	/* Fähigkeiten der Person */
 	if ((i = hasGet(persID, Ability_Autos)) != NO_PARAMETER)
@@ -281,13 +279,13 @@ uint32 tcGetPersOffer(Person person, uint8 persCount) {
 }
 
 void tcPersonLearns(uint32 pId) {
-	Person pers = (Person)dbGetObject(pId);
+	PersonNode *pers = (PersonNode *)dbGetObject(pId);
 	int32 growth;
 
 	/* Abilites */
 	hasAll(pId, OLF_NORMAL, Object_Ability);
 
-	for (NewObjectNode *n = (NewObjectNode *)ObjectList->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
+	for (dbObjectNode *n = ObjectList->getListHead(); n->_succ; n = (dbObjectNode *)n->_succ) {
 		int32 ability = hasGet(pId, n->_nr);    /* Jetztzustand der Fähigkeit */
 
 		if (learned(pId, n->_nr)) {   /* er hat dazugelernt ! */
@@ -319,7 +317,7 @@ void tcPersonLearns(uint32 pId) {
 	tcImproveKnown(pers, (int32) pers->Known + ((growth * pers->Known) / 100)); /* 10 bis 12 % */
 }
 
-uint32 tcGetBuildValues(Building bui) {
+uint32 tcGetBuildValues(BuildingNode *bui) {
 	uint32 x = (255 - bui->Exactlyness) / 3;
 
 	/* XXX: reordered some stuff just in case... */
@@ -415,7 +413,7 @@ int32 tcIsPlanPerfect(uint32 timer) {
  *
  */
 
-int32 tcGetTrail(Person p, uint8 which) {
+int32 tcGetTrail(PersonNode *p, uint8 which) {
 	int32 nerves = tcGetWeightOfNerves(TeamMood) / 7;
 	int32 trail;
 
@@ -492,7 +490,7 @@ static uint32 tcGetNecessaryAbility(uint32 persId, uint32 toolId) {
  * Berechnet Zeit, die Einbrecher für eine Aktion benötigt
  */
 
-uint32 tcGuyUsesToolInPlayer(uint32 persId, Building b, uint32 toolId, uint32 itemId, uint32 needTime) {
+uint32 tcGuyUsesToolInPlayer(uint32 persId, BuildingNode *b, uint32 toolId, uint32 itemId, uint32 needTime) {
 	uint32 time = tcGuyUsesTool(persId, b, toolId, itemId);
 	uint32 ability = tcGetNecessaryAbility(persId, toolId);
 
@@ -507,13 +505,13 @@ uint32 tcGuyUsesToolInPlayer(uint32 persId, Building b, uint32 toolId, uint32 it
 	return time;
 }
 
-uint32 tcGuyUsesTool(uint32 persId, Building b, uint32 toolId, uint32 itemId)
+uint32 tcGuyUsesTool(uint32 persId, BuildingNode *b, uint32 toolId, uint32 itemId)
 /*
  * diese Funktion darf keine Zufälligkeit enthalten -> Sync!!
  */
 {
 	uint32 origin, time;
-	Person p = (Person)dbGetObject(persId);
+	PersonNode *p = (PersonNode *)dbGetObject(persId);
 
 	origin = time = breakGet(itemId, toolId);
 
@@ -605,7 +603,7 @@ uint32 tcGuyUsesTool(uint32 persId, Building b, uint32 toolId, uint32 itemId)
 	} else
 		time = 0;       /* kein Tool oder kein Item angegeben! */
 
-	return (time);
+	return time;
 }
 
 /*
@@ -614,7 +612,7 @@ uint32 tcGuyUsesTool(uint32 persId, Building b, uint32 toolId, uint32 itemId)
  */
 
 int32 tcGetDanger(uint32 persId, uint32 toolId, uint32 itemId) {
-	Person p = (Person)dbGetObject(persId);
+	PersonNode *p = (PersonNode *)dbGetObject(persId);
 	uint32 danger = hurtGet(itemId, toolId);
 
 	danger = CalcValue(danger, 0, 255, 255 - p->Skill, 30);
@@ -639,7 +637,7 @@ int32 tcGetDanger(uint32 persId, uint32 toolId, uint32 itemId) {
  */
 
 int32 tcGetToolLoudness(uint32 persId, uint32 toolId, uint32 itemId) {
-	Person p = (Person)dbGetObject(persId);
+	PersonNode *p = (PersonNode *)dbGetObject(persId);
 	int32 loudness = soundGet(itemId, toolId);
 
 	loudness = CalcValue(loudness, 0, 255, 255 - p->Skill, 10);
@@ -686,12 +684,12 @@ int32 tcGetTotalLoudness(int32 loudp0, int32 loudp1, int32 loudp2, int32 loudp3)
 
 /* am besten jede Sekunde aufrufen (loudness) */
 
-bool tcAlarmByLoudness(Building b, int32 totalLoudness) {
+bool tcAlarmByLoudness(BuildingNode *b, int32 totalLoudness) {
 	return (totalLoudness > b->MaxVolume);
 }
 
 /* nach jedem Funkspruch aufrufen */
-bool tcAlarmByRadio(Building b) {
+bool tcAlarmByRadio(BuildingNode *b) {
 	int32 random = g_clue->calcRandomNr(0, 2500) + g_clue->calcRandomNr(0, 2500);   /* 10 mal funken bei Guarding = 250 -> Alarm */
 
 	return (random < b->RadioGuarding);
@@ -709,7 +707,7 @@ bool tcAlarmByPatrol(uint16 objChangedCount, uint16 totalCount, uint8 patrolCoun
 /* für jedes Objekt, das vom Wächter kontrolliert wird, aufrufen! */
 /* wenn 1 -> richtiger Alarm! */
 
-bool tcGuardChecksObject(LSObject lso) {
+bool tcGuardChecksObject(LSObjectNode *lso) {
 	/* hier darf NICHT das OPEN_CLOSE_BIT sonst, schlägt der Wächter */
 	/* Alarm, wenn er eine Tür öffnet!                               */
 	if ((lso->ul_Status & (1 << Const_tcIN_PROGRESS_BIT)) ||
@@ -806,7 +804,7 @@ bool tcWrongWatchDogWarning(uint32 persId) {
 	return false;
 }
 
-bool tcIsCarRecognised(Car car, uint32 time) {
+bool tcIsCarRecognised(CarNode *car, uint32 time) {
 	uint32 strike = tcGetCarStrike(car);
 
 	/* Zeit spielt eine Rolle ! */
@@ -822,7 +820,7 @@ bool tcIsCarRecognised(Car car, uint32 time) {
 }
 
 int32 tcGetGuyState(uint32 persId) {
-	Person p = (Person)dbGetObject(persId);
+	PersonNode *p = (PersonNode *)dbGetObject(persId);
 
 	int32 state = tcGetPersHealth(p);
 	state = CalcValue(state, 0, 255, p->Stamina, 50);
@@ -836,13 +834,13 @@ int32 tcCalcMattsPart() {
 
 	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST,
 	             Object_Person);
-	NewList<NewObjectNode>* guys = ObjectListPrivate;
+	NewList<dbObjectNode>* guys = ObjectListPrivate;
 
 	count = guys->getNrOfNodes();
 
-	for (NewObjectNode* node = guys->getListHead(); node->_succ; node = (NewObjectNode*)node->_succ) {
+	for (dbObjectNode* node = guys->getListHead(); node->_succ; node = (dbObjectNode*)node->_succ) {
 		if (node->_nr != Person_Matt_Stuvysunt)
-			part += tcGetPersOffer((Person)node->_data, count);
+			part += tcGetPersOffer((PersonNode *)node, count);
 	}
 
 	if (part > 99)
@@ -874,7 +872,7 @@ bool tcCheckTimeClocks(uint32 buildId) {
 
 	/* und kontrollieren, ob die Zeit abgelaufen ist */
 
-	for (NewObjectNode* n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode*)n->_succ) {
+	for (dbObjectNode* n = ObjectList->getListHead(); n->_succ; n = (dbObjectNode*)n->_succ) {
 		uint32 timerId = n->_nr;
 		int32 time = (int32) ClockTimerGet(timerId, timerId);
 
@@ -889,11 +887,11 @@ bool tcCheckTimeClocks(uint32 buildId) {
 
 /* stellt fest, ob 2 Positionen innerhalb des selben Raumes sind */
 
-static bool tcInsideSameRoom(NewObjectList<NewObjectNode> *roomsList, int16 polX, int16 polY, int16 livX, int16 livY) {
+static bool tcInsideSameRoom(NewObjectList<dbObjectNode> *roomsList, int16 polX, int16 polY, int16 livX, int16 livY) {
 	bool detected = false;
 
-	for (NewObjectNode* node = roomsList->getListHead(); node->_succ && detected == 0; node = (NewObjectNode *)node->_succ) {
-		LSRoom room = (LSRoom)node->_data;
+	for (dbObjectNode* node = roomsList->getListHead(); node->_succ && detected == 0; node = (dbObjectNode *)node->_succ) {
+		LSRoomNode *room = (LSRoomNode *)node;
 
 		if ((polX >= room->us_LeftEdge)
 		        && (polX <= room->us_LeftEdge + room->us_Width)
@@ -915,7 +913,7 @@ static bool tcInsideSameRoom(NewObjectList<NewObjectNode> *roomsList, int16 polX
 /* XPos, YPos = Position des Wächters */
 /* wenn 1 -> Alarm! */
 
-bool tcGuardDetectsGuy(NewObjectList<NewObjectNode> *roomsList, uint16 us_XPos, uint16 us_YPos,
+bool tcGuardDetectsGuy(NewObjectList<dbObjectNode> *roomsList, uint16 us_XPos, uint16 us_YPos,
                        uint8 uch_ViewDirection, char *puch_GuardName,
                        char *puch_LivingName) {
 	bool detected = false;
@@ -938,7 +936,7 @@ bool tcGuardDetectsGuy(NewObjectList<NewObjectNode> *roomsList, uint16 us_XPos, 
 /* 1 -> Alarm */
 
 bool tcAlarmByTouch(uint32 lsoId) {
-	LSObject lso = (LSObject)dbGetObject(lsoId);
+	LSObjectNode *lso = (LSObjectNode *)dbGetObject(lsoId);
 
 	if ((lso->uch_Chained & Const_tcCHAINED_TO_ALARM) && tcIsConnectedWithEnabledAlarm(lsoId))
 		return true;
@@ -957,12 +955,12 @@ bool tcAlarmByPowerLoss(uint32 powerId) {
 
 	SetObjectListAttr(OLF_PRIVATE_LIST, Object_LSObject);
 	AskAll(dbGetObject(powerId), hasPowerRelationID, BuildObjectList);
-	NewList<NewObjectNode>* friendlyList = ObjectListPrivate;
+	NewList<dbObjectNode>* friendlyList = ObjectListPrivate;
 
 	/* eine davon mit einer Alarmanlage verbunden? */
 
-	for (NewObjectNode* n = friendlyList->getListHead(); n->_succ; n = (NewObjectNode*)n->_succ) {
-		LSObject lso = (LSObject)n->_data;
+	for (dbObjectNode* n = friendlyList->getListHead(); n->_succ; n = (dbObjectNode*)n->_succ) {
+		LSObjectNode *lso = (LSObjectNode *)n;
 
 		if ((lso->ul_Status & Const_tcCHAINED_TO_ALARM) && tcIsConnectedWithEnabledAlarm(n->_nr)) {
 			friendlyList->removeList();
@@ -982,8 +980,8 @@ static bool tcIsConnectedWithEnabledAlarm(uint32 lsoId) {
 
 	/* ist eine davon eingeschalten? */
 
-	for (NewObjectNode* n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode*)n->_succ) {
-		LSObject alarm = (LSObject)n->_data;
+	for (dbObjectNode *n = ObjectList->getListHead(); n->_succ; n = (dbObjectNode*)n->_succ) {
+		LSObjectNode *alarm = (LSObjectNode *)n;
 
 		if (!(alarm->ul_Status & (1L << Const_tcON_OFF)))
 			return true;
@@ -996,7 +994,7 @@ static int32 tcGetWeightOfNerves(int32 teamMood) {
 	return 255 - teamMood;
 }
 
-void tcInsertGuard(NewObjectList<NewObjectNode> *list, NewObjectList<NewObjectNode> *roomsList, uint16 x, uint16 y, uint16 width,
+void tcInsertGuard(NewObjectList<dbObjectNode> *list, NewObjectList<dbObjectNode> *roomsList, uint16 x, uint16 y, uint16 width,
                    uint16 height, uint32 guardId, uint8 livId, uint32 areaId) {
 	char name[TXT_KEY_LENGTH];
 	uint32 guardedArea = isGuardedbyGet(lsGetCurrBuildingID(), guardId);

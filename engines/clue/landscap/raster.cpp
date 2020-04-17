@@ -24,24 +24,24 @@
 namespace Clue {
 
 void lsShowRaster(uint32 areaID, byte perc) {
-	LSArea area = (LSArea)dbGetObject(areaID);
+	LSAreaNode *area = (LSAreaNode *)dbGetObject(areaID);
 
 	gfxShow(154, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1);
 
 	SetObjectListAttr(OLF_PRIVATE_LIST, Object_LSObject);
 	AskAll(area, ConsistOfRelationID, BuildObjectList);
-	NewList<NewObjectNode> *objects = ObjectListPrivate;
+	NewList<dbObjectNode> *objects = ObjectListPrivate;
 
 	/*lsSortObjectList(&objects);*/
 
 	if (!objects->isEmpty()) {
 		int32 count = (objects->getNrOfNodes() * perc) / 255;
 
-		NewObjectNode *node;
+		dbObjectNode *node;
 		int32 i;
 
-		for (node = objects->getListHead(), i = 0; node->_succ && i < count; node = (NewObjectNode *) node->_succ, i++) {
-			LSObject lso = (LSObject)node->_data;
+		for (node = objects->getListHead(), i = 0; node->_succ && i < count; node = (dbObjectNode *) node->_succ, i++) {
+			LSObjectNode *lso = (LSObjectNode *)node;
 
 			switch (lso->Type) {
 			case Item_Mauer:
@@ -54,8 +54,8 @@ void lsShowRaster(uint32 areaID, byte perc) {
 			}
 		}
 
-		for (node = objects->getListHead(), i = 0; node->_succ && i < count; node = (NewObjectNode *) node->_succ, i++) {
-			LSObject lso = (LSObject)node->_data;
+		for (node = objects->getListHead(), i = 0; node->_succ && i < count; node = (dbObjectNode *) node->_succ, i++) {
+			LSObjectNode *lso = (LSObjectNode *)node;
 
 			switch (lso->Type) {
 			case Item_Mauer:
@@ -73,38 +73,38 @@ void lsShowRaster(uint32 areaID, byte perc) {
 	objects->removeList();
 }
 
-NewObjectNode *lsGetSuccObject(NewObjectNode *start) {
-	NewObjectNode *n = (NewObjectNode*)start->_succ;
+dbObjectNode *lsGetSuccObject(dbObjectNode *start) {
+	dbObjectNode *n = (dbObjectNode*)start->_succ;
 
 	while (n->_succ) {
-		LSObject lso = (LSObject) n->_data;
+		LSObjectNode *lso = (LSObjectNode *) n;
 
 		if (lso->ul_Status & (1L << Const_tcACCESS_BIT))
 			return n;
 
-		n = (NewObjectNode *) n->_succ;
+		n = (dbObjectNode *) n->_succ;
 	}
 
 	return start;
 }
 
-NewObjectNode *lsGetPredObject(NewObjectNode *start) {
-	NewObjectNode *n = (NewObjectNode *) start->_pred;
+dbObjectNode *lsGetPredObject(dbObjectNode *start) {
+	dbObjectNode *n = (dbObjectNode *) start->_pred;
 
 	while (NODE_PRED(n)) {
-		LSObject lso = (LSObject) n->_data;
+		LSObjectNode *lso = (LSObjectNode *) n;
 
 		if (lso->ul_Status & (1L << Const_tcACCESS_BIT))
 			return n;
 
-		n = (NewObjectNode *) n->_pred;
+		n = (dbObjectNode *) n->_pred;
 	}
 
 	return start;
 }
 
 
-void lsFadeRasterObject(uint32 areaID, LSObject lso, byte status) {
+void lsFadeRasterObject(uint32 areaID, LSObjectNode *lso, byte status) {
 	uint32 col;
 	uint32 rasterXSize = lsGetRasterXSize(areaID);
 	uint32 rasterYSize = lsGetRasterYSize(areaID);
@@ -124,7 +124,7 @@ void lsFadeRasterObject(uint32 areaID, LSObject lso, byte status) {
 	yEnd = MAX(uint16(yStart + 3), yEnd);
 
 	if (status)
-		col = (((Item) dbGetObject(lso->Type))->ColorNr);
+		col = (((ItemNode *) dbGetObject(lso->Type))->ColorNr);
 	else
 		col = 10;
 
@@ -133,11 +133,11 @@ void lsFadeRasterObject(uint32 areaID, LSObject lso, byte status) {
 	gfxRectFill(l_gc, xStart, yStart, xEnd, yEnd);
 }
 
-void lsShowAllConnections(uint32 areaID, NewObjectNode *node, byte perc) {
+void lsShowAllConnections(uint32 areaID, dbObjectNode *node, byte perc) {
 	// CHECKME: Initial value?
 	static byte Alarm_Power;
 
-	LSObject lso1 = (LSObject)node->_data;
+	LSObjectNode *lso1 = (LSObjectNode *)node;
 
 	uint32 rasterXSize = lsGetRasterXSize(areaID);
 	uint32 rasterYSize = lsGetRasterYSize(areaID);
@@ -164,7 +164,7 @@ void lsShowAllConnections(uint32 areaID, NewObjectNode *node, byte perc) {
 	}
 
 	if (relID) {
-		uint32 col = ((Item) dbGetObject(lso1->Type))->ColorNr;
+		uint32 col = ((ItemNode *) dbGetObject(lso1->Type))->ColorNr;
 
 		SetObjectListAttr(OLF_NORMAL, Object_LSObject);
 		AskAll(lso1, relID, BuildObjectList);
@@ -179,10 +179,10 @@ void lsShowAllConnections(uint32 areaID, NewObjectNode *node, byte perc) {
 		srcX = (srcX * rasterSize) / LS_RASTER_X_SIZE;
 		srcY = (srcY * rasterSize) / LS_RASTER_Y_SIZE;
 
-		for (NewObjectNode *n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
+		for (dbObjectNode *n = ObjectList->getListHead(); n->_succ; n = (dbObjectNode *)n->_succ) {
 			gfxSetPens(l_gc, col, GFX_SAME_PEN, GFX_SAME_PEN);
 
-			LSObject lso2 = (LSObject)n->_data;
+			LSObjectNode *lso2 = (LSObjectNode *)n;
 
 			uint16 x0, y0, x1, y1;
 			lsCalcExactSize(lso2, &x0, &y0, &x1, &y1);
@@ -204,14 +204,14 @@ void lsShowAllConnections(uint32 areaID, NewObjectNode *node, byte perc) {
 }
 
 uint16 lsGetRasterXSize(uint32 areaID) {
-	LSArea area = (LSArea)dbGetObject(areaID);
+	LSAreaNode *area = (LSAreaNode *)dbGetObject(areaID);
 
 	return (uint16)(LS_RASTER_DISP_WIDTH /
 	                ((area->us_Width) / LS_RASTER_X_SIZE));
 }
 
 uint16 lsGetRasterYSize(uint32 areaID) {
-	LSArea area = (LSArea)dbGetObject(areaID);
+	LSAreaNode *area = (LSAreaNode *)dbGetObject(areaID);
 
 	return (uint16)(LS_RASTER_DISP_HEIGHT /
 	                ((area->us_Height) / LS_RASTER_Y_SIZE));

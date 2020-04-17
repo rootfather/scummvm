@@ -21,6 +21,7 @@
 #ifndef MODULE_DATABASE
 #define MODULE_DATABASE
 
+#include "clue/text.h"
 namespace Clue {
 
 #define GET_OUT                 ((uint8)-1)
@@ -33,20 +34,13 @@ namespace Clue {
 #define OLF_INCLUDE_NAME      (1)
 #define OLF_INSERT_STAR       (1 << 1)
 #define OLF_PRIVATE_LIST      (1 << 2)
-#define OLF_ADD_PREV_STRING   (1 << 3)
+// #define OLF_ADD_PREV_STRING   (1 << 3) // Unused
 #define OLF_ADD_SUCC_STRING   (1 << 4)
 #define OLF_ALIGNED           (1 << 5)
 
 #define OBJ_HASH_SIZE      31
 
-
 /* public structures */
-struct dbObject {
-	Node link;
-	uint32 nr;
-	uint32 type;
-	uint32 realNr;
-};
 
 struct dbObjectHeader {
 	uint32 nr;
@@ -55,13 +49,13 @@ struct dbObjectHeader {
 };
 
 /* public global data */
-extern NewObjectList<NewObjectNode>* ObjectList;
-extern NewObjectList<NewObjectNode>* ObjectListPrivate;
+extern NewObjectList<dbObjectNode>* ObjectList;
+extern NewObjectList<dbObjectNode>* ObjectListPrivate;
 extern uint32 ObjectListWidth;
-extern Common::String (*ObjectListPrevString)(uint32, uint32, void *);
-extern Common::String (*ObjectListSuccString)(uint32, uint32, void *);
+// extern Common::String (*ObjectListPrevString)(uint32, uint32, void *);
+extern Common::String (*ObjectListSuccString)(uint32, uint32, dbObjectNode *);
 
-extern List *objHash[OBJ_HASH_SIZE];
+extern NewList<dbObjectNode> *objHash[OBJ_HASH_SIZE];
 
 
 /* public prototypes - OBJECTS */
@@ -74,30 +68,29 @@ uint32 dbGetObjectCountOfDB(uint32 offset, uint32 size);
 void dbSetLoadObjectsMode(uint8 mode);
 
 /* public prototypes - OBJECT */
-void *dbNewObject(uint32 nr, uint32 type, uint32 size, Common::String name, uint32 realNr);
+dbObjectNode *dbNewNode(uint32 nr, uint32 type, Common::String name, uint32 realNr);
+dbObjectNode *dbNewObject(uint32 nr, uint32 type, Common::String name, uint32 realNr);
 
-void *dbGetObject(uint32 nr);
-uint32 dbGetObjectNr(void *key);
+dbObjectNode *dbGetObject(uint32 nr);
 Common::String dbGetObjectName(uint32 nr);
 
-void *dbIsObject(uint32 nr, uint32 type);
+bool dbIsObject(uint32 nr, uint32 type);
 
 /* public prototypes - OBJECTNODE */
-NewObjectNode *dbAddObjectNode(NewObjectList<NewObjectNode> *objectList, uint32 nr, uint32 flags);
-void dbRemObjectNode(NewList<NewObjectNode> *objectList, uint32 nr);
-NewObjectNode *dbHasObjectNode(NewList<NewObjectNode> *objectList, uint32 nr);
+void dbAddObjectNode(NewObjectList<dbObjectNode> *objectList, uint32 nr, uint32 flags);
+void dbRemObjectNode(NewList<dbObjectNode> *objectList, uint32 nr);
+dbObjectNode *dbHasObjectNode(NewList<dbObjectNode> *objectList, uint32 nr);
 
 void SetObjectListAttr(uint32 flags, uint32 type);
-void BuildObjectList(void *key);
+void BuildObjectList(dbObjectNode *key);
 
-int16 dbStdCompareObjects(NewObjectNode *obj1, NewObjectNode *obj2);
-int32 dbSortObjectList(NewObjectList<NewObjectNode> **objectList,
-					int16(*processNode)(NewObjectNode *, NewObjectNode *));
-void dbSortPartOfList(NewObjectList<NewObjectNode>* l, NewObjectNode* start, NewObjectNode* end,
-					int16(*processNode)(NewObjectNode*, NewObjectNode*));
+int16 dbStdCompareObjects(dbObjectNode *obj1, dbObjectNode *obj2);
+int32 dbSortObjectList(NewObjectList<dbObjectNode> **objectList,
+					int16(*processNode)(dbObjectNode *, dbObjectNode *));
+void dbSortPartOfList(NewObjectList<dbObjectNode>* l, dbObjectNode* start, dbObjectNode* end,
+					int16(*processNode)(dbObjectNode*, dbObjectNode*));
 
-NewObjectNode *dbAddObjectNode(NewObjectList<NewObjectNode> *objectList, uint32 nr, uint32 flags);
-void dbRemObjectNode(List *objectList, uint32 nr);
+void dbAddObjectNode(NewObjectList<dbObjectNode> *objectList, uint32 nr, uint32 flags);
 
 /* public prototypes */
 void dbInit();

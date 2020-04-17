@@ -24,7 +24,7 @@
 
 namespace Clue {
 
-bool lsIsLSObjectInActivArea(LSObject lso) {
+bool lsIsLSObjectInActivArea(LSObjectNode *lso) {
 	if (AskP
 	        (dbGetObject(ls->ul_AreaID), ConsistOfRelationID, lso, NO_PARAMETER,
 	         CMP_NO))
@@ -51,7 +51,7 @@ uint32 lsGetCurrObjectRetrieval() {
 	return 0;
 }
 
-bool lsIsObjectAStdObj(LSObject lso) {
+bool lsIsObjectAStdObj(LSObjectNode *lso) {
 	if (lsIsObjectADoor(lso))
 		return false;
 
@@ -67,7 +67,7 @@ bool lsIsObjectAStdObj(LSObject lso) {
 	return true;
 }
 
-bool lsIsObjectADoor(LSObject lso) {
+bool lsIsObjectADoor(LSObjectNode *lso) {
 	switch (lso->Type) {
 	case Item_Holztuer:
 	case Item_Stahltuer:
@@ -79,7 +79,7 @@ bool lsIsObjectADoor(LSObject lso) {
 	return false;
 }
 
-bool lsIsObjectAWall(LSObject lso) {
+bool lsIsObjectAWall(LSObjectNode *lso) {
 	switch (lso->Type) {
 	case Item_Mauer:
 	case Item_Mauerecke:
@@ -108,7 +108,7 @@ bool lsIsObjectAWall(LSObject lso) {
 }
 
 /* objects which need the same refresh as doors */
-bool lsIsObjectSpecial(LSObject lso) {
+bool lsIsObjectSpecial(LSObjectNode *lso) {
 	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		switch (lso->Type) {
 		case Item_Heiligenstatue:
@@ -128,7 +128,7 @@ bool lsIsObjectSpecial(LSObject lso) {
 }
 
 
-bool lsIsObjectAnAddOn(LSObject lso) {
+bool lsIsObjectAnAddOn(LSObjectNode *lso) {
 	switch (lso->Type) {
 	case Item_Kasse:
 	case Item_Vase:
@@ -177,51 +177,50 @@ byte lsGetLoudness(uint16 x, uint16 y) {
 }
 
 uint32 lsGetObjectState(uint32 objID) {
-	LSObject obj = (LSObject)dbGetObject(objID);
+	LSObjectNode *obj = (LSObjectNode *)dbGetObject(objID);
 
 	return lsGetNewState(obj);
 }
 
 uint32 lsGetStartArea() {
-	uint32 areaID;          /* attention, planing has to be changed to! */
-
 	startsWithAll(ls->ul_BuildingID, OLF_NORMAL, Object_LSArea);
 
-	areaID = ObjectList->getListHead()->_nr;
+	/* attention, planing has to be changed to! */
+	uint32 areaID = ObjectList->getListHead()->_nr;
 
 	return areaID;
 }
 
 uint16 lsGetFloorIndex(uint16 x, uint16 y) {
-	uint16 fpl, row, line;
+	uint16 fpl = LS_FLOORS_PER_LINE;
 
-	fpl = LS_FLOORS_PER_LINE;
-
-	row = x / LS_FLOOR_X_SIZE;
-	line = y / LS_FLOOR_Y_SIZE;
+	uint16 row = x / LS_FLOOR_X_SIZE;
+	uint16 line = y / LS_FLOOR_Y_SIZE;
 
 	return (uint16)(line * fpl + row);
 }
 
-static void lsExtendGetList(NewObjectList<NewObjectNode> *list, uint32 nr, uint32 type, void *data) {
-	NewObjectNode *newNode =
+static void lsExtendGetList(NewObjectList<dbObjectNode> *list, uint32 nr, uint32 type, void *data) {
+	error("STUB - lsExtendGetList");
+#if 0
+	dbObjectNode *newNode =
 	    dbAddObjectNode(list, type, OLF_INCLUDE_NAME | OLF_INSERT_STAR);
 
 	newNode->_nr = nr;
 	newNode->_type = type;
 	newNode->_data = data;
+#endif
 }
 
-NewObjectList<NewObjectNode> *lsGetObjectsByList(uint16 x, uint16 y, uint16 width, uint16 height,
+NewObjectList<dbObjectNode> *lsGetObjectsByList(uint16 x, uint16 y, uint16 width, uint16 height,
                          byte showInvisible, byte addLootBags) {
-	NewObjectList<NewObjectNode> *list = new NewObjectList<NewObjectNode>;
+	NewObjectList<dbObjectNode> *list = new NewObjectList<dbObjectNode>;
 
 	/* diverse Objekte eintragen */
-	for (NewObjectNode* node = ls->p_ObjectRetrieval->getListHead(); node->_succ; node = (NewObjectNode *) node->_succ) {
-		LSObject lso = (LSObject) node->_data;
+	for (dbObjectNode* node = ls->p_ObjectRetrieval->getListHead(); node->_succ; node = (dbObjectNode *) node->_succ) {
+		LSObjectNode *lso = (LSObjectNode *) node;
 
-		if ((lso->ul_Status & (1L << Const_tcACCESS_BIT))
-		        || (GamePlayMode & GP_LEVEL_DESIGN))
+		if ((lso->ul_Status & (1L << Const_tcACCESS_BIT)) || (GamePlayMode & GP_LEVEL_DESIGN))
 			if (showInvisible || lso->uch_Visible)
 				if (lsIsInside(lso, x, y, x + width, y + height))
 					lsExtendGetList(list, node->_nr, lso->Type, lso);
@@ -230,7 +229,7 @@ NewObjectList<NewObjectNode> *lsGetObjectsByList(uint16 x, uint16 y, uint16 widt
 	/* Ausnahme: Beutesack eintragen! */
 	if (addLootBags) {
 		for (uint32 i = 9701; i <= 9708; i++) {
-			LSObject lso = (LSObject)dbGetObject(i);
+			LSObjectNode *lso = (LSObjectNode *)dbGetObject(i);
 
 			if (lso->uch_Visible == LS_OBJECT_VISIBLE)
 				if (lsIsInside(lso, x, y, x + width, y + height))
@@ -253,16 +252,16 @@ uint32 lsGetActivAreaID() {
 	return (ls->ul_AreaID);
 }
 
-NewObjectList<NewObjectNode> *lsGetRoomsOfArea(uint32 ul_AreaId) {
-	LSArea area = (LSArea) dbGetObject(ul_AreaId);
+NewObjectList<dbObjectNode> *lsGetRoomsOfArea(uint32 ul_AreaId) {
+	LSAreaNode *area = (LSAreaNode *) dbGetObject(ul_AreaId);
 	uint32 roomRelId = area->ul_ObjectBaseNr + REL_HAS_ROOM_OFFSET;
 
 	SetObjectListAttr(OLF_PRIVATE_LIST, Object_LSRoom);
 	AskAll(area, roomRelId, BuildObjectList);
 
 
-	for (NewObjectNode* room = ObjectListPrivate->getListHead(); room->_succ; room = (NewObjectNode*)room->_succ) {
-		LSRoom myroom = (LSRoom)room->_data;
+	for (dbObjectNode* room = ObjectListPrivate->getListHead(); room->_succ; room = (dbObjectNode*)room->_succ) {
+		LSRoomNode *myroom = (LSRoomNode *)room;
 
 		if ((int16) myroom->us_LeftEdge < 0)
 			myroom->us_LeftEdge = 0;

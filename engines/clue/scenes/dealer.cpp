@@ -24,19 +24,19 @@ namespace Clue {
 
 void tcDealerDlg() {
 	uint32 locNr = GetObjNrOfLocation(GetLocation);
-	Person dealer = NULL;
+	PersonNode *dealer = NULL;
 	byte dealerNr, choice = 0;
 
 	if (locNr == Location_Parker) {
-		dealer = (Person)dbGetObject(Person_Helen_Parker);
+		dealer = (PersonNode *)dbGetObject(Person_Helen_Parker);
 		knowsSet(Person_Matt_Stuvysunt, Person_Helen_Parker);
 		dealerNr = 2;
 	} else if (locNr == Location_Maloya) {
-		dealer = (Person)dbGetObject(Person_Frank_Maloya);
+		dealer = (PersonNode *)dbGetObject(Person_Frank_Maloya);
 		knowsSet(Person_Matt_Stuvysunt, Person_Frank_Maloya);
 		dealerNr = 0;
 	} else if (locNr == Location_Pooly) {
-		dealer = (Person)dbGetObject(Person_Eric_Pooly);
+		dealer = (PersonNode *)dbGetObject(Person_Eric_Pooly);
 		knowsSet(Person_Matt_Stuvysunt, Person_Eric_Pooly);
 		dealerNr = 1;
 	} else {
@@ -75,13 +75,13 @@ void tcDealerDlg() {
 	ShowTime(2);
 }
 
-void tcDealerOffer(Person dealer, byte which) {
+void tcDealerOffer(PersonNode *dealer, byte which) {
 	static const int32 Price[3][10] = {
 		{70, 150, 220, 90, 210, 110, 200, 0, 190, 80}, /* maloya */
 		{120, 200, 180, 220, 79, 110, 0, 0, 110, 200}, /* pooly */
 		{220, 66, 0, 110, 0, 220, 0, 212, 20, 130}     /* parker */
 	};
-	CompleteLoot comp = (CompleteLoot)dbGetObject(CompleteLoot_LastLoot);
+	CompleteLootNode *comp = (CompleteLootNode *)dbGetObject(CompleteLoot_LastLoot);
 
 	tcMakeLootList(Person_Matt_Stuvysunt, Relation_has)->removeList();
 
@@ -107,17 +107,17 @@ void tcDealerOffer(Person dealer, byte which) {
 		tcDealerSays(dealer, 9, Price[which][9]);
 }
 
-void tcDealerSays(Person dealer, byte textNr, int32 perc) {
+void tcDealerSays(PersonNode *dealer, byte textNr, int32 perc) {
 	NewList<NewNode> *lootNames = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_LootE");
 	NewList<NewNode> *specialLoot = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_LootNameE");
 	NewList<NewNode> *dealerText = g_clue->_txtMgr->goKey(BUSINESS_TXT, "DEALER_OFFER");
 	NewList<NewNode> *dealerOffer = new NewList<NewNode>;
-	Player player = (Player)dbGetObject(Player_Player_1);
+	PlayerNode *player = (PlayerNode *)dbGetObject(Player_Player_1);
 
-	Person others[3];
-	others[0] = (Person)dbGetObject(Person_Frank_Maloya);
-	others[1] = (Person)dbGetObject(Person_Eric_Pooly);
-	others[2] = (Person)dbGetObject(Person_Helen_Parker);
+	PersonNode *others[3];
+	others[0] = (PersonNode *)dbGetObject(Person_Frank_Maloya);
+	others[1] = (PersonNode *)dbGetObject(Person_Eric_Pooly);
+	others[2] = (PersonNode *)dbGetObject(Person_Helen_Parker);
 
 	char line[TXT_KEY_LENGTH];
 	if (perc == 0) {
@@ -131,8 +131,8 @@ void tcDealerSays(Person dealer, byte textNr, int32 perc) {
 		hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Loot);
 		perc = tcGetDealerPerc(dealer, perc);
 
-		for (NewObjectNode *n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode *) n->_succ) {
-			Loot loot = (Loot)n->_data;
+		for (dbObjectNode *n = ObjectList->getListHead(); n->_succ; n = (dbObjectNode *) n->_succ) {
+			LootNode *loot = (LootNode *)n;
 			uint32 price = hasGet(Person_Matt_Stuvysunt, n->_nr);
 
 			uint32 offer = tcGetDealerOffer(price, perc);
@@ -191,7 +191,7 @@ void tcDealerSays(Person dealer, byte textNr, int32 perc) {
 }
 
 NewList<NewNode>* tcMakeLootList(uint32 containerID, uint32 relID) {
-	CompleteLoot comp = (CompleteLoot)dbGetObject(CompleteLoot_LastLoot);
+	CompleteLootNode *comp = (CompleteLootNode *)dbGetObject(CompleteLoot_LastLoot);
 	NewList<NewNode> *lootE = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_LootE");
 	NewList<NewNode> *lootNameE = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_LootNameE");
 	NewList<NewNode> *out = new NewList<NewNode>;
@@ -200,7 +200,7 @@ NewList<NewNode>* tcMakeLootList(uint32 containerID, uint32 relID) {
 
 	SetObjectListAttr(OLF_PRIVATE_LIST, Object_Loot);
 	AskAll(dbGetObject(containerID), relID, BuildObjectList);
-	NewList<NewObjectNode> *loots = ObjectListPrivate;
+	NewList<dbObjectNode> *loots = ObjectListPrivate;
 
 	comp->Bild = comp->Gold = comp->Geld = comp->Juwelen = 0;
 	comp->Delikates = comp->Statue = comp->Kuriositaet = 0;
@@ -211,9 +211,9 @@ NewList<NewNode>* tcMakeLootList(uint32 containerID, uint32 relID) {
 	/* Liste durcharbeiten */
 
 	if (!loots->isEmpty()) {
-		for (NewObjectNode *n = loots->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
+		for (dbObjectNode *n = loots->getListHead(); n->_succ; n = (dbObjectNode *)n->_succ) {
 			if (n->_type == Object_Loot) {
-				Loot loot = (Loot)n->_data;
+				LootNode *loot = (LootNode *)n;
 				uint32 value = GetP(dbGetObject(containerID), relID, loot);
 
 				switch (loot->Type) {

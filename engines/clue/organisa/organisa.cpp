@@ -78,7 +78,7 @@ static void tcOrganisationSetCar() {
 
 	Organisation.CarID = ObjectList->getListHead()->_nr;
 
-	Car car = (Car)dbGetObject(Organisation.CarID);
+	CarNode *car = (CarNode *)dbGetObject(Organisation.CarID);
 
 	Organisation.PlacesInCar = car->PlacesInCar;
 }
@@ -91,7 +91,7 @@ static byte tcMakeCarOk() {
 		SetBubbleType(THINK_BUBBLE);
 		if (GET_OUT ==
 		        Say(BUSINESS_TXT, 0,
-		            ((Person) dbGetObject(Person_Matt_Stuvysunt))->PictID,
+		            ((PersonNode *) dbGetObject(Person_Matt_Stuvysunt))->PictID,
 		            "PLAN_TO_MANY_GUYS"))
 			return 0;
 
@@ -142,7 +142,7 @@ uint32 tcOrganisation() {
 	if (!ObjectList->isEmpty()) {
 		Organisation.CarID = ObjectList->getListHead()->_nr;
 
-		Car car = (Car)dbGetObject(Organisation.CarID);
+		CarNode *car = (CarNode *)dbGetObject(Organisation.CarID);
 
 		Organisation.PlacesInCar = car->PlacesInCar;
 	}
@@ -237,11 +237,11 @@ uint32 tcOrganisation() {
 }
 
 bool tcCheckOrganisation() {
-	Player player = (Player)dbGetObject(Player_Player_1);
+	PlayerNode *player = (PlayerNode *)dbGetObject(Player_Player_1);
 	bool check = false;
 
 	if (Organisation.BuildingID) {
-		if ((((Building) dbGetObject(Organisation.BuildingID))->Exactlyness) > 127) {
+		if ((((BuildingNode *) dbGetObject(Organisation.BuildingID))->Exactlyness) > 127) {
 			if (Organisation.DriverID) {
 				if (player->NrOfBurglaries == 8) {
 					if (Organisation.CarID == Car_Jaguar_XK_1950)
@@ -273,12 +273,12 @@ bool tcCheckOrganisation() {
 }
 
 uint32 tcChooseDriver(uint32 persID) {
-	Person matt = (Person) dbGetObject(Person_Matt_Stuvysunt);
+	PersonNode *matt = (PersonNode *) dbGetObject(Person_Matt_Stuvysunt);
 
 	joined_byAll(Person_Matt_Stuvysunt,
 	             OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
 	             Object_Person);
-	NewObjectList<NewObjectNode> *list = ObjectListPrivate;
+	NewObjectList<dbObjectNode> *list = ObjectListPrivate;
 
 	if (list->isEmpty()) {
 		SetBubbleType(THINK_BUBBLE);
@@ -292,7 +292,7 @@ uint32 tcChooseDriver(uint32 persID) {
 			uint32 newPersID = list->getNthNode((uint32) choice)->_nr;
 
 			if (!has(newPersID, Ability_Autos)) {
-				Person pers = (Person)dbGetObject(newPersID);
+				PersonNode *pers = (PersonNode *)dbGetObject(newPersID);
 
 				Say(BUSINESS_TXT, 0, pers->PictID, "PLAN_CANT_DRIVE");
 			} else {
@@ -318,7 +318,7 @@ uint32 tcChooseDestBuilding(uint32 objID) {
 	       OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
 	       Object_Building);
 
-	NewObjectList<NewObjectNode> *list = ObjectListPrivate;
+	NewObjectList<dbObjectNode> *list = ObjectListPrivate;
 	Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
 	list->expandObjectList(exp);
 
@@ -340,14 +340,14 @@ uint32 tcChooseDestBuilding(uint32 objID) {
 }
 
 uint32 tcChooseEscapeCar(uint32 objID) {
-	Person matt = (Person) dbGetObject(Person_Matt_Stuvysunt);
+	PersonNode *matt = (PersonNode *) dbGetObject(Person_Matt_Stuvysunt);
 	hasAll(Person_Matt_Stuvysunt,
 	       OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST, Object_Car);
 
-	NewObjectList<NewObjectNode> *l1 = ObjectListPrivate;
+	NewObjectList<dbObjectNode> *l1 = ObjectListPrivate;
 
 	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST, Object_Person);
-	NewObjectList<NewObjectNode> *l2 = ObjectListPrivate;
+	NewObjectList<dbObjectNode> *l2 = ObjectListPrivate;
 
 	if (!l1->isEmpty()) {
 		Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
@@ -357,7 +357,7 @@ uint32 tcChooseEscapeCar(uint32 objID) {
 		if (ChoiceOk(choice, GET_OUT, l1)) {
 			uint32 newObjID = l1->getNthNode((uint32) choice)->_nr;
 
-			Car car = (Car)l1->getNthNode((uint32) choice)->_data;
+			CarNode *car = (CarNode *)l1->getNthNode((uint32) choice);
 
 			if (l2->getNrOfNodes() <= car->PlacesInCar) {
 				Organisation.PlacesInCar = car->PlacesInCar;
@@ -387,12 +387,12 @@ uint32 tcChooseEscapeCar(uint32 objID) {
 }
 
 void tcChooseGuys() {
-	Person matt = (Person) dbGetObject(Person_Matt_Stuvysunt);
+	PersonNode *matt = (PersonNode *) dbGetObject(Person_Matt_Stuvysunt);
 
 	joinAll(Person_Matt_Stuvysunt,
 	        OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
 	        Object_Person);
-	NewList<NewObjectNode> *list = ObjectListPrivate;
+	NewList<dbObjectNode> *list = ObjectListPrivate;
 
 	dbRemObjectNode(list, Person_Matt_Stuvysunt);
 
@@ -436,12 +436,12 @@ void tcAddGuyToParty() {
 	        OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
 	        Object_Person);
 
-	NewObjectList<NewObjectNode> *l1 = ObjectListPrivate;
+	NewObjectList<dbObjectNode> *l1 = ObjectListPrivate;
 	joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_PRIVATE_LIST, Object_Person);
 
-	NewObjectList<NewObjectNode> *l2 = ObjectListPrivate;
+	NewObjectList<dbObjectNode> *l2 = ObjectListPrivate;
 	if (l2->getNrOfNodes() < Organisation.PlacesInCar) {
-		for (NewObjectNode *n = l2->getListHead(); n->_succ; n = (NewObjectNode *) n->_succ)
+		for (dbObjectNode *n = l2->getListHead(); n->_succ; n = (dbObjectNode *) n->_succ)
 			dbRemObjectNode(l1, n->_nr);
 
 		if (!l1->isEmpty()) {
@@ -460,12 +460,12 @@ void tcAddGuyToParty() {
 		} else {
 			SetBubbleType(THINK_BUBBLE);
 			Say(BUSINESS_TXT, 0,
-			    ((Person) dbGetObject(Person_Matt_Stuvysunt))->PictID, "PLAN_DO_NOT_KNOW_ANYBODY");
+			    ((PersonNode *) dbGetObject(Person_Matt_Stuvysunt))->PictID, "PLAN_DO_NOT_KNOW_ANYBODY");
 		}
 	} else {
 		SetBubbleType(THINK_BUBBLE);
 		Say(BUSINESS_TXT, 0,
-		    ((Person) dbGetObject(Person_Matt_Stuvysunt))->PictID, "PLAN_CAR_FULL");
+		    ((PersonNode *) dbGetObject(Person_Matt_Stuvysunt))->PictID, "PLAN_CAR_FULL");
 	}
 
 	l2->removeList();
@@ -473,12 +473,12 @@ void tcAddGuyToParty() {
 }
 
 void tcRemGuyFromParty() {
-	Person matt = (Person) dbGetObject(Person_Matt_Stuvysunt);
+	PersonNode *matt = (PersonNode *) dbGetObject(Person_Matt_Stuvysunt);
 
 	joined_byAll(Person_Matt_Stuvysunt,
 	             OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_PRIVATE_LIST,
 	             Object_Person);
-	NewObjectList<NewObjectNode> *list = ObjectListPrivate;
+	NewObjectList<dbObjectNode> *list = ObjectListPrivate;
 
 	dbRemObjectNode(list, Person_Matt_Stuvysunt);
 

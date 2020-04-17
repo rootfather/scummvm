@@ -47,14 +47,14 @@ bool plLivingsPosAtCar(uint32 bldId);
 bool plAllInCar(uint32 bldId);
 byte plIsStair(uint32 objId);
 
-void plCorrectOpened(LSObject obj, byte open);
+void plCorrectOpened(LSObjectNode *obj, byte open);
 byte plIgnoreLock(uint32 objId);
 
 void plMove(uint32 current, byte direction);
 void plWork(uint32 current);
 
-NewObjectList<NewObjectNode> *plGetObjectsList(uint32 current, byte addLootBags);
-void plInsertGuard(NewObjectList<NewObjectNode> *list, uint32 current, uint32 guard);
+NewObjectList<dbObjectNode> *plGetObjectsList(uint32 current, byte addLootBags);
+void plInsertGuard(NewObjectList<dbObjectNode> *list, uint32 current, uint32 guard);
 bool plObjectInReach(uint32 current, uint32 objId);
 
 } // End of namespace Clue

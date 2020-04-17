@@ -29,7 +29,7 @@ void plSaveTools(Common::Stream *fh) {
 
 		dskSetLine(fh, PLANING_PLAN_TOOL_BEGIN_ID);
 
-		for (NewObjectNode *n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode *) n->_succ)
+		for (dbObjectNode *n = ObjectList->getListHead(); n->_succ; n = (dbObjectNode *) n->_succ)
 			dskSetLine_U32(fh, n->_nr);
 
 		dskSetLine(fh, PLANING_PLAN_TOOL_END_ID);
@@ -37,6 +37,8 @@ void plSaveTools(Common::Stream *fh) {
 }
 
 NewList<NewNode> *plLoadTools(Common::Stream *fh) {
+	error("plLoadTools");
+#if 0
 	NewList<NewNode> *l = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_1");
 	bool foundAll = true;
 	byte canGet = 2, toolsNr = 0;
@@ -45,8 +47,7 @@ NewList<NewNode> *plLoadTools(Common::Stream *fh) {
 	buffer[0] = '\0';
 
 	if (fh) {
-		while (dskGetLine(buffer, sizeof(buffer), fh)
-		        && strcmp(buffer, PLANING_PLAN_TOOL_END_ID) != 0) {
+		while (dskGetLine(buffer, sizeof(buffer), fh) && strcmp(buffer, PLANING_PLAN_TOOL_END_ID) != 0) {
 			uint32 id;
 			if (sscanf(buffer, "%u\r\n", &id) == 1) {
 				toolsNr++;
@@ -91,6 +92,8 @@ NewList<NewNode> *plLoadTools(Common::Stream *fh) {
 	}
 
 	return l;
+#endif
+	return nullptr;
 }
 
 byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {

@@ -22,8 +22,8 @@
 
 namespace Clue {
 
-NewObjectList<NewObjectNode> *PersonsList = nullptr;
-NewObjectList<NewObjectNode> *BurglarsList = nullptr;
+NewObjectList<dbObjectNode> *PersonsList = nullptr;
+NewObjectList<dbObjectNode> *BurglarsList = nullptr;
 
 byte PersonsNr = 0;
 byte BurglarsNr = 0;
@@ -37,13 +37,13 @@ byte Planing_Guard[PLANING_NR_GUARDS];
 
 char Planing_Name[PLANING_NR_PERSONS + PLANING_NR_GUARDS][20];
 
-NewObjectList<NewObjectNode> *Planing_GuardRoomList[PLANING_NR_GUARDS];
+NewObjectList<dbObjectNode> *Planing_GuardRoomList[PLANING_NR_GUARDS];
 
 uint32 Planing_BldId;
 
 
 /* Handler functions */
-void plBuildHandler(NewObjectNode *n) {
+void plBuildHandler(dbObjectNode *n) {
 	uint32 flags = SHF_NORMAL;
 
 	if (n->_type == Object_Police)
@@ -52,11 +52,11 @@ void plBuildHandler(NewObjectNode *n) {
 	InitHandler(plSys, n->_nr, flags);
 }
 
-void plClearHandler(NewObjectNode *n) {
+void plClearHandler(dbObjectNode *n) {
 	ClearHandler(plSys, n->_nr);
 }
 
-void plCloseHandler(NewObjectNode *n) {
+void plCloseHandler(dbObjectNode *n) {
 	CloseHandler(plSys, n->_nr);
 }
 
@@ -76,7 +76,7 @@ void plPrepareData() {
 }
 
 void plPrepareSprite(uint32 livNr, uint32 areaId) {
-	LSArea activArea = (LSArea) dbGetObject(areaId);
+	LSAreaNode *activArea = (LSAreaNode *) dbGetObject(areaId);
 	uint16 xpos, ypos;
 
 	livLivesInArea(Planing_Name[livNr], areaId);
@@ -153,7 +153,7 @@ void plPrepareGfx(uint32 objId, byte landscapMode, byte prepareMode) {
 			if (dbIsObject(PersonsList->getNthNode(i)->_nr, Object_Person))
 				plPrepareSprite(i, lsGetActivAreaID());
 			else {
-				((Police) dbGetObject(PersonsList->getNthNode(i)->_nr))->LivingID = i;
+				((PoliceNode *) dbGetObject(PersonsList->getNthNode(i)->_nr))->LivingID = i;
 				plPrepareSprite(i,
 				                isGuardedbyGet(objId, PersonsList->getNthNode(i)->_nr));
 			}
@@ -176,10 +176,10 @@ void plUnprepareGfx() {
 
 void plPrepareRel() {
 	consistsOfAll(Planing_BldId, OLF_PRIVATE_LIST, Object_LSArea);
-	NewObjectList<NewObjectNode> *areas = ObjectListPrivate;
+	NewObjectList<dbObjectNode> *areas = ObjectListPrivate;
 
-	for (NewObjectNode *n = areas->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
-		LSArea area = (LSArea)n->_data;
+	for (dbObjectNode *n = areas->getListHead(); n->_succ; n = (dbObjectNode *)n->_succ) {
+		LSAreaNode *area = (LSAreaNode *)n;
 
 		if (!CloneRelation
 		        (area->ul_ObjectBaseNr + REL_HAS_LOOT_OFFSET, hasLoot_Clone_RelId))
@@ -247,17 +247,17 @@ void plPrepareSys(uint32 currPer, uint32 objId, byte sysMode) {
 	}
 
 	if (sysMode & PLANING_HANDLER_CLEAR) {
-		for (NewObjectNode *node = BurglarsList->getListHead(); node->_succ; node = (NewObjectNode *)node->_succ)
+		for (dbObjectNode *node = BurglarsList->getListHead(); node->_succ; node = (dbObjectNode *)node->_succ)
 			plClearHandler(node);
 	}
 
 	if (sysMode & PLANING_HANDLER_CLOSE) {
-		for (NewObjectNode *node = PersonsList->getListHead(); node->_succ; node = (NewObjectNode *)node->_succ)
+		for (dbObjectNode *node = PersonsList->getListHead(); node->_succ; node = (dbObjectNode *)node->_succ)
 			plCloseHandler(node);
 	}
 	
 	if (sysMode & PLANING_HANDLER_OPEN) {
-		for (NewObjectNode *node = PersonsList->getListHead(); node->_succ; node = (NewObjectNode *)node->_succ)
+		for (dbObjectNode *node = PersonsList->getListHead(); node->_succ; node = (dbObjectNode *)node->_succ)
 			plBuildHandler(node);
 	}
 

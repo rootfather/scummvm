@@ -97,20 +97,20 @@ uint8 Present(uint32 nr, const char *presentationText, void (*initPresentation)(
 	inpTurnFunctionKey(0);
 
 	if (dbIsObject(nr, Object_Person)) {
-		Person obj = (Person) dbGetObject(nr);
+		PersonNode *obj = (PersonNode *) dbGetObject(nr);
 
 		gfxShow(obj->PictID, GFX_NO_REFRESH | GFX_OVERLAY | GFX_BLEND_UP,
 		        0, -1, -1);
 	} else if (dbIsObject(nr, Object_Evidence)) {
-		Evidence e = (Evidence)dbGetObject(nr);
+		EvidenceNode *e = (EvidenceNode *)dbGetObject(nr);
 
-		gfxShow((uint16)((Person) dbGetObject(e->pers))->PictID,
+		gfxShow((uint16)((PersonNode *) dbGetObject(e->pers))->PictID,
 		        GFX_NO_REFRESH | GFX_OVERLAY | GFX_BLEND_UP, 0, -1, -1);
 	} else if (dbIsObject(nr, Object_Tool))
-		gfxShow(((Tool)(dbGetObject(nr)))->PictID,
+		gfxShow(((ToolNode *)(dbGetObject(nr)))->PictID,
 		        GFX_NO_REFRESH | GFX_OVERLAY | GFX_BLEND_UP, 0, -1, -1);
 	else if (dbIsObject(nr, Object_Loot))
-		gfxShow(((Loot)(dbGetObject(nr)))->PictID,
+		gfxShow(((LootNode *)(dbGetObject(nr)))->PictID,
 		        GFX_NO_REFRESH | GFX_OVERLAY | GFX_BLEND_UP, 0, -1, -1);
 
 	gfxShow((uint16) BIG_SHEET, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);   /* nur die Farben ! */

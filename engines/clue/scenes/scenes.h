@@ -64,9 +64,9 @@ void Investigate(const char *location);
 void SetCarColors(byte index);
 
 void tcSellCar(uint32 ObjectID);
-void tcColorCar(Car car);
-void tcRepairCar(Car car, const char *repairWhat);
-void tcCarGeneralOverhoul(Car car);
+void tcColorCar(CarNode *car);
+void tcRepairCar(CarNode *car, const char *repairWhat);
+void tcCarGeneralOverhoul(CarNode *car);
 void tcToolsShop();
 
 int32 tcEscapeFromBuilding(uint32 escBits);
@@ -79,8 +79,8 @@ NewList<NewNode>* tcMakeLootList(uint32 containerID, uint32 relID);
 Common::String tcShowPriceOfCar(uint32 nr, uint32 type, void *data);
 Common::String tcShowPriceOfTool(uint32 nr, uint32 type, void *data);
 
-void tcDealerSays(Person dealer, byte textNr, int32 perc);
-void tcDealerOffer(Person dealer, byte which);
+void tcDealerSays(PersonNode *dealer, byte textNr, int32 perc);
+void tcDealerOffer(PersonNode *dealer, byte which);
 
 void tcBuyCar();
 void tcCarInGarage(uint32 carID);
@@ -95,7 +95,7 @@ uint32 tcStartEvidence();
 uint32 tcGoInsideOfHouse(uint32 buildingID);
 
 void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc);
-void tcShowObjectData(uint32 areaID, NewObjectNode *node, byte perc);
+void tcShowObjectData(uint32 areaID, dbObjectNode *node, byte perc);
 
 } // End of namespace Clue
 

@@ -139,7 +139,7 @@ void Information() {
 			hasAll(Person_Matt_Stuvysunt,
 			       OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
 			       Object_Car);
-			NewObjectList<NewObjectNode> *list = ObjectListPrivate;
+			NewObjectList<dbObjectNode> *list = ObjectListPrivate;
 
 			if (!list->isEmpty()) {
 				Common::String enough =  g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "GENUG");
@@ -163,7 +163,7 @@ void Information() {
 			knowsAll(Person_Matt_Stuvysunt,
 			         OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
 			         Object_Person);
-			NewObjectList<NewObjectNode> *list = ObjectListPrivate;
+			NewObjectList<dbObjectNode> *list = ObjectListPrivate;
 
 			if (!list->isEmpty()) {
 				Common::String enough = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "GENUG");
@@ -187,7 +187,7 @@ void Information() {
 			hasAll(Person_Matt_Stuvysunt,
 			       OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
 			       Object_Tool);
-			NewObjectList<NewObjectNode> *list = ObjectListPrivate;
+			NewObjectList<dbObjectNode> *list = ObjectListPrivate;
 
 			if (!list->isEmpty()) {
 				SetBubbleType(THINK_BUBBLE);
@@ -211,7 +211,7 @@ void Information() {
 			hasAll(Person_Matt_Stuvysunt,
 			       OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
 			       Object_Building);
-			NewObjectList<NewObjectNode> *list = ObjectListPrivate;
+			NewObjectList<dbObjectNode> *list = ObjectListPrivate;
 
 			if (!list->isEmpty()) {
 				SetBubbleType(THINK_BUBBLE);
@@ -268,7 +268,7 @@ void Look(uint32 locNr) {
 
 		case 1: {
 			uint32 objID = GetObjNrOfLocation(locNr);
-			NewObjectList<NewObjectNode> *bubble = nullptr;
+			NewObjectList<dbObjectNode> *bubble = nullptr;
 			if (objID) {
 				hasAll(objID, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Person);
 				bubble = ObjectListPrivate;
@@ -302,7 +302,7 @@ uint32 tcTelefon() {
 	// CHECKME: Always returns 0
 
 	uint32 eventNr = 0L;
-	Person ben = (Person)dbGetObject(Person_Ben_Riggley);
+	PersonNode *ben = (PersonNode *)dbGetObject(Person_Ben_Riggley);
 	gfxShow(175, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1);
 	knowsAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Person);
 

@@ -27,15 +27,15 @@
 namespace Clue {
 
 /* private defines */
-#define dbGetObjectReal(key)  (((struct dbObject *)key)-1)
-#define dbGetObjectKey(obj)   ((void *)(obj+1))
+// #define dbGetObjectReal(key)  (((struct dbObject *)key)-1)
+// #define dbGetObjectKey(obj)   ((void *)(obj+1))
 #define dbGetObjectHashNr(nr) ((uint8)(nr % OBJ_HASH_SIZE))
 
 #define EOS                   ((char)'\0')
 
 
 /* private definitions */
-extern List *objHash[OBJ_HASH_SIZE];
+extern NewList<dbObjectNode> *objHash[OBJ_HASH_SIZE];
 extern char decodeStr[11];
 
 extern uint32 ObjectListType;
@@ -43,12 +43,12 @@ extern uint32 ObjectListFlags;
 
 
 /* private prototypes - RELATION */
-int dbCompare(KEY key1, KEY key2);
-char *dbDecode(KEY key);
-KEY dbEncode(const char *key);
+int dbCompare(dbObjectNode *key1, dbObjectNode *key2);
+char *dbDecode(dbObjectNode *key);
+dbObjectNode *dbEncode(const char *key);
 
 /* private prototypes - OBJECT */
-struct dbObject *dbFindRealObject(uint32 realNr, uint32 offset, uint32 size);
+dbObjectNode *dbFindRealObject(uint32 realNr, uint32 offset, uint32 size);
 
 } // End of namespace Clue
 

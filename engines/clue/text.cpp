@@ -41,6 +41,12 @@ namespace Clue {
 NewNode::NewNode() {
 	this->_pred = nullptr;
 	this->_succ = nullptr;
+	this->_name = "";
+}
+
+NewNode::NewNode(Common::String name) : _name(name){
+	this->_pred = nullptr;
+	this->_succ = nullptr;
 }
 
 NewNode::~NewNode() {

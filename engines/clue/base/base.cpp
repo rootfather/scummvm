@@ -290,46 +290,45 @@ void ClueEngine::setFullEnviroment() {
 
 	/* Matt has investigated all buildings */
 	hasSet(Person_Matt_Stuvysunt, Building_Kiosk);
-	((Building) dbGetObject(Building_Kiosk))->Exactlyness = 255;
+	((BuildingNode *) dbGetObject(Building_Kiosk))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Tante_Emma_Laden);
-	((Building) dbGetObject(Building_Tante_Emma_Laden))->Exactlyness = 255;
+	((BuildingNode *) dbGetObject(Building_Tante_Emma_Laden))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Juwelier);
-	((Building) dbGetObject(Building_Juwelier))->Exactlyness = 255;
+	((BuildingNode *) dbGetObject(Building_Juwelier))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Old_Curiosity_Shop);
-	((Building) dbGetObject(Building_Old_Curiosity_Shop))->Exactlyness = 255;
+	((BuildingNode *) dbGetObject(Building_Old_Curiosity_Shop))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Pink_Villa);
-	((Building) dbGetObject(Building_Pink_Villa))->Exactlyness = 255;
+	((BuildingNode*) dbGetObject(Building_Pink_Villa))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Seniorenheim);
-	((Building) dbGetObject(Building_Seniorenheim))->Exactlyness = 255;
+	((BuildingNode *) dbGetObject(Building_Seniorenheim))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Grab_von_Karl_Marx);
-	((Building) dbGetObject(Building_Grab_von_Karl_Marx))->Exactlyness = 255;
+	((BuildingNode *) dbGetObject(Building_Grab_von_Karl_Marx))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Villa);
-	((Building) dbGetObject(Building_Villa))->Exactlyness = 255;
+	((BuildingNode *) dbGetObject(Building_Villa))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Kenwood_House);
-	((Building) dbGetObject(Building_Kenwood_House))->Exactlyness = 255;
+	((BuildingNode *) dbGetObject(Building_Kenwood_House))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Ham_House);
-	((Building) dbGetObject(Building_Ham_House))->Exactlyness = 255;
+	((BuildingNode *) dbGetObject(Building_Ham_House))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Osterly_Park_House);
-	((Building) dbGetObject(Building_Osterly_Park_House))->Exactlyness = 255;
+	((BuildingNode *) dbGetObject(Building_Osterly_Park_House))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Chiswick_House);
-	((Building) dbGetObject(Building_Chiswick_House))->Exactlyness = 255;
+	((BuildingNode *) dbGetObject(Building_Chiswick_House))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Suterbys);
-	((Building) dbGetObject(Building_Suterbys))->Exactlyness = 255;
+	((BuildingNode *) dbGetObject(Building_Suterbys))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_British_Museum);
-	((Building) dbGetObject(Building_British_Museum))->Exactlyness = 255;
+	((BuildingNode *) dbGetObject(Building_British_Museum))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Natural_Museum);
-	((Building) dbGetObject(Building_Natural_Museum))->Exactlyness = 255;
+	((BuildingNode *) dbGetObject(Building_Natural_Museum))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_National_Galery);
-	((Building) dbGetObject(Building_National_Galery))->Exactlyness = 255;
+	((BuildingNode *) dbGetObject(Building_National_Galery))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Victoria_und_Albert_Museum);
-	((Building) dbGetObject(Building_Victoria_und_Albert_Museum))->Exactlyness =
-	    255;
+	((BuildingNode *) dbGetObject(Building_Victoria_und_Albert_Museum))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Bank_of_England);
-	((Building) dbGetObject(Building_Bank_of_England))->Exactlyness = 255;
+	((BuildingNode *) dbGetObject(Building_Bank_of_England))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Tower_of_London);
-	((Building) dbGetObject(Building_Tower_of_London))->Exactlyness = 255;
+	((BuildingNode *) dbGetObject(Building_Tower_of_London))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Starford_Kaserne);
-	((Building) dbGetObject(Building_Starford_Kaserne))->Exactlyness = 255;
+	((BuildingNode *) dbGetObject(Building_Starford_Kaserne))->Exactlyness = 255;
 
 	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		hasSet(Person_Matt_Stuvysunt, Car_Rover_75_1949);
@@ -353,22 +352,21 @@ void ClueEngine::setFullEnviroment() {
 		joinSet(Person_Matt_Stuvysunt, Person_Pere_Ubu);
 
 		hasSet(Person_Matt_Stuvysunt, Building_Baker_Street);
-		((Building) dbGetObject(Building_Baker_Street))->Exactlyness = 255;
+		((BuildingNode *) dbGetObject(Building_Baker_Street))->Exactlyness = 255;
 		hasSet(Person_Matt_Stuvysunt, Building_Madame_Tussaud);
-		((Building) dbGetObject(Building_Madame_Tussaud))->Exactlyness = 255;
+		((BuildingNode *) dbGetObject(Building_Madame_Tussaud))->Exactlyness = 255;
 		hasSet(Person_Matt_Stuvysunt, Building_Westminster_Abbey);
-		((Building) dbGetObject(Building_Westminster_Abbey))->Exactlyness = 255;
+		((BuildingNode *) dbGetObject(Building_Westminster_Abbey))->Exactlyness = 255;
 		hasSet(Person_Matt_Stuvysunt, Building_Downing_Street_10);
-		((Building) dbGetObject(Building_Downing_Street_10))->Exactlyness = 255;
+		((BuildingNode *) dbGetObject(Building_Downing_Street_10))->Exactlyness = 255;
 		hasSet(Person_Matt_Stuvysunt, Building_Postzug);
-		((Building) dbGetObject(Building_Postzug))->Exactlyness = 255;
+		((BuildingNode *) dbGetObject(Building_Postzug))->Exactlyness = 255;
 		hasSet(Person_Matt_Stuvysunt, Building_Tate_Gallery);
-		((Building) dbGetObject(Building_Tate_Gallery))->Exactlyness = 255;
+		((BuildingNode *) dbGetObject(Building_Tate_Gallery))->Exactlyness = 255;
 		hasSet(Person_Matt_Stuvysunt, Building_Buckingham_Palace);
-		((Building) dbGetObject(Building_Buckingham_Palace))->Exactlyness = 255;
+		((BuildingNode *) dbGetObject(Building_Buckingham_Palace))->Exactlyness = 255;
 		hasSet(Person_Matt_Stuvysunt, Building_Bulstrode_Chemestry_Ltd);
-		((Building) dbGetObject(Building_Bulstrode_Chemestry_Ltd))->Exactlyness =
-		    255;
+		((BuildingNode *) dbGetObject(Building_Bulstrode_Chemestry_Ltd))->Exactlyness = 255;
 	}
 }
 

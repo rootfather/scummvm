@@ -23,7 +23,7 @@
 namespace Clue {
 
 uint32 CurrAreaId;
-LSObject CurrLSO;       /* for FadeObjectInside */
+LSObjectNode *CurrLSO;       /* for FadeObjectInside */
 
 static void FadeInsideObject() {
 	static byte status = 1;
@@ -36,7 +36,7 @@ uint32 tcGoInsideOfHouse(uint32 buildingID) {
 	uint32 areaID = 0;
 
 	consistsOfAll(buildingID, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME, Object_LSArea);
-	NewObjectList<NewObjectNode> *areas = ObjectListPrivate;
+	NewObjectList<dbObjectNode> *areas = ObjectListPrivate;
 	dbSortObjectList(&areas, dbStdCompareObjects);
 
 	uint32 count = areas->getNrOfNodes() + 1;
@@ -70,7 +70,7 @@ uint32 tcGoInsideOfHouse(uint32 buildingID) {
 }
 
 void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
-	LSArea area = (LSArea)dbGetObject(areaID);
+	LSAreaNode *area = (LSAreaNode *)dbGetObject(areaID);
 	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "LookMenu");
 
 	Common::String alarm = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "PROTECTED");
@@ -82,12 +82,12 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 	/* liste und node initialisieren */
 	SetObjectListAttr(OLF_PRIVATE_LIST, Object_LSObject);
 	AskAll(area, ConsistOfRelationID, BuildObjectList);
-	NewObjectList<NewObjectNode> *objects = ObjectListPrivate;
+	NewObjectList<dbObjectNode> *objects = ObjectListPrivate;
 
 	/*lsSortObjectList(&objects);*/
 
 	uint32 count = (objects->getNrOfNodes() * perc) / 255;
-	NewObjectNode *node = lsGetSuccObject(objects->getListHead());
+	dbObjectNode *node = lsGetSuccObject(objects->getListHead());
 
 	CurrAreaId = areaID;
 
@@ -97,7 +97,7 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 	} else {
 		uint32 action = 0;
 		while (action != 4) {
-			LSObject lso = (LSObject) node->_data;
+			LSObjectNode *lso = (LSObjectNode *)node;
 			Common::String name = dbGetObjectName(lso->Type);
 
 			if (lso->uch_Chained) {
@@ -141,7 +141,7 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 
 			switch (action) {
 			case 0: {
-				NewObjectNode *n = lsGetSuccObject(node);
+				dbObjectNode *n = lsGetSuccObject(node);
 				if (objects->getNodeNrByAddr(n) < (count - 1))
 					node = n;
 				}
@@ -167,7 +167,7 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 				break;
 			}
 
-			lso = (LSObject) node->_data;
+			lso = (LSObjectNode *) node;
 			lsFadeRasterObject(areaID, lso, 1);
 		}
 	}
@@ -177,25 +177,24 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 	inpSetWaitTicks(0);
 }
 
-void tcShowObjectData(uint32 areaID, NewObjectNode *node, byte perc) {
+void tcShowObjectData(uint32 areaID, dbObjectNode *node, byte perc) {
 	/* Objekt selbst präsentieren */
 	Present(node->_nr, "RasterObject", InitObjectPresent);
 
 	/* Inhalt zusammenstellen */
 	SetObjectListAttr(OLF_NORMAL, Object_Loot);
-	AskAll(node->_data, hasLootRelationID, BuildObjectList);
+	AskAll(node, hasLootRelationID, BuildObjectList);
 
 	if (!ObjectList->isEmpty()) {
 		/* alle Loots durchgehen und anzeigen! */
-		for (NewObjectNode *n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
+		for (dbObjectNode *n = ObjectList->getListHead(); n->_succ; n = (dbObjectNode *)n->_succ) {
 			/* zur Variablenübergabe... (DIRTY, DIRTY...) */
-			SetP(n->_data, hasLootRelationID, n->_data,
-			     GetP(node->_data, hasLootRelationID, n->_data));
+			SetP(n, hasLootRelationID, n, GetP(node, hasLootRelationID, n));
 
 			Present(n->_nr, "RasterObject", InitOneLootPresent);
 
 			/* kill these dirty things! */
-			UnSet(n->_data, hasLootRelationID, n->_data);
+			UnSet(n, hasLootRelationID, n);
 		}
 	}
 

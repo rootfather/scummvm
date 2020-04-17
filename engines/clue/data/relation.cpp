@@ -13,14 +13,14 @@
 
 #include "clue/data/relation.h"
 
+#include "database.h"
+
 namespace Clue {
 
 static RELATION nrOfRelations = 1;
-static struct relationDef *relationsDefBase = NULL;
+static struct relationDef *relationsDefBase = nullptr;
 
-int (*CompareKey)(KEY, KEY) = NULL;
-KEY(*EncodeKey)(char *) = NULL;
-char *(*DecodeKey)(KEY) = NULL;
+int (*CompareKey)(dbObjectNode *, dbObjectNode *) = nullptr;
 
 
 static struct relationDef *FindRelation(RELATION id) {
@@ -92,7 +92,7 @@ RELATION RemRelation(RELATION id) {
 	return 0;
 }
 
-RELATION SetP(KEY leftKey, RELATION id, KEY rightKey, PARAMETER parameter) {
+RELATION SetP(dbObjectNode *leftKey, RELATION id, dbObjectNode *rightKey, PARAMETER parameter) {
 	struct relationDef *rd = FindRelation(id);
 
 	if (rd && CompareKey) {
@@ -120,7 +120,7 @@ RELATION SetP(KEY leftKey, RELATION id, KEY rightKey, PARAMETER parameter) {
 	return 0;
 }
 
-RELATION UnSet(KEY leftKey, RELATION id, KEY rightKey) {
+RELATION UnSet(dbObjectNode *leftKey, RELATION id, dbObjectNode *rightKey) {
 	struct relationDef *rd = FindRelation(id);
 
 	if (rd && CompareKey) {
@@ -141,7 +141,7 @@ RELATION UnSet(KEY leftKey, RELATION id, KEY rightKey) {
 	return 0;
 }
 
-PARAMETER GetP(KEY leftKey, RELATION id, KEY rightKey) {
+PARAMETER GetP(dbObjectNode *leftKey, RELATION id, dbObjectNode *rightKey) {
 	struct relationDef *rd = FindRelation(id);
 
 	if (rd && CompareKey) {
@@ -155,13 +155,12 @@ PARAMETER GetP(KEY leftKey, RELATION id, KEY rightKey) {
 	return NO_PARAMETER;
 }
 
-RELATION AskP(KEY leftKey, RELATION id, KEY rightKey, PARAMETER parameter, COMPARSION comparsion) {
+RELATION AskP(dbObjectNode *leftKey, RELATION id, dbObjectNode *rightKey, PARAMETER parameter, COMPARSION comparsion) {
 	struct relationDef *rd = FindRelation(id);
 
 	if (rd && CompareKey) {
 		for (struct relation *r = rd->rd_relationsTable; r; r = r->r_next) {
-			if (CompareKey(r->r_leftKey, leftKey)
-			        && CompareKey(r->r_rightKey, rightKey)) {
+			if (CompareKey(r->r_leftKey, leftKey) && CompareKey(r->r_rightKey, rightKey)) {
 				if (comparsion && (parameter != NO_PARAMETER)) {
 					if (comparsion & CMP_EQUAL) {
 						if (comparsion & CMP_HIGHER)
@@ -188,12 +187,17 @@ RELATION AskP(KEY leftKey, RELATION id, KEY rightKey, PARAMETER parameter, COMPA
 	return 0;
 }
 
-void AskAll(KEY leftKey, RELATION id, void (*UseKey)(void *)) {
+void AskAll(dbObjectNode *leftKey, RELATION id, void (*UseKey)(dbObjectNode *)) {
 	struct relationDef *rd = FindRelation(id);
 
 	if (rd && CompareKey) {
 		for (struct relation *r = rd->rd_relationsTable; r; r = r->r_next) {
 			if (CompareKey(r->r_leftKey, leftKey)) {
+				for (int ii = 0; ii < OBJ_HASH_SIZE; ++ii) {
+					auto test = objHash[ii]->_tail->_pred->_succ->_pred;
+					//		warning("%s", test->_name.c_str());
+				}
+				
 				if (UseKey)
 					UseKey(r->r_rightKey);
 			}
@@ -202,7 +206,7 @@ void AskAll(KEY leftKey, RELATION id, void (*UseKey)(void *)) {
 }
 
 int SaveRelations(const char *file, uint32 offset, uint32 size, uint16 disk_id) {
-	if (relationsDefBase && DecodeKey) {
+	if (relationsDefBase) {
 		Common::Stream *fh = dskOpen(file, 1);
 		if (fh) {
 			dskSetLine(fh, REL_FILE_MARK);
@@ -218,8 +222,8 @@ int SaveRelations(const char *file, uint32 offset, uint32 size, uint16 disk_id) 
 					for (struct relation *r = rd->rd_relationsTable; r; r = r->r_next) {
 						char left[256];
 						char right[256];
-						strcpy(left, DecodeKey(r->r_leftKey));
-						strcpy(right, DecodeKey(r->r_rightKey));
+						sprintf(left, "%u", r->r_leftKey->_nr);
+						sprintf(right, "%u", r->r_rightKey->_nr);
 						dskSetLine(fh, left);
 						dskSetLine(fh, right);
 						dskSetLine_U32(fh, r->r_parameter);
@@ -245,61 +249,59 @@ bool LoadRelations(const char *file, uint16 disk_id) {
 	left[0] = '\0';
 	right[0] = '\0';
 
-	if (EncodeKey) {
-		Common::Stream *fh = dskOpen(file, 0);
-		if (fh) {
+	Common::Stream *fh = dskOpen(file, 0);
+	if (fh) {
+		dskGetLine(buffer, sizeof(buffer), fh);
+
+		if (strcmp(buffer, REL_FILE_MARK) == 0) {
 			dskGetLine(buffer, sizeof(buffer), fh);
 
-			if (strcmp(buffer, REL_FILE_MARK) == 0) {
-				dskGetLine(buffer, sizeof(buffer), fh);
+			while (!dskEOF(fh) && strcmp(buffer, REL_TABLE_MARK) == 0) {
+				RELATION rd;
+				dskGetLine_U32(fh, &rd);
 
-				while (!dskEOF(fh) && strcmp(buffer, REL_TABLE_MARK) == 0) {
-					RELATION rd;
-					dskGetLine_U32(fh, &rd);
+				bool goOn = false;
+				if (FindRelation(rd))
+					goOn = true;
+				else if (AddRelation(rd))
+					goOn = true;
 
-					bool goOn = false;
-					if (FindRelation(rd))
-						goOn = true;
-					else if (AddRelation(rd))
-						goOn = true;
-
-					if (goOn) {
-						while (dskGetLine(left, sizeof(left), fh)) {
-							if (strcmp(left, REL_TABLE_MARK) == 0) {
-								strcpy(buffer, left);
-								break;
-							}
-
-							uint32 dummy;
-							if (sscanf(left, "%u", &dummy) != 1)
-								break;
-
-							dskGetLine(right, sizeof(right), fh);
-
-							if (sscanf(right, "%u", &dummy) != 1)
-								break;
-
-							PARAMETER parameter;
-							if (!dskGetLine_U32(fh, &parameter))
-								break;
-
-							if (!SetP(EncodeKey(left), rd, EncodeKey(right), parameter)) {
-								dskClose(fh);
-								return false;
-							}
+				if (goOn) {
+					while (dskGetLine(left, sizeof(left), fh)) {
+						if (strcmp(left, REL_TABLE_MARK) == 0) {
+							strcpy(buffer, left);
+							break;
 						}
-					} else {
-						dskClose(fh);
-						return false;
-					}
-				}
 
-				dskClose(fh);
-				return true;
+						uint32 dummy;
+						if (sscanf(left, "%u", &dummy) != 1)
+							break;
+
+						dskGetLine(right, sizeof(right), fh);
+
+						if (sscanf(right, "%u", &dummy) != 1)
+							break;
+
+						PARAMETER parameter;
+						if (!dskGetLine_U32(fh, &parameter))
+							break;
+
+						if (!SetP(dbGetObject(atol(left)), rd, dbGetObject(atol(right)), parameter)) {
+							dskClose(fh);
+							return false;
+						}
+					}
+				} else {
+					dskClose(fh);
+					return false;
+				}
 			}
 
 			dskClose(fh);
+			return true;
 		}
+
+		dskClose(fh);
 	}
 
 	return false;

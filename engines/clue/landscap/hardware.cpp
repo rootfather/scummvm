@@ -26,13 +26,13 @@
 namespace Clue {
 
 static MemRastPort *lsPrepareFromMemBySize(byte uch_Size);
-static MemRastPort *lsPrepareFromMem(LSObject lso);
+static MemRastPort *lsPrepareFromMem(LSObjectNode *lso);
 void lsBlitOneObject(MemRastPort *rp, uint16 offsetFact, uint16 dx, uint16 dy, uint16 size);
 
 uint16 us_ScrollX, us_ScrollY;
 
 void lsShowEscapeCar() {
-	Building b = (Building)dbGetObject(ls->ul_BuildingID);
+	BuildingNode *b = (BuildingNode *)dbGetObject(ls->ul_BuildingID);
 
 	livPrepareAnims();
 
@@ -41,7 +41,7 @@ void lsShowEscapeCar() {
 	BobVis(ls->us_EscapeCarBobId);
 }
 
-static void lsSetAlarmPict(LSObject lso) {
+static void lsSetAlarmPict(LSObjectNode *lso) {
 	uint16 x0, x1, y0, y1;
 	lsCalcExactSize(lso, &x0, &y0, &x1, &y1);
 
@@ -60,8 +60,8 @@ static void lsRefreshClosedDoors(uint16 us_X0, uint16 us_Y0,
                                  uint16 us_X1, uint16 us_Y1) {
 	ls->uch_ShowObjectMask = 0x40;
 
-	for (NewObjectNode *node = ls->p_ObjectRetrieval->getListHead(); node->_succ; node = (NewObjectNode *)node->_succ) {
-		LSObject lso = (LSObject)node->_data;
+	for (dbObjectNode *node = ls->p_ObjectRetrieval->getListHead(); node->_succ; node = (dbObjectNode *)node->_succ) {
+		LSObjectNode *lso = (LSObjectNode *)node;
 
 		if (lsIsInside(lso, us_X0, us_Y0, us_X1, us_Y1)) {
 			if (lsIsObjectADoor(lso)) {
@@ -73,7 +73,7 @@ static void lsRefreshClosedDoors(uint16 us_X0, uint16 us_Y0,
 	ls->uch_ShowObjectMask = 0x0;
 }
 
-void lsRefreshStatue(LSObject lso) {
+void lsRefreshStatue(LSObjectNode *lso) {
 /* dirty, dirty, violates pretty much all conventions for DerClou!
    and, unbelievably, should work nevertheless.
    This lso represents the statue, it is not displayed, we only
@@ -86,7 +86,7 @@ void lsRefreshStatue(LSObject lso) {
 
 	uint16 size = 16;          /* is the size correct ?? */
 
-	struct _LSObject dummy; /* only passed to lsPrepareFromMem */
+	LSObjectNode dummy; /* only passed to lsPrepareFromMem */
 	dummy.uch_Size = (byte) size;
 
 	MemRastPort *rp = lsPrepareFromMem(&dummy);
@@ -102,7 +102,7 @@ void lsRefreshStatue(LSObject lso) {
 	ls->uch_ShowObjectMask = 0x0;
 }
 
-void lsFastRefresh(LSObject lso) {
+void lsFastRefresh(LSObjectNode *lso) {
 	ls->uch_ShowObjectMask = 0x40;  /* ignore bit 6 */
 
 	switch (lso->Type) {
@@ -130,7 +130,7 @@ void lsFastRefresh(LSObject lso) {
 		if (lso->uch_Visible == LS_OBJECT_VISIBLE)
 			lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_ALL);
 		else {
-			LSArea area = (LSArea)dbGetObject(lsGetActivAreaID());
+			LSAreaNode *area = (LSAreaNode *)dbGetObject(lsGetActivAreaID());
 			byte color = LS_REFRESH_SHADOW_COLOR1;
 
 			uint16 x0, x1, y0, y1;
@@ -213,7 +213,7 @@ static MemRastPort *lsPrepareFromMemBySize(byte uch_Size) {
 }
 
 /* put the collection with the image of an lso into the LS_PREPARE_BUFFER */
-static MemRastPort *lsPrepareFromMem(LSObject lso) {
+static MemRastPort *lsPrepareFromMem(LSObjectNode *lso) {
 	return lsPrepareFromMemBySize(lso->uch_Size);
 }
 
@@ -235,8 +235,8 @@ void lsBlitOneObject(MemRastPort *rp, uint16 offsetFact, uint16 dx, uint16 dy, u
 
 }
 
-bool lsShowOneObject(LSObject lso, int16 destx, int16 desty, uint32 ul_Mode) {
-	Item item = (Item)dbGetObject(lso->Type);
+bool lsShowOneObject(LSObjectNode *lso, int16 destx, int16 desty, uint32 ul_Mode) {
+	ItemNode *item = (ItemNode *)dbGetObject(lso->Type);
 	bool show = false;
 
 	switch (lso->Type) {

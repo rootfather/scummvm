@@ -128,8 +128,11 @@ NewList<NewNode> *LoadSystem(Common::Stream *fh, struct System *sys) {
 							// The new node doesn't, but needs extra testing.
 							// dbAddObjectNode(l, id, OLF_INCLUDE_NAME);
 							warning("CHECKME - Code modified in LoadSystem");
-							dbObject *obj = dbGetObjectReal(dbGetObject(id));
-							l->createNode(obj->link.Name);
+							dbObjectNode *test = dbGetObject(id);
+							l->createNode(test->_name);
+							//the intermediate code:
+							//dbObject* obj = dbGetObjectReal(dbGetObject(id));
+							//l->createNode(obj->link.Name);
 						}
 						foundAll = false;
 					}

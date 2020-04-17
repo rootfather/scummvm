@@ -36,7 +36,7 @@ uint32 plGetNextLoot() {
 
 /* check support */
 bool plLivingsPosAtCar(uint32 bldId) {
-	Building bldObj = (Building) dbGetObject(bldId);
+	BuildingNode *bldObj = (BuildingNode *) dbGetObject(bldId);
 
 	uint16 carxpos = bldObj->CarXPos + 8;
 	uint16 carypos = bldObj->CarYPos + 8;
@@ -104,11 +104,11 @@ bool plAllInCar(uint32 bldId) {
 }
 
 byte plIsStair(uint32 objId) {
-	return (byte)((((LSObject) dbGetObject(objId))->Type == Item_Treppe));
+	return (byte)((((LSObjectNode *) dbGetObject(objId))->Type == Item_Treppe));
 }
 
 /* special items support */
-void plCorrectOpened(LSObject obj, byte open) {
+void plCorrectOpened(LSObjectNode *obj, byte open) {
 	switch (obj->Type) {
 	case Item_Holztuer:
 	case Item_Stahltuer:
@@ -127,7 +127,7 @@ void plCorrectOpened(LSObject obj, byte open) {
 byte plIgnoreLock(uint32 objId) {
 	byte back = 0;
 
-	switch (((LSObject) dbGetObject(objId))->Type) {
+	switch (((LSObjectNode *) dbGetObject(objId))->Type) {
 	case Item_Alarmanlage_Z3:
 		back = PLANING_ALARM_Z3;
 		break;
@@ -193,8 +193,8 @@ void plWork(uint32 current) {
 	}
 }
 
-NewObjectList<NewObjectNode> *plGetObjectsList(uint32 current, byte addLootBags) {
-	NewObjectList<NewObjectNode> *list = nullptr;
+NewObjectList<dbObjectNode> *plGetObjectsList(uint32 current, byte addLootBags) {
+	NewObjectList<dbObjectNode> *list = nullptr;
 
 	uint32 areaId = livWhereIs(Planing_Name[current]);
 	uint32 oldAreaId = lsGetCurrObjectRetrieval();
@@ -230,7 +230,7 @@ NewObjectList<NewObjectNode> *plGetObjectsList(uint32 current, byte addLootBags)
 	return list;
 }
 
-void plInsertGuard(NewObjectList<NewObjectNode> *list, uint32 current, uint32 guard) {
+void plInsertGuard(NewObjectList<dbObjectNode> *list, uint32 current, uint32 guard) {
 	switch (livGetViewDirection(Planing_Name[current])) {
 	case ANM_MOVE_LEFT:
 		tcInsertGuard(list, Planing_GuardRoomList[guard - BurglarsNr],
@@ -275,7 +275,7 @@ void plInsertGuard(NewObjectList<NewObjectNode> *list, uint32 current, uint32 gu
 }
 
 bool plObjectInReach(uint32 current, uint32 objId) {
-	NewObjectList<NewObjectNode> *actionList = plGetObjectsList(current, 1);
+	NewObjectList<dbObjectNode> *actionList = plGetObjectsList(current, 1);
 	bool ret = false;
 
 	for (byte i = BurglarsNr; i < PersonsNr; i++)

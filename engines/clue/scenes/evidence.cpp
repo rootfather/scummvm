@@ -24,13 +24,13 @@
 namespace Clue {
 
 uint32 tcPersonWanted(uint32 persId);
-bool tcPersonQuestioning(Person person);
+bool tcPersonQuestioning(PersonNode *person);
 
 struct Search Search;
 
-static bool tcCarFound(Car car, uint32 time) {
-	Person john = (Person)dbGetObject(Person_John_Gludo);
-	Person miles = (Person)dbGetObject(Person_Miles_Chickenwing);
+static bool tcCarFound(CarNode *car, uint32 time) {
+	PersonNode *john = (PersonNode *)dbGetObject(Person_John_Gludo);
+	PersonNode *miles = (PersonNode *)dbGetObject(Person_Miles_Chickenwing);
 
 	bool found = false;
 
@@ -68,7 +68,7 @@ static bool tcCarFound(Car car, uint32 time) {
 static uint32 tcATraitor(uint32 traitorId) {
 	NewList<NewNode> *bubble = g_clue->_txtMgr->goKey(BUSINESS_TXT, "A_TRAITOR");
 	NewList<NewNode> *newList = new NewList<NewNode>;
-	Person john = (Person)dbGetObject(Person_John_Gludo);
+	PersonNode *john = (PersonNode *)dbGetObject(Person_John_Gludo);
 
 	Common::String name = dbGetObjectName(traitorId);
 	Common::String line = Common::String::format(bubble->getListHead()->_name.c_str(), name.c_str());
@@ -89,8 +89,8 @@ static uint32 tcATraitor(uint32 traitorId) {
 }
 
 static uint32 tcIsThereATraitor() {
-	Player player = (Player)dbGetObject(Player_Player_1);
-	Person matt = (Person)dbGetObject(Person_Matt_Stuvysunt);
+	PlayerNode *player = (PlayerNode *)dbGetObject(Player_Player_1);
+	PersonNode *matt = (PersonNode *)dbGetObject(Person_Matt_Stuvysunt);
 	uint32 traitorId = 0, caught = 0;
 
 	if (player->JobOfferCount > 50 + g_clue->calcRandomNr(0, 20)) { /* ein Verrat?! */
@@ -99,8 +99,8 @@ static uint32 tcIsThereATraitor() {
 			             Object_Person);
 
 			byte symp = 255;
-			for (NewObjectNode *n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
-				Person pers = (Person)n->_data;
+			for (dbObjectNode *n = ObjectList->getListHead(); n->_succ; n = (dbObjectNode *)n->_succ) {
+				PersonNode *pers = (PersonNode *)n;
 
 				if (n->_nr != Person_Matt_Stuvysunt) {    /* Matt verrät sich nicht selbst */
 					if ((traitorId == 0) || (pers->Known < symp)) {
@@ -118,43 +118,43 @@ static uint32 tcIsThereATraitor() {
 }
 
 uint32 tcStartEvidence() {
-	Evidence evidence = (Evidence)dbGetObject(Evidence_Evidence_1); /* just for presentation */
+	EvidenceNode *evidence = (EvidenceNode *)dbGetObject(Evidence_Evidence_1); /* just for presentation */
 
 	if ((!(Search.EscapeBits & FAHN_ALARM)) && (!(Search.EscapeBits & FAHN_QUIET_ALARM)))
-		Say(BUSINESS_TXT, 0, ((Person) dbGetObject(Person_John_Gludo))->PictID,
+		Say(BUSINESS_TXT, 0, ((PersonNode *) dbGetObject(Person_John_Gludo))->PictID,
 		    "A_BURGLARY_SIR");
 
-	Say(BUSINESS_TXT, 0, ((Person) dbGetObject(Person_Miles_Chickenwing))->PictID, 
+	Say(BUSINESS_TXT, 0, ((PersonNode *) dbGetObject(Person_Miles_Chickenwing))->PictID, 
 		"START_EVIDENCE");
 
 	joined_byAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST, Object_Person);
 
-	NewObjectList<NewObjectNode> *guys = ObjectListPrivate;
+	NewObjectList<dbObjectNode> *guys = ObjectListPrivate;
 	dbSortObjectList(&guys, dbStdCompareObjects);
 
 	byte guyCount = (byte)guys->getNrOfNodes();
 	NewList<NewNode> *spuren = g_clue->_txtMgr->goKey(BUSINESS_TXT, "SPUREN");
 
-	Person p[4];
-	p[0] = p[1] = p[2] = p[3] = NULL;
+	PersonNode *p[4];
+	p[0] = p[1] = p[2] = p[3] = nullptr;
 
-	int32 guarded = ChangeAbs(((Building) dbGetObject(Search.BuildingId))->GRate,
-	                    ((Building) dbGetObject(Search.BuildingId))->Strike / 7,
+	int32 guarded = ChangeAbs(((BuildingNode *) dbGetObject(Search.BuildingId))->GRate,
+	                    ((BuildingNode *) dbGetObject(Search.BuildingId))->Strike / 7,
 	                    0, 255);
 
-	int32 radio = (int32)((Building) dbGetObject(Search.BuildingId))->RadioGuarding;
+	int32 radio = (int32)((BuildingNode *) dbGetObject(Search.BuildingId))->RadioGuarding;
 
-	NewObjectNode *n;
+	dbObjectNode *n;
 	int i= 0;
 	int32 MyEvidence[4][7];
 	uint32 totalEvidence[7];
 	uint32 shownEvidence[4];
 	uint32 Recognition[4];
 
-	for (n = guys->getListHead(), i = 0; n->_succ; n = (NewObjectNode *) n->_succ, i++) {
+	for (n = guys->getListHead(), i = 0; n->_succ; n = (dbObjectNode *) n->_succ, i++) {
 		int32 div = 380;
 
-		p[i] = (Person)n->_data;
+		p[i] = (PersonNode *)n;
 
 		/* alle folgenden Werte sind zwischen 0 und 255 */
 
@@ -336,9 +336,9 @@ uint32 tcStartEvidence() {
 
 	caught |= tcIsThereATraitor();
 
-	if (!(tcCarFound((Car) dbGetObject(Organisation.CarID),
+	if (!(tcCarFound((CarNode *) dbGetObject(Organisation.CarID),
 	          Search.TimeOfBurglary - Search.TimeOfAlarm))) {
-		Car car = (Car)dbGetObject(Organisation.CarID);
+		CarNode *car = (CarNode *)dbGetObject(Organisation.CarID);
 		int32 newStrike = CalcValue((int32) car->Strike, 0, 255, 255, 15);
 		if (newStrike < (car->Strike + 40))
 			newStrike = ChangeAbs((int32) car->Strike, 40, 0, 255);
@@ -346,7 +346,7 @@ uint32 tcStartEvidence() {
 		car->Strike = newStrike;
 	}
 
-	((Player) dbGetObject(Player_Player_1))->MattsPart = (byte) tcCalcMattsPart();
+	((PlayerNode *) dbGetObject(Player_Player_1))->MattsPart = (byte) tcCalcMattsPart();
 	tcForgetGuys();
 
 	spuren->removeList();
@@ -357,11 +357,11 @@ uint32 tcStartEvidence() {
 
 void tcForgetGuys() {
 	joined_byAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST, Object_Person);
-	NewList<NewObjectNode> *guys = ObjectListPrivate;
+	NewList<dbObjectNode> *guys = ObjectListPrivate;
 
-	for (NewObjectNode *node = guys->getListHead(); node->_succ; node = (NewObjectNode *)node->_succ) {
+	for (dbObjectNode *node = guys->getListHead(); node->_succ; node = (dbObjectNode *)node->_succ) {
 		if (node->_nr != Person_Matt_Stuvysunt) {
-			Person pers = (Person)node->_data;
+			PersonNode *pers = (PersonNode *)node;
 
 			pers->TalkBits |= (1 << Const_tcTALK_JOB_OFFER);    /* über Jobs kann man wieder reden! */
 
@@ -375,8 +375,8 @@ void tcForgetGuys() {
 }
 
 uint32 tcPersonWanted(uint32 persId) {
-	Person john = (Person)dbGetObject(Person_John_Gludo);
-	Person miles = (Person)dbGetObject(Person_Miles_Chickenwing);
+	PersonNode *john = (PersonNode *)dbGetObject(Person_John_Gludo);
+	PersonNode *miles = (PersonNode *)dbGetObject(Person_Miles_Chickenwing);
 	NewList<NewNode> *jobs = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_JobE");
 
 	Common::String name = dbGetObjectName(persId);
@@ -406,13 +406,13 @@ uint32 tcPersonWanted(uint32 persId) {
 	}
 
 	uint32 caught = 0;
-	if (tcGuyCanEscape((Person)dbGetObject(persId)) > g_clue->calcRandomNr(100, 255)) { /* Flucht gelingt */
+	if (tcGuyCanEscape((PersonNode *)dbGetObject(persId)) > g_clue->calcRandomNr(100, 255)) { /* Flucht gelingt */
 		Say(BUSINESS_TXT, 0, john->PictID, "ESCAPED");
 		livesInSet(London_Escape, persId);
 	} else {            /* nicht */
 		Say(BUSINESS_TXT, 0, john->PictID, "ARRESTED");
 		livesInSet(London_Jail, persId);
-		caught = tcPersonQuestioning((Person)dbGetObject(persId));
+		caught = tcPersonQuestioning((PersonNode *)dbGetObject(persId));
 	}
 
 	jobs->removeList();
@@ -420,10 +420,10 @@ uint32 tcPersonWanted(uint32 persId) {
 	return caught;
 }
 
-bool tcPersonQuestioning(Person person) {
+bool tcPersonQuestioning(PersonNode *person) {
 	bool caught = false;
-	Person john = (Person)dbGetObject(Person_John_Gludo);
-	Person miles = (Person)dbGetObject(Person_Miles_Chickenwing);
+	PersonNode *john = (PersonNode *)dbGetObject(Person_John_Gludo);
+	PersonNode *miles = (PersonNode *)dbGetObject(Person_Miles_Chickenwing);
 
 	if (person != dbGetObject(Person_Matt_Stuvysunt)) {
 		if (tcGuyTellsAll(person) > g_clue->calcRandomNr(0, 180)) { /* er spricht */
@@ -441,13 +441,13 @@ bool tcPersonQuestioning(Person person) {
 }
 
 int32 tcEscapeFromBuilding(uint32 escBits) {
-	Person gludo = (Person)dbGetObject(Person_John_Gludo);
+	PersonNode *gludo = (PersonNode *)dbGetObject(Person_John_Gludo);
 	byte escapeSucc = FAHN_NOT_ESCAPED;
 	int32 timeLeft = INT_MAX;
 
 	/* Fluchtbilder zeigen! */
 	livSetAllInvisible();
-	lsSetDarkness(((LSArea) dbGetObject(lsGetActivAreaID()))->uch_Darkness);
+	lsSetDarkness(((LSAreaNode *) dbGetObject(lsGetActivAreaID()))->uch_Darkness);
 
 	if (escBits & FAHN_ESCAPE) {
 		gfxShow(213, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1);
@@ -464,7 +464,7 @@ int32 tcEscapeFromBuilding(uint32 escBits) {
 
 	if (!(escBits & FAHN_SURROUNDED)) {
 		if ((escBits & FAHN_ALARM) || (escBits & FAHN_QUIET_ALARM)) {
-			Building build = (Building)dbGetObject(Search.BuildingId);
+			BuildingNode *build = (BuildingNode *)dbGetObject(Search.BuildingId);
 
 			timeLeft =
 			    build->PoliceTime - (Search.TimeOfBurglary -
@@ -489,8 +489,8 @@ int32 tcEscapeFromBuilding(uint32 escBits) {
 }
 
 int32 tcEscapeByCar(uint32 escBits, int32 timeLeft) {
-	Person gludo = (Person)dbGetObject(Person_John_Gludo);
-	Person miles = (Person)dbGetObject(Person_Miles_Chickenwing);
+	PersonNode *gludo = (PersonNode *)dbGetObject(Person_John_Gludo);
+	PersonNode *miles = (PersonNode *)dbGetObject(Person_Miles_Chickenwing);
 
 	byte escapeSucc;
 	if (timeLeft > 0)
@@ -561,8 +561,8 @@ int32 tcCalcCarEscape(int32 timeLeft) {
 	byte psWeight[4] = { 68, 56, 40, 33 };
 	byte driverWeight[4] = { 50, 40, 25, 20 };
 	byte policeSpeed[4] = { 90, 95, 103, 107 };
-	Car car = (Car)dbGetObject(Organisation.CarID);
-	Building build = (Building)dbGetObject(Organisation.BuildingID);
+	CarNode *car = (CarNode *)dbGetObject(Organisation.CarID);
+	BuildingNode *build = (BuildingNode *)dbGetObject(Organisation.BuildingID);
 	int32 result = FAHN_ESCAPED;
 
 	if ((Organisation.BuildingID != Building_Tower_of_London) && (Organisation.BuildingID != Building_Starford_Kaserne)) {

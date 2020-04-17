@@ -51,7 +51,7 @@ byte tcKarateOpa(uint32 ul_ActionTime, uint32 ul_BuildingId) {
 }
 
 void tcDoneCredits() {
-	Person ben = (Person)dbGetObject(Person_Ben_Riggley);
+	PersonNode *ben = (PersonNode *)dbGetObject(Person_Ben_Riggley);
 
 	tcSomebodyIsComing();
 
@@ -79,8 +79,8 @@ void tcDoneArrival() {
 -----------------------------------------------------------------*/
 
 void tcDoneHotelReception() {
-	Person rig = (Person) dbGetObject(Person_Ben_Riggley);
-	Environment env = (Environment) dbGetObject(Environment_TheClou);
+	PersonNode *rig = (PersonNode *) dbGetObject(Person_Ben_Riggley);
+	EnvironmentNode *env = (EnvironmentNode *) dbGetObject(Environment_TheClou);
 
 	knowsSet(Person_Matt_Stuvysunt, Person_Ben_Riggley);
 
@@ -171,8 +171,8 @@ void tcDoneMamiCalls() {
 -----------------------------------------------------------------*/
 
 void tcDoneGludoMoney() {
-	Person Gludo = (Person) dbGetObject(Person_John_Gludo);
-	Environment env = (Environment)dbGetObject(Environment_TheClou);
+	PersonNode *Gludo = (PersonNode *) dbGetObject(Person_John_Gludo);
+	EnvironmentNode *env = (EnvironmentNode *)dbGetObject(Environment_TheClou);
 
 	knowsSet(Person_Matt_Stuvysunt, Person_John_Gludo);
 
@@ -212,7 +212,7 @@ void tcDoneGludoMoney() {
 -----------------------------------------------------------------*/
 
 void tcDoneDanner() {
-	Person Jim = (Person) dbGetObject(Person_Jim_Danner);
+	PersonNode *Jim = (PersonNode *) dbGetObject(Person_Jim_Danner);
 
 	if (tcGetPlayerMoney < tcCOSTS_FOR_HOTEL) {
 		knowsSet(Person_Matt_Stuvysunt, Person_Jim_Danner);
@@ -247,7 +247,7 @@ void tcDoneDanner() {
 -----------------------------------------------------------------*/
 
 void tcDoneMeetBriggs() {
-	Person Briggs = (Person) dbGetObject(Person_Herbert_Briggs);
+	PersonNode *Briggs = (PersonNode *) dbGetObject(Person_Herbert_Briggs);
 
 #ifdef DEEP_DEBUG
 	printf("tcDoneMeetBriggs!\n");
@@ -262,7 +262,7 @@ void tcDoneMeetBriggs() {
 
 	byte choice = Say(STORY_0_TXT, 0, MATT_PICTID, "BRIGGS_MATT_3");
 	if (choice == 0) {      /* angenommen ! */
-		Building bui = (Building) dbGetObject(Building_Kiosk);
+		BuildingNode *bui = (BuildingNode *) dbGetObject(Building_Kiosk);
 
 		hasSet(Person_Matt_Stuvysunt, Building_Kiosk);
 
@@ -281,7 +281,7 @@ void tcDoneMeetBriggs() {
 
 		_sceneArgs._returnValue = SCENE_FAT_MANS;
 	} else {            /* nicht angenommen ! */
-		Person james = (Person)dbGetObject(Person_Pater_James);
+		PersonNode *james = (PersonNode *)dbGetObject(Person_Pater_James);
 
 		Say(STORY_0_TXT, 0, Briggs->PictID, "BRIGGS_BRIGGS_5");
 		gfxShow(170, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);
@@ -333,7 +333,7 @@ void tcDoneMeetBriggs() {
 }
 
 void tcDoneFreeTicket() {
-	Person dan = (Person) dbGetObject(Person_Dan_Stanford);
+	PersonNode *dan = (PersonNode *) dbGetObject(Person_Dan_Stanford);
 
 	knowsSet(Person_Matt_Stuvysunt, Person_Dan_Stanford);
 
@@ -406,7 +406,7 @@ void tcDonePrison()
 
 bool tcIsDeadlock() {
 	bool deadlock = false;
-	CompleteLoot comp = (CompleteLoot)dbGetObject(CompleteLoot_LastLoot);
+	CompleteLootNode *comp = (CompleteLootNode *)dbGetObject(CompleteLoot_LastLoot);
 
 	hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Car);
 
@@ -427,8 +427,8 @@ bool tcIsDeadlock() {
 		hasAll(Person_Marc_Smith, OLF_NORMAL, Object_Car);
 
 		/* get cheapest car! */
-		for (NewObjectNode *n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode*)n->_succ) {
-			Car car = (Car)n->_data;
+		for (dbObjectNode *n = ObjectList->getListHead(); n->_succ; n = (dbObjectNode*)n->_succ) {
+			CarNode *car = (CarNode *)n;
 
 			if (tcGetCarPrice(car) < money)
 				enough = true;
@@ -578,11 +578,11 @@ void tcDone2ndBurglary() {
 
 /* wird von DoneHotel aufgerufen */
 void tcCheckForBones() {
-	Person luthm = (Person)dbGetObject(Person_Luthmilla_Nervesaw);
+	PersonNode *luthm = (PersonNode *)dbGetObject(Person_Luthmilla_Nervesaw);
 
 	if (has(Person_Matt_Stuvysunt, Loot_Gebeine)) {
 		if (knows(Person_Matt_Stuvysunt, Person_Luthmilla_Nervesaw)) {
-			Player player = (Player)dbGetObject(Player_Player_1);
+			PlayerNode *player = (PlayerNode *)dbGetObject(Player_Player_1);
 
 			tcSomebodyIsComing();
 
@@ -645,7 +645,7 @@ void tcDone3rdBurglary() {
 
 void tcCheckForDowning() {
 	if (has(Person_Matt_Stuvysunt, Loot_Dokument)) {
-		Building bui = (Building) dbGetObject(Building_Buckingham_Palace);
+		BuildingNode *bui = (BuildingNode *) dbGetObject(Building_Buckingham_Palace);
 
 		hasSet(Person_Matt_Stuvysunt, Building_Buckingham_Palace);
 
@@ -668,7 +668,7 @@ void tcCheckForDowning() {
  ***********************************************************************/
 
 void tcDone4thBurglary() {
-	Person Gludo = (Person) dbGetObject(Person_John_Gludo);
+	PersonNode *Gludo = (PersonNode *) dbGetObject(Person_John_Gludo);
 
 	AddTaxiLocation(31);    /* osterly */
 	AddTaxiLocation(29);    /* ham */
@@ -791,15 +791,15 @@ void tcDoneDealerIsAfraid() {
 
 	knowsSet(Person_Matt_Stuvysunt, persID);
 
-	Person pers = (Person) dbGetObject(persID);
+	PersonNode *pers = (PersonNode *) dbGetObject(persID);
 	Say(STORY_0_TXT, 0, pers->PictID, "DEALER_IS_AFRAID");
 
 	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
 }
 
 void tcDoneRaidInWalrus() {
-	Person Red = (Person) dbGetObject(Person_Red_Stanson);
-	Environment Env = (Environment) dbGetObject(Environment_TheClou);
+	PersonNode *Red = (PersonNode *) dbGetObject(Person_Red_Stanson);
+	EnvironmentNode *Env = (EnvironmentNode *) dbGetObject(Environment_TheClou);
 
 	knowsSet(Person_Matt_Stuvysunt, Person_Red_Stanson);
 	sndPlaySound("gludo.bk", 0);
@@ -827,8 +827,8 @@ void tcDoneRaidInWalrus() {
 }
 
 void tcDoneDartJager() {
-	Person Grull = (Person) dbGetObject(Person_Lucas_Grull);
-	Environment Env = (Environment) dbGetObject(Environment_TheClou);
+	PersonNode *Grull = (PersonNode *) dbGetObject(Person_Lucas_Grull);
+	EnvironmentNode *Env = (EnvironmentNode *) dbGetObject(Environment_TheClou);
 
 	if (!Env->MattHasIdentityCard) {
 		StopAnim();
@@ -875,7 +875,7 @@ void tcDoneDartJager() {
 }
 
 void tcDoneGludoBurnsOffice() {
-	Person Gludo = (Person) dbGetObject(Person_John_Gludo);
+	PersonNode *Gludo = (PersonNode *) dbGetObject(Person_John_Gludo);
 
 	StopAnim();
 
@@ -933,7 +933,7 @@ void tcDoneBeautifullMorning() {
 }
 
 void tcDoneVisitingSabien() {
-	Person Sabien = (Person)dbGetObject(Person_Sabien_Pardo);
+	PersonNode *Sabien = (PersonNode *)dbGetObject(Person_Sabien_Pardo);
 
 	knowsSet(Person_Matt_Stuvysunt, Person_Sabien_Pardo);
 
@@ -990,7 +990,7 @@ void tcBriggsAngry() {
 }
 
 void tcSabienInWalrus() {
-	Person Sabien = (Person)dbGetObject(Person_Sabien_Pardo);
+	PersonNode *Sabien = (PersonNode *)dbGetObject(Person_Sabien_Pardo);
 
 	sndPlaySound("sabien.bk", 0);
 	StopAnim();
@@ -1009,7 +1009,7 @@ void tcSabienInWalrus() {
 }
 
 void tcWalrusTombola() {
-	Environment Env = (Environment)dbGetObject(Environment_TheClou);
+	EnvironmentNode *Env = (EnvironmentNode *)dbGetObject(Environment_TheClou);
 
 	Env->Present = 1;
 	sndPlaySound("sabien.bk", 0);
@@ -1020,7 +1020,7 @@ void tcWalrusTombola() {
 }
 
 void tcRainyEvening() {
-	Person Briggs = (Person)dbGetObject(Person_Herbert_Briggs);
+	PersonNode *Briggs = (PersonNode *)dbGetObject(Person_Herbert_Briggs);
 
 	tcAsTimeGoesBy(1220);
 
@@ -1077,8 +1077,8 @@ void tcDone6thBurglary() {
 }
 
 void tcPoliceInfoTower() {
-	Building tower = (Building)dbGetObject(Building_Tower_of_London);
-	Environment Env = (Environment)dbGetObject(Environment_TheClou);
+	BuildingNode *tower = (BuildingNode *)dbGetObject(Building_Tower_of_London);
+	EnvironmentNode *Env = (EnvironmentNode *)dbGetObject(Environment_TheClou);
 
 	if (Env->Present) {
 		Say(STORY_1_TXT, 0, 223, "ST_7_OLD_0"); /* Matt mit Bart */
@@ -1095,8 +1095,8 @@ void tcPoliceInfoTower() {
 }
 
 void tcPresentInHotel() {
-	Person Ben = (Person)dbGetObject(Person_Ben_Riggley);
-	Environment Env = (Environment)dbGetObject(Environment_TheClou);
+	PersonNode *Ben = (PersonNode *)dbGetObject(Person_Ben_Riggley);
+	EnvironmentNode *Env = (EnvironmentNode *)dbGetObject(Environment_TheClou);
 
 	Env->Present = 1;
 
@@ -1155,10 +1155,10 @@ void tcDoneBirthday() {
 	sndPlayFX();
 
 	knowsAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST, Object_Person);
-	NewList<NewObjectNode> *persons = ObjectListPrivate;
+	NewList<dbObjectNode> *persons = ObjectListPrivate;
 
-	for (NewObjectNode *n = persons->getListHead(); n->_succ; n = (NewObjectNode *) n->_succ) {
-		Person p = (Person)dbGetObject(n->_nr);
+	for (dbObjectNode *n = persons->getListHead(); n->_succ; n = (dbObjectNode *) n->_succ) {
+		PersonNode *p = (PersonNode *)dbGetObject(n->_nr);
 
 		switch (n->_nr) {
 		case Person_Sabien_Pardo:
@@ -1190,7 +1190,7 @@ void tcDoneBirthday() {
 }
 
 void tcWalkWithSabien() {
-	Environment Env = (Environment)dbGetObject(Environment_TheClou);
+	EnvironmentNode *Env = (EnvironmentNode *)dbGetObject(Environment_TheClou);
 
 	sndPlaySound("sabien.bk", 0);
 
@@ -1255,7 +1255,7 @@ void tcDoneAgent() {
  ***********************************************************************/
 
 void tcDone9thBurglary() {
-	Environment Env = (Environment)dbGetObject(Environment_TheClou);
+	EnvironmentNode *Env = (EnvironmentNode *)dbGetObject(Environment_TheClou);
 
 	SetMinute(540);
 
@@ -1349,8 +1349,8 @@ void tcDoneTerror() {
 }
 
 void tcDoneConfessingSabien() {
-	Person Sabien = (Person)dbGetObject(Person_Sabien_Pardo);
-	Environment Env = (Environment)dbGetObject(Environment_TheClou);
+	PersonNode *Sabien = (PersonNode *)dbGetObject(Person_Sabien_Pardo);
+	EnvironmentNode *Env = (EnvironmentNode *)dbGetObject(Environment_TheClou);
 
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_18_OLD_0");
 	Say(STORY_1_TXT, 0, Sabien->PictID, "ST_18_SABIEN_0");
@@ -1408,8 +1408,8 @@ void tcDoneSouthhamptonSabienUnknown() {
 
 static void tcDoneFirstTimeLonelyInSouth() {
 	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "SouthhamptonMenu");
-	Environment Env = (Environment)dbGetObject(Environment_TheClou);
-	Person Herb = (Person)dbGetObject(Person_Herbert_Briggs);
+	EnvironmentNode *Env = (EnvironmentNode *)dbGetObject(Environment_TheClou);
+	PersonNode *Herb = (PersonNode *)dbGetObject(Person_Herbert_Briggs);
 
 	tcAsDaysGoBy(713518L, 30);
 	uint32 startTime = GetDay * 1440 + GetMinute;
@@ -1507,7 +1507,7 @@ static void tcDoneFirstTimeLonelyInSouth() {
 
 void tcDoneSouthhampton() {
 	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "SouthhamptonMenu");
-	Environment Env = (Environment)dbGetObject(Environment_TheClou);
+	EnvironmentNode *Env = (EnvironmentNode *)dbGetObject(Environment_TheClou);
 
 	_sceneArgs._overwritten = true;
 	_sceneArgs._returnValue = 0;  /* MUß SEIN! */
@@ -1535,7 +1535,7 @@ void tcDoneSouthhampton() {
 		if (activ == (byte) - 1) {
 			ShowTheClouRequester(No_Error);
 			_sceneArgs._returnValue =
-			    ((Player) dbGetObject(Player_Player_1))->CurrScene;
+			    ((PlayerNode *) dbGetObject(Player_Player_1))->CurrScene;
 
 			activ = 1;      /* nicht 0! */
 		} else {
@@ -1592,15 +1592,15 @@ void tcDoneSouthhampton() {
 }
 
 void tcInitTowerBurglary() {
-	Car car = (Car)dbGetObject(Car_Cadillac_Club_1952);
-	Player player = (Player)dbGetObject(Player_Player_1);
+	CarNode *car = (CarNode *)dbGetObject(Car_Cadillac_Club_1952);
+	PlayerNode *player = (PlayerNode *)dbGetObject(Player_Player_1);
 
 	/* alle Personen entfernen! */
 	player->MattsPart = 25;
 
 	joined_byAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Person);
 
-	for (NewObjectNode *node = ObjectList->getListHead(); node->_succ; node = (NewObjectNode *)node->_succ)
+	for (dbObjectNode *node = ObjectList->getListHead(); node->_succ; node = (dbObjectNode *)node->_succ)
 		joined_byUnSet(Person_Matt_Stuvysunt, node->_nr);
 
 	/* und Personen, Abilities neu setzen! */
@@ -1692,8 +1692,8 @@ int32 tcDoTowerBurglary() {
 }
 
 void tcDoneMafia() {
-	Person Ken = (Person)dbGetObject(Person_Ken_Addison);
-	Person Briggs = (Person)dbGetObject(Person_Herbert_Briggs);
+	PersonNode *Ken = (PersonNode *)dbGetObject(Person_Ken_Addison);
+	PersonNode *Briggs = (PersonNode *)dbGetObject(Person_Herbert_Briggs);
 
 	CurrentBackground = BGD_LONDON;
 	ShowMenuBackground();
@@ -1723,8 +1723,8 @@ void tcDoneMafia() {
 }
 
 void tcDoneKaserne() {
-	Environment Env = (Environment)dbGetObject(Environment_TheClou);
-	Car car = (Car)dbGetObject(Car_Cadillac_Club_1952);
+	EnvironmentNode *Env = (EnvironmentNode *)dbGetObject(Environment_TheClou);
+	CarNode *car = (CarNode *)dbGetObject(Car_Cadillac_Club_1952);
 	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "KaserneMenu");
 
 	joined_bySet(Person_Matt_Stuvysunt, Person_Matt_Stuvysunt);
@@ -1737,7 +1737,7 @@ void tcDoneKaserne() {
 	joinSet(Person_Matt_Stuvysunt, Person_Ken_Addison);
 	knowsSet(Person_Matt_Stuvysunt, Person_Ken_Addison);
 
-	((Building) dbGetObject(Building_Starford_Kaserne))->Exactlyness = 255;
+	((BuildingNode *) dbGetObject(Building_Starford_Kaserne))->Exactlyness = 255;
 
 	hasSet(Person_Matt_Stuvysunt, Building_Starford_Kaserne);
 
@@ -1766,7 +1766,7 @@ void tcDoneKaserne() {
 		/* change possibilites in PatchStory too! */
 		if (activ == (byte) - 1) {
 			ShowTheClouRequester(No_Error);
-			successor = ((Player) dbGetObject(Player_Player_1))->CurrScene;
+			successor = ((PlayerNode *) dbGetObject(Player_Player_1))->CurrScene;
 
 			activ = 1;
 		} else {
@@ -1831,13 +1831,13 @@ void tcDoneKaserne() {
 }
 
 int32 tcIsLastBurglaryOk() {
-	Building kaserne = (Building)dbGetObject(Building_Starford_Kaserne);
+	BuildingNode *kaserne = (BuildingNode *)dbGetObject(Building_Starford_Kaserne);
 	int16 carXPos0 = kaserne->CarXPos - 40;
 	int16 carYPos0 = kaserne->CarYPos - 40;
 	int16 carXPos1 = kaserne->CarXPos + 40;
 	int16 carYPos1 = kaserne->CarYPos + 40;
-	LSObject left = (LSObject)dbGetObject(tcLAST_BURGLARY_LEFT_CTRL_OBJ);
-	LSObject right = (LSObject)dbGetObject(tcLAST_BURGLARY_RIGHT_CTRL_OBJ);
+	LSObjectNode *left = (LSObjectNode *)dbGetObject(tcLAST_BURGLARY_LEFT_CTRL_OBJ);
+	LSObjectNode *right = (LSObjectNode *)dbGetObject(tcLAST_BURGLARY_RIGHT_CTRL_OBJ);
 
 	/* Links muß ein, Rechts muß ausgeschalten sein */
 	/* 1.. OFF!    */

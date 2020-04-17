@@ -22,10 +22,10 @@
 
 namespace Clue {
 
-void tcJobOffer(Person p) {
-	Player player = (Player)dbGetObject(Player_Player_1);
+void tcJobOffer(PersonNode *p) {
+	PlayerNode *player = (PlayerNode *)dbGetObject(Player_Player_1);
 
-	if (!(join(Person_Matt_Stuvysunt, dbGetObjectNr(p))))
+	if (!join(Person_Matt_Stuvysunt, p->_nr))
 		player->JobOfferCount++;
 
 	byte choice = Say(BUSINESS_TXT, 0, MATT_PICTID, "PERS_ANZ");
@@ -39,8 +39,8 @@ void tcJobOffer(Person p) {
 	choice = Say(BUSINESS_TXT, 0, MATT_PICTID, "NEW_THEEF");
 
 	if (choice == 0) {
-		joinSet(Person_Matt_Stuvysunt, dbGetObjectNr(p));
-		hasSet(Person_Matt_Stuvysunt, dbGetObjectNr(p));    /* Matt hat jetzt Daten von ihm */
+		joinSet(Person_Matt_Stuvysunt, p->_nr);
+		hasSet(Person_Matt_Stuvysunt, p->_nr);    /* Matt hat jetzt Daten von ihm */
 		p->TalkBits &= (0xffffffffL - (1 << Const_tcTALK_JOB_OFFER));   /* Joboffer löschen! */
 	} else {
 		p->Known = CalcValue(p->Known, 0, 255, 0, 20);
@@ -48,7 +48,7 @@ void tcJobOffer(Person p) {
 	}
 }
 
-void tcMyJobAnswer(Person p) {
+void tcMyJobAnswer(PersonNode *p) {
 	NewList<NewNode> *bubble = new NewList<NewNode>;
 	NewList<NewNode> *jobs = g_clue->_txtMgr->goKey(OBJECTS_ENUM_TXT, "enum_JobE");
 	char job[TXT_KEY_LENGTH];
@@ -70,7 +70,7 @@ void tcMyJobAnswer(Person p) {
 	bubble->removeList();
 }
 
-void tcPrisonAnswer(Person p) {
+void tcPrisonAnswer(PersonNode *p) {
 	NewList<NewNode> *bubble = new NewList<NewNode>;
 	NewList<NewNode> *source = g_clue->_txtMgr->goKey(BUSINESS_TXT, "IN_PRISON_ANSWER");
 	char line[TXT_KEY_LENGTH];
@@ -86,7 +86,7 @@ void tcPrisonAnswer(Person p) {
 }
 
 void tcAbilityAnswer(uint32 personID) {
-	Person p = (Person)dbGetObject(personID);
+	PersonNode *p = (PersonNode *)dbGetObject(personID);
 
 	Common::String name = dbGetObjectName(personID);
 	NewList<NewNode> *bubble = g_clue->_txtMgr->goKey(ABILITY_TXT, name.c_str());

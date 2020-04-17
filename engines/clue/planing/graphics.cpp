@@ -107,7 +107,7 @@ void plDisplayInfo() {
 byte plSay(const char *msg, uint32 persId) {
 	NewList<NewNode> *l = g_clue->_txtMgr->goKey(PLAN_TXT, msg);
 
-	SetPictID(((Person) dbGetObject(PersonsList->getNthNode(persId)->_nr))->PictID);
+	SetPictID(((PersonNode *) dbGetObject(PersonsList->getNthNode(persId)->_nr))->PictID);
 
 	inpTurnESC(0);
 	inpTurnFunctionKey(0);
@@ -137,7 +137,7 @@ void plDrawWait(uint32 sec) {
 }
 
 void plRefresh(uint32 ItemId) {
-	LSObject obj = (LSObject) dbGetObject(ItemId);
+	LSObjectNode *obj = (LSObjectNode *) dbGetObject(ItemId);
 
 	if (lsIsLSObjectInActivArea(obj))
 		lsFastRefresh(obj);

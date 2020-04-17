@@ -97,7 +97,7 @@ void tcMoveAPerson(uint32 persID, uint32 newLocID) {
 	hasAll(persID, 0, Object_Location); /* wo is er denn ? */
 
 	if (!ObjectList->isEmpty()) {
-		for (NewObjectNode *n = ObjectList->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
+		for (dbObjectNode *n = ObjectList->getListHead(); n->_succ; n = (dbObjectNode *)n->_succ) {
 			uint32 oldLocID = n->_nr;
 			hasUnSet(persID, oldLocID);
 			hasUnSet(oldLocID, persID);
@@ -111,7 +111,7 @@ void tcMoveAPerson(uint32 persID, uint32 newLocID) {
 uint32 tcBurglary(uint32 buildingID) {
 /* wird von 2 Stellen aufgerufen! (story_9)! */
 	int32 ret;
-	Building b = (Building)dbGetObject(buildingID);
+	BuildingNode *b = (BuildingNode *)dbGetObject(buildingID);
 
 	if (buildingID == Building_Seniorenheim)
 		ret = plPlayer(buildingID, 200, tcKarateOpa);
@@ -127,8 +127,7 @@ uint32 tcBurglary(uint32 buildingID) {
 		if (buildingID != Building_Grab_von_Karl_Marx)
 			RemTaxiLocation(b->LocationNr);
 		else
-			RemTaxiLocation(((Building) dbGetObject(Location_Highgate_Out))->
-			                LocationNr);
+			RemTaxiLocation(((BuildingNode *)dbGetObject(Location_Highgate_Out))->LocationNr);
 
 		hasUnSet(Person_Matt_Stuvysunt, buildingID);
 	}
@@ -346,7 +345,7 @@ uint32 StdHandle(uint32 choice) {
 				uint32 objNr = GetObjNrOfLocation(locNr);
 
 				if (objNr) {
-					Location loc = (Location)dbGetObject(objNr);
+					LocationNode *loc = (LocationNode *)dbGetObject(objNr);
 					if ((GetMinute < loc->OpenFromMinute) || (GetMinute > loc->OpenToMinute)) {
 						ShowMenuBackground();
 
@@ -470,7 +469,7 @@ void StdDone() {
 
 		if (g_clue->getFeatures() & GF_PROFIDISK) {
 			if (GetCurrentScene()->EventNr == SCENE_PROFI_26) {
-				Environment env = (Environment)dbGetObject(Environment_TheClou);
+				EnvironmentNode *env = (EnvironmentNode *)dbGetObject(Environment_TheClou);
 
 				if (env->PostzugDone)
 					_sceneArgs._options &= ~INVESTIGATE;
@@ -486,7 +485,7 @@ void StdDone() {
 
 			if (activ == (byte) - 1) {
 				ShowTheClouRequester(No_Error);
-				_sceneArgs._returnValue = ((Player) dbGetObject(Player_Player_1))->CurrScene;
+				_sceneArgs._returnValue = ((PlayerNode *) dbGetObject(Player_Player_1))->CurrScene;
 
 				activ = 0;
 			} else if (activ == ((byte)(TXT_MENU_TIMEOUT)))
@@ -716,8 +715,7 @@ void tcPersonGreetsMatt() {
 				uint32 persNr = ObjectList->getListHead()->_nr;
 
 				if (knows(Person_Matt_Stuvysunt, persNr)) {
-					Person pers = (Person)dbGetObject(persNr);
-
+					PersonNode *pers = (PersonNode *)dbGetObject(persNr);
 					Say(BUSINESS_TXT, 0, pers->PictID, "HI_MATT");
 				}
 			}

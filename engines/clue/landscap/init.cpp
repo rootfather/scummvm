@@ -67,7 +67,7 @@ void lsInitLandScape(uint32 bID, byte mode) {
 	/* lootbags must be initialized prior to Livings because they
 	   have a lower priority (appear below maxis) */
 	for (int32 i = 9701; i <= 9708; i++) {
-		LSObject lso = (LSObject)dbGetObject(i);
+		LSObjectNode *lso = (LSObjectNode *)dbGetObject(i);
 
 		/* OffsetFact on the PC is not used as offset in the plane,
 		       but as handle for the bob */
@@ -93,7 +93,7 @@ void lsInitLandScape(uint32 bID, byte mode) {
 }
 
 void lsInitActivArea(uint32 areaID, uint16 x, uint16 y, char *livingName) {
-	LSArea area = (LSArea) dbGetObject(areaID);
+	LSAreaNode *area = (LSAreaNode *) dbGetObject(areaID);
 
 	ls->ul_AreaID = areaID;
 
@@ -125,7 +125,7 @@ void lsInitActivArea(uint32 areaID, uint16 x, uint16 y, char *livingName) {
 }
 
 void lsInitRelations(uint32 areaID) {
-	LSArea area = (LSArea)dbGetObject(areaID);
+	LSAreaNode *area = (LSAreaNode *)dbGetObject(areaID);
 
 	AddRelation(area->ul_ObjectBaseNr + REL_CONSIST_OFFSET);
 	AddRelation(area->ul_ObjectBaseNr + REL_HAS_LOCK_OFFSET);
@@ -136,7 +136,7 @@ void lsInitRelations(uint32 areaID) {
 }
 
 void lsSetRelations(uint32 areaID) {
-	LSArea area = (LSArea)dbGetObject(areaID);
+	LSAreaNode *area = (LSAreaNode *)dbGetObject(areaID);
 
 	ConsistOfRelationID = area->ul_ObjectBaseNr + REL_CONSIST_OFFSET;
 	hasLockRelationID = area->ul_ObjectBaseNr + REL_HAS_LOCK_OFFSET;
@@ -151,7 +151,7 @@ void lsInitObjects() {
 
 	/* alle Relationen erzeugen */
 	consistsOfAll(ls->ul_BuildingID, OLF_PRIVATE_LIST, Object_LSArea);
-	NewList<NewObjectNode> *areas = ObjectListPrivate;
+	NewList<dbObjectNode> *areas = ObjectListPrivate;
 
 	/* jetzt alle Stockwerke durchgehen! */
 	for (uint32 i = 0; i < 3; i++) {
@@ -159,8 +159,8 @@ void lsInitObjects() {
 		ls->p_ObjectRetrievalLists[i] = NULL;
 	}
 
-	NewObjectNode* n;
-	for (n = areas->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ) {
+	dbObjectNode* n;
+	for (n = areas->getListHead(); n->_succ; n = (dbObjectNode *)n->_succ) {
 		lsInitRelations(n->_nr);
 
 		/* Daten laden */
@@ -178,7 +178,7 @@ void lsInitObjects() {
 		areaCount++;
 	}
 
-	lsLoadGlobalData(ls->ul_BuildingID, ((NewObjectNode *)n->_pred)->_nr);
+	lsLoadGlobalData(ls->ul_BuildingID, ((dbObjectNode *)n->_pred)->_nr);
 
 	areas->removeList();
 }
@@ -225,12 +225,12 @@ static void lsInitFloorSquares() {
 	uint32 count = LS_FLOORS_PER_LINE * LS_FLOORS_PER_COLUMN;
 
 	consistsOfAll(ls->ul_BuildingID, OLF_PRIVATE_LIST, Object_LSArea);
-	NewList<NewObjectNode>* areas = ObjectListPrivate;
+	NewList<dbObjectNode>* areas = ObjectListPrivate;
 
 	/* jetzt alle Stockwerke durchgehen! */
-	NewObjectNode *n;
+	dbObjectNode *n;
 	int i;
-	for (n = areas->getListHead(), i = 0; n->_succ; n = (NewObjectNode *)n->_succ, i++) {
+	for (n = areas->getListHead(), i = 0; n->_succ; n = (dbObjectNode *)n->_succ, i++) {
 		size_t size = sizeof(struct LSFloorSquare) * count;
 
 		ls->p_AllFloors[i] = (LSFloorSquare *)TCAllocMem(size, 0);
@@ -256,8 +256,8 @@ static void lsInitFloorSquares() {
 
 static void lsLoadAllSpots() {
 	consistsOfAll(ls->ul_BuildingID, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME, Object_LSArea);
-	NewList<NewObjectNode> *areas = ObjectListPrivate;
-	NewObjectNode *n = areas->getListHead();
+	NewList<dbObjectNode> *areas = ObjectListPrivate;
+	dbObjectNode *n = areas->getListHead();
 
 	char fileName[TXT_KEY_LENGTH];
 	strcpy(fileName, n->_name.c_str());
@@ -294,7 +294,7 @@ static void lsDoneFloorSquares() {
 }
 
 void lsDoneObjectDB(uint32 areaID) {
-	LSArea area = (LSArea)dbGetObject(areaID);
+	LSAreaNode *area = (LSAreaNode *)dbGetObject(areaID);
 
 	RemRelations(area->ul_ObjectBaseNr, DB_tcBuild_SIZE);
 	dbDeleteAllObjects(area->ul_ObjectBaseNr, DB_tcBuild_SIZE);
@@ -311,10 +311,10 @@ void lsDoneObjectDB(uint32 areaID) {
 void lsDoneLandScape() {
 	if (ls) {
 		consistsOfAll(ls->ul_BuildingID, OLF_PRIVATE_LIST, Object_LSArea);
-		NewList<NewObjectNode> *areas = ObjectListPrivate;
+		NewList<dbObjectNode> *areas = ObjectListPrivate;
 
 		int32 areaCount = 0;
-		for (NewObjectNode *n = areas->getListHead(); n->_succ; n = (NewObjectNode *)n->_succ, areaCount++) {
+		for (dbObjectNode *n = areas->getListHead(); n->_succ; n = (dbObjectNode *)n->_succ, areaCount++) {
 			lsDoneObjectDB(n->_nr);
 
 			if (ls->p_ObjectRetrievalLists[areaCount]) {
@@ -331,7 +331,7 @@ void lsDoneLandScape() {
 		livDone();
 
 		for (int i = 9701; i <= 9708; i++) {
-			LSObject lso = (LSObject)dbGetObject(i);
+			LSObjectNode *lso = (LSObjectNode *)dbGetObject(i);
 			BobDone(lso->us_OffsetFact);
 		}
 

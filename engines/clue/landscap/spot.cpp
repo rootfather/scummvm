@@ -81,7 +81,7 @@ void lsMoveAllSpots(uint32 time) {
 		; spot = (Spot *) NODE_SUCC(spot)) {
 		if (spot->us_PosCount > 1) {
 			if (lsIsSpotVisible(spot)) {
-				if (lsIsLSObjectInActivArea((LSObject)dbGetObject(spot->ul_CtrlObjId))) { /* wenn der Steuerkasten in dieser Area -> */
+				if (lsIsLSObjectInActivArea((LSObjectNode *)dbGetObject(spot->ul_CtrlObjId))) { /* wenn der Steuerkasten in dieser Area -> */
 					if (spot->uch_Status & LS_SPOT_ON)
 						lsShowSpot(spot, time); /* Spot darstellen (auch in der aktiven Area */
 				}
@@ -93,7 +93,7 @@ void lsMoveAllSpots(uint32 time) {
 void lsShowAllSpots(uint32 time, uint32 mode) {
 	for (Spot *spot = (Spot *) LIST_HEAD(sc->p_spots); NODE_SUCC(spot);
 	        spot = (Spot *) NODE_SUCC(spot)) {
-		if (lsIsLSObjectInActivArea((LSObject)dbGetObject(spot->ul_CtrlObjId))) {   /* wenn der Steuerkasten in dieser Area -> */
+		if (lsIsLSObjectInActivArea((LSObjectNode *)dbGetObject(spot->ul_CtrlObjId))) {   /* wenn der Steuerkasten in dieser Area -> */
 			if (mode & LS_ALL_VISIBLE_SPOTS) {
 				if (spot->uch_Status & LS_SPOT_ON)
 					lsShowSpot(spot, time); /* Spot darstellen */

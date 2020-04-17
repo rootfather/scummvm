@@ -71,6 +71,7 @@ public:
 	Common::String _name;
 
 	NewNode();
+	NewNode(Common::String name);
 	~NewNode();
 
 	void remNode();
@@ -84,14 +85,14 @@ public:
 	~NewTCEventNode() {}
 };
 
-class NewObjectNode : public NewNode {
+class dbObjectNode : public NewNode {
 public:
 	uint32 _nr;
 	uint32 _type;
-	void *_data;
+	uint32 _realNr;
 
-	NewObjectNode() { _nr = _type = 0; _data = nullptr;  }
-	~NewObjectNode() {}
+	dbObjectNode() { _nr = _type = _realNr = 0; } // CHECKME : Is it possible to get rid of it?
+	dbObjectNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : NewNode(name), _nr(nr), _type(type), _realNr(realNr) {}
 };
 
 class IODataNode : public NewNode {
@@ -116,6 +117,7 @@ public:
 
 template <typename T>
 class NewList {
+public: // Temporary dor debug purposes. To be removed.
 	T* _head;
 	T* _tail;
 public:
@@ -353,7 +355,7 @@ uint32 NewList<T>::readList(Common::String fileName) {
 
 template <typename T>
 void NewList<T>::putCharacter(uint16 pos, uint8 c) {
-	for (T *node = _head; node->_succ; node = (T *)node->_succ)
+	for (T *node = getListHead(); node->_succ; node = (T *)node->_succ)
 		node->_name.setChar(c, pos);
 }
 
@@ -409,7 +411,8 @@ void NewObjectList<T>::expandObjectList(Common::String expandItem) {
 
 	objNode->_nr = 0;
 	objNode->_type = 0;
-	objNode->_data = nullptr;
+//	objNode->_data = nullptr;
+	warning("expandObjectList - objNode->data not handled");
 }
 
 } // End of namespace Clue
