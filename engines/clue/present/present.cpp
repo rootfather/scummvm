@@ -25,7 +25,7 @@
 
 namespace Clue {
 
-struct PresentControl PresentControl = { NULL, 0, 0 };
+struct PresentControl PresentControl = {nullptr, 0, 0, 0, 0, 0 };
 
 void DrawPresent(NewList<PresentationInfoNode> *present, uint8 firstLine, _GC *gc, uint8 max) {
 	gfxScreenFreeze();

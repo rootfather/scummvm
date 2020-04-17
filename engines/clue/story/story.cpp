@@ -1853,16 +1853,16 @@ int32 tcIsLastBurglaryOk() {
 		madeIt = false;
 
 	/* alle anderen müssen beim Auto sein... */
-	int32 i;
-	for (i = 1; i < 4; i++)
-		if ((Search.GuyXPos[i] < carXPos0) || (Search.GuyXPos[i] > carXPos1) ||
-		        (Search.GuyYPos[i] < carYPos0) || (Search.GuyYPos[i] > carYPos1))
+	for (int32 i = 1; i < 4; i++) {
+		if ((Search.GuyXPos[i] < carXPos0) || (Search.GuyXPos[i] > carXPos1) || (Search.GuyYPos[i] < carYPos0) || (Search.GuyYPos[i] > carYPos1))
 			madeIt = false;
-	
-	// CHECKME: This looks absolutely wrong. i is equal to 4, thus it's our of bounds.
-	if ((Search.GuyXPos[0] >= carXPos0) && (Search.GuyXPos[0] <= carXPos1) &&
-	        (Search.GuyYPos[0] >= carYPos0) && (Search.GuyYPos[i] <= carYPos1))
+	}
+
+	// The original code was using i for the last check, thus making a read out of bound.
+	if ((Search.GuyXPos[0] >= carXPos0) && (Search.GuyXPos[0] <= carXPos1) && (Search.GuyYPos[0] >= carYPos0) && (Search.GuyYPos[0] <= carYPos1)) {
+		warning("CHECKME: Modified check in tcIsLastBurglaryOk()");
 		madeIt = false;
+	}
 
 	return madeIt;
 }
