@@ -275,7 +275,7 @@ byte Say(uint32 TextID, byte activ, uint16 person, const char *text) {
 }
 
 uint32 Talk() {
-	inpTurnESC(0);
+	inpTurnESC(false);
 
 	uint32 locNr = GetObjNrOfLocation(GetLocation);
 
@@ -284,7 +284,7 @@ uint32 Talk() {
 		NewObjectList<dbObjectNode> *bubble = ObjectListPrivate;
 
 		if (!bubble->isEmpty()) {
-			inpTurnESC(1);
+			inpTurnESC(true);
 
 			Common::String helloFriends = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
 			bubble->expandObjectList(helloFriends);
@@ -292,7 +292,7 @@ uint32 Talk() {
 			byte choice = Bubble((NewList<NewNode> *)bubble, 0, nullptr, 0L);
 			if (ChoiceOk(choice, GET_OUT, bubble)) {
 				uint32 personID = bubble->getNthNode((uint32) choice)->_nr;
-				inpTurnESC(0);
+				inpTurnESC(false);
 
 				if (PersonWorksHere(personID, locNr))
 					DynamicTalk(Person_Matt_Stuvysunt, personID, DLG_TALKMODE_BUSINESS);
@@ -305,7 +305,7 @@ uint32 Talk() {
 		bubble->removeList();
 	}
 
-	inpTurnESC(1);
+	inpTurnESC(true);
 
 	// CHECKME: Is there a reason to return something?
 	uint32 succ_event_nr = 0L;

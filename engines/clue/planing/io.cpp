@@ -217,17 +217,17 @@ void plSaveChanged(uint32 objId) {
 	if (PlanChanged) {
 		NewList<NewNode> *l = g_clue->_txtMgr->goKey(PLAN_TXT, "PLAN_CHANGED");
 
-		inpTurnESC(0);
+		inpTurnESC(false);
 
-		if (Bubble(l, 0, NULL, 0L) == 0) {
-			inpTurnESC(1);
+		if (Bubble(l, 0, nullptr, 0L) == 0) {
+			inpTurnESC(true);
 
 			if (!plAllInCar(objId))
 				plSay("PLAN_NOT_FINISHED", 0);
 
 			plSave(objId);
 		} else
-			inpTurnESC(1);
+			inpTurnESC(true);
 
 		l->removeList();
 	}

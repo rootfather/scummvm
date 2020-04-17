@@ -1417,12 +1417,12 @@ static void tcDoneFirstTimeLonelyInSouth() {
 	byte ende = 0;
 	byte activ = 0;
 	while (!ende) {
-		inpTurnFunctionKey(0);
-		inpTurnESC(0);
+		inpTurnFunctionKey(false);
+		inpTurnESC(false);
 
-		activ = Menu(menu, 46, activ, NULL, 0L);
-		inpTurnESC(1);
-		inpTurnFunctionKey(1);
+		activ = Menu(menu, 46, activ, nullptr, 0L);
+		inpTurnESC(true);
+		inpTurnFunctionKey(true);
 
 		uint32 actionTime = g_clue->calcRandomNr(180, 300);    /* 2 bis 5 Stunden */
 
@@ -1526,13 +1526,13 @@ void tcDoneSouthhampton() {
 	/* mit Gehen oder Planen kommt man aus dem Menü raus */
 	byte activ = 1;     /* !! */
 	while ((activ != 0) && (_sceneArgs._returnValue == 0)) {
-		inpTurnESC(0);
-		inpTurnFunctionKey(1);
-		activ = Menu(menu, 127, activ, NULL, 0L);
-		inpTurnFunctionKey(0);
-		inpTurnESC(1);
+		inpTurnESC(false);
+		inpTurnFunctionKey(true);
+		activ = Menu(menu, 127, activ, nullptr, 0L);
+		inpTurnFunctionKey(false);
+		inpTurnESC(true);
 
-		if (activ == (byte) - 1) {
+		if (activ == (byte) -1) {
 			ShowTheClouRequester(No_Error);
 			_sceneArgs._returnValue =
 			    ((PlayerNode *) dbGetObject(Player_Player_1))->CurrScene;
@@ -1563,7 +1563,7 @@ void tcDoneSouthhampton() {
 			case 5:
 				Information();
 				ShowTime(0);
-				inpTurnFunctionKey(1);
+				inpTurnFunctionKey(true);
 				break;
 			case 6:
 				if (tcDoTowerBurglary())
@@ -1759,9 +1759,9 @@ void tcDoneKaserne() {
 	uint32 successor = 0;
 	byte activ = 0;
 	while ((!burglary) && (!successor)) {
-		inpTurnESC(0);
-		activ = Menu(menu, 15, activ, NULL, 0L);
-		inpTurnESC(1);
+		inpTurnESC(false);
+		activ = Menu(menu, 15, activ, nullptr, 0L);
+		inpTurnESC(true);
 
 		/* change possibilites in PatchStory too! */
 		if (activ == (byte) - 1) {
@@ -1773,7 +1773,7 @@ void tcDoneKaserne() {
 			switch (activ) {
 			case 0:
 				StopAnim();
-				gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
+				gfxChangeColors(l_gc, 3, GFX_FADE_OUT, nullptr);
 				SetLocation(65);
 				_sceneArgs._options = 265;
 				DoneInsideHouse();
@@ -1790,7 +1790,7 @@ void tcDoneKaserne() {
 			case 3:
 				StopAnim();
 				Search.KaserneOk = 0;
-				if (!(burglary = plPlayer(Building_Starford_Kaserne, 0, NULL)))
+				if (!(burglary = plPlayer(Building_Starford_Kaserne, 0, nullptr)))
 					tcMattGoesTo(66);   /* refresh! */
 				break;
 			default:

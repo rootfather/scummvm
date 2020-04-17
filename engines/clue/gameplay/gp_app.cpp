@@ -477,11 +477,11 @@ void StdDone() {
 		}
 
 		if (_sceneArgs._options) {
-			inpTurnESC(0);
-			inpTurnFunctionKey(1);
+			inpTurnESC(false);
+			inpTurnFunctionKey(true);
 
 			byte activ = 0;
-			activ = Menu(menu, _sceneArgs._options, activ, NULL, 0L);
+			activ = Menu(menu, _sceneArgs._options, activ, nullptr, 0L);
 
 			if (activ == (byte) - 1) {
 				ShowTheClouRequester(No_Error);
@@ -495,7 +495,7 @@ void StdDone() {
 				_sceneArgs._returnValue = StdHandle(choice);
 			}
 
-			inpTurnESC(1);
+			inpTurnESC(true);
 		} else
 			ErrorMsg(Internal_Error, ERROR_MODULE_GAMEPLAY, 1);
 	}
@@ -503,7 +503,7 @@ void StdDone() {
 	StopAnim();
 
 	if (!_sceneArgs._overwritten)
-		gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
+		gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, nullptr);
 
 	menu->removeList();
 }
@@ -622,10 +622,8 @@ void LinkScenes() {
 
 	SetFunc(GetScene(SCENE_PRISON), tcInitPrison, tcDonePrison);
 
-	SetFunc(GetScene(SCENE_SOUTH_WITHOUT), NULL,
-	        tcDoneSouthhamptonWithoutSabien);
-	SetFunc(GetScene(SCENE_SOUTH_UNKNOWN), NULL,
-	        tcDoneSouthhamptonSabienUnknown);
+	SetFunc(GetScene(SCENE_SOUTH_WITHOUT), NULL, tcDoneSouthhamptonWithoutSabien);
+	SetFunc(GetScene(SCENE_SOUTH_UNKNOWN), NULL, tcDoneSouthhamptonSabienUnknown);
 	SetFunc(GetScene(SCENE_SOUTHHAMPTON), StdInit, tcDoneSouthhampton);
 
 	SetFunc(GetScene(SCENE_MISSED_DATE_0), NULL, tcDoneMissedDate);

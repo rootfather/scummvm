@@ -93,13 +93,12 @@ uint8 Present(uint32 nr, const char *presentationText, void (*initPresentation)(
 
 	gfxPrepareRefresh();
 
-	inpTurnFunctionKey(0);
+	inpTurnFunctionKey(false);
 
 	if (dbIsObject(nr, Object_Person)) {
 		PersonNode *obj = (PersonNode *) dbGetObject(nr);
 
-		gfxShow(obj->PictID, GFX_NO_REFRESH | GFX_OVERLAY | GFX_BLEND_UP,
-		        0, -1, -1);
+		gfxShow(obj->PictID, GFX_NO_REFRESH | GFX_OVERLAY | GFX_BLEND_UP, 0, -1, -1);
 	} else if (dbIsObject(nr, Object_Evidence)) {
 		EvidenceNode *e = (EvidenceNode *)dbGetObject(nr);
 

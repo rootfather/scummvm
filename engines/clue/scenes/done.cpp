@@ -102,11 +102,11 @@ void DoneInsideHouse() {
 	byte activ = 0;
 	while (!_sceneArgs._returnValue) {
 		if (_sceneArgs._options) {
-			inpTurnFunctionKey(0);
-			inpTurnESC(0);
-			activ = Menu(menu, _sceneArgs._options, activ, NULL, 0L);
-			inpTurnFunctionKey(1);
-			inpTurnESC(1);
+			inpTurnFunctionKey(false);
+			inpTurnESC(false);
+			activ = Menu(menu, _sceneArgs._options, activ, nullptr, 0L);
+			inpTurnFunctionKey(true);
+			inpTurnESC(true);
 
 			uint32 choice = (uint32) 1L << activ;
 
@@ -142,7 +142,7 @@ void DoneInsideHouse() {
 		lsDoneObjectDB(node->_nr);
 
 	StopAnim();
-	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
+	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, nullptr);
 
 	menu->removeList();
 }
@@ -159,10 +159,10 @@ void DoneTools() {
 	while (!_sceneArgs._returnValue) {
 		tcPersonIsHere();
 
-		inpTurnFunctionKey(0);  /* dont save in tools shop */
-		inpTurnESC(0);
-		activ = Menu(menu, _sceneArgs._options, (byte)(activ), NULL, 0L);
-		inpTurnESC(1);
+		inpTurnFunctionKey(false);  /* dont save in tools shop */
+		inpTurnESC(false);
+		activ = Menu(menu, _sceneArgs._options, activ, nullptr, 0L);
+		inpTurnESC(true);
 
 		uint32 choice = (uint32) 1L << (activ);
 
@@ -174,7 +174,7 @@ void DoneTools() {
 			_sceneArgs._returnValue = StdHandle(choice);
 	}
 
-	inpTurnFunctionKey(1);
+	inpTurnFunctionKey(true);
 
 	livesInSet(London_London_1, Person_Mary_Bolton);
 
@@ -199,11 +199,11 @@ void DoneDealer() {
 
 	byte activ = 0;
 	while (!_sceneArgs._returnValue) {
-		inpTurnFunctionKey(0);  /* or call save functions in case of space */
-		inpTurnESC(0);
-		activ = Menu(menu, _sceneArgs._options, (byte)(activ), NULL, 0L);
-		inpTurnESC(1);
-		inpTurnFunctionKey(1);
+		inpTurnFunctionKey(false);  /* or call save functions in case of space */
+		inpTurnESC(false);
+		activ = Menu(menu, _sceneArgs._options, activ, nullptr, 0L);
+		inpTurnESC(true);
+		inpTurnFunctionKey(true);
 
 		uint32 choice = (uint32) 1L << (activ);
 
@@ -232,13 +232,13 @@ void DoneParking() {
 
 	byte activ = 0;
 	while (!_sceneArgs._returnValue) {
-		inpTurnFunctionKey(0);  /* or call save functions in case of space */
-		inpTurnESC(0);
+		inpTurnFunctionKey(false);  /* or call save functions in case of space */
+		inpTurnESC(false);
 
 		activ = Menu(menu, _sceneArgs._options, (byte)(activ), 0L, 0L);
 
-		inpTurnESC(1);
-		inpTurnFunctionKey(1);
+		inpTurnESC(true);
+		inpTurnFunctionKey(true);
 
 		if ((1L << activ) == BUSINESS_TALK) {
 			byte choice = 0;
@@ -270,9 +270,9 @@ void DoneParking() {
 			}
 			ShowTime(0);
 		} else {
-			inpTurnESC(0);
+			inpTurnESC(false);
 			_sceneArgs._returnValue = StdHandle(1L << activ);
-			inpTurnESC(1);
+			inpTurnESC(true);
 		}
 	}
 
@@ -280,7 +280,7 @@ void DoneParking() {
 	menu->removeList();
 
 	StopAnim();
-	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
+	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, nullptr);
 }
 
 void DoneGarage() {
@@ -292,13 +292,13 @@ void DoneGarage() {
 	_sceneArgs._returnValue = 0;
 
 	while (!_sceneArgs._returnValue) {
-		inpTurnFunctionKey(0);  /* or call save functions in case of space */
-		inpTurnESC(0);
+		inpTurnFunctionKey(false);  /* or call save functions in case of space */
+		inpTurnESC(false);
 
 		activ = Menu(menu, _sceneArgs._options, (byte)(activ), NULL, 0);
 
-		inpTurnESC(1);
-		inpTurnFunctionKey(1);
+		inpTurnESC(true);
+		inpTurnFunctionKey(true);
 
 		uint32 choice = (uint32) 1L << (activ);
 
@@ -310,14 +310,14 @@ void DoneGarage() {
 				ShowTime(0);
 			} else {
 				Say(BUSINESS_TXT, 0, marc->PictID, "REPAIR_HERE");
-				inpTurnESC(0);
+				inpTurnESC(false);
 				_sceneArgs._returnValue = StdHandle(GO);
-				inpTurnESC(1);
+				inpTurnESC(true);
 			}
 		} else {
-			inpTurnESC(0);
+			inpTurnESC(false);
 			_sceneArgs._returnValue = StdHandle(choice);
-			inpTurnESC(1);
+			inpTurnESC(true);
 		}
 	}
 

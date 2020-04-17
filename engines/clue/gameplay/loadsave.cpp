@@ -39,10 +39,10 @@ void tcSaveTheClou() {
 	dskBuildPathName(DISK_CHECK_FILE, DATADISK, GAMES_LIST_TXT, pathname);
 	games->readList(pathname);
 	
-	inpTurnESC(1);
-	inpTurnFunctionKey(0);
+	inpTurnESC(true);
+	inpTurnFunctionKey(false);
 	uint16 activ = (uint16) Menu(games, 15L, 0, nullptr, 0L);
-	inpTurnFunctionKey(1);
+	inpTurnFunctionKey(true);
 
 	/* Name erstellen */
 
@@ -165,10 +165,10 @@ bool tcLoadTheClou() {
 	ShowMenuBackground();
 	Common::String line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "LoadAGame");
 
-	inpTurnFunctionKey(0);
-	inpTurnESC(1);
+	inpTurnFunctionKey(false);
+	inpTurnESC(true);
 	uint32 activ = (uint32) Menu(games, 15L, 0, NULL, 0L);
-	inpTurnFunctionKey(1);
+	inpTurnFunctionKey(true);
 
 	if ((activ != GET_OUT) 
 		&& strcmp(games->getNthNode((int32) activ)->_name.c_str(), origin->getNthNode((int32) activ)->_name.c_str())) {

@@ -37,7 +37,7 @@ uint32 ShowTheClouRequester(int32 error_class) {
 	byte choices;
 	PlayerNode *player = (PlayerNode *)dbGetObject(Player_Player_1);
 
-	inpTurnESC(0);
+	inpTurnESC(false);
 
 	ShowMenuBackground();
 
@@ -48,14 +48,14 @@ uint32 ShowTheClouRequester(int32 error_class) {
 
 		menu = g_clue->_txtMgr->goKey(MENU_TXT, "ESCMenu_STD");
 
-		inpTurnFunctionKey(0);
+		inpTurnFunctionKey(false);
 
 		if (GamePlayMode & GP_DEMO)
-			choices = Menu(menu, 3, 0, NULL, 0);
+			choices = Menu(menu, 3, 0, nullptr, 0);
 		else
 			choices = Menu(menu, 15, 0, NULL, 0);
 
-		inpTurnFunctionKey(1);
+		inpTurnFunctionKey(true);
 
 		switch (choices) {
 		case 0:     /* continue playing */
@@ -101,9 +101,9 @@ uint32 ShowTheClouRequester(int32 error_class) {
 		break;
 	}
 
-	inpTurnESC(1);
+	inpTurnESC(true);
 
-	return (answer);
+	return answer;
 }
 
 } // End of namespace Clue

@@ -77,7 +77,7 @@ void RemTaxiLocation(uint32 locNr) {
 
 uint32 Go(NewList<NewTCEventNode> *succ) {
 	uint32 succ_eventnr;
-	inpTurnFunctionKey(0);
+	inpTurnFunctionKey(false);
 
 	if (succ->getNrOfNodes() > 1) {
 		uint32 prob = 0L;
@@ -109,7 +109,7 @@ uint32 Go(NewList<NewTCEventNode> *succ) {
 		succ_eventnr = succ->getNthNode(0)->_eventNr;
 	}
 
-	inpTurnFunctionKey(1);
+	inpTurnFunctionKey(true);
 
 	return succ_eventnr;
 }
@@ -244,7 +244,7 @@ void Information() {
 
 
 void Look(uint32 locNr) {
-	inpTurnESC(1);
+	inpTurnESC(true);
 
 	byte choice = 0;
 	while (choice != 2) {
@@ -312,12 +312,12 @@ uint32 tcTelefon() {
 		Common::String connect = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "DONT_CONNECT_ME");
 		ObjectList->expandObjectList(connect);
 
-		inpTurnESC(0);
+		inpTurnESC(false);
 		choice = Say(THECLOU_TXT, 0, MATT_PICTID, "CONNECT_ME");
-		inpTurnESC(1);
+		inpTurnESC(true);
 
 		if (choice != GET_OUT) {
-			if (ChoiceOk((choice = Bubble((NewList<NewNode>*)ObjectList, 0, 0L, 0L)), GET_OUT, ObjectList)) {
+			if (ChoiceOk((choice = Bubble((NewList<NewNode>*)ObjectList, 0, nullptr, 0L)), GET_OUT, ObjectList)) {
 				uint32 persID = ObjectList->getNthNode((uint32) choice)->_nr;
 
 				if (persID == Person_Ben_Riggley)
@@ -327,10 +327,9 @@ uint32 tcTelefon() {
 					if (g_clue->calcRandomNr(0L, 9L) == 3)
 						Say(BUSINESS_TXT, 0, ben->PictID, "OCCUPIED");
 					else {
-						inpTurnESC(0);
-						DynamicTalk(Person_Matt_Stuvysunt, persID,
-						            DLG_TALKMODE_STANDARD);
-						inpTurnESC(1);
+						inpTurnESC(false);
+						DynamicTalk(Person_Matt_Stuvysunt, persID, DLG_TALKMODE_STANDARD);
+						inpTurnESC(true);
 					}
 				} else
 					Say(BUSINESS_TXT, 0, ben->PictID, "NOBODY_AT_HOME");
@@ -347,7 +346,7 @@ uint32 tcTelefon() {
 void tcWait() {
 	uint32 locNr = GetObjNrOfLocation(GetLocation);
 
-	inpTurnESC(0);
+	inpTurnESC(false);
 
 	ShowMenuBackground();
 	ShowTime(0);
@@ -383,8 +382,7 @@ void tcWait() {
 
 		uint32 action = inpWaitFor(INP_TIME | INP_LBUTTONP | INP_RBUTTONP | INP_ESC);
 
-		if ((action & INP_LBUTTONP) || (action & INP_RBUTTONP) ||
-		        (action & INP_ESC))
+		if ((action & INP_LBUTTONP) || (action & INP_RBUTTONP) || (action & INP_ESC))
 			ende = 1;
 	}
 
@@ -397,7 +395,7 @@ void tcWait() {
 	ShowMenuBackground();
 	tcRefreshLocationInTitle(GetLocation);
 
-	inpTurnESC(1);
+	inpTurnESC(true);
 	ShowTime(0);
 }
 

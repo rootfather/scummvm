@@ -393,14 +393,14 @@ byte ClueEngine::startupMenu() {
 		PrintStatus(line);
 	}
 
-	inpTurnFunctionKey(0);
-	inpTurnESC(0);
+	inpTurnFunctionKey(false);
+	inpTurnESC(false);
 
 	void (*dummyFct)(byte) = nullptr;
 	uint32 activ = Menu(menu, 7L, 0, dummyFct, 0L);
 
-	inpTurnESC(1);
-	inpTurnFunctionKey(1);
+	inpTurnESC(true);
+	inpTurnFunctionKey(true);
 
 	switch (activ) {
 	case 0:

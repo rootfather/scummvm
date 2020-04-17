@@ -1666,28 +1666,24 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 				while (!PD.ende) {
 					bitset = BIT(PLANING_PLAYER_ESCAPE);
 
-					if ((CurrentPerson < BurglarsNr) ? BurglarsNr >
-					        1 : PersonsNr > 1)
+					if ((CurrentPerson < BurglarsNr) ? BurglarsNr > 1 : PersonsNr > 1)
 						bitset += BIT(PLANING_PLAYER_PERSON_CHANGE);
 
 					if (has(Person_Matt_Stuvysunt, Tool_Funkgeraet))
-						bitset += BIT(PLANING_PLAYER_RADIO_ALL) +
-						          BIT(PLANING_PLAYER_RADIO_ONE);
+						bitset += BIT(PLANING_PLAYER_RADIO_ALL) + BIT(PLANING_PLAYER_RADIO_ONE);
 
 					plDisplayTimer(PD.realTime, 1);
 					plDisplayInfo();
 
 					ShowMenuBackground();
 
-					inpTurnFunctionKey(0);
-					inpTurnESC(0);
+					inpTurnFunctionKey(false);
+					inpTurnESC(false);
 
-					activ =
-					    Menu(menu, bitset, activ, NULL,
-					         INP_AS_FAST_AS_POSSIBLE);
+					activ = Menu(menu, bitset, activ, nullptr, INP_AS_FAST_AS_POSSIBLE);
 
-					inpTurnFunctionKey(1);
-					inpTurnESC(1);
+					inpTurnFunctionKey(true);
+					inpTurnESC(true);
 
 					switch (activ) {
 					case PLANING_PLAYER_PERSON_CHANGE:
@@ -1695,29 +1691,22 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 
 						if (GamePlayMode & GP_GUARD_DESIGN) {
 							if (PersonsNr > 2)
-								choice1 =
-								    (uint32) Bubble((NewList<NewNode>*)PersonsList, CurrentPerson, NULL, 0L);
+								choice1 = (uint32) Bubble((NewList<NewNode>*)PersonsList, CurrentPerson, nullptr, 0L);
 							else
 								choice1 = ((CurrentPerson) ? 0L : 1L);
 						} else {
 							if (BurglarsNr > 2)
-								choice1 =
-								    (uint32) Bubble((NewList<NewNode>*)BurglarsList, CurrentPerson, NULL, 0L);
+								choice1 = (uint32) Bubble((NewList<NewNode>*)BurglarsList, CurrentPerson, nullptr, 0L);
 							else
 								choice1 = ((CurrentPerson) ? 0L : 1L);
 						}
 
 						if (choice1 != GET_OUT) {
-							if (livWhereIs(Planing_Name[choice1]) !=
-							        lsGetActivAreaID()) {
-								lsDoneActivArea(livWhereIs
-								                (Planing_Name[choice1]));
-								lsInitActivArea(livWhereIs
-								                (Planing_Name[choice1]),
-								                livGetXPos(Planing_Name
-								                           [choice1]),
-								                livGetYPos(Planing_Name
-								                           [choice1]),
+							if (livWhereIs(Planing_Name[choice1]) != lsGetActivAreaID()) {
+								lsDoneActivArea(livWhereIs(Planing_Name[choice1]));
+								lsInitActivArea(livWhereIs(Planing_Name[choice1]),
+								                livGetXPos(Planing_Name[choice1]),
+								                livGetYPos(Planing_Name[choice1]),
 								                Planing_Name[choice1]);
 							}
 
@@ -1734,7 +1723,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 						SetPictID(((PersonNode *)dbGetObject(BurglarsList->getNthNode(0)->_nr))->PictID);
 						SetBubbleType(RADIO_BUBBLE);
 
-						if ((choice1 = Bubble(l, 0, NULL, 0L)) != GET_OUT) {
+						if ((choice1 = Bubble(l, 0, nullptr, 0L)) != GET_OUT) {
 							if (choice1 < 2) {
 								tcCalcCallValue(choice1, PD.realTime, 0L);
 								Search.CallCount++;
@@ -1756,7 +1745,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 							Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_RADIO");
 							BurglarsList->expandObjectList(exp);
 
-							choice1 = Bubble((NewList<NewNode>*)BurglarsList, 0, NULL, 0L);
+							choice1 = Bubble((NewList<NewNode>*)BurglarsList, 0, nullptr, 0L);
 
 							if (ChoiceOk(choice1, GET_OUT, BurglarsList))
 								choice1 = BurglarsList->getNthNode(choice1)->_nr;

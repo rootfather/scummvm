@@ -104,13 +104,13 @@ byte plSay(const char *msg, uint32 persId) {
 
 	SetPictID(((PersonNode *) dbGetObject(PersonsList->getNthNode(persId)->_nr))->PictID);
 
-	inpTurnESC(0);
-	inpTurnFunctionKey(0);
+	inpTurnESC(false);
+	inpTurnFunctionKey(false);
 
-	byte choice = Bubble(l, 0, NULL, 200);
+	byte choice = Bubble(l, 0, nullptr, 200);
 
-	inpTurnFunctionKey(1);
-	inpTurnESC(1);
+	inpTurnFunctionKey(true);
+	inpTurnESC(true);
 
 	l->removeList();
 

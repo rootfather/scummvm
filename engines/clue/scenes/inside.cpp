@@ -48,11 +48,11 @@ uint32 tcGoInsideOfHouse(uint32 buildingID) {
 
 		ShowMenuBackground();
 
-		inpTurnFunctionKey(0);
-		inpTurnESC(0);
-		i = (uint32) Menu(menu, (1L << count) - 1, 0, 0L, 0L);
-		inpTurnESC(1);
-		inpTurnFunctionKey(1);
+		inpTurnFunctionKey(false);
+		inpTurnESC(false);
+		i = (uint32) Menu(menu, (1L << count) - 1, 0, nullptr, 0L);
+		inpTurnESC(true);
+		inpTurnFunctionKey(true);
 
 		consistsOfAll(buildingID, OLF_NORMAL, Object_LSArea);
 
@@ -76,8 +76,8 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 	Common::String alarm = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "PROTECTED");
 	Common::String power = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "SUPPLIED");
 
-	inpTurnESC(0);
-	inpTurnFunctionKey(0);
+	inpTurnESC(false);
+	inpTurnFunctionKey(false);
 
 	/* liste und node initialisieren */
 	SetObjectListAttr(OLF_PRIVATE_LIST, Object_LSObject);

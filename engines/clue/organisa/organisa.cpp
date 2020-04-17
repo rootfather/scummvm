@@ -98,13 +98,13 @@ static byte tcMakeCarOk() {
 		while (ObjectList->getNrOfNodes() > Organisation.PlacesInCar) {
 			dbRemObjectNode(ObjectList, Person_Matt_Stuvysunt);
 
-			inpTurnESC(0);
+			inpTurnESC(false);
 
-			byte choice = Bubble((NewList<NewNode> *)ObjectList, 0, 0L, 0L);
+			byte choice = Bubble((NewList<NewNode> *)ObjectList, 0, nullptr, 0L);
 			Organisation.GuyCount--;
 			joined_byUnSet(Person_Matt_Stuvysunt, ObjectList->getNthNode((uint32) choice)->_nr);
 
-			inpTurnESC(1);
+			inpTurnESC(true);
 
 			joined_byAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Person);
 		}
@@ -171,13 +171,13 @@ uint32 tcOrganisation() {
 	Common::String line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "ORGANISATION");
 
 	while (!ende) {
-		inpTurnESC(0);
-		inpTurnFunctionKey(0);
+		inpTurnESC(false);
+		inpTurnFunctionKey(false);
 
 		PrintStatus(line);
 
 		activ = Menu(menu, (uint32) 255, activ, 0, 0);
-		inpTurnESC(1);
+		inpTurnESC(true);
 
 		switch (activ) {
 		case 0:
@@ -408,9 +408,9 @@ void tcChooseGuys() {
 		PrintStatus(line);
 
 		while (activ != 2) {
-			inpTurnESC(0);
+			inpTurnESC(false);
 			activ = Menu(menu, 7, activ, nullptr, 0);
-			inpTurnESC(1);
+			inpTurnESC(true);
 
 			switch (activ) {
 			case 0:

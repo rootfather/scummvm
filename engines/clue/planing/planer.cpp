@@ -107,11 +107,11 @@ static void plActionGo() {
 
 	plMessage("WALK", PLANING_MSG_REFRESH);
 
-	inpTurnFunctionKey(0);
-	inpTurnMouse(0);
+	inpTurnFunctionKey(false);
+	inpTurnMouse(false);
 	inpSetKeyRepeat((0 << 5) | 0);
 
-	while (1) {
+	while (true) {
 		uint32 direction = 0L;
 
 		uint32 choice = inpWaitFor(INP_MOVEMENT | INP_LBUTTONP);
@@ -145,8 +145,8 @@ static void plActionGo() {
 						else {
 							plSay("PLANING_END", CurrentPerson);
 							inpSetKeyRepeat((1 << 5) | 10);
-							inpTurnMouse(1);
-							inpTurnFunctionKey(1);
+							inpTurnMouse(true);
+							inpTurnFunctionKey(true);
 							return;
 						}
 					}
@@ -160,8 +160,8 @@ static void plActionGo() {
 						else {
 							plSay("PLANING_END", CurrentPerson);
 							inpSetKeyRepeat((1 << 5) | 10);
-							inpTurnMouse(1);
-							inpTurnFunctionKey(1);
+							inpTurnMouse(true);
+							inpTurnFunctionKey(true);
 							return;
 						}
 					}
@@ -179,17 +179,17 @@ static void plActionGo() {
 	}
 
 	inpSetKeyRepeat((1 << 5) | 10);
-	inpTurnMouse(1);
-	inpTurnFunctionKey(1);
+	inpTurnMouse(true);
+	inpTurnFunctionKey(true);
 }
 
 static void plActionWait() {
 	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_4");
 	byte activ = 0;
-	uint32 choice1 = 0L, choice2 = 0L, bitset;
+	uint32 choice1 = 0L, choice2 = 0L;
 
 	while (activ != PLANING_WAIT_RETURN) {
-		bitset = BIT(PLANING_WAIT) + BIT(PLANING_WAIT_RETURN);
+		uint32 bitset = BIT(PLANING_WAIT) + BIT(PLANING_WAIT_RETURN);
 
 		if (CurrentPerson < BurglarsNr) {
 			if (BurglarsNr > 1)
@@ -201,15 +201,15 @@ static void plActionWait() {
 
 		ShowMenuBackground();
 
-		inpTurnESC(0);
-		inpTurnFunctionKey(0);
-		inpTurnMouse(0);
+		inpTurnESC(false);
+		inpTurnFunctionKey(false);
+		inpTurnMouse(false);
 
-		activ = Menu(menu, bitset, activ, NULL, 0);
+		activ = Menu(menu, bitset, activ, nullptr, 0);
 
-		inpTurnMouse(1);
-		inpTurnFunctionKey(1);
-		inpTurnESC(1);
+		inpTurnMouse(true);
+		inpTurnFunctionKey(true);
+		inpTurnESC(true);
 
 		switch (activ) {
 		case PLANING_WAIT: {
@@ -219,11 +219,11 @@ static void plActionWait() {
 			plMessage("WAIT_1", PLANING_MSG_REFRESH);
 			plDrawWait(choice2);
 
-			inpTurnESC(0);
-			inpTurnFunctionKey(0);
-			inpTurnMouse(0);
+			inpTurnESC(false);
+			inpTurnFunctionKey(false);
+			inpTurnMouse(false);
 
-			while (1) {
+			while (true) {
 				choice1 =
 				    inpWaitFor(INP_RIGHT | INP_LEFT | INP_UP | INP_DOWN |
 				               INP_LBUTTONP);
@@ -254,9 +254,9 @@ static void plActionWait() {
 				}
 			}
 
-			inpTurnMouse(1);
-			inpTurnFunctionKey(1);
-			inpTurnESC(1);
+			inpTurnMouse(true);
+			inpTurnFunctionKey(true);
+			inpTurnESC(true);
 
 			if (choice2) {
 				if (InitAction
@@ -288,7 +288,7 @@ static void plActionWait() {
 					Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_RADIO");
 					BurglarsList->expandObjectList(exp);
 
-					choice1 = Bubble((NewList<NewNode>*)BurglarsList, 0, NULL, 0L);
+					choice1 = Bubble((NewList<NewNode>*)BurglarsList, 0, nullptr, 0L);
 
 					if (ChoiceOk(choice1, GET_OUT, BurglarsList))
 						choice1 = BurglarsList->getNthNode(choice1)->_nr;
@@ -308,8 +308,7 @@ static void plActionWait() {
 					if (InitAction(plSys, ACTION_WAIT_SIGNAL, choice1, 0L, 1L)) {
 						PlanChanged = true;
 
-						livAnimate(Planing_Name[CurrentPerson], ANM_STAND, 0,
-						           0);
+						livAnimate(Planing_Name[CurrentPerson], ANM_STAND, 0, 0);
 						plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys),
 						       PLANING_CORRECT_TIME, 1);
 						livRefreshAll();
@@ -342,22 +341,20 @@ static void plLevelDesigner(LSObjectNode *lso) {
 
 		ShowMenuBackground();
 
-		inpTurnESC(0);
-		inpTurnFunctionKey(0);
-		inpTurnMouse(0);
+		inpTurnESC(false);
+		inpTurnFunctionKey(false);
+		inpTurnMouse(false);
 
-		activ = Menu(menu, bitset, activ, NULL, 0);
+		activ = Menu(menu, bitset, activ, nullptr, 0);
 
-		inpTurnMouse(1);
-		inpTurnFunctionKey(1);
-		inpTurnESC(1);
+		inpTurnMouse(true);
+		inpTurnFunctionKey(true);
+		inpTurnESC(true);
 
 		switch (activ) {
 		case PLANING_LD_MOVE:
-			while (1) {
-				int32 choice =
-				    inpWaitFor(INP_RIGHT | INP_LEFT | INP_UP | INP_DOWN |
-				               INP_LBUTTONP);
+			while (true) {
+				int32 choice = inpWaitFor(INP_RIGHT | INP_LEFT | INP_UP | INP_DOWN | INP_LBUTTONP);
 
 				if (choice & INP_LBUTTONP)
 					break;
@@ -469,11 +466,9 @@ static void plActionOpenClose(uint16 what) {
 							                 ((what == ACTION_OPEN) ? 1 : 0));
 
 							if (what == ACTION_OPEN)
-								plCorrectOpened((LSObjectNode *) dbGetObject(choice1),
-								                1);
+								plCorrectOpened((LSObjectNode *) dbGetObject(choice1), 1);
 							else
-								plCorrectOpened((LSObjectNode *) dbGetObject(choice1),
-								                0);
+								plCorrectOpened((LSObjectNode *) dbGetObject(choice1), 0);
 
 							plRefresh(choice1);
 							livRefreshAll();
@@ -1421,13 +1416,13 @@ static void plLook() {
 		if ((CurrentPerson < BurglarsNr) ? BurglarsNr > 1 : PersonsNr > 1)
 			bitset += BIT(PLANING_LOOK_PERSON_CHANGE);
 
-		inpTurnFunctionKey(0);
-		inpTurnESC(0);
+		inpTurnFunctionKey(false);
+		inpTurnESC(false);
 
-		activ = Menu(menu, bitset, activ, NULL, 0);
+		activ = Menu(menu, bitset, activ, nullptr, 0);
 
-		inpTurnFunctionKey(1);
-		inpTurnESC(1);
+		inpTurnFunctionKey(true);
+		inpTurnESC(true);
 
 		switch (activ) {
 		case PLANING_LOOK_PLAN: {
@@ -1440,7 +1435,7 @@ static void plLook() {
 			inpTurnMouse(false);
 			inpSetKeyRepeat((0 << 5) | 0);
 
-			while (1) {
+			while (true) {
 				plDisplayTimer(timer / PLANING_CORRECT_TIME, 0);
 
 				byte choice = inpWaitFor(INP_MOVEMENT | INP_LBUTTONP);
@@ -1582,15 +1577,15 @@ void plPlaner(uint32 objId) {
 			BIT(PLANING_LOAD) +
 			BIT(PLANING_CLEAR) + BIT(PLANING_LOOK) + BIT(PLANING_RETURN);
 
-		inpTurnESC(0);
-		inpTurnFunctionKey(0);
-		inpTurnMouse(0);
+		inpTurnESC(false);
+		inpTurnFunctionKey(false);
+		inpTurnMouse(false);
 
-		activ = Menu(menu, bitset, activ, NULL, 0);
+		activ = Menu(menu, bitset, activ, nullptr, 0);
 
-		inpTurnMouse(1);
-		inpTurnFunctionKey(1);
-		inpTurnESC(1);
+		inpTurnMouse(true);
+		inpTurnFunctionKey(true);
+		inpTurnESC(true);
 
 		switch (activ) {
 		case PLANING_START:
@@ -1624,8 +1619,7 @@ void plPlaner(uint32 objId) {
 			plPrepareSys(0L, 0, PLANING_HANDLER_SET);
 
 			plMessage("PERSON_NOTES", PLANING_MSG_REFRESH);
-			plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), GetMaxTimer(plSys),
-			       1);
+			plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), GetMaxTimer(plSys), 1);
 			lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) -1, (uint16) -1);
 
 			PlanChanged = false;
