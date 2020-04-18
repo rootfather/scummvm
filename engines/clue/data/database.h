@@ -40,14 +40,6 @@ namespace Clue {
 
 #define OBJ_HASH_SIZE      31
 
-/* public structures */
-
-struct dbObjectHeader {
-	uint32 nr;
-	uint32 type;
-	uint32 size;
-};
-
 /* public global data */
 extern NewObjectList<dbObjectNode>* ObjectList;
 extern NewObjectList<dbObjectNode>* ObjectListPrivate;
@@ -85,10 +77,8 @@ void SetObjectListAttr(uint32 flags, uint32 type);
 void BuildObjectList(dbObjectNode *key);
 
 int16 dbStdCompareObjects(dbObjectNode *obj1, dbObjectNode *obj2);
-int32 dbSortObjectList(NewObjectList<dbObjectNode> **objectList,
-					int16(*processNode)(dbObjectNode *, dbObjectNode *));
-void dbSortPartOfList(NewObjectList<dbObjectNode>* l, dbObjectNode* start, dbObjectNode* end,
-					int16(*processNode)(dbObjectNode*, dbObjectNode*));
+int32 dbSortObjectList(NewObjectList<dbObjectNode> **objectList, int16(*processNode)(dbObjectNode *, dbObjectNode *));
+void dbSortPartOfList(NewObjectList<dbObjectNode> *l, dbObjectNode *start, dbObjectNode *end, int16(*processNode)(dbObjectNode *, dbObjectNode *));
 
 void dbAddObjectNode(NewObjectList<dbObjectNode> *objectList, uint32 nr, uint32 flags);
 

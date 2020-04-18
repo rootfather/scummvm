@@ -84,8 +84,7 @@ void tcSaveTheClou() {
 		/* Speichern von tcBuild */
 		line = Common::String::format("%s%d%s", BUILD_DATA_NAME, activ, GAME_DATA_EXT);
 		dskBuildPathName(DISK_CHECK_DIR, DATADISK, line.c_str(), pathname);
-		dbSaveAllObjects(pathname, (uint32)(DB_tcBuild_OFFSET),
-		                 (uint32)(DB_tcBuild_SIZE), 0);
+		dbSaveAllObjects(pathname, (uint32)(DB_tcBuild_OFFSET), (uint32)DB_tcBuild_SIZE, 0);
 
 		line = Common::String::format("%s%d%s", BUILD_DATA_NAME, activ, GAME_REL_EXT);
 		dskBuildPathName(DISK_CHECK_DIR, DATADISK, line.c_str(), pathname);

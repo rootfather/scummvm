@@ -93,7 +93,7 @@ void dbSetLoadObjectsMode(uint8 mode) {
 	ObjectLoadMode = mode;
 }
 
-static void dbRWObject(dbObjectNode *obj, int RW, uint32 type, uint32 size, Common::Stream *fp) {
+static void dbRWObject(dbObjectNode *obj, int RW, uint32 type, Common::Stream *fp) {
 	void(*U8_RW)(Common::Stream * fp, uint8 * x);
 	void(*S8_RW)(Common::Stream * fp, int8 * x);
 	void(*U16LE_RW)(Common::Stream * fp, uint16 * x);
@@ -511,30 +511,24 @@ static void dbRWObject(dbObjectNode *obj, int RW, uint32 type, uint32 size, Comm
 			"Unknown type #%u", type);
 		break;
 	}
-	
-	if ((uint32)(dskTell(fp) - start) != size) {
-		ErrorMsg(Disk_Defect, ERROR_MODULE_DATABASE, 1);
-	}
 }
-
 
 bool dbLoadAllObjects(const char *fileName, uint16 diskId) {
 	Common::Stream *fh = dskOpen(fileName, 0);
 
 	if (fh) {
 		uint32 realNr = 1;
-		dbObjectHeader objHd;
 
 		while (!dskEOF(fh)) {
-			objHd.nr = 0;
-			objHd.type = 0;
-			objHd.size = 0;
+			uint32 objNr = 0;
+			uint32 objType = 0;
+			uint32 objSize = 0; // No longer used. Kept for savegame compatibility
 
-			dskRead_U32LE(fh, &objHd.nr);
-			dskRead_U32LE(fh, &objHd.type);
-			dskRead_U32LE(fh, &objHd.size);
+			dskRead_U32LE(fh, &objNr);
+			dskRead_U32LE(fh, &objType);
+			dskRead_U32LE(fh, &objSize);
 
-			if ((objHd.nr != (uint32) - 1) && (objHd.type != (uint32) - 1) && (objHd.size != (uint32) - 1)) {
+			if ((objNr != (uint32) - 1) && (objType != (uint32) - 1)) {
 				NewList<NewNode> *list = nullptr;
 				Common::String name = Common::String("");
 
@@ -543,12 +537,12 @@ bool dbLoadAllObjects(const char *fileName, uint16 diskId) {
 						name = list->getListHead()->_name;
 				}
 
-				dbObjectNode *obj = dbNewObject(objHd.nr, objHd.type, name, realNr++);
+				dbObjectNode *obj = dbNewObject(objNr, objType, name, realNr++);
 
 				if (list)
 					list->removeList();
 
-				dbRWObject(obj, 0, objHd.type, objHd.size, fh);
+				dbRWObject(obj, 0, objType, fh);
 			}
 
 			dskPeek(fh);
@@ -561,36 +555,30 @@ bool dbLoadAllObjects(const char *fileName, uint16 diskId) {
 }
 
 bool dbSaveAllObjects(const char *fileName, uint32 offset, uint32 size, uint16 diskId) {
-	error("STUB dbSaveAllObjects");
-#if 0
-	Common::Stream *fh;
 	uint32 realNr = 1;
 	uint32 dbSize = dbGetObjectCountOfDB(offset, size);
 
-	if ((fh = dskOpen(fileName, 1))) {
-		while (realNr <= dbSize) {
-			dbObjectNode* obj = dbFindRealObject(realNr++, offset, size);
-			if (obj) {
-				dbObjectHeader objHd;
-				objHd.nr = obj->_nr;
-				objHd.type = obj->_type;
-				objHd.size = dbGetDskSize(obj->_type);
+	Common::Stream* fh = dskOpen(fileName, 1);
+	if (!fh)
+		return false;
 
-				uint32 localSize = NODE_SIZE(obj) - sizeof(dbObject);
+	while (realNr <= dbSize) {
+		dbObjectNode* obj = dbFindRealObject(realNr++, offset, size);
+		if (obj) {
+			uint32 objNr = obj->_nr;
+			uint32 objType = obj->_type;
+			uint32 objSize = 0; // No longer used, but mandatory to keep savegames compatibility
 
-				dskWrite_U32LE(fh, &objHd.nr);
-				dskWrite_U32LE(fh, &objHd.type);
-				dskWrite_U32LE(fh, &objHd.size);
+			dskWrite_U32LE(fh, &objNr);
+			dskWrite_U32LE(fh, &objType);
+			dskWrite_U32LE(fh, &objSize);
 
-				dbRWObject(obj + 1, 1, objHd.type, objHd.size, localSize, fh);
-			}
+			dbRWObject(obj, 1, objType, fh);
 		}
-
-		dskClose(fh);
-		return true;
 	}
-#endif
-	return false;
+
+	dskClose(fh);
+	return true;
 }
 
 void dbDeleteAllObjects(uint32 offset, uint32 size) {
