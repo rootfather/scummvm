@@ -192,7 +192,7 @@ void lsLoadGlobalData(uint32 bld, uint32 ul_AreaId) {
 
 	dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, areaName.c_str(), fileName);
 
-	if (!LoadRelations(fileName, 0))
+	if (!LoadRelations(fileName))
 		ErrorMsg(Disk_Defect, ERROR_MODULE_LANDSCAP, 2);
 }
 
@@ -204,12 +204,12 @@ void lsInitObjectDB(uint32 bld, uint32 areaID) {
 
 	dbSetLoadObjectsMode(DB_LOAD_MODE_NO_NAME); /* dont fetch names of objects */
 
-	if (dbLoadAllObjects(fileName, 0)) {
+	if (dbLoadAllObjects(fileName)) {
 		areaName = dbGetObjectName(areaID);
 		areaName += OBJ_REL_EXTENSION;
 		dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, areaName.c_str(), fileName);
 
-		if (!(LoadRelations(fileName, 0)))
+		if (!LoadRelations(fileName))
 			ErrorMsg(Disk_Defect, ERROR_MODULE_LANDSCAP, 3);
 	} else
 		ErrorMsg(Disk_Defect, ERROR_MODULE_LANDSCAP, 4);

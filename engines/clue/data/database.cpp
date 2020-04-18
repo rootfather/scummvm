@@ -513,7 +513,7 @@ static void dbRWObject(dbObjectNode *obj, int RW, uint32 type, Common::Stream *f
 	}
 }
 
-bool dbLoadAllObjects(const char *fileName, uint16 diskId) {
+bool dbLoadAllObjects(const char *fileName) {
 	Common::Stream *fh = dskOpen(fileName, 0);
 
 	if (fh) {
@@ -554,7 +554,7 @@ bool dbLoadAllObjects(const char *fileName, uint16 diskId) {
 	return false;
 }
 
-bool dbSaveAllObjects(const char *fileName, uint32 offset, uint32 size, uint16 diskId) {
+bool dbSaveAllObjects(const char *fileName, uint32 offset, uint32 size) {
 	uint32 realNr = 1;
 	uint32 dbSize = dbGetObjectCountOfDB(offset, size);
 

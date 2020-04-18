@@ -51,8 +51,8 @@ extern NewList<dbObjectNode> *objHash[OBJ_HASH_SIZE];
 
 
 /* public prototypes - OBJECTS */
-bool dbLoadAllObjects(const char *fileName, uint16 diskId);
-bool dbSaveAllObjects(const char *fileName, uint32 offset, uint32 size, uint16 diskId);
+bool dbLoadAllObjects(const char *fileName);
+bool dbSaveAllObjects(const char *fileName, uint32 offset, uint32 size);
 void dbDeleteAllObjects(uint32 offset, uint32 size);
 
 uint32 dbGetObjectCountOfDB(uint32 offset, uint32 size);

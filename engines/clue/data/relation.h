@@ -69,8 +69,8 @@ PARAMETER GetP(dbObjectNode *, RELATION, dbObjectNode *);
 RELATION AskP(dbObjectNode *, RELATION, dbObjectNode *, PARAMETER, COMPARSION);
 void AskAll(dbObjectNode *, RELATION, void (*)(dbObjectNode *));
 
-int SaveRelations(const char *, uint32, uint32, uint16 disk_id);
-bool LoadRelations(const char *, uint16 disk_id);
+int SaveRelations(const char *, uint32, uint32);
+bool LoadRelations(const char *);
 void RemRelations(uint32, uint32);
 
 #if 0

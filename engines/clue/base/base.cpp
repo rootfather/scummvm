@@ -126,10 +126,10 @@ static void InitData() {
 
 	g_clue->_txtMgr->reset(OBJECTS_TXT);
 
-	if (dbLoadAllObjects(MainData, 0))
-		if (dbLoadAllObjects(BuildData, 0))
-			if (LoadRelations(MainRel, 0))
-				if (LoadRelations(BuildRel, 0)) {
+	if (dbLoadAllObjects(MainData))
+		if (dbLoadAllObjects(BuildData))
+			if (LoadRelations(MainRel))
+				if (LoadRelations(BuildRel)) {
 					InitTaxiLocations();
 
 					result = true;

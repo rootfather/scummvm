@@ -75,20 +75,20 @@ void tcSaveTheClou() {
 		/* Speichern von tcMain */
 		line = Common::String::format("%s%d%s", MAIN_DATA_NAME, activ, GAME_DATA_EXT);
 		dskBuildPathName(DISK_CHECK_DIR, DATADISK, line.c_str(), pathname);
-		dbSaveAllObjects(pathname, DB_tcMain_OFFSET, DB_tcMain_SIZE, 0);
+		dbSaveAllObjects(pathname, DB_tcMain_OFFSET, DB_tcMain_SIZE);
 
 		line = Common::String::format("%s%d%s", MAIN_DATA_NAME, activ, GAME_REL_EXT);
 		dskBuildPathName(DISK_CHECK_DIR, DATADISK, line.c_str(), pathname);
-		SaveRelations(pathname, DB_tcMain_OFFSET, DB_tcMain_SIZE, 0);
+		SaveRelations(pathname, DB_tcMain_OFFSET, DB_tcMain_SIZE);
 
 		/* Speichern von tcBuild */
 		line = Common::String::format("%s%d%s", BUILD_DATA_NAME, activ, GAME_DATA_EXT);
 		dskBuildPathName(DISK_CHECK_DIR, DATADISK, line.c_str(), pathname);
-		dbSaveAllObjects(pathname, (uint32)(DB_tcBuild_OFFSET), (uint32)DB_tcBuild_SIZE, 0);
+		dbSaveAllObjects(pathname, (uint32)(DB_tcBuild_OFFSET), (uint32)DB_tcBuild_SIZE);
 
 		line = Common::String::format("%s%d%s", BUILD_DATA_NAME, activ, GAME_REL_EXT);
 		dskBuildPathName(DISK_CHECK_DIR, DATADISK, line.c_str(), pathname);
-		SaveRelations(pathname, (uint32) DB_tcBuild_OFFSET, (uint32) DB_tcBuild_SIZE, 0);
+		SaveRelations(pathname, (uint32) DB_tcBuild_OFFSET, (uint32) DB_tcBuild_SIZE);
 
 		/* Speichern der Story */
 		line = Common::String::format("%s%d%s", STORY_DATA_NAME, activ, GAME_DATA_EXT);
@@ -123,19 +123,19 @@ bool tcLoadIt(char activ) {
 	dskBuildPathName(DISK_CHECK_FILE, DATADISK, line.c_str(), pathname);
 
 	bool loaded = false;
-	if (dbLoadAllObjects(pathname, 0)) {
+	if (dbLoadAllObjects(pathname)) {
 		line = Common::String::format("%s%d%s", BUILD_DATA_NAME, (int) activ, GAME_DATA_EXT);
 		dskBuildPathName(DISK_CHECK_FILE, DATADISK, line.c_str(), pathname);
 
-		if (dbLoadAllObjects(pathname, 0)) {
+		if (dbLoadAllObjects(pathname)) {
 			line = Common::String::format("%s%d%s", MAIN_DATA_NAME, (int) activ, GAME_REL_EXT);
 			dskBuildPathName(DISK_CHECK_FILE, DATADISK, line.c_str(), pathname);
 
-			if (LoadRelations(pathname, 0)) {
+			if (LoadRelations(pathname)) {
 				line = Common::String::format("%s%d%s", BUILD_DATA_NAME, (int) activ, GAME_REL_EXT);
 				dskBuildPathName(DISK_CHECK_FILE, DATADISK, line.c_str(), pathname);
 
-				if (LoadRelations(pathname, 0)) {
+				if (LoadRelations(pathname)) {
 					line = Common::String::format("%s%d%s", STORY_DATA_NAME, (int) activ, GAME_DATA_EXT);
 					dskBuildPathName(DISK_CHECK_FILE, DATADISK, line.c_str(), pathname);
 

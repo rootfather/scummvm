@@ -200,7 +200,7 @@ void AskAll(dbObjectNode *leftKey, RELATION id, void (*UseKey)(dbObjectNode *)) 
 	}
 }
 
-int SaveRelations(const char *file, uint32 offset, uint32 size, uint16 disk_id) {
+int SaveRelations(const char *file, uint32 offset, uint32 size) {
 	if (relationsDefBase) {
 		Common::Stream *fh = dskOpen(file, 1);
 		if (fh) {
@@ -235,7 +235,7 @@ int SaveRelations(const char *file, uint32 offset, uint32 size, uint16 disk_id) 
 	return 0;
 }
 
-bool LoadRelations(const char *file, uint16 disk_id) {
+bool LoadRelations(const char *file) {
 	char buffer[256];
 	char left[256];
 	char right[256];

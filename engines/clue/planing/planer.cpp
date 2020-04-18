@@ -393,9 +393,7 @@ static void plLevelDesigner(LSObjectNode *lso) {
 			areaName += ".dat";
 			dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, areaName.c_str(), fileName);
 
-			dbSaveAllObjects(fileName,
-			                 ((LSAreaNode *) dbGetObject(area))->ul_ObjectBaseNr,
-			                 10000, 0);
+			dbSaveAllObjects(fileName, ((LSAreaNode *) dbGetObject(area))->ul_ObjectBaseNr, 10000);
 		}
 
 		ende = 1;
