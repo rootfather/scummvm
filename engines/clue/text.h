@@ -368,10 +368,11 @@ void NewList<T>::link(T *node, T *predNode) {
 }
 
 template <typename T>
-T *NewList<T>::unLinkByAddr(T* node, T** predNode) {
+T *NewList<T>::unLinkByAddr(T *node, T **predNode) {
 	if (predNode)
 		*predNode = (T *)node->_pred;
 
+	((NewNode*)node)->remNode();
 	return node;
 }
 
