@@ -101,8 +101,6 @@ static void dbRWObject(dbObjectNode *obj, int RW, uint32 type, Common::Stream *f
 	void(*U32LE_RW)(Common::Stream * fp, uint32 * x);
 	//void (*S32LE_RW)(Common::Stream * fp, int32 * x);
 
-	int32 start = dskTell(fp);
-
 	if (RW == 0) {
 		U8_RW = dskRead_U8;
 		S8_RW = dskRead_S8;
