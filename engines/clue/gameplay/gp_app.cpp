@@ -24,8 +24,8 @@
 namespace Clue {
 
 // 2018-09-26 LucyG: in-game time was too fast
-#define GP_TICKS_PER_MINUTE		10
-#define GP_TICKS_PER_DAY		30
+#define GP_TICKS_PER_MINUTE		5
+#define GP_TICKS_PER_DAY		15
 
 void tcAsTimeGoesBy(uint32 untilMinute) {
 	untilMinute %= 1440;
