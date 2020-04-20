@@ -15,7 +15,8 @@ void sndDone();
 
 void sndPlaySound(const char *name, uint32 mode);
 void sndStopSound(uint8 dummy);
-void sndFading(short int targetVol);
+void sndDoFading();
+void sndFading(uint16 targetVol);
 
 char *sndGetCurrSoundName();
 

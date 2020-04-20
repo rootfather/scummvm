@@ -1382,21 +1382,18 @@ void ShowIntro() {
 				}
 
 				if (g_clue->getFeatures() & ADGF_CD) {
-#if 0
-					for (s = 0; s < MAX_TRACKS; s++) {
+					for (int s = 0; s < MAX_TRACKS; s++) {
 						if ((CDFrames[s * 6] == anims)
 						        && (CDFrames[s * 6 + 1] == t)) {
-							NEOSOUNDSYSTEM(3, 16, 0x1f);        /* CMD 3: Fade to 0x1f */
+							sndFading(16);
 
 							CDROM_StopAudioTrack();
 							if (CDFrames[s * 6 + 2] == 0)
-								CDROM_PlayAudioTrack((unsigned
-								                      char)CDFrames[s * 6 + 3]);
+								CDROM_PlayAudioTrack(CDFrames[s * 6 + 3]);
 							else
-								CDROM_PlayAudioSequence((unsigned char) CDFrames[s * 6 + 3], (unsigned long) CDFrames[s * 6 + 4], (unsigned long) CDFrames[s * 6 + 5]);
+								CDROM_PlayAudioSequence(CDFrames[s * 6 + 3], CDFrames[s * 6 + 4], CDFrames[s * 6 + 5]);
 						}
 					}
-#endif
 				}
 
 				endi = false;

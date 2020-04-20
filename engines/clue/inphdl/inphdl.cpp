@@ -76,7 +76,7 @@ static void inpDoPseudoMultiTasking() {
 	if (timePassed >= INP_TICKS_TO_MS(1)) {
 		timePrev = timeNow;
 
-		// sndDoFading(); // 2014-07-17 LucyG
+		sndDoFading(); // 2014-07-17 LucyG
 
 		animator();
 	}
@@ -254,8 +254,12 @@ void inpTurnFunctionKey(bool us_NewStatus) {
 }
 
 void inpTurnMouse(bool us_NewStatus) {
-	//IHandler.MouseStatus = us_NewStatus;
-	//CursorMan.showMouse(us_NewStatus);
+	// This is only used to hide the mouse in the planner,
+	// doesn't seem to have any side-effects if we keep the mouse on
+	/*
+	IHandler.MouseStatus = us_NewStatus;
+	CursorMan.showMouse(us_NewStatus);
+	*/
 }
 
 void inpDelay(uint32 l_Ticks) {
@@ -286,7 +290,6 @@ void inpSetKeyRepeat(unsigned char rate) {
 		interval = 60;
 
 	SDL_EnableKeyRepeat(delay, interval);
-#endif
 
 	/* flush event queue */
 	Common::Event ev;
@@ -294,6 +297,7 @@ void inpSetKeyRepeat(unsigned char rate) {
 		/* do nothing. */
 		g_system->delayMillis(10);
 	}
+#endif
 }
 
 } // End of namespace Clue

@@ -19,6 +19,7 @@ void CDROM_UnInstall();
 
 void CDROM_WaitForMedia();
 
+void CDROM_PlayAudioTrack(uint8 TrackNum);
 void CDROM_PlayAudioSequence(uint8 TrackNum, uint32 StartOffset, uint32 EndOffset);
 void CDROM_StopAudioTrack();
 
