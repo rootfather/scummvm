@@ -41,7 +41,7 @@ static bool tcCarFound(CarNode *car, uint32 time) {
 		if (tcIsCarRecognised(car, time)) { /* Wagen wird erkannt! */
 			Say(BUSINESS_TXT, 0, john->PictID, "CAR_RECOG");
 
-			int32 hours = g_clue->calcRandomNr(2L, 5L);
+			int32 hours = g_clue->calcRandomNr(2, 5);
 			int32 i = 0;
 
 			while ((i++) < hours) {
@@ -78,7 +78,7 @@ static uint32 tcATraitor(uint32 traitorId) {
 	newList->createNode(bubble->getNthNode(2)->_name);
 
 	SetPictID(john->PictID);
-	Bubble(newList, 0, nullptr, 0L);
+	Bubble(newList, 0, nullptr, 0);
 
 	bubble->removeList();
 	newList->removeList();
@@ -218,7 +218,7 @@ uint32 tcStartEvidence() {
 	while (guyReady != ((1 << guyCount) - 1)) {
 		if (shown) {
 			ShowTime(0);
-			inpDelay(35L);
+			inpDelay(35);
 			AddVTime(g_clue->calcRandomNr(1, 11));
 
 			shown = 0;
@@ -389,14 +389,14 @@ uint32 tcPersonWanted(uint32 persId) {
 	bubble->createNode(line);
 
 	SetPictID(john->PictID);
-	Bubble(bubble, 0, nullptr, 0L);
+	Bubble(bubble, 0, nullptr, 0);
 	bubble->removeList();
 
 	Say(BUSINESS_TXT, 0, miles->PictID, "ARREST_HIM");
 	livesInUnSet(London_London_1, persId);
 	tcMoveAPerson(persId, Location_Nirvana);
 
-	uint32 hours = g_clue->calcRandomNr(4L, 7L);
+	uint32 hours = g_clue->calcRandomNr(4, 7);
 
 	uint32 i = 0;
 	while ((i++) < hours) {
@@ -573,8 +573,8 @@ int32 tcCalcCarEscape(int32 timeLeft) {
 		int32 ps = car->PS;
 
 		/* Motor : pro 10% Schaden -> 5% Leistung weniger */
-		kmh = CalcValue(kmh, 0, 65535L, (car->MotorState) / 2, 50);
-		ps = CalcValue(ps, 0, 65535L, (car->MotorState) / 2, 50);
+		kmh = CalcValue(kmh, 0, 65535, (car->MotorState) / 2, 50);
+		ps = CalcValue(ps, 0, 65535, (car->MotorState) / 2, 50);
 
 		/* pro Jahr 3% weniger */
 		int32 i = (car->Speed * 3 * (tcRGetCarAge(car) + 1)) / 100;

@@ -267,8 +267,8 @@ void tcDoneMeetBriggs() {
 		hasSet(Person_Matt_Stuvysunt, Building_Kiosk);
 
 		tcAddPlayerMoney(15);
-		tcAddBuildExactlyness(bui, 255L);
-		tcAddBuildStrike(bui, 5L);
+		tcAddBuildExactlyness(bui, 255);
+		tcAddBuildStrike(bui, 5);
 
 		Say(STORY_0_TXT, 0, Briggs->PictID, "BRIGGS_BRIGGS_4");
 
@@ -385,7 +385,7 @@ void tcDonePrison()
  * direkt angesprungen
  */
 {
-	SetDay(719792L);        /* 13.01.1972? */
+	SetDay(719792);        /* 13.01.1972? */
 
 	sndPlaySound("end.bk", 0);  /* dont change it! (-> story_9) */
 	tcMattGoesTo(7);
@@ -649,8 +649,8 @@ void tcCheckForDowning() {
 
 		hasSet(Person_Matt_Stuvysunt, Building_Buckingham_Palace);
 
-		tcAddBuildExactlyness(bui, 255L);
-		tcAddBuildStrike(bui, 5L);
+		tcAddBuildExactlyness(bui, 255);
+		tcAddBuildStrike(bui, 5);
 
 		SetBubbleType(THINK_BUBBLE);
 		Say(INVESTIGATIONS_TXT, 0, OLD_MATT_PICTID, "BuckinghamPlansFound");
@@ -794,7 +794,7 @@ void tcDoneDealerIsAfraid() {
 	PersonNode *pers = (PersonNode *) dbGetObject(persID);
 	Say(STORY_0_TXT, 0, pers->PictID, "DEALER_IS_AFRAID");
 
-	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
+	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
 }
 
 void tcDoneRaidInWalrus() {
@@ -859,7 +859,7 @@ void tcDoneDartJager() {
 			Say(STORY_0_TXT, 0, 155, "THE_END_MONASTERY");  /* pict = holy matt */
 
 			StopAnim();
-			gfxChangeColors(l_gc, 3L, GFX_FADE_OUT, 0L);
+			gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
 
 			_sceneArgs._returnValue = SCENE_NEW_GAME;
 		} else {
@@ -1411,7 +1411,7 @@ static void tcDoneFirstTimeLonelyInSouth() {
 	EnvironmentNode *Env = (EnvironmentNode *)dbGetObject(Environment_TheClou);
 	PersonNode *Herb = (PersonNode *)dbGetObject(Person_Herbert_Briggs);
 
-	tcAsDaysGoBy(713518L, 30);
+	tcAsDaysGoBy(713518, 30);
 	uint32 startTime = GetDay * 1440 + GetMinute;
 
 	byte ende = 0;
@@ -1420,7 +1420,7 @@ static void tcDoneFirstTimeLonelyInSouth() {
 		inpTurnFunctionKey(false);
 		inpTurnESC(false);
 
-		activ = Menu(menu, 46, activ, nullptr, 0L);
+		activ = Menu(menu, 46, activ, nullptr, 0);
 		inpTurnESC(true);
 		inpTurnFunctionKey(true);
 
@@ -1528,7 +1528,7 @@ void tcDoneSouthhampton() {
 	while ((activ != 0) && (_sceneArgs._returnValue == 0)) {
 		inpTurnESC(false);
 		inpTurnFunctionKey(true);
-		activ = Menu(menu, 127, activ, nullptr, 0L);
+		activ = Menu(menu, 127, activ, nullptr, 0);
 		inpTurnFunctionKey(false);
 		inpTurnESC(true);
 
@@ -1760,7 +1760,7 @@ void tcDoneKaserne() {
 	byte activ = 0;
 	while ((!burglary) && (!successor)) {
 		inpTurnESC(false);
-		activ = Menu(menu, 15, activ, nullptr, 0L);
+		activ = Menu(menu, 15, activ, nullptr, 0);
 		inpTurnESC(true);
 
 		/* change possibilites in PatchStory too! */

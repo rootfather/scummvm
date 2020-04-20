@@ -60,7 +60,7 @@ byte tcBuyTool(byte choice) {
 
 		oldChoice = choice;
 
-		choice = Bubble((NewList<NewNode>*)tools, choice, 0L, 0L);
+		choice = Bubble((NewList<NewNode>*)tools, choice, 0, 0);
 		if (ChoiceOk(choice, GET_OUT, tools)) {
 			dbObjectNode *node = tools->getNthNode((uint32) choice);
 			uint32 toolID = node->_nr;
@@ -107,14 +107,14 @@ byte tcDescTool(byte choice) {
 		SetPictID(MATT_PICTID);
 
 		oldChoice = choice;
-		choice = Bubble((NewList<NewNode>*)tools, choice, 0L, 0L);
+		choice = Bubble((NewList<NewNode>*)tools, choice, 0, 0);
 
 		if (ChoiceOk(choice, GET_OUT, tools)) {
 			Common::String line = dbGetObjectName(tools->getNthNode((uint32) choice)->_nr);
 			NewList<NewNode> *desc = g_clue->_txtMgr->goKey(TOOLS_TXT, line.c_str());
 
 			SetPictID(mary->PictID);
-			Bubble(desc, 0, nullptr, 0L);
+			Bubble(desc, 0, nullptr, 0);
 
 			desc->removeList();
 		} else
@@ -148,7 +148,7 @@ byte tcShowTool(byte choice) {
 		SetPictID(MATT_PICTID);
 
 		oldChoice = choice;
-		choice = Bubble((NewList<NewNode>*)tools, choice, 0L, 0L);
+		choice = Bubble((NewList<NewNode>*)tools, choice, 0, 0);
 		if (ChoiceOk(choice, GET_OUT, tools)) {
 			dbObjectNode *node = tools->getNthNode((uint32) choice);
 			uint32 toolID = node->_nr;
@@ -181,7 +181,7 @@ void tcSellTool() {
 		tools->expandObjectList(exp);
 
 		SetPictID(MATT_PICTID);
-		choice = Bubble((NewList<NewNode>*)tools, 0, NULL, 0L);
+		choice = Bubble((NewList<NewNode>*)tools, 0, NULL, 0);
 		if (ChoiceOk(choice, GET_OUT, tools)) {
 			byte choice2 = 0;
 			dbObjectNode *node = tools->getNthNode((uint32)choice);
@@ -193,11 +193,11 @@ void tcSellTool() {
 			NewList<NewNode> *bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "ANGEBOT_WERKZ", price);
 
 			SetPictID(mary->PictID);
-			Bubble(bubble, 0, 0L, 0L);
+			Bubble(bubble, 0, 0, 0);
 			bubble->removeList();
 
 			bubble = g_clue->_txtMgr->goKey(BUSINESS_TXT, "VERKAUF");
-			choice2 = Bubble(bubble, choice2, 0L, 0L);
+			choice2 = Bubble(bubble, choice2, 0, 0);
 			if (ChoiceOkHack(choice2, GET_OUT, bubble)) {
 				if (choice2 == 0) {
 					tcAddPlayerMoney(price);

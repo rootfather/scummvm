@@ -264,10 +264,10 @@ void lsSetObjectState(uint32 objID, byte bitNr, byte value) {
 	/* for a time clock the status must not change */
 	if (object->Type != Item_Stechuhr) {
 		if (value == 0)
-			object->ul_Status &= (0xffffffff - (1L << bitNr));
+			object->ul_Status &= (0xffffffff - (1 << bitNr));
 
 		if (value == 1)
-			object->ul_Status |= (1L << bitNr);
+			object->ul_Status |= (1 << bitNr);
 	}
 }
 
@@ -441,18 +441,18 @@ void lsPatchObjects() {
 
 		switch (lso->Type) {
 		case Item_Statue:
-			lso->ul_Status |= (1L << Const_tcACCESS_BIT);
+			lso->ul_Status |= (1 << Const_tcACCESS_BIT);
 			break;
 		case Item_WC:
 		case Item_Kuehlschrank:
 		case Item_Nachtkaestchen:
-			lso->ul_Status |= (1L << Const_tcLOCK_UNLOCK_BIT);  /* unlocked! */
+			lso->ul_Status |= (1 << Const_tcLOCK_UNLOCK_BIT);  /* unlocked! */
 			break;
 		case Item_Steinmauer:
 		case Item_Tresen:
 		case Item_Vase:
 		case Item_Sockel:
-			lso->ul_Status &= (~(1L << Const_tcACCESS_BIT));    /* Steinmauern kein Access */
+			lso->ul_Status &= (~(1 << Const_tcACCESS_BIT));    /* Steinmauern kein Access */
 			break;
 		default:
 			break;
@@ -462,11 +462,11 @@ void lsPatchObjects() {
 			switch (lso->Type) {
 			case Item_Beichtstuhl:
 			case Item_Postsack:
-				lso->ul_Status |= (1L << Const_tcLOCK_UNLOCK_BIT);
+				lso->ul_Status |= (1 << Const_tcLOCK_UNLOCK_BIT);
 				/* unlocked! */
 				break;
 			case Item_Leiter:
-				lso->ul_Status &= (~(1L << Const_tcACCESS_BIT));
+				lso->ul_Status &= (~(1 << Const_tcACCESS_BIT));
 				/* Steinmauern kein Access */
 				break;
 			default:

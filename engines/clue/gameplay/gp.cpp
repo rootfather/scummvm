@@ -116,8 +116,8 @@ void PatchStory() {
 	if (GamePlayMode & GP_DEMO)
 		return;
 
-	GetScene(26214400L)->bed->Ort = 3;  /* 4th Burglary, Hotelzimmer */
-	GetScene(26738688L)->bed->Ort = 7;  /* Arrest, Polizei!          */
+	GetScene(26214400)->bed->Ort = 3;  /* 4th Burglary, Hotelzimmer */
+	GetScene(26738688)->bed->Ort = 7;  /* Arrest, Polizei!          */
 
 	GetScene(SCENE_KASERNE_OUTSIDE)->Moeglichkeiten = 15;
 	GetScene(SCENE_KASERNE_INSIDE)->Moeglichkeiten = 265;
@@ -174,7 +174,7 @@ uint32 PlayStory() {
 
 		/* Entscheidung für eine Szene getroffen ! */
 
-		_sceneArgs._returnValue = 0L;
+		_sceneArgs._returnValue = 0;
 		_sceneArgs._overwritten = false;
 
 		/* wenn Szene Storyszene ist, dann Musik beibehalten */
@@ -268,7 +268,7 @@ Scene *GetStoryScene(Scene *curr) {
 			Scene *sc = &film->gameplay[i];
 
 			if (sc != curr) {
-				uint32 j = g_clue->calcRandomNr(0L, 255L);
+				uint32 j = g_clue->calcRandomNr(0, 255);
 
 				if (j <= (uint32)(sc->Probability))
 					if (CheckConditions(sc))
@@ -313,22 +313,22 @@ int32 CheckConditions(Scene *scene) {
 	/* wenn Std Szene, dann muß nichts überprüft werden ! */
 
 	if (scene->LocationNr != (uint32) - 1)
-		return (1L);
+		return (1);
 
 	/* es handelt sich um keine Std Szene -> Überprüfen ! */
 	/* überprüfen, ob Szene nicht schon zu oft geschehen ist ! */
 	if ((scene->Anzahl != ((uint16)(CAN_ALWAYS_HAPPEN))) &&
 	        (scene->Geschehen) >= (scene->Anzahl))
-		return (0L);
+		return (0);
 
 	/* Jetzt die einzelnen Bedingungen überprüfen */
 	Bedingungen *bed = scene->bed;
 	if (!bed)
-		return (1L);
+		return (1);
 
 	if (bed->Ort != (uint32) - 1)       /* spielt der Ort eine Rolle ? */
 		if (GetLocation != (bed->Ort))
-			return (0L);    /* spielt eine Rolle und ist nicht erfüllt */
+			return (0);    /* spielt eine Rolle und ist nicht erfüllt */
 
 	/*
 	 * Überprüfen, ob ein Event eingetreten ist,
@@ -338,7 +338,7 @@ int32 CheckConditions(Scene *scene) {
 	if (bed->n_events) {
 		for (NewTCEventNode *node = bed->n_events->getListHead(); node->_succ; node = (NewTCEventNode *)node->_succ) {
 			if (GetEventCount(node->_eventNr))
-				return (0L);
+				return (0);
 		}
 	}
 
@@ -350,11 +350,11 @@ int32 CheckConditions(Scene *scene) {
 	if (bed->events) {
 		for (NewTCEventNode *node = bed->events->getListHead(); node->_succ; node = (NewTCEventNode *)node->_succ) {
 			if (!GetEventCount(node->_eventNr))
-				return 0L;
+				return 0;
 		}
 	}
 
-	return (1L);
+	return (1);
 }
 
 void PrepareStory(const char *filename) {

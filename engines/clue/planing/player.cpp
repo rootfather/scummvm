@@ -170,7 +170,7 @@ static byte plGetMood(uint32 time) {
 	uint32 guyId[PLANING_NR_PERSONS];
 
 	for (uint16 i = 0; i < PLANING_NR_PERSONS; i++)
-		guyId[i] = 0L;
+		guyId[i] = 0;
 
 	for (uint16 i = 0; i < BurglarsNr; i++)
 		guyId[i] = PersonsList->getNthNode(i)->_nr;
@@ -268,7 +268,7 @@ static void plPlayerAction() {
 
 	if (PD.sndState && (PD.timer > (PD.maxTimer * 20) / 100)
 	        && (PD.bldId != Building_Starford_Kaserne)) {
-		sndPlaySound(PLANING_MUSIC_PLAYER_END_STD, 0L);
+		sndPlaySound(PLANING_MUSIC_PLAYER_END_STD, 0);
 		PD.sndState = 0;
 	}
 #ifndef PLAN_IS_PERFECT
@@ -594,7 +594,7 @@ static void plPlayerAction() {
 								                                ItemId));
 							else {
 								uint32 needTime = PD.action->TimeNeeded;
-								uint32 realTime = 0L;
+								uint32 realTime = 0;
 
 								if (dbIsObject
 								        (ActionData(PD.action, ActionUse *)->
@@ -1566,7 +1566,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 	uint32 timeLeft = 0, bitset, choice1, choice2;
 	int32 ret = 0;
 
-	plPrepareSys(0L, objId,
+	plPrepareSys(0, objId,
 	             PLANING_INIT_PERSONSLIST | PLANING_HANDLER_ADD |
 	             PLANING_HANDLER_OPEN | PLANING_GUARDS_LOAD |
 	             PLANING_HANDLER_SET);
@@ -1585,16 +1585,16 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 			l = plLoadTools(fh);
 			if (!l) {
 				PD.ende = 0;
-				PD.timer = 0L;
-				PD.realTime = 0L;
+				PD.timer = 0;
+				PD.realTime = 0;
 				PD.badPlaning = 0;
-				PD.mood = plGetMood(0L);
+				PD.mood = plGetMood(0);
 				PD.bldId = objId;
 				PD.bldObj = (BuildingNode *) dbGetObject(objId);
 				PD.changeCount = 0;
 				PD.totalCount = lsGetObjectCount();
 				PD.patrolCount = 0;
-				PD.alarmTimer = 0L;
+				PD.alarmTimer = 0;
 				PD.isItDark =
 				    ((LSAreaNode *) dbGetObject(lsGetActivAreaID()))->uch_Darkness;
 				PD.sndState = 1;
@@ -1623,7 +1623,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 					Search.GuyYPos[i] = -1;
 				}
 
-				PD.maxTimer = 0L;
+				PD.maxTimer = 0;
 
 				for (byte i = 0; i < BurglarsNr; i++) {
 					PD.handlerEnded[i] = 0;
@@ -1645,12 +1645,12 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 				Search.CallValue = 0;
 				Search.CallCount = 0;
 				Search.WarningCount = 0;
-				Search.EscapeBits = 0L;
+				Search.EscapeBits = 0;
 
 				if (PD.bldId == Building_Starford_Kaserne)
-					sndPlaySound(PLANING_MUSIC_PLAYER_BEGIN_KASERNE, 0L);
+					sndPlaySound(PLANING_MUSIC_PLAYER_BEGIN_KASERNE, 0);
 				else
-					sndPlaySound(PLANING_MUSIC_PLAYER_BEGIN_STD, 0L);
+					sndPlaySound(PLANING_MUSIC_PLAYER_BEGIN_STD, 0);
 
 				if (g_clue->getFeatures() & GF_PROFIDISK) {
 					if (objId == Building_Postzug) {
@@ -1691,14 +1691,14 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 
 						if (GamePlayMode & GP_GUARD_DESIGN) {
 							if (PersonsNr > 2)
-								choice1 = (uint32) Bubble((NewList<NewNode>*)PersonsList, CurrentPerson, nullptr, 0L);
+								choice1 = (uint32) Bubble((NewList<NewNode>*)PersonsList, CurrentPerson, nullptr, 0);
 							else
-								choice1 = ((CurrentPerson) ? 0L : 1L);
+								choice1 = ((CurrentPerson) ? 0 : 1);
 						} else {
 							if (BurglarsNr > 2)
-								choice1 = (uint32) Bubble((NewList<NewNode>*)BurglarsList, CurrentPerson, nullptr, 0L);
+								choice1 = (uint32) Bubble((NewList<NewNode>*)BurglarsList, CurrentPerson, nullptr, 0);
 							else
-								choice1 = ((CurrentPerson) ? 0L : 1L);
+								choice1 = ((CurrentPerson) ? 0 : 1);
 						}
 
 						if (choice1 != GET_OUT) {
@@ -1723,9 +1723,9 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 						SetPictID(((PersonNode *)dbGetObject(BurglarsList->getNthNode(0)->_nr))->PictID);
 						SetBubbleType(RADIO_BUBBLE);
 
-						if ((choice1 = Bubble(l, 0, nullptr, 0L)) != GET_OUT) {
+						if ((choice1 = Bubble(l, 0, nullptr, 0)) != GET_OUT) {
 							if (choice1 < 2) {
-								tcCalcCallValue(choice1, PD.realTime, 0L);
+								tcCalcCallValue(choice1, PD.realTime, 0);
 								Search.CallCount++;
 							}
 						}
@@ -1745,7 +1745,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 							Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_RADIO");
 							BurglarsList->expandObjectList(exp);
 
-							choice1 = Bubble((NewList<NewNode>*)BurglarsList, 0, nullptr, 0L);
+							choice1 = Bubble((NewList<NewNode>*)BurglarsList, 0, nullptr, 0);
 
 							if (ChoiceOk(choice1, GET_OUT, BurglarsList))
 								choice1 = BurglarsList->getNthNode(choice1)->_nr;
@@ -1753,7 +1753,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 								choice1 = GET_OUT;
 
 							BurglarsList->link(node, help);
-							dbRemObjectNode(BurglarsList, 0L);
+							dbRemObjectNode(BurglarsList, 0);
 						} else
 							choice1 = CurrentPerson ? BurglarsList->getNthNode(0)->_nr : BurglarsList->getNthNode(1)->_nr;
 
@@ -1763,7 +1763,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 							SetBubbleType(RADIO_BUBBLE);
 
 							if ((choice2 =
-							            (uint32) Bubble(l, 0, NULL, 0L)) != GET_OUT) {
+							            (uint32) Bubble(l, 0, NULL, 0)) != GET_OUT) {
 								if (choice2 < 3) {
 									tcCalcCallValue(choice2 + 2, PD.realTime,
 									                choice1);
@@ -1810,7 +1810,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 					Search.GuyXPos[i] = livGetXPos(Planing_Name[i]);
 					Search.GuyYPos[i] = livGetYPos(Planing_Name[i]);
 
-					SetObjectListAttr(OLF_NORMAL, 0L);
+					SetObjectListAttr(OLF_NORMAL, 0);
 					AskAll(dbGetObject(PersonsList->getNthNode(i)->_nr), take_RelId, BuildObjectList);
 
 					for (dbObjectNode* n = ObjectList->getListHead(); n->_succ; n = (dbObjectNode *)n->_succ) {
@@ -1841,7 +1841,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 						       OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_NORMAL,
 						       Object_Loot);
 
-						if ((choice = Bubble((NewList<NewNode>*)ObjectList, 0, 0L, 0L)) != GET_OUT)
+						if ((choice = Bubble((NewList<NewNode>*)ObjectList, 0, 0, 0)) != GET_OUT)
 							hasUnSet(Person_Matt_Stuvysunt, ObjectList->getNthNode((uint32) choice)->_nr);
 						else
 							plSay("PLAYER_LEAVE_LOOTS_2", 0);
@@ -1862,7 +1862,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 		}
 
 		if (l) {
-			Bubble(l, 0, NULL, 0L);
+			Bubble(l, 0, NULL, 0);
 			l->removeList();
 		}
 

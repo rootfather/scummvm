@@ -120,7 +120,7 @@ static char SearchActiv(int16 delta, byte activ, uint32 possibility, byte max) {
 		if (activ > max)
 			activ = max;
 
-		if (possibility & (1L << activ))
+		if (possibility & (1 << activ))
 			return (char) activ;
 	} while ((activ > 0) && (activ < max));
 
@@ -147,7 +147,7 @@ static char SearchMouseActiv(uint32 possibility, byte max) {
 		if (activ > max)
 			activ = max;
 
-		if (possibility & (1L << activ))
+		if (possibility & (1 << activ))
 			return (char) activ;
 	}
 
@@ -159,7 +159,7 @@ void RefreshMenu() {
 		byte max = refreshMenu->getNrOfNodes();
 
 		for (byte i = 0; i < max; i++) {
-			if (refreshPoss & (1L << i))
+			if (refreshPoss & (1 << i))
 				DrawMenu(refreshMenu, i, INACTIV_POSS);
 		}
 
@@ -191,7 +191,7 @@ byte Menu(NewList<NewNode> *menu, uint32 possibility, byte activ, void (*func)(b
 		}
 
 		for (byte i = 0; i < max; i++) {
-			if (possibility & (1L << i))
+			if (possibility & (1 << i))
 				DrawMenu(menu, i, INACTIV_POSS);
 		}
 
@@ -417,7 +417,7 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 		        || (action & INP_TIME))
 			activ = GET_OUT;
 
-		inpSetWaitTicks(0L);
+		inpSetWaitTicks(0);
 
 		ExtBubbleActionInfo = action;
 	} else {
@@ -548,7 +548,7 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 	}
 
 	if (activ != GET_OUT) {
-		if (bubble->getNthNode(0L)->_name.c_str()[0] != '*')
+		if (bubble->getNthNode(0)->_name.c_str()[0] != '*')
 			activ = 0;
 	}
 

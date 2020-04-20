@@ -20,9 +20,9 @@
 
 namespace Clue {
 
-#define ACTIV_POSS   3L
-#define INACTIV_POSS 2L
-#define GHOSTED      1L
+#define ACTIV_POSS   3
+#define INACTIV_POSS 2
+#define GHOSTED      1
 
 #define BG_INACTIVE_COLOR       252
 #define VG_INACTIVE_COLOR       253

@@ -32,7 +32,7 @@ static uint32 tcShowPatrol(NewList<NewNode> *bubble_l, Common::String c_time, Co
 
 	SetBubbleType(THINK_BUBBLE);
 
-	Bubble(bubble_l, first, nullptr, 140L);
+	Bubble(bubble_l, first, nullptr, 140);
 	choice = GetExtBubbleActionInfo();
 
 	tcAddBuildExactlyness(bui, raise);
@@ -53,7 +53,7 @@ void Investigate(const char *location) {
 		if (buiID == Building_Buckingham_Palace) {
 			NewList<NewNode> *bubble_l = g_clue->_txtMgr->goKey(INVESTIGATIONS_TXT, "BuckinghamBeobachtet");
 			SetBubbleType(THINK_BUBBLE);
-			Bubble(bubble_l, 0, 0L, 0L);
+			Bubble(bubble_l, 0, 0, 0);
 			bubble_l->removeList();
 			return;
 		}
@@ -112,7 +112,7 @@ void Investigate(const char *location) {
 		if ((GetMinute % patrolCount) == 0)
 			choice = tcShowPatrol(bubble_l, c_time, patr, first++, bui, raise);
 
-		if (g_clue->calcRandomNr(0L, 6L) == 1)
+		if (g_clue->calcRandomNr(0, 6) == 1)
 			tcAddBuildStrike(bui, 1);
 	}
 
@@ -140,7 +140,7 @@ void Investigate(const char *location) {
 
 				SetBubbleType(THINK_BUBBLE);
 
-				Bubble(bubble_l, (byte) first++, nullptr, 140L);
+				Bubble(bubble_l, (byte) first++, nullptr, 140);
 				choice = GetExtBubbleActionInfo();
 
 				tcAddBuildExactlyness(bui, raise);
@@ -155,10 +155,10 @@ void Investigate(const char *location) {
 		}
 
 		/* Zeit erhöhen und nach dem Spieler sehen ! */
-		if (g_clue->calcRandomNr(0L, 6L) == 1)
+		if (g_clue->calcRandomNr(0, 6) == 1)
 			tcAddBuildStrike(bui, 1);
 
-		AddVTime(1L);
+		AddVTime(1);
 		minutes++;
 
 		if (!choice)
@@ -171,7 +171,7 @@ void Investigate(const char *location) {
 	if (minutes >= 1440) {  /* wurde 24 Stunden lang beobachtet ? */
 		bubble_l = g_clue->_txtMgr->goKey(INVESTIGATIONS_TXT, "24StundenBeobachtet");
 		SetBubbleType(THINK_BUBBLE);
-		Bubble(bubble_l, 0, nullptr, 0L);
+		Bubble(bubble_l, 0, nullptr, 0);
 		bubble_l->removeList();
 	}
 

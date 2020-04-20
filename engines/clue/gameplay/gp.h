@@ -44,7 +44,7 @@ namespace Clue {
 /* Szene kann UNENDLICH oft geschehen */
 #define CAN_ALWAYS_HAPPEN       USHRT_MAX
 
-#define MINUTES_PER_DAY          1440L
+#define MINUTES_PER_DAY          1440
 
 #define GP_STORY_BEFORE             0
 #define GP_STORY_TOWN               1

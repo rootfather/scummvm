@@ -50,7 +50,7 @@ uint32 tcGoInsideOfHouse(uint32 buildingID) {
 
 		inpTurnFunctionKey(false);
 		inpTurnESC(false);
-		i = (uint32) Menu(menu, (1L << count) - 1, 0, nullptr, 0L);
+		i = (uint32) Menu(menu, (1 << count) - 1, 0, nullptr, 0);
 		inpTurnESC(true);
 		inpTurnFunctionKey(true);
 

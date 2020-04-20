@@ -326,7 +326,7 @@ void lsDoneLandScape() {
 
 		areas->removeList();
 
-		lsDoneActivArea(0L);
+		lsDoneActivArea(0);
 
 		livDone();
 

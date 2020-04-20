@@ -41,7 +41,7 @@ void tcSaveTheClou() {
 	
 	inpTurnESC(true);
 	inpTurnFunctionKey(false);
-	uint16 activ = (uint16) Menu(games, 15L, 0, nullptr, 0L);
+	uint16 activ = (uint16) Menu(games, 15, 0, nullptr, 0);
 	inpTurnFunctionKey(true);
 
 	/* Name erstellen */
@@ -166,7 +166,7 @@ bool tcLoadTheClou() {
 
 	inpTurnFunctionKey(false);
 	inpTurnESC(true);
-	uint32 activ = (uint32) Menu(games, 15L, 0, NULL, 0L);
+	uint32 activ = (uint32) Menu(games, 15, 0, NULL, 0);
 	inpTurnFunctionKey(true);
 
 	if ((activ != GET_OUT) 
@@ -208,7 +208,7 @@ void tcRefreshAfterLoad(bool loaded) {
 
 	if (!loaded) {
 		if (player)
-			player->CurrScene = 0L;
+			player->CurrScene = 0;
 		ErrorMsg(Disk_Defect, ERROR_MODULE_LOADSAVE, 2);
 	} else if (player) {
 		SetDay(player->CurrDay);

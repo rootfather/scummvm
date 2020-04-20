@@ -86,11 +86,11 @@ void tcBuyCar() {
 
 			ShowMenuBackground();
 
-			if (ChoiceOk(choice = Bubble((NewList<NewNode> *)bubble, 0, 0L, 0L), GET_OUT, bubble)) {
+			if (ChoiceOk(choice = Bubble((NewList<NewNode> *)bubble, 0, 0, 0), GET_OUT, bubble)) {
 				CarNode *matts_car = (CarNode *) dbGetObject(bubble->getNthNode((uint32) choice)->_nr);
 
 				SetCarColors((byte) matts_car->ColorIndex);
-				gfxShow((uint16) matts_car->PictID, GFX_NO_REFRESH | GFX_OVERLAY, 0L, -1L, -1L);
+				gfxShow((uint16) matts_car->PictID, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);
 
 				if (Present(bubble->getNthNode((uint32) choice)->_nr, "Car", InitCarPresent)) {
 					choice1 = Say(BUSINESS_TXT, 0, MATT_PICTID, "AUTOKAUF");
@@ -115,7 +115,7 @@ void tcBuyCar() {
 					}
 				}
 
-				gfxShow(27, GFX_NO_REFRESH | GFX_ONE_STEP, 0L, -1L, -1L);
+				gfxShow(27, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1);
 			} else
 				choice = GET_OUT;
 		} else {
@@ -171,7 +171,7 @@ void tcColorCar(CarNode *car) {
 	NewList<NewNode> *bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "LACKIEREN", (uint32) costs, NULL);
 
 	SetPictID(marc->PictID);
-	Bubble(bubble, 0, 0L, 0L);
+	Bubble(bubble, 0, 0, 0);
 	bubble->removeList();
 
 	if (Say(BUSINESS_TXT, 0, MATT_PICTID, "LACKIEREN_ANT") == 0) {
@@ -187,7 +187,7 @@ void tcColorCar(CarNode *car) {
 			colors->createNode(exp);
 			// 
 
-			byte choice = Bubble(colors, (byte) car->ColorIndex, 0L, 0L);
+			byte choice = Bubble(colors, (byte) car->ColorIndex, 0, 0);
 			if (ChoiceOkHack(choice, GET_OUT, colors)) {
 				car->ColorIndex = (ColorE) choice;
 
@@ -195,16 +195,16 @@ void tcColorCar(CarNode *car) {
 				gfxPrepareRefresh();
 				PlayAnim("Umlackieren", 3000, GFX_DONT_SHOW_FIRST_PIC);
 
-				inpSetWaitTicks(200L);
+				inpSetWaitTicks(200);
 
 				inpWaitFor(INP_LBUTTONP | INP_TIME);
 
 				StopAnim();
-				inpSetWaitTicks(1L);
+				inpSetWaitTicks(1);
 
 				gfxRefresh();
-				/*gfxShow(26,GFX_NO_REFRESH|GFX_ONE_STEP,0L,-1L,-1L);*/
-				/*gfxShow((uint16)car->PictID,GFX_NO_REFRESH|GFX_OVERLAY,1L,-1L,-1L);*/
+				/*gfxShow(26,GFX_NO_REFRESH|GFX_ONE_STEP,0,-1,-1);*/
+				/*gfxShow((uint16)car->PictID,GFX_NO_REFRESH|GFX_OVERLAY,1,-1,-1);*/
 			}
 		}
 
@@ -226,7 +226,7 @@ void tcSellCar(uint32 ObjectID) {
 		bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "ANGEBOT", tcRGetCarValue(car), tcRGetCarAge(car), offer, NULL);
 
 	SetPictID(marc->PictID);
-	Bubble(bubble, 0, 0L, 0L);
+	Bubble(bubble, 0, 0, 0);
 	bubble->removeList();
 
 	if ((Say(BUSINESS_TXT, 0, MATT_PICTID, "VERKAUF")) == 0) {
@@ -236,7 +236,7 @@ void tcSellCar(uint32 ObjectID) {
 		hasUnSet(Person_Matt_Stuvysunt, ObjectID);
 	}
 
-	gfxShow(27, GFX_NO_REFRESH | GFX_ONE_STEP, 0L, -1L, -1L);
+	gfxShow(27, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1);
 	AddVTime(97);
 }
 
@@ -270,29 +270,29 @@ void tcRepairCar(CarNode *car, const char *repairWhat) {
 	list = g_clue->_txtMgr->goKey(PRESENT_TXT, repairWhat);
 
 	gfxPrepareRefresh();
-	gfxShow((uint16) BIG_SHEET, GFX_NO_REFRESH | GFX_OVERLAY, 0L, -1L, -1L);
-	inpSetWaitTicks(3L);
+	gfxShow((uint16) BIG_SHEET, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);
+	inpSetWaitTicks(3);
 
 	PlayAnim("Reperatur", 30000, GFX_DONT_SHOW_FIRST_PIC);
 
 	byte ready = 0;
-	uint32 choice = 0L;
+	uint32 choice = 0;
 	while (!(choice & INP_LBUTTONP) && enough && (!ready)) {
 		uint16 line = 0;
 
 		AddVTime(3);
 
-		AddPresentTextLine(presentationData, NULL, 0L, list, line++);
+		AddPresentTextLine(presentationData, NULL, 0, list, line++);
 
 		if (item)
-			AddPresentLine(presentationData, PRESENT_AS_BAR, (uint32)(*item), 255L, list, line++);
+			AddPresentLine(presentationData, PRESENT_AS_BAR, (uint32)(*item), 255, list, line++);
 
 		AddPresentLine(presentationData, PRESENT_AS_BAR, (uint32)(car->State),
-		               255L, list, line++);
+		               255, list, line++);
 
-		uint32 totalCosts = 0L;
-		AddPresentLine(presentationData, PRESENT_AS_NUMBER, totalCosts, 0L, list, line++);
-		AddPresentLine(presentationData, PRESENT_AS_NUMBER, (uint32) tcGetPlayerMoney, 0L, list, line++);
+		uint32 totalCosts = 0;
+		AddPresentLine(presentationData, PRESENT_AS_NUMBER, totalCosts, 0, list, line++);
+		AddPresentLine(presentationData, PRESENT_AS_NUMBER, (uint32) tcGetPlayerMoney, 0, list, line++);
 
 		DrawPresent(presentationData, 0, u_gc, (byte)presentationData->getNrOfNodes());
 
@@ -337,10 +337,10 @@ void tcRepairCar(CarNode *car, const char *repairWhat) {
 		gfxRefresh();
 	}
 
-	inpSetWaitTicks(0L);
+	inpSetWaitTicks(0);
 
-	/*gfxShow(26,GFX_NO_REFRESH|GFX_ONE_STEP,0L,-1L,-1L);*/
-	/*gfxShow((uint16)car->PictID,GFX_NO_REFRESH|GFX_OVERLAY,1L,-1L,-1L);*/
+	/*gfxShow(26,GFX_NO_REFRESH|GFX_ONE_STEP,0,-1,-1);*/
+	/*gfxShow((uint16)car->PictID,GFX_NO_REFRESH|GFX_OVERLAY,1,-1,-1);*/
 
 	presentationData->removeList();
 	list->removeList();
@@ -350,7 +350,7 @@ uint32 tcChooseCar(uint32 backgroundNr) {
 	hasAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Car);
 
 	NewObjectList<dbObjectNode> *bubble = ObjectListPrivate;
-	uint32 carID = 0L;
+	uint32 carID = 0;
 	if (!bubble->isEmpty()) {
 		uint32 carCount = bubble->getNrOfNodes();
 		byte choice;
@@ -363,7 +363,7 @@ uint32 tcChooseCar(uint32 backgroundNr) {
 
 			Say(BUSINESS_TXT, 0, 7, "ES GEHT UM..");
 
-			if (ChoiceOk(choice = Bubble((NewList<NewNode>*)bubble, 0, 0L, 0L), GET_OUT, bubble))
+			if (ChoiceOk(choice = Bubble((NewList<NewNode>*)bubble, 0, 0, 0), GET_OUT, bubble))
 				carID = bubble->getNthNode((uint32) choice)->_nr;
 			else
 				choice = GET_OUT;
@@ -372,8 +372,8 @@ uint32 tcChooseCar(uint32 backgroundNr) {
 		if (choice != GET_OUT) {
 			CarNode *matts_car = (CarNode *) dbGetObject(carID);
 			SetCarColors((byte) matts_car->ColorIndex);
-			gfxShow(backgroundNr, GFX_NO_REFRESH | GFX_ONE_STEP, 0L, -1L, -1L);
-			gfxShow((uint16) matts_car->PictID, GFX_NO_REFRESH | GFX_OVERLAY, 1L, -1L, -1L);
+			gfxShow(backgroundNr, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1);
+			gfxShow((uint16) matts_car->PictID, GFX_NO_REFRESH | GFX_OVERLAY, 1, -1, -1);
 		}
 	}
 
@@ -389,7 +389,7 @@ void tcCarGeneralOverhoul(CarNode *car) {
 
 	NewList<NewNode> *bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "GENERAL_OVERHOUL",
 	                      (uint32)((tcCostsPerTotalRepair(car) * 255) / 8), NULL);
-	Bubble(bubble, 0, 0L, 0L);
+	Bubble(bubble, 0, 0, 0);
 	bubble->removeList();
 
 	byte choice = Say(BUSINESS_TXT, 0, MATT_PICTID, "GENERAL_OVERHOUL_QUEST");

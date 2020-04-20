@@ -112,7 +112,7 @@ static void plActionGo() {
 	inpSetKeyRepeat((0 << 5) | 0);
 
 	while (true) {
-		uint32 direction = 0L;
+		uint32 direction = 0;
 
 		uint32 choice = inpWaitFor(INP_MOVEMENT | INP_LBUTTONP);
 
@@ -139,8 +139,8 @@ static void plActionGo() {
 				if (!lsInitScrollLandScape(direction, LS_SCROLL_PREPARE)) {
 					if (!action || (action->Type != ACTION_GO)) {
 						if ((action =
-						            InitAction(plSys, ACTION_GO, (uint32) direction, 0L,
-						                       0L)))
+						            InitAction(plSys, ACTION_GO, (uint32) direction, 0,
+						                       0)))
 							PlanChanged = true;
 						else {
 							plSay("PLANING_END", CurrentPerson);
@@ -155,7 +155,7 @@ static void plActionGo() {
 					        (uint16) direction)
 						IncCurrentTimer(plSys, 1, 1);
 					else {
-						if ((action = InitAction(plSys, ACTION_GO, direction, 0L, 1L)))
+						if ((action = InitAction(plSys, ACTION_GO, direction, 0, 1)))
 							PlanChanged = true;
 						else {
 							plSay("PLANING_END", CurrentPerson);
@@ -186,7 +186,7 @@ static void plActionGo() {
 static void plActionWait() {
 	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_4");
 	byte activ = 0;
-	uint32 choice1 = 0L, choice2 = 0L;
+	uint32 choice1 = 0, choice2 = 0;
 
 	while (activ != PLANING_WAIT_RETURN) {
 		uint32 bitset = BIT(PLANING_WAIT) + BIT(PLANING_WAIT_RETURN);
@@ -213,8 +213,8 @@ static void plActionWait() {
 
 		switch (activ) {
 		case PLANING_WAIT: {
-			choice1 = 0L;
-			choice2 = 0L;
+			choice1 = 0;
+			choice2 = 0;
 
 			plMessage("WAIT_1", PLANING_MSG_REFRESH);
 			plDrawWait(choice2);
@@ -260,7 +260,7 @@ static void plActionWait() {
 
 			if (choice2) {
 				if (InitAction
-				        (plSys, ACTION_WAIT, 0L, 0L,
+				        (plSys, ACTION_WAIT, 0, 0,
 				         choice2 * PLANING_CORRECT_TIME)) {
 					PlanChanged = true;
 
@@ -288,7 +288,7 @@ static void plActionWait() {
 					Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_RADIO");
 					BurglarsList->expandObjectList(exp);
 
-					choice1 = Bubble((NewList<NewNode>*)BurglarsList, 0, nullptr, 0L);
+					choice1 = Bubble((NewList<NewNode>*)BurglarsList, 0, nullptr, 0);
 
 					if (ChoiceOk(choice1, GET_OUT, BurglarsList))
 						choice1 = BurglarsList->getNthNode(choice1)->_nr;
@@ -296,7 +296,7 @@ static void plActionWait() {
 						choice1 = GET_OUT;
 
 					BurglarsList->link(node, help);
-					dbRemObjectNode(BurglarsList, 0L);
+					dbRemObjectNode(BurglarsList, 0);
 				} else {
 					choice1 =
 					    CurrentPerson ? BurglarsList->getNthNode(0)->_nr : BurglarsList->getNthNode(1)->_nr;
@@ -305,7 +305,7 @@ static void plActionWait() {
 				}
 
 				if (choice1 != GET_OUT) {
-					if (InitAction(plSys, ACTION_WAIT_SIGNAL, choice1, 0L, 1L)) {
+					if (InitAction(plSys, ACTION_WAIT_SIGNAL, choice1, 0, 1)) {
 						PlanChanged = true;
 
 						livAnimate(Planing_Name[CurrentPerson], ANM_STAND, 0, 0);
@@ -435,7 +435,7 @@ static void plActionOpenClose(uint16 what) {
 		actionList->expandObjectList(exp);
 		SetPictID(((PersonNode *) dbGetObject(PersonsList->getNthNode(CurrentPerson)->_nr))->PictID);
 
-		uint32 choice1 = Bubble((NewList<NewNode>*)actionList, 0, NULL, 0L);
+		uint32 choice1 = Bubble((NewList<NewNode>*)actionList, 0, NULL, 0);
 
 		if (ChoiceOk(choice1, GET_OUT, actionList)) {
 			choice1 = actionList->getNthNode(choice1)->_nr;
@@ -447,7 +447,7 @@ static void plActionOpenClose(uint16 what) {
 					uint32 state = CHECK_STATE(lsGetObjectState(choice1), Const_tcOPEN_CLOSE_BIT);
 
 					if ((what == ACTION_OPEN) ? !state : state) {
-						if (InitAction(plSys, what, choice1, 0L, opensGet(((LSObjectNode *) dbGetObject(choice1))->Type,
+						if (InitAction(plSys, what, choice1, 0, opensGet(((LSObjectNode *) dbGetObject(choice1))->Type,
 						                  Tool_Hand) * PLANING_CORRECT_TIME)) {
 							PlanChanged = true;
 
@@ -499,7 +499,7 @@ static void plActionTake() {
 		NewObjectList<dbObjectNode> *takeableList = new NewObjectList<dbObjectNode>;
 
 		for (dbObjectNode *n = actionList->getListHead(); n->_succ; n = (dbObjectNode *) n->_succ) {
-			SetObjectListAttr(OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_NORMAL, 0L);
+			SetObjectListAttr(OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_NORMAL, 0);
 			AskAll(dbGetObject(n->_nr), hasLoot(CurrentPerson), BuildObjectList);
 
 			uint32 state = lsGetObjectState(n->_nr);
@@ -518,7 +518,7 @@ static void plActionTake() {
 							dbObjectNode *h = takeableList->createNode(h2->_name);
 							h->_nr = h2->_nr;  /* Loot */
 							h->_type = n->_nr; /* Original */
-							h->_data = (void *) 1L;
+							h->_data = (void *) 1;
 						}
 					}
 				}
@@ -533,7 +533,7 @@ static void plActionTake() {
 			Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 			takeableList->expandObjectList(exp);
 
-			uint32 choice = Bubble((NewList<NewNode>*)takeableList, 0, NULL, 0L);
+			uint32 choice = Bubble((NewList<NewNode>*)takeableList, 0, NULL, 0);
 
 			if (ChoiceOk(choice, GET_OUT, takeableList)) {
 				uint32 weightPerson =
@@ -741,7 +741,7 @@ static void plActionUse() {
 				Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 				actionList->expandObjectList(exp);
 
-				uint32 choice1 = Bubble((NewList<NewNode>*)actionList, 0, NULL, 0L);
+				uint32 choice1 = Bubble((NewList<NewNode>*)actionList, 0, NULL, 0);
 
 				if (ChoiceOk(choice1, GET_OUT, actionList)) {
 					choice1 = actionList->getNthNode(choice1)->_nr;
@@ -798,7 +798,7 @@ static void plActionUse() {
 
 							SetPictID(((PersonNode *)dbGetObject(PersonsList->getNthNode(CurrentPerson)->_nr))->PictID);
 
-							uint32 choice2 = Bubble((NewList<NewNode>*)objList, 0, NULL, 0L);
+							uint32 choice2 = Bubble((NewList<NewNode>*)objList, 0, NULL, 0);
 
 							if (ChoiceOk(choice2, GET_OUT, objList)) {
 								choice2 = objList->getNthNode(choice2)->_nr;
@@ -851,7 +851,7 @@ static void plActionUse() {
 
 									UseObject = choice1;
 									ObjectListSuccString = plSetUseString;
-									ObjectListWidth = 48L;
+									ObjectListWidth = 48;
 
 									hasAll(Person_Matt_Stuvysunt,
 									       OLF_NORMAL | OLF_INCLUDE_NAME |
@@ -862,16 +862,16 @@ static void plActionUse() {
 									                   OLF_ADD_SUCC_STRING |
 									                   OLF_ALIGNED);
 
-									ObjectListWidth = 0L;
+									ObjectListWidth = 0;
 									ObjectListSuccString = nullptr;
-									UseObject = 0L;
+									UseObject = 0;
 
 									exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 									ObjectList->expandObjectList(exp);
 
 									SetPictID(((PersonNode *)dbGetObject(PersonsList->getNthNode(CurrentPerson)->_nr))->PictID);
 
-									uint32 choice2 = Bubble((NewList<NewNode>*)ObjectList, 0, NULL, 0L);
+									uint32 choice2 = Bubble((NewList<NewNode>*)ObjectList, 0, NULL, 0);
 
 									if (ChoiceOk(choice2, GET_OUT, ObjectList)) {
 										choice2 = ObjectList->getNthNode(choice2)->_nr;
@@ -1006,7 +1006,7 @@ static void plActionUse() {
 											uint16 xpos, ypos;
 
 											if (InitAction
-											        (plSys, ACTION_USE, choice1, 0L,
+											        (plSys, ACTION_USE, choice1, 0,
 											         PLANING_TIME_THROUGH_WINDOW *
 											         PLANING_CORRECT_TIME)) {
 												PlanChanged = true;
@@ -1066,13 +1066,13 @@ static void plActionUse() {
 			Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 			actionList->expandObjectList(exp);
 
-			uint32 choice1 = Bubble((NewList<NewNode>*)actionList, 0, NULL, 0L);
+			uint32 choice1 = Bubble((NewList<NewNode>*)actionList, 0, NULL, 0);
 
 			if (ChoiceOk(choice1, GET_OUT, actionList)) {
 				choice1 = actionList->getNthNode(choice1)->_nr;
 
 				if (InitAction
-				        (plSys, ACTION_CONTROL, choice1, 0L,
+				        (plSys, ACTION_CONTROL, choice1, 0,
 				         PLANING_TIME_CONTROL * PLANING_CORRECT_TIME)) {
 					PlanChanged = true;
 
@@ -1100,7 +1100,7 @@ static void plAction() {
 	byte activ = 0;
 
 	while (activ != PLANING_ACTION_RETURN) {
-		uint32 choice1 = 0L, choice2 = 0L, bitset;
+		uint32 choice1 = 0, choice2 = 0, bitset;
 		if (CurrentPerson < BurglarsNr) {
 			bitset = BIT(PLANING_PERSON_WALK) +
 			         BIT(PLANING_ACTION_USE) +
@@ -1155,15 +1155,15 @@ static void plAction() {
 			if (GamePlayMode & GP_GUARD_DESIGN) {
 				if (PersonsNr > 2)
 					choice1 =
-					    (uint32) Bubble((NewList<NewNode>*)PersonsList, CurrentPerson, NULL, 0L);
+					    (uint32) Bubble((NewList<NewNode>*)PersonsList, CurrentPerson, NULL, 0);
 				else
-					choice1 = ((CurrentPerson) ? 0L : 1L);
+					choice1 = ((CurrentPerson) ? 0 : 1);
 			} else {
 				if (BurglarsNr > 2)
 					choice1 =
-					    (uint32) Bubble((NewList<NewNode>*)BurglarsList, CurrentPerson, NULL, 0L);
+					    (uint32) Bubble((NewList<NewNode>*)BurglarsList, CurrentPerson, NULL, 0);
 				else
-					choice1 = ((CurrentPerson) ? 0L : 1L);
+					choice1 = ((CurrentPerson) ? 0 : 1);
 			}
 
 			if (choice1 != GET_OUT) {
@@ -1218,7 +1218,7 @@ static void plAction() {
 
 		case PLANING_ACTION_DROP:
 			SetObjectListAttr(OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_NORMAL,
-			                  0L);
+			                  0);
 			AskAll(dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr),
 			       take_RelId, BuildObjectList);
 
@@ -1231,7 +1231,7 @@ static void plAction() {
 				Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 				ObjectList->expandObjectList(exp);
 
-				choice1 = Bubble((NewList<NewNode>*)ObjectList, 0, NULL, 0L);
+				choice1 = Bubble((NewList<NewNode>*)ObjectList, 0, NULL, 0);
 
 				if (ChoiceOk(choice1, GET_OUT, ObjectList)) {
 					choice1 = ObjectList->getNthNode(choice1)->_nr;
@@ -1282,7 +1282,7 @@ static void plAction() {
 					Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 					BurglarsList->expandObjectList(exp);
 
-					choice1 = Bubble((NewList<NewNode>*)BurglarsList, 0, nullptr, 0L);
+					choice1 = Bubble((NewList<NewNode>*)BurglarsList, 0, nullptr, 0);
 
 					if (ChoiceOk(choice1, GET_OUT, BurglarsList))
 						choice1 = BurglarsList->getNthNode(choice1)->_nr;
@@ -1290,7 +1290,7 @@ static void plAction() {
 						choice1 = GET_OUT;
 
 					BurglarsList->link(node, help);
-					dbRemObjectNode(BurglarsList, 0L);
+					dbRemObjectNode(BurglarsList, 0);
 				} else {
 					choice1 =
 					    CurrentPerson ? BurglarsList->getNthNode(0)->_nr : BurglarsList->getNthNode(1)->_nr;
@@ -1300,7 +1300,7 @@ static void plAction() {
 
 				if (choice1 != GET_OUT) {
 					if (InitAction
-					        (plSys, ACTION_SIGNAL, choice1, 0L,
+					        (plSys, ACTION_SIGNAL, choice1, 0,
 					         PLANING_TIME_RADIO * PLANING_CORRECT_TIME)) {
 						PlanChanged = true;
 
@@ -1327,8 +1327,8 @@ static void plNoteBook() {
 	while (choice1 != GET_OUT) {
 		SetBubbleType(THINK_BUBBLE);
 
-		choice1 = Bubble(bubble, choice1, 0L, 0L);
-		uint32 choice2 = 0L;
+		choice1 = Bubble(bubble, choice1, 0, 0);
+		uint32 choice2 = 0;
 
 		switch (choice1) {
 		case PLANING_NOTE_TARGET:
@@ -1342,14 +1342,14 @@ static void plNoteBook() {
 
 				SetBubbleType(THINK_BUBBLE);
 
-				choice2 = Bubble((NewList<NewNode>*)BurglarsList, choice2, 0L, 0L);
+				choice2 = Bubble((NewList<NewNode>*)BurglarsList, choice2, 0, 0);
 
 				if (ChoiceOk(choice2, GET_OUT, BurglarsList))
 					Present(BurglarsList->getNthNode(choice2)->_nr, "Person", InitPersonPresent);
 				else
 					choice2 = GET_OUT;
 
-				dbRemObjectNode(BurglarsList, 0L);
+				dbRemObjectNode(BurglarsList, 0);
 			}
 			break;
 
@@ -1370,7 +1370,7 @@ static void plNoteBook() {
 				while (choice2 != GET_OUT) {
 					SetBubbleType(THINK_BUBBLE);
 
-					choice2 = Bubble((NewList<NewNode>*)l, choice2, 0L, 0L);
+					choice2 = Bubble((NewList<NewNode>*)l, choice2, 0, 0);
 
 					if (ChoiceOk(choice2, GET_OUT, l))
 						Present(l->getNthNode(choice2)->_nr, "Tool",
@@ -1396,7 +1396,7 @@ static void plNoteBook() {
 static void plLook() {
 	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_7");
 	byte activ = 0;
-	uint32 timer = 0L, maxTimer = GetMaxTimer(plSys), realCurrentPerson =
+	uint32 timer = 0, maxTimer = GetMaxTimer(plSys), realCurrentPerson =
 	                                  CurrentPerson, choice1;
 
 	plMessage("PERSON_NOTES", PLANING_MSG_REFRESH);
@@ -1483,9 +1483,9 @@ static void plLook() {
 			plMessage("CHANGE_PERSON_2", PLANING_MSG_REFRESH);
 
 			if (PersonsNr > 2)
-				choice1 = (uint32) Bubble((NewList<NewNode>*)PersonsList, CurrentPerson, NULL, 0L);
+				choice1 = (uint32) Bubble((NewList<NewNode>*)PersonsList, CurrentPerson, NULL, 0);
 			else
-				choice1 = ((CurrentPerson) ? 0L : 1L);
+				choice1 = ((CurrentPerson) ? 0 : 1);
 
 			if (choice1 != GET_OUT) {
 				plPrepareSys(choice1, 0, PLANING_HANDLER_SET);
@@ -1538,7 +1538,7 @@ void plPlaner(uint32 objId) {
 	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_1");
 	byte activ = 0;
 
-	plPrepareSys(0L, objId,
+	plPrepareSys(0, objId,
 	             PLANING_INIT_PERSONSLIST | PLANING_HANDLER_ADD |
 	             PLANING_HANDLER_OPEN | PLANING_GUARDS_LOAD |
 	             PLANING_HANDLER_SET);
@@ -1555,7 +1555,7 @@ void plPlaner(uint32 objId) {
 		/* in the case of the Starford Barracks the plan must be loaded */
 		plLoad(Planing_BldId);
 
-		plPrepareSys(0L, 0, PLANING_HANDLER_SET);
+		plPrepareSys(0, 0, PLANING_HANDLER_SET);
 
 		plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), GetMaxTimer(plSys), 1);
 		lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) -1, (uint16) -1);
@@ -1609,12 +1609,12 @@ void plPlaner(uint32 objId) {
 			plMessage("PERSON_NOTES", PLANING_MSG_REFRESH);
 			plSync(PLANING_ANIMATE_NO, 0, GetMaxTimer(plSys), 0);
 
-			plPrepareSys(0L, 0, PLANING_HANDLER_CLEAR);
+			plPrepareSys(0, 0, PLANING_HANDLER_CLEAR);
 			plPrepareData();
 
 			plLoad(objId);
 
-			plPrepareSys(0L, 0, PLANING_HANDLER_SET);
+			plPrepareSys(0, 0, PLANING_HANDLER_SET);
 
 			plMessage("PERSON_NOTES", PLANING_MSG_REFRESH);
 			plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), GetMaxTimer(plSys), 1);
@@ -1630,7 +1630,7 @@ void plPlaner(uint32 objId) {
 
 			plSync(PLANING_ANIMATE_NO, 0, GetMaxTimer(plSys), 0);
 
-			plPrepareSys(0L, 0, PLANING_HANDLER_CLEAR | PLANING_HANDLER_SET);
+			plPrepareSys(0, 0, PLANING_HANDLER_CLEAR | PLANING_HANDLER_SET);
 			plPrepareData();
 
 			lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) -1, (uint16) -1);

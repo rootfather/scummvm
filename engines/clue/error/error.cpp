@@ -17,8 +17,8 @@
   distribution.
  ****************************************************************************/
 
-#define ERR_EXIT_ERROR      20L
-#define ERR_EXIT_SHUTDOWN   30L
+#define ERR_EXIT_ERROR      20
+#define ERR_EXIT_SHUTDOWN   30
 
 #include "clue/clue.h"
 #include "clue/base/base.h"

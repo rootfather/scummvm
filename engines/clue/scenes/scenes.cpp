@@ -38,7 +38,7 @@ static byte tcDisplayInfoAboutPerson(uint32 objID) {
 	NewList<NewNode> *bubble = g_clue->_txtMgr->goKey(LOOK_TXT, name.c_str());
 
 	SetBubbleType(THINK_BUBBLE);
-	Bubble(bubble, 0, nullptr, 0L);
+	Bubble(bubble, 0, nullptr, 0);
 	bubble->removeList();
 
 	return 0;
@@ -80,7 +80,7 @@ uint32 Go(NewList<NewTCEventNode> *succ) {
 	inpTurnFunctionKey(false);
 
 	if (succ->getNrOfNodes() > 1) {
-		uint32 prob = 0L;
+		uint32 prob = 0;
 
 		ShowMenuBackground();
 
@@ -96,7 +96,7 @@ uint32 Go(NewList<NewTCEventNode> *succ) {
 		}
 
 		prob = (1 << prob) - 1;
-		prob = Menu((NewList<NewNode> *)succ, prob, 0, nullptr, 0L);
+		prob = Menu((NewList<NewNode> *)succ, prob, 0, nullptr, 0);
 
 		succ_eventnr = succ->getNthNode(prob)->_eventNr;
 
@@ -123,7 +123,7 @@ void Information() {
 	while ((choice != 6) && (ret != GET_OUT)) {
 		SetBubbleType(THINK_BUBBLE);
 		NewList<NewNode> *bubble = g_clue->_txtMgr->goKey(THECLOU_TXT, "INFORMATION");
-		choice = Bubble(bubble, choice, 0L, 0L);
+		choice = Bubble(bubble, choice, 0, 0);
 		bubble->removeList();
 
 		byte choice1 = 0;
@@ -146,7 +146,7 @@ void Information() {
 				list->expandObjectList(enough);
 				SetBubbleType(THINK_BUBBLE);
 
-				while (ChoiceOk((choice1 = Bubble((NewList<NewNode>*)list, choice1, 0L, 0L)), GET_OUT, list)) {
+				while (ChoiceOk((choice1 = Bubble((NewList<NewNode>*)list, choice1, 0, 0)), GET_OUT, list)) {
 					SetBubbleType(THINK_BUBBLE);
 
 					uint32 objID = list->getNthNode((uint32) choice1)->_nr;
@@ -170,7 +170,7 @@ void Information() {
 				list->expandObjectList(enough);
 				SetBubbleType(THINK_BUBBLE);
 
-				while (ChoiceOk((choice1 = Bubble((NewList<NewNode>*)list, choice1, 0L, 0L)), GET_OUT, list)) {
+				while (ChoiceOk((choice1 = Bubble((NewList<NewNode>*)list, choice1, 0, 0)), GET_OUT, list)) {
 					SetBubbleType(THINK_BUBBLE);
 
 					uint32 objID = list->getNthNode((uint32) choice1)->_nr;
@@ -194,7 +194,7 @@ void Information() {
 				Common::String enough = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "GENUG");
 				list->expandObjectList(enough);
 
-				while (ChoiceOk((choice1 = Bubble((NewList<NewNode>*)list, choice1, 0L, 0L)), GET_OUT, list)) {
+				while (ChoiceOk((choice1 = Bubble((NewList<NewNode>*)list, choice1, 0, 0)), GET_OUT, list)) {
 					SetBubbleType(THINK_BUBBLE);
 
 					uint32 objID = list->getNthNode((uint32) choice1)->_nr;
@@ -218,7 +218,7 @@ void Information() {
 				Common::String enough = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "GENUG");
 				list->expandObjectList(enough);
 
-				while (ChoiceOk((choice1 = Bubble((NewList<NewNode>*)list, choice1, 0L, 0L)), GET_OUT, list)) {
+				while (ChoiceOk((choice1 = Bubble((NewList<NewNode>*)list, choice1, 0, 0)), GET_OUT, list)) {
 					SetBubbleType(THINK_BUBBLE);
 
 					uint32 objID = list->getNthNode((uint32) choice1)->_nr;
@@ -251,7 +251,7 @@ void Look(uint32 locNr) {
 		NewList<NewNode> *menu = g_clue->_txtMgr->goKey(THECLOU_TXT, "UMSEHEN");
 
 		SetBubbleType(THINK_BUBBLE);
-		choice = Bubble(menu, 0, 0L, 0L);
+		choice = Bubble(menu, 0, 0, 0);
 		menu->removeList();
 
 		byte choice1 = 0;
@@ -261,7 +261,7 @@ void Look(uint32 locNr) {
 			NewList<NewNode> *bubble = g_clue->_txtMgr->goKey(HOUSEDESC_TXT, film->loc_names->getNthNode(locNr)->_name.c_str());
 
 			SetBubbleType(THINK_BUBBLE);
-			choice1 = Bubble(bubble, 0, 0L, 0L);
+			choice1 = Bubble(bubble, 0, 0, 0);
 			bubble->removeList();
 			}
 			break;
@@ -279,7 +279,7 @@ void Look(uint32 locNr) {
 
 					SetBubbleType(THINK_BUBBLE);
 
-					while (ChoiceOk((choice1 = Bubble((NewList<NewNode>*)bubble, choice1, 0L, 0L)), GET_OUT, bubble)) {
+					while (ChoiceOk((choice1 = Bubble((NewList<NewNode>*)bubble, choice1, 0, 0)), GET_OUT, bubble)) {
 						objID = bubble->getNthNode(choice1)->_nr;
 						tcDisplayInfoAboutPerson(objID);
 					}
@@ -301,7 +301,7 @@ void Look(uint32 locNr) {
 uint32 tcTelefon() {
 	// CHECKME: Always returns 0
 
-	uint32 eventNr = 0L;
+	uint32 eventNr = 0;
 	PersonNode *ben = (PersonNode *)dbGetObject(Person_Ben_Riggley);
 	gfxShow(175, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1);
 	knowsAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Person);
@@ -317,14 +317,14 @@ uint32 tcTelefon() {
 		inpTurnESC(true);
 
 		if (choice != GET_OUT) {
-			if (ChoiceOk((choice = Bubble((NewList<NewNode>*)ObjectList, 0, nullptr, 0L)), GET_OUT, ObjectList)) {
+			if (ChoiceOk((choice = Bubble((NewList<NewNode>*)ObjectList, 0, nullptr, 0)), GET_OUT, ObjectList)) {
 				uint32 persID = ObjectList->getNthNode((uint32) choice)->_nr;
 
 				if (persID == Person_Ben_Riggley)
 					Say(BUSINESS_TXT, 0, ben->PictID, "ALREADY_PHONING");
 
 				if (livesIn(London_London_1, persID)) {
-					if (g_clue->calcRandomNr(0L, 9L) == 3)
+					if (g_clue->calcRandomNr(0, 9) == 3)
 						Say(BUSINESS_TXT, 0, ben->PictID, "OCCUPIED");
 					else {
 						inpTurnESC(false);
@@ -350,7 +350,7 @@ void tcWait() {
 
 	ShowMenuBackground();
 	ShowTime(0);
-	inpSetWaitTicks(25L);
+	inpSetWaitTicks(25);
 
 	gfxSetRect(0, 320);
 	gfxSetPens(m_gc, 249, 0, GFX_SAME_PEN);
@@ -358,11 +358,11 @@ void tcWait() {
 	gfxPrint(m_gc, line, 22, GFX_PRINT_CENTER);
 
 	byte ende = 0;
-	uint32 minutes = 0L;
+	uint32 minutes = 0;
 	while ((!ende) && (minutes < 960)) {
 		minutes += 60;
 
-		AddVTime(60L);
+		AddVTime(60);
 		ShowTime(0);
 
 		if (locNr) {
@@ -391,7 +391,7 @@ void tcWait() {
 		Say(THECLOU_TXT, 0, MATT_PICTID, "WURZEL_SEPP");
 	}
 
-	inpSetWaitTicks(0L);
+	inpSetWaitTicks(0);
 	ShowMenuBackground();
 	tcRefreshLocationInTitle(GetLocation);
 

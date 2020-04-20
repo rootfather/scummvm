@@ -28,7 +28,7 @@
 #define FILE_ACTION_LIST_ID "ACLI"  /* ACtionLIst for handler x started */
 #define FILE_ACTION_ID      "ACTI"  /* ACTIon */
 
-#define SYS_MAX_MEMORY_SIZE   1024L*25L
+#define SYS_MAX_MEMORY_SIZE   1024*25L
 
 namespace Clue {
 
@@ -171,7 +171,7 @@ Handler *InitHandler(struct System *sys, uint32 id, uint32 flags) {
 	if (sys && !FindHandler(sys, id)) {
 		if ((h = (Handler *) CreateNode(sys->Handlers, sizeof(*h), NULL))) {
 			h->Id = id;
-			h->Timer = 0L;
+			h->Timer = 0;
 			h->Flags = flags;
 			h->CurrentAction = NULL;
 
@@ -218,7 +218,7 @@ struct Handler *ClearHandler(struct System *sys, uint32 id) {
 		}
 
 		// FIXME: This is obviously wrong. I guess those two lines should be in an else statement
-		h->Timer = 0L;
+		h->Timer = 0;
 		h->CurrentAction = NULL;
 	}
 
@@ -296,7 +296,7 @@ bool LoadHandler(Common::Stream *fh, struct System *sys, uint32 id) {
 						dskGetLine_U16(fh, &time);
 
 						if (type) {
-							Action *a = InitAction(sys, type, 0L, 0L, time);
+							Action *a = InitAction(sys, type, 0, 0, time);
 							uint16 value16;
 							uint32 value32;
 
@@ -602,7 +602,7 @@ uint32 CurrentTimer(System *sys) {
 	if (sys && (h = (Handler *) sys->ActivHandler))
 		return h->Timer;
 
-	return 0L;
+	return 0;
 }
 
 void IncCurrentTimer(System *sys, uint32 time, byte alsoTime) {

@@ -220,7 +220,7 @@ NewObjectList<dbObjectNode> *lsGetObjectsByList(uint16 x, uint16 y, uint16 width
 	for (dbObjectNode* node = ls->p_ObjectRetrieval->getListHead(); node->_succ; node = (dbObjectNode *) node->_succ) {
 		LSObjectNode *lso = (LSObjectNode *) node;
 
-		if ((lso->ul_Status & (1L << Const_tcACCESS_BIT)) || (GamePlayMode & GP_LEVEL_DESIGN))
+		if ((lso->ul_Status & (1 << Const_tcACCESS_BIT)) || (GamePlayMode & GP_LEVEL_DESIGN))
 			if (showInvisible || lso->uch_Visible)
 				if (lsIsInside(lso, x, y, x + width, y + height))
 					lsExtendGetList(list, node->_nr, lso->Type, lso);

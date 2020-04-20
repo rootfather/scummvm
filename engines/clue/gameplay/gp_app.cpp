@@ -116,7 +116,7 @@ uint32 tcBurglary(uint32 buildingID) {
 	if (buildingID == Building_Seniorenheim)
 		ret = plPlayer(buildingID, 200, tcKarateOpa);
 	else
-		ret = plPlayer(buildingID, 0L, NULL);
+		ret = plPlayer(buildingID, 0, NULL);
 
 	SetMenuTimeOutFunc(NULL);   /* sicher ist sicher... */
 
@@ -357,7 +357,7 @@ uint32 StdHandle(uint32 choice) {
 						ShowMenuBackground();
 						tcRefreshLocationInTitle(GetLocation);
 
-						succ_eventnr = 0L;
+						succ_eventnr = 0;
 					} else
 						StopAnim();
 				}
@@ -433,7 +433,7 @@ uint32 StdHandle(uint32 choice) {
 						        -1, -1);
 						tcRefreshLocationInTitle(GetLocation);
 
-						succ_eventnr = 0L;
+						succ_eventnr = 0;
 					}
 				}
 			}
@@ -460,7 +460,7 @@ uint32 StdHandle(uint32 choice) {
 void StdDone() {
 	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 
-	_sceneArgs._returnValue = 0L;
+	_sceneArgs._returnValue = 0;
 
 	while (!_sceneArgs._returnValue) {
 		if (tcPersonIsHere())
@@ -481,7 +481,7 @@ void StdDone() {
 			inpTurnFunctionKey(true);
 
 			byte activ = 0;
-			activ = Menu(menu, _sceneArgs._options, activ, nullptr, 0L);
+			activ = Menu(menu, _sceneArgs._options, activ, nullptr, 0);
 
 			if (activ == (byte) - 1) {
 				ShowTheClouRequester(No_Error);
@@ -491,7 +491,7 @@ void StdDone() {
 			} else if (activ == ((byte)(TXT_MENU_TIMEOUT)))
 				activ = 0;
 			else {
-				uint32 choice = (uint32) 1L << (activ);
+				uint32 choice = (uint32) 1 << (activ);
 				_sceneArgs._returnValue = StdHandle(choice);
 			}
 
@@ -503,7 +503,7 @@ void StdDone() {
 	StopAnim();
 
 	if (!_sceneArgs._overwritten)
-		gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, nullptr);
+		gfxChangeColors(l_gc, 5, GFX_FADE_OUT, nullptr);
 
 	menu->removeList();
 }
@@ -698,10 +698,10 @@ bool tcPersonIsHere() {
 }
 
 void tcPersonGreetsMatt() {
-	static uint32 upper = 4L;
+	static uint32 upper = 4;
 
-	if (g_clue->calcRandomNr(0L, upper) == 1) { /* alle upper mal wird Matt gegrüßt ! */
-		if (g_clue->calcRandomNr(0L, 4L) == 1)  /* alle 4 mal */
+	if (g_clue->calcRandomNr(0, upper) == 1) { /* alle upper mal wird Matt gegrüßt ! */
+		if (g_clue->calcRandomNr(0, 4) == 1)  /* alle 4 mal */
 			upper += 2;     /* wahrscheinlichkeit wird kleiner ! */
 
 		uint32 locNr = GetObjNrOfLocation(GetLocation);

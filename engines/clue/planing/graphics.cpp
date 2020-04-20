@@ -42,9 +42,9 @@ void plMessage(const char *msg, byte flags) {
 	m->removeList();
 
 	if (flags & PLANING_MSG_WAIT) {
-		inpSetWaitTicks(140L);
+		inpSetWaitTicks(140);
 		inpWaitFor(INP_LBUTTONP | INP_TIME);
-		inpSetWaitTicks(0L);
+		inpSetWaitTicks(0);
 	}
 }
 

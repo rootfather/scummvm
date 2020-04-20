@@ -79,7 +79,7 @@ dbObjectNode *lsGetSuccObject(dbObjectNode *start) {
 	while (n->_succ) {
 		LSObjectNode *lso = (LSObjectNode *) n;
 
-		if (lso->ul_Status & (1L << Const_tcACCESS_BIT))
+		if (lso->ul_Status & (1 << Const_tcACCESS_BIT))
 			return n;
 
 		n = (dbObjectNode *) n->_succ;
@@ -94,7 +94,7 @@ dbObjectNode *lsGetPredObject(dbObjectNode *start) {
 	while (NODE_PRED(n)) {
 		LSObjectNode *lso = (LSObjectNode *) n;
 
-		if (lso->ul_Status & (1L << Const_tcACCESS_BIT))
+		if (lso->ul_Status & (1 << Const_tcACCESS_BIT))
 			return n;
 
 		n = (dbObjectNode *) n->_pred;

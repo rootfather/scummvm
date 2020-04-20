@@ -163,7 +163,7 @@ void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode) {
 		}
 
 		if (pict_id)
-			gfxShow(pict_id, mode, 2, -1L, -1L);
+			gfxShow(pict_id, mode, 2, -1, -1);
 
 		if (g_clue->_txtMgr->countKey(pict_list) > PIC_1_ID_POS) {
 			uint16 rate = (uint16)g_clue->_txtMgr->getKeyAsUint32((uint16)PIC_P_SEC_POS, pict_list);

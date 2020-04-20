@@ -34,7 +34,7 @@ NewList<NewNode> *PrepareQuestions(NewList<NewDynDlgNode> *keyWords, uint32 talk
 
 	Common::String question;
 	for (NewNode *n = keyWords->getListHead(); n->_succ; n = n->_succ) {
-		byte r = (byte)g_clue->calcRandomNr(0L, 6L);
+		byte r = (byte)g_clue->calcRandomNr(0, 6);
 		question = Common::String::format(questionList->getNthNode(r)->_name.c_str(), n->_name.c_str());
 		preparedList->createNode(question);
 	}
@@ -163,11 +163,11 @@ void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode) {
 
 		if (choice < (max - stdcount)) {
 			SetPictID(p2->PictID);
-			Bubble(bubble, 0, 0L, 0L);
+			Bubble(bubble, 0, 0, 0);
 		}
 
 		SetPictID(MATT_PICTID);
-		choice = Bubble(questions, 0, 0L, 0L);
+		choice = Bubble(questions, 0, 0, 0);
 		quit = max = questions->getNrOfNodes() - 1;
 
 		uint8 i;
@@ -250,17 +250,17 @@ byte Say(uint32 TextID, byte activ, uint16 person, const char *text) {
 		if (g_clue->_txtMgr->keyExists(CDROM_TXT, text)) {
 			Common::String keys = g_clue->_txtMgr->getFirstLine(CDROM_TXT, text);
 
-			StartFrame = (g_clue->_txtMgr->getKeyAsUint32(1, keys) * 60L +
-				g_clue->_txtMgr->getKeyAsUint32(2, keys)) * 75L + g_clue->_txtMgr->getKeyAsUint32(3, keys);
-			EndFrame = (g_clue->_txtMgr->getKeyAsUint32(4, keys) * 60L +
-				g_clue->_txtMgr->getKeyAsUint32(5, keys)) * 75L + g_clue->_txtMgr->getKeyAsUint32(6, keys);
+			StartFrame = (g_clue->_txtMgr->getKeyAsUint32(1, keys) * 60 +
+				g_clue->_txtMgr->getKeyAsUint32(2, keys)) * 75 + g_clue->_txtMgr->getKeyAsUint32(3, keys);
+			EndFrame = (g_clue->_txtMgr->getKeyAsUint32(4, keys) * 60 +
+				g_clue->_txtMgr->getKeyAsUint32(5, keys)) * 75 + g_clue->_txtMgr->getKeyAsUint32(6, keys);
 		} else {
 			StartFrame = DLG_NO_SPEECH;
 			EndFrame = DLG_NO_SPEECH;
 		}
 	}
 
-	byte choice = Bubble(bubble, activ, nullptr, 0L);
+	byte choice = Bubble(bubble, activ, nullptr, 0);
 
 	if (g_clue->getFeatures() & ADGF_CD) {
 		CDROM_StopAudioTrack();
@@ -289,7 +289,7 @@ uint32 Talk() {
 			Common::String helloFriends = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
 			bubble->expandObjectList(helloFriends);
 
-			byte choice = Bubble((NewList<NewNode> *)bubble, 0, nullptr, 0L);
+			byte choice = Bubble((NewList<NewNode> *)bubble, 0, nullptr, 0);
 			if (ChoiceOk(choice, GET_OUT, bubble)) {
 				uint32 personID = bubble->getNthNode((uint32) choice)->_nr;
 				inpTurnESC(false);
@@ -308,7 +308,7 @@ uint32 Talk() {
 	inpTurnESC(true);
 
 	// CHECKME: Is there a reason to return something?
-	uint32 succ_event_nr = 0L;
+	uint32 succ_event_nr = 0;
 	return succ_event_nr;
 }
 

@@ -127,9 +127,9 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 				Common::String exp;
 
 				for (uint32 i = 0; i < PLANING_NR_PLANS; i++) {
-					if ((mode == PLANING_OPEN_WRITE_PLAN) || (pllData & (1L << i))) {
+					if ((mode == PLANING_OPEN_WRITE_PLAN) || (pllData & (1 << i))) {
 						if (mode == PLANING_OPEN_WRITE_PLAN) {
-							if (pllData & (1L << i))
+							if (pllData & (1 << i))
 								exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "ATTENTION_1");
 							else
 								exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "ATTENTION_2");
@@ -150,7 +150,7 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 				PlanList->createNode(exp);
 				// 
 
-				int i = Bubble((NewList<NewNode>*)PlanList, 0, NULL, 0L);
+				int i = Bubble((NewList<NewNode>*)PlanList, 0, NULL, 0);
 
 				if (ChoiceOkHack(i, GET_OUT, (NewList<NewNode>*)PlanList)) {
 					IODataNode *data = PlanList->getNthNode(i);
@@ -168,7 +168,7 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 					*fh = dskOpen(pllPath2, Planing_Open[mode]);
 
 					if (mode == PLANING_OPEN_WRITE_PLAN) {
-						pllData |= 1L << i;
+						pllData |= 1 << i;
 
 						if ((pllFh = dskOpen(pllPath, 1))) {
 							dskSetLine_U32(pllFh, pllData);
@@ -219,7 +219,7 @@ void plSaveChanged(uint32 objId) {
 
 		inpTurnESC(false);
 
-		if (Bubble(l, 0, nullptr, 0L) == 0) {
+		if (Bubble(l, 0, nullptr, 0) == 0) {
 			inpTurnESC(true);
 
 			if (!plAllInCar(objId))
@@ -252,7 +252,7 @@ void plLoad(uint32 objId) {
 
 			if ((l = LoadSystem(fh, plSys))) {
 				inpTurnESC(false);
-				Bubble(l, 0, NULL, 0L);
+				Bubble(l, 0, NULL, 0);
 				inpTurnESC(true);
 				l->removeList();
 
@@ -262,7 +262,7 @@ void plLoad(uint32 objId) {
 
 			if ((l = plLoadTools(fh))) {
 				inpTurnESC(false);
-				Bubble(l, 0, nullptr, 0L);
+				Bubble(l, 0, nullptr, 0);
 				inpTurnESC(true);
 				l->removeList();
 

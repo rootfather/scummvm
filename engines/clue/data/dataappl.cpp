@@ -193,7 +193,7 @@ uint32 tcGetItemID(uint32 itemType) {
 		}
 	}
 
-	return 0L;
+	return 0;
 }
 #endif
 
@@ -209,7 +209,7 @@ uint32 GetObjNrOfLocation(uint32 LocNr) {
 		}
 	}
 
-	return 0L;
+	return 0;
 }
 
 uint32 GetObjNrOfBuilding(uint32 LocNr) {
@@ -224,7 +224,7 @@ uint32 GetObjNrOfBuilding(uint32 LocNr) {
 		}
 	}
 
-	return 0L;
+	return 0;
 }
 
 uint32 tcGetPersOffer(PersonNode *person, uint8 persCount) {
@@ -321,7 +321,7 @@ uint32 tcGetBuildValues(BuildingNode *bui) {
 	uint32 x = (255 - bui->Exactlyness) / 3;
 
 	/* XXX: reordered some stuff just in case... */
-	uint32 v = CalcValue(bui->Values, 0, 500000L + bui->Values, g_clue->calcRandomNr(0, 255),
+	uint32 v = CalcValue(bui->Values, 0, 500000 + bui->Values, g_clue->calcRandomNr(0, 255),
 	              x);
 
 	return ((uint32)(Round(v, 3)));
@@ -983,7 +983,7 @@ static bool tcIsConnectedWithEnabledAlarm(uint32 lsoId) {
 	for (dbObjectNode *n = ObjectList->getListHead(); n->_succ; n = (dbObjectNode*)n->_succ) {
 		LSObjectNode *alarm = (LSObjectNode *)n;
 
-		if (!(alarm->ul_Status & (1L << Const_tcON_OFF)))
+		if (!(alarm->ul_Status & (1 << Const_tcON_OFF)))
 			return true;
 	}
 

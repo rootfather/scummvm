@@ -31,7 +31,7 @@ uint32 plGetNextLoot() {
 		}
 	}
 
-	return 0L;
+	return 0;
 }
 
 /* check support */
@@ -71,7 +71,7 @@ bool plAllInCar(uint32 bldId) {
 	uint32 oldTimer = CurrentTimer(plSys);
 
 	byte maxPerson = 0;
-	uint32 maxTimer = 0L;
+	uint32 maxTimer = 0;
 	for (byte i = 0; i < BurglarsNr; i++) {
 		SetActivHandler(plSys, PersonsList->getNthNode(i)->_nr);
 		if (maxTimer < GetMaxTimer(plSys)) {

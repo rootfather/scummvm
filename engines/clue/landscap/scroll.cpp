@@ -52,14 +52,14 @@ byte lsInitScrollLandScape(byte direction, byte mode) {
 
 	if (direction & LS_SCROLL_LEFT) {
 		if ((l->us_WindowXPos >= speed) && (l->us_PersonXPos <= LS_CENTER_X)) {
-			dx = -1L;
+			dx = -1;
 
 			l->us_LivingXSpeed = (int16) dx;
 			l->us_LivingYSpeed = 0;
 			l->uch_LivingAction = ANM_MOVE_LEFT;
 		} else {
 			if (l->us_PersonXPos > speed) {
-				px = -1L;
+				px = -1;
 
 				l->us_LivingXSpeed = (int16) px;
 				l->us_LivingYSpeed = 0;
@@ -79,7 +79,7 @@ byte lsInitScrollLandScape(byte direction, byte mode) {
 			l->uch_LivingAction = ANM_MOVE_RIGHT;
 		} else {
 			if (l->us_PersonXPos < (LS_VISIBLE_X_SIZE - speed)) {
-				px = 1L;
+				px = 1;
 
 				l->us_LivingXSpeed = (int16) px;
 				l->us_LivingYSpeed = 0;
@@ -90,14 +90,14 @@ byte lsInitScrollLandScape(byte direction, byte mode) {
 
 	if (direction & LS_SCROLL_UP) {
 		if ((l->us_WindowYPos >= (speed)) && (l->us_PersonYPos <= LS_CENTER_Y)) {
-			dy = -1L;
+			dy = -1;
 
 			l->us_LivingXSpeed = 0;
 			l->us_LivingYSpeed = (int16) dy;
 			l->uch_LivingAction = ANM_MOVE_UP;
 		} else {
 			if (l->us_PersonYPos > (speed)) {
-				py = -1L;
+				py = -1;
 
 				l->us_LivingXSpeed = 0;
 				l->us_LivingYSpeed = (int16) py;
@@ -109,14 +109,14 @@ byte lsInitScrollLandScape(byte direction, byte mode) {
 	if (direction & LS_SCROLL_DOWN) {
 		if (l->us_WindowYPos <= (LS_MAX_AREA_HEIGHT - LS_VISIBLE_Y_SIZE - speed)
 		        && (l->us_PersonYPos >= LS_CENTER_Y)) {
-			dy = 1L;
+			dy = 1;
 
 			l->us_LivingXSpeed = 0;
 			l->us_LivingYSpeed = (int16) dy;
 			l->uch_LivingAction = ANM_MOVE_DOWN;
 		} else {
 			if (l->us_PersonYPos < (LS_VISIBLE_Y_SIZE - speed)) {
-				py = 1L;
+				py = 1;
 
 				l->us_LivingXSpeed = 0;
 				l->us_LivingYSpeed = (int16) py;

@@ -29,13 +29,13 @@ namespace Clue {
 /* public declarations */
 NewObjectList<dbObjectNode> *ObjectList = nullptr;
 NewObjectList<dbObjectNode> *ObjectListPrivate = nullptr;
-uint32 ObjectListWidth = 0L;
+uint32 ObjectListWidth = 0;
 // Common::String (*ObjectListPrevString)(uint32, uint32, void *) = nullptr;
 Common::String (*ObjectListSuccString)(uint32, uint32, dbObjectNode *) = nullptr;
 
 
 /* private declarations */
-uint32 ObjectListType = 0L;
+uint32 ObjectListType = 0;
 uint32 ObjectListFlags = OLF_NORMAL;
 
 uint8 ObjectLoadMode = DB_LOAD_MODE_STD;

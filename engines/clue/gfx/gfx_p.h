@@ -21,7 +21,7 @@
 namespace Clue {
 
 #define GFX_SEG_ADDR                    (0xA0000000L)
-#define GFX_PAGE_SIZE                   (64000L)    /* 320*200 = 64000 Bytes groß */
+#define GFX_PAGE_SIZE                   (64000)    /* 320*200 = 64000 Bytes groß */
 
 #define GFX_LOAD_BUFFER                 StdBuffer0
 #define GFX_DECR_BUFFER                 DecrBuffer

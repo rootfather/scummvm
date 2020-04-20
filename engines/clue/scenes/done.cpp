@@ -45,7 +45,7 @@ void DoneTaxi() {
 	Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
 	locs->expandObjectList(exp);
 
-	byte j = Bubble((NewList<NewNode>*)locs, i, nullptr, 0L);
+	byte j = Bubble((NewList<NewNode>*)locs, i, nullptr, 0);
 	if (ChoiceOk(j, GET_OUT, locs)) {
 		i = j;
 
@@ -58,11 +58,11 @@ void DoneTaxi() {
 	}
 
 	_sceneArgs._overwritten = true;
-	_sceneArgs._options = 0L;
+	_sceneArgs._options = 0;
 
 	locs->removeList();
 
-	gfxChangeColors(l_gc, 2L, GFX_FADE_OUT, 0L);
+	gfxChangeColors(l_gc, 2, GFX_FADE_OUT, 0);
 }
 
 void DoneInsideHouse() {
@@ -104,11 +104,11 @@ void DoneInsideHouse() {
 		if (_sceneArgs._options) {
 			inpTurnFunctionKey(false);
 			inpTurnESC(false);
-			activ = Menu(menu, _sceneArgs._options, activ, nullptr, 0L);
+			activ = Menu(menu, _sceneArgs._options, activ, nullptr, 0);
 			inpTurnFunctionKey(true);
 			inpTurnESC(true);
 
-			uint32 choice = (uint32) 1L << activ;
+			uint32 choice = (uint32) 1 << activ;
 
 			switch (choice) {
 			case LOOK:
@@ -142,7 +142,7 @@ void DoneInsideHouse() {
 		lsDoneObjectDB(node->_nr);
 
 	StopAnim();
-	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, nullptr);
+	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, nullptr);
 
 	menu->removeList();
 }
@@ -161,10 +161,10 @@ void DoneTools() {
 
 		inpTurnFunctionKey(false);  /* dont save in tools shop */
 		inpTurnESC(false);
-		activ = Menu(menu, _sceneArgs._options, activ, nullptr, 0L);
+		activ = Menu(menu, _sceneArgs._options, activ, nullptr, 0);
 		inpTurnESC(true);
 
-		uint32 choice = (uint32) 1L << (activ);
+		uint32 choice = (uint32) 1 << (activ);
 
 		if (choice == BUSINESS_TALK) {
 			tcToolsShop();
@@ -180,14 +180,14 @@ void DoneTools() {
 
 	menu->removeList();
 	StopAnim();
-	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
+	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
 }
 
 void DoneDealer() {
 	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 
 	_sceneArgs._overwritten = true;
-	_sceneArgs._returnValue = 0L;
+	_sceneArgs._returnValue = 0;
 
 	tcMoveAPerson(Person_Frank_Maloya, Location_Maloya);
 	tcMoveAPerson(Person_Eric_Pooly, Location_Pooly);
@@ -201,11 +201,11 @@ void DoneDealer() {
 	while (!_sceneArgs._returnValue) {
 		inpTurnFunctionKey(false);  /* or call save functions in case of space */
 		inpTurnESC(false);
-		activ = Menu(menu, _sceneArgs._options, activ, nullptr, 0L);
+		activ = Menu(menu, _sceneArgs._options, activ, nullptr, 0);
 		inpTurnESC(true);
 		inpTurnFunctionKey(true);
 
-		uint32 choice = (uint32) 1L << (activ);
+		uint32 choice = (uint32) 1 << (activ);
 
 		if (choice == BUSINESS_TALK)
 			tcDealerDlg();
@@ -219,7 +219,7 @@ void DoneDealer() {
 
 	menu->removeList();
 	StopAnim();
-	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
+	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
 }
 
 void DoneParking() {
@@ -235,16 +235,16 @@ void DoneParking() {
 		inpTurnFunctionKey(false);  /* or call save functions in case of space */
 		inpTurnESC(false);
 
-		activ = Menu(menu, _sceneArgs._options, (byte)(activ), 0L, 0L);
+		activ = Menu(menu, _sceneArgs._options, (byte)(activ), 0, 0);
 
 		inpTurnESC(true);
 		inpTurnFunctionKey(true);
 
-		if ((1L << activ) == BUSINESS_TALK) {
+		if ((1 << activ) == BUSINESS_TALK) {
 			byte choice = 0;
 
 			while (choice != 2) {
-				choice = Bubble(bubble, 0, 0L, 0L);
+				choice = Bubble(bubble, 0, 0, 0);
 
 				switch (choice) {
 				case 0:
@@ -271,7 +271,7 @@ void DoneParking() {
 			ShowTime(0);
 		} else {
 			inpTurnESC(false);
-			_sceneArgs._returnValue = StdHandle(1L << activ);
+			_sceneArgs._returnValue = StdHandle(1 << activ);
 			inpTurnESC(true);
 		}
 	}
@@ -280,7 +280,7 @@ void DoneParking() {
 	menu->removeList();
 
 	StopAnim();
-	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, nullptr);
+	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, nullptr);
 }
 
 void DoneGarage() {
@@ -300,7 +300,7 @@ void DoneGarage() {
 		inpTurnESC(true);
 		inpTurnFunctionKey(true);
 
-		uint32 choice = (uint32) 1L << (activ);
+		uint32 choice = (uint32) 1 << (activ);
 
 		if (choice == BUSINESS_TALK) {
 			uint32 carID;
@@ -323,7 +323,7 @@ void DoneGarage() {
 
 	menu->removeList();
 	StopAnim();
-	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
+	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
 }
 
 void tcInitFahndung() {
@@ -352,7 +352,7 @@ void tcDoneFahndung() {
 	if (tcIsDeadlock())
 		_sceneArgs._returnValue = SCENE_NEW_GAME;
 
-	gfxChangeColors(l_gc, 5L, GFX_FADE_OUT, 0L);
+	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
 }
 
 /*

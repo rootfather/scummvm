@@ -140,8 +140,8 @@ static void InitData() {
 }
 
 void ClueEngine::closeData() {
-	RemRelations(0L, 0L);
-	dbDeleteAllObjects(0L, 0L);
+	RemRelations(0, 0);
+	dbDeleteAllObjects(0, 0);
 }
 
 void tcSetPermanentColors() {
@@ -397,7 +397,7 @@ byte ClueEngine::startupMenu() {
 	inpTurnESC(false);
 
 	void (*dummyFct)(byte) = nullptr;
-	uint32 activ = Menu(menu, 7L, 0, dummyFct, 0L);
+	uint32 activ = Menu(menu, 7, 0, dummyFct, 0);
 
 	inpTurnESC(true);
 	inpTurnFunctionKey(true);
