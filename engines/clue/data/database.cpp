@@ -909,7 +909,7 @@ void dbSortPartOfList(NewObjectList<dbObjectNode> *l, dbObjectNode *start, dbObj
 		n1 = n;
 		n = (dbObjectNode *)n->_succ;
 
-		RemNode(n1);
+		n1->remNode();
 		l->addNode(n1, startPred);
 
 		startPred = n1;
