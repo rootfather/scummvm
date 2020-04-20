@@ -258,7 +258,7 @@ bool dskGetLine(char *s, int size, Common::Stream *fp) {
 	return false;
 }
 
-void dskSetLine(Common::Stream *fp, const char *s) {
+void dskSetLine(Common::Stream *fp, Common::String s) {
 	Common::WriteStream *stream = dynamic_cast<Common::WriteStream *>(fp);
 	stream->writeString(s);
 	stream->writeString("\r\n");
@@ -285,15 +285,13 @@ bool dskGetLine_U32(Common::Stream *fp, uint32 *x) {
 }
 
 void dskSetLine_U16(Common::Stream *fp, uint16 x) {
-	char buf[BUFSIZ];
-	sprintf(buf, "%hu", x);
-	dskSetLine(fp, buf);
+	Common::String line = Common::String::format("%hu", x);
+	dskSetLine(fp, line);
 }
 
 void dskSetLine_U32(Common::Stream *fp, uint32 x) {
-	char buf[BUFSIZ];
-	sprintf(buf, "%u", x);
-	dskSetLine(fp, buf);
+	Common::String line = Common::String::format("%u", x);
+	dskSetLine(fp, line);
 }
 
 bool dskEOF(Common::Stream *fp) {

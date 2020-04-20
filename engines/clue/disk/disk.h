@@ -13,6 +13,7 @@
 
 namespace Common {
 class Stream;
+class String;
 }
 
 namespace Clue {
@@ -62,7 +63,7 @@ int32 dskFileLength(const char *Pathname);
 Common::Stream *dskOpen(const char *Pathname, int RW);
 
 extern bool dskGetLine(char *s, int size, Common::Stream *fp);
-extern void dskSetLine(Common::Stream *fp, const char *s);
+extern void dskSetLine(Common::Stream *fp, Common::String s);
 extern bool dskGetLine_U16(Common::Stream *fp, uint16 *x);
 extern bool dskGetLine_U32(Common::Stream *fp, uint32 *x);
 extern void dskSetLine_U16(Common::Stream *fp, uint16 x);
