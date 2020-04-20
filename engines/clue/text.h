@@ -72,7 +72,7 @@ public:
 
 	NewNode();
 	NewNode(Common::String name);
-	~NewNode();
+	virtual ~NewNode();
 
 	void remNode();
 };

@@ -918,49 +918,39 @@ void dbSortPartOfList(NewObjectList<dbObjectNode> *l, dbObjectNode *start, dbObj
 	newList->removeList();
 }
 
-int32 dbSortObjectList(NewObjectList<dbObjectNode> **objectList, int16(*processNode)(dbObjectNode *, dbObjectNode *)) {
-	error("STUB - dbSortObjectList");
-#if 0
-	int32 i = 0;
+void dbSortObjectList(NewObjectList<dbObjectNode> **objectList, int16(*processNode)(dbObjectNode *, dbObjectNode *)) {
+	if ((*objectList)->isEmpty())
+		return;
 
-	if (!(*objectList)->isEmpty()) {
-		NewObjectList<dbObjectNode> *newList = new NewObjectList<dbObjectNode>;
+	NewObjectList<dbObjectNode> *newList = new NewObjectList<dbObjectNode>;
 
-		for (dbObjectNode *n1 = (*objectList)->getListHead(); n1->_succ; n1 = (dbObjectNode *) n1->_succ, i++) {
-			 dbObjectNode *pred = nullptr;
-
-			if (!newList->isEmpty()) {
-				for (dbObjectNode *n2 = newList->getListHead(); !pred && n2->_succ; n2 = (dbObjectNode *) n2->_succ) {
-					if (processNode(n1, n2) >= 0)
-						pred = n2;
-				}
-			}
-
-			dbObjectNode* newNode = new dbObjectNode;
-			newNode->_name = n1->_name;
-			newNode->_nr = n1->_nr;
-			newNode->_type = n1->_type;
-			newNode->_data = n1->_data;
-
-			if (pred) {
-				if (pred == (dbObjectNode *) newList->getListHead())
-					newList->addHeadNode(newNode);
-				else
-					newList->addNode(newNode, (dbObjectNode *)pred->_pred);
-			} else
-				newList->addTailNode(newNode);
-		}
+	for (dbObjectNode *n1 = (*objectList)->getListHead(); n1->_succ; n1 = (dbObjectNode *) n1->_succ) {
+		 dbObjectNode *pred = nullptr;
 
 		if (!newList->isEmpty()) {
-			(*objectList)->removeList();
-			*objectList = newList;
+			for (dbObjectNode *n2 = newList->getListHead(); !pred && n2->_succ; n2 = (dbObjectNode *) n2->_succ) {
+				if (processNode(n1, n2) >= 0)
+					pred = n2;
+			}
+		}
+
+		dbObjectNode *newNode = dbNewNode(n1->_nr, n1->_type, n1->_name, n1->_realNr);
+		dbObjectMapper(newNode, n1);
+
+		if (pred) {
+			if (pred == (dbObjectNode *) newList->getListHead())
+				newList->addHeadNode(newNode);
+			else
+				newList->addNode(newNode, (dbObjectNode *)pred->_pred);
 		} else
-			newList->removeList();
+			newList->addTailNode(newNode);
 	}
 
-	return i;
-#endif
-	return 0;
+	if (!newList->isEmpty()) {
+		(*objectList)->removeList();
+		*objectList = newList;
+	} else
+		newList->removeList();
 }
 
 

@@ -77,7 +77,7 @@ void SetObjectListAttr(uint32 flags, uint32 type);
 void BuildObjectList(dbObjectNode *key);
 
 int16 dbStdCompareObjects(dbObjectNode *obj1, dbObjectNode *obj2);
-int32 dbSortObjectList(NewObjectList<dbObjectNode> **objectList, int16(*processNode)(dbObjectNode *, dbObjectNode *));
+void dbSortObjectList(NewObjectList<dbObjectNode> **objectList, int16(*processNode)(dbObjectNode *, dbObjectNode *));
 void dbSortPartOfList(NewObjectList<dbObjectNode> *l, dbObjectNode *start, dbObjectNode *end, int16(*processNode)(dbObjectNode *, dbObjectNode *));
 
 void dbAddObjectNode(NewObjectList<dbObjectNode> *objectList, uint32 nr, uint32 flags);
