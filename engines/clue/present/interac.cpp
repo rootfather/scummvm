@@ -173,10 +173,9 @@ byte Menu(NewList<NewNode> *menu, uint32 possibility, byte activ, void (*func)(b
 			return 0;
 
 		uint16 x = 8;
-		NewNode* n;
-		byte max;
+		byte max = 0;
 
-		for (max = 0, n = menu->getListHead(); n->_succ; n = n->_succ, max++) {
+		for (NewNode *n = menu->getListHead(); n->_succ; n = n->_succ, max++) {
 			if ((max % 2) == 0) {
 				MenuCoords[max / 2] = x - 8;
 
@@ -203,8 +202,8 @@ byte Menu(NewList<NewNode> *menu, uint32 possibility, byte activ, void (*func)(b
 		if (waitTime)
 			inpSetWaitTicks(waitTime);
 
-		bool ende = false;
-		while (!ende) {
+		bool endLoop = false;
+		while (!endLoop) {
 			int32 action = INP_LEFT | INP_RIGHT | INP_UP | INP_DOWN | INP_LBUTTONP;
 
 			if (waitTime)
@@ -232,7 +231,7 @@ byte Menu(NewList<NewNode> *menu, uint32 possibility, byte activ, void (*func)(b
 				return GET_OUT;
 
 			if (action & INP_LBUTTONP)
-				ende = true;
+				endLoop = true;
 
 			if (action & INP_MOUSE) {   /* MOD : 14.12.93 hg */
 				char nextActiv = SearchMouseActiv(possibility, max);
@@ -421,8 +420,8 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 
 		ExtBubbleActionInfo = action;
 	} else {
-		bool ende = false;
-		while (!ende) {
+		bool endLoop = false;
+		while (!endLoop) {
 			uint32 action =
 			    inpWaitFor(INP_UP | INP_DOWN | INP_LBUTTONP | INP_RBUTTONP
 			               | INP_LEFT | INP_RIGHT);
@@ -431,12 +430,12 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 
 			if ((action & INP_ESC) || (action & INP_RBUTTONP)) {
 				activ = GET_OUT;
-				ende = true;
+				endLoop = true;
 			}
 
-			if (!ende) {
+			if (!endLoop) {
 				if ((action & INP_LBUTTONP))
-					ende = true;
+					endLoop = true;
 
 				if ((action & INP_MOUSE)) {
 					uint16 x, y;

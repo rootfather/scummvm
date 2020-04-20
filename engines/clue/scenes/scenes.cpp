@@ -357,9 +357,9 @@ void tcWait() {
 	Common::String line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "WAIT");
 	gfxPrint(m_gc, line, 22, GFX_PRINT_CENTER);
 
-	byte ende = 0;
+	bool endLoop = false;
 	uint32 minutes = 0;
-	while ((!ende) && (minutes < 960)) {
+	while ((!endLoop) && (minutes < 960)) {
 		minutes += 60;
 
 		AddVTime(60);
@@ -383,7 +383,7 @@ void tcWait() {
 		uint32 action = inpWaitFor(INP_TIME | INP_LBUTTONP | INP_RBUTTONP | INP_ESC);
 
 		if ((action & INP_LBUTTONP) || (action & INP_RBUTTONP) || (action & INP_ESC))
-			ende = 1;
+			endLoop = true;
 	}
 
 	if (minutes >= 960) {

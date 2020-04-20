@@ -43,7 +43,6 @@ static uint32 tcShowPatrol(NewList<NewNode> *bubble_l, Common::String c_time, Co
 }
 
 void Investigate(const char *location) {
-	NewNode *nextMsg;
 	uint32 minutes = 0, choice = 0, first = 0;
 
 	uint32 buiID = GetObjNrOfBuilding(GetLocation);
@@ -95,6 +94,7 @@ void Investigate(const char *location) {
 	hasSet(Person_Matt_Stuvysunt, buiID);
 
 	/* bis zur 1. Meldung Zeit vergehen lassen! */
+	NewNode *nextMsg;
 	for (nextMsg = nullptr; nextMsg == nullptr;) {
 		Common::String c_time = BuildTime(GetMinute);
 

@@ -24,7 +24,7 @@ namespace Clue {
 
 void tcDealerDlg() {
 	uint32 locNr = GetObjNrOfLocation(GetLocation);
-	PersonNode *dealer = NULL;
+	PersonNode *dealer = nullptr;
 	byte dealerNr, choice = 0;
 
 	if (locNr == Location_Parker) {

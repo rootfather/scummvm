@@ -91,7 +91,7 @@ byte tcShowTool(byte choice);
 byte tcDescTool(byte choice);
 void tcDealerDlg();
 
-uint32 tcStartEvidence();
+bool tcStartEvidence();
 uint32 tcGoInsideOfHouse(uint32 buildingID);
 
 void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc);

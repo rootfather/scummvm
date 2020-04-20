@@ -328,14 +328,15 @@ static void plActionWait() {
 
 static void plLevelDesigner(LSObjectNode *lso) {
 	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_8");
-	byte ende = 0, activ = 0;
+	bool endLoop = false;
+	byte activ = 0;
 	uint16 originX = lso->us_DestX, originY = lso->us_DestY;
 	uint32 area = lsGetActivAreaID();
 
 	uint32 bitset = BIT(PLANING_LD_MOVE) +
 	         BIT(PLANING_LD_REFRESH) + BIT(PLANING_LD_OK) + BIT(PLANING_LD_CANCEL);
 
-	while (!ende) {
+	while (!endLoop) {
 		plDisplayTimer(0, 1);
 		plDisplayInfo();
 
@@ -396,14 +397,14 @@ static void plLevelDesigner(LSObjectNode *lso) {
 			dbSaveAllObjects(fileName, ((LSAreaNode *) dbGetObject(area))->ul_ObjectBaseNr, 10000);
 		}
 
-		ende = 1;
+		endLoop = true;
 		break;
 
 		case PLANING_LD_CANCEL:
 			lso->us_DestX = originX;
 			lso->us_DestY = originY;
 
-			ende = 1;
+			endLoop = true;
 			break;
 		}
 	}

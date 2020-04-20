@@ -25,28 +25,24 @@
 namespace Clue {
 
 bool lsIsLSObjectInActivArea(LSObjectNode *lso) {
-	if (AskP
-	        (dbGetObject(ls->ul_AreaID), ConsistOfRelationID, lso, NO_PARAMETER,
-	         CMP_NO))
+	if (AskP(dbGetObject(ls->ul_AreaID), ConsistOfRelationID, lso, NO_PARAMETER, CMP_NO))
 		return true;
 
 	return false;
 }
 
 void lsSetObjectRetrievalList(uint32 ul_AreaId) {
-	int32 i;
-
-	for (i = 0; i < 3; i++)
+	for (int32 i = 0; i < 3; i++) {
 		if (ul_AreaId == ls->ul_ObjectRetrievalAreaId[i])
 			ls->p_ObjectRetrieval = ls->p_ObjectRetrievalLists[i];
+	}
 }
 
 uint32 lsGetCurrObjectRetrieval() {
-	int32 i;
-
-	for (i = 0; i < 3; i++)
+	for (int32 i = 0; i < 3; i++) {
 		if (ls->p_ObjectRetrieval == ls->p_ObjectRetrievalLists[i])
 			return ls->ul_ObjectRetrievalAreaId[i];
+	}
 
 	return 0;
 }
@@ -146,7 +142,7 @@ uint16 lsGetObjectCount() {
 }
 
 byte lsGetLoudness(uint16 x, uint16 y) {
-	int16 floorIndex = lsGetFloorIndex(x, y), i, j, k;
+	int16 floorIndex = lsGetFloorIndex(x, y);
 
 	/* Ursprünglich wurde loudness hier mit MaxVolume initialisiert    */
 	/* dadurch waren in der Anzeige der Loudness auch die Nachbarn     */
@@ -160,9 +156,9 @@ byte lsGetLoudness(uint16 x, uint16 y) {
 	        LS_IS_MICRO_ON_FLOOR(ls->p_CurrFloor[floorIndex].uch_FloorType))
 		loudness = 15;
 	else {
-		for (i = -1; (i < 2) && (loudness == 255); i++) {
-			for (j = -1; (j < 2) && (loudness == 255); j++) {
-				k = floorIndex + i * LS_FLOORS_PER_LINE + j;
+		for (int16 i = -1; (i < 2) && (loudness == 255); i++) {
+			for (int16 j = -1; (j < 2) && (loudness == 255); j++) {
+				int16 k = floorIndex + i * LS_FLOORS_PER_LINE + j;
 
 				if ((k >= 0) && (k < LS_FLOORS_PER_LINE * LS_FLOORS_PER_COLUMN)) {
 					if ((!LS_NO_FLOOR(ls->p_CurrFloor[k].uch_FloorType)) &&

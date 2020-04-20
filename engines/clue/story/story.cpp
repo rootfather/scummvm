@@ -378,13 +378,12 @@ void tcInitPrison() {
 	SetLocation(64);        /* auf ins Gefängnis */
 }
 
-void tcDonePrison()
+void tcDonePrison() {
 /*
  * wird schmutzigerweise von tcDoneGludoAsSailor,
  * tcLastBurglary
  * direkt angesprungen
  */
-{
 	SetDay(719792);        /* 13.01.1972? */
 
 	sndPlaySound("end.bk", 0);  /* dont change it! (-> story_9) */
@@ -1414,9 +1413,9 @@ static void tcDoneFirstTimeLonelyInSouth() {
 	tcAsDaysGoBy(713518, 30);
 	uint32 startTime = GetDay * 1440 + GetMinute;
 
-	byte ende = 0;
 	byte activ = 0;
-	while (!ende) {
+	bool endLoop = false;
+	while (!endLoop) {
 		inpTurnFunctionKey(false);
 		inpTurnESC(false);
 
@@ -1496,7 +1495,7 @@ static void tcDoneFirstTimeLonelyInSouth() {
 
 			hasSet(Person_Matt_Stuvysunt, Building_Tower_of_London);
 
-			ende = 1;
+			endLoop = true;
 		}
 
 		ShowTime(0);
@@ -1677,7 +1676,7 @@ int32 tcDoTowerBurglary() {
 	tcInitTowerBurglary();
 
 	/* und los gehts! */
-	int32 burglary = plPlayer(Building_Tower_of_London, 0, NULL);
+	int32 burglary = plPlayer(Building_Tower_of_London, 0, nullptr);
 
 	if (burglary) {
 		if (has(Person_Matt_Stuvysunt, Loot_Kronjuwelen))
