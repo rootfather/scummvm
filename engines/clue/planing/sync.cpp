@@ -241,16 +241,14 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 										StairConnectsGet(curAct->ItemId, curAct->ItemId));
 								else
 									livLivesInArea(Planing_Name[i], curAct->ToolId);
-							}
-							else if (dbIsObject(curAct->ItemId, Object_Police)) {
+							} else if (dbIsObject(curAct->ItemId, Object_Police)) {
 								PoliceNode *pol = (PoliceNode *)dbGetObject(curAct->ItemId);
 
 								if (direction)
 									Planing_Guard[pol->LivingID - BurglarsNr] = 1;
 								else
 									Planing_Guard[pol->LivingID - BurglarsNr] = 0;
-							}
-							else {
+							} else {
 								if (direction)
 									lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 1);
 								else
@@ -274,8 +272,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 									Planing_Guard[pol->LivingID - BurglarsNr] = 2;
 								else
 									Planing_Guard[pol->LivingID - BurglarsNr] = 1;
-							}
-							else {
+							} else {
 								if (direction) {
 									lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 0);
 
@@ -287,8 +284,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 												lsSetObjectState(curAct->ItemId, Const_tcOPEN_CLOSE_BIT, 1);
 												plCorrectOpened((LSObjectNode *)dbGetObject(curAct->ItemId), 1);
 											}
-										}
-										else {
+										} else {
 											if (((LSObjectNode *)dbGetObject(curAct->ItemId))->Type == Item_Fenster) {
 												lsWalkThroughWindow(
 													(LSObjectNode *)dbGetObject(curAct->ItemId),
@@ -300,8 +296,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 											}
 										}
 									}
-								}
-								else {
+								} else {
 									lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 1);
 
 									if (!plIgnoreLock(curAct->ItemId)) {
@@ -314,8 +309,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 												livSetPos(Planing_Name[i], xpos, ypos);
 
 												livRefreshAll();
-											}
-											else {
+											} else {
 												lsSetObjectState(curAct->ItemId, Const_tcLOCK_UNLOCK_BIT, 0);
 
 												if (((ToolNode *)dbGetObject(curAct->ToolId))->Effect & Const_tcTOOL_OPENS) {
@@ -337,8 +331,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 											lsSetSpotStatus(curAct->ItemId, LS_SPOT_ON);
 											lsShowAllSpots(CurrentTimer(plSys), LS_ALL_VISIBLE_SPOTS);
 										}
-									}
-									else {
+									} else {
 										lsSetObjectState(curAct->ItemId, Const_tcON_OFF, 1);    /* off setzen */
 
 										if (plIgnoreLock(curAct->ItemId) == PLANING_POWER) {
@@ -354,239 +347,139 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 						}
 						break;
 
-					case ACTION_TAKE:
+					case ACTION_TAKE: {
+						ActionTakeNode *curAct = (ActionTakeNode*)action;
 						if (ActionStarted(plSys)) {
 							if (direction)
-								lsSetObjectState(((ActionTakeNode *)action)->ItemId, Const_tcIN_PROGRESS_BIT, 1);
+								lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 1);
 							else
-								lsSetObjectState(((ActionTakeNode *)action)->ItemId, Const_tcIN_PROGRESS_BIT, 0);
+								lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 0);
 						}
 
 						if (ActionEnded(plSys)) {
 							if (direction) {
-								uint32 weightLoot =
-								    ((LootNode *) dbGetObject(((ActionTakeNode *)action)->LootId))->Weight;
-								uint32 volumeLoot =
-								    ((LootNode *) dbGetObject(((ActionTakeNode *)action)->LootId))->Volume;
+								uint32 weightLoot = ((LootNode*)dbGetObject(curAct->LootId))->Weight;
+								uint32 volumeLoot = ((LootNode*)dbGetObject(curAct->LootId))->Volume;
 
-								lsSetObjectState(((ActionTakeNode *)action)->ItemId, Const_tcIN_PROGRESS_BIT, 0);
+								lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 0);
 
-								if (((ActionTakeNode *)action)->ItemId >= 9701
-								        && ((ActionTakeNode *)action)->ItemId <= 9708) {
-									lsRemLootBag(((ActionTakeNode *)action)->ItemId);
-									Planing_Loot[((ActionTakeNode *)action)->ItemId - 9701] = 0;
-								} else {
-									if (CHECK_STATE(lsGetObjectState(((ActionTakeNode *)action)->ItemId), Const_tcTAKE_BIT)) {
-										lsTurnObject((LSObjectNode *)
-										             dbGetObject(((ActionTakeNode *)action)->ItemId),
-										             LS_OBJECT_INVISIBLE,
-										             LS_NO_COLLISION);
-										lsSetObjectState(((ActionTakeNode *)action)->
-										                 ItemId,
-										                 Const_tcACCESS_BIT, 0);
-									}
+								if (curAct->ItemId >= 9701 && curAct->ItemId <= 9708) {
+									lsRemLootBag(curAct->ItemId);
+									Planing_Loot[curAct->ItemId - 9701] = 0;
+								} else if (CHECK_STATE(lsGetObjectState(curAct->ItemId), Const_tcTAKE_BIT)) {
+									lsTurnObject((LSObjectNode*)dbGetObject(curAct->ItemId), LS_OBJECT_INVISIBLE, LS_NO_COLLISION);
+									lsSetObjectState(curAct->ItemId, Const_tcACCESS_BIT, 0);
 								}
 
-								{
-									uint32 newValue =
-									    GetP(dbGetObject
-									         (((ActionTakeNode *)action)->ItemId), hasLoot(i),
-									         dbGetObject(((ActionTakeNode *)action)->LootId));
+								uint32 newValue = GetP(dbGetObject(curAct->ItemId), hasLoot(i), dbGetObject(curAct->LootId));
 
-									if (Ask(dbGetObject(BurglarsList->getNthNode(i)->_nr), take_RelId,
-									         dbGetObject(((ActionTakeNode *)action)->LootId))) {
-										uint32 oldValue =
-										    GetP(dbGetObject(BurglarsList->getNthNode(i)->_nr),
-										         take_RelId,
-										         dbGetObject(((ActionTakeNode *)action)->LootId));
+								if (Ask(dbGetObject(BurglarsList->getNthNode(i)->_nr), take_RelId, dbGetObject(curAct->LootId))) {
+									uint32 oldValue = GetP(dbGetObject(BurglarsList->getNthNode(i)->_nr), take_RelId, dbGetObject(curAct->LootId));
+									SetP(dbGetObject(BurglarsList->getNthNode(i)->_nr), take_RelId, dbGetObject(curAct-> LootId), oldValue + newValue);
+								} else
+									SetP(dbGetObject(BurglarsList->getNthNode(i)->_nr), take_RelId, dbGetObject(curAct->LootId), newValue);
 
-										SetP(dbGetObject(BurglarsList->getNthNode(i)->_nr),
-										     take_RelId,
-										     dbGetObject(((ActionTakeNode *)action)->
-										                 LootId),
-										     oldValue + newValue);
-									} else
-										SetP(dbGetObject(BurglarsList->getNthNode(i)->_nr),
-										     take_RelId,
-										     dbGetObject(((ActionTakeNode *)action)->
-										                 LootId), newValue);
-								}
-
-								UnSet(dbGetObject
-								      (((ActionTakeNode *)action)->ItemId), hasLoot(i),
-								      dbGetObject(((ActionTakeNode *)action)->LootId));
+								UnSet(dbGetObject(curAct->ItemId), hasLoot(i), dbGetObject(curAct->LootId));
 
 								Planing_Weight[i] += weightLoot;
 								Planing_Volume[i] += volumeLoot;
 							} else {
-								uint32 weightLoot = ((LootNode *)dbGetObject(((ActionTakeNode *)action)->LootId))->Weight;
-								uint32 volumeLoot = ((LootNode *)dbGetObject(((ActionTakeNode *)action)->LootId))->Volume;
+								uint32 weightLoot = ((LootNode*)dbGetObject(curAct->LootId))->Weight;
+								uint32 volumeLoot = ((LootNode*)dbGetObject(curAct->LootId))->Volume;
 
-								lsSetObjectState(((ActionTakeNode *)action)->ItemId,
-								                 Const_tcIN_PROGRESS_BIT, 1);
+								lsSetObjectState(curAct->ItemId,
+									Const_tcIN_PROGRESS_BIT, 1);
 
-								if (((ActionTakeNode *)action)->ItemId >= 9701 && ((ActionTakeNode *)action)->ItemId <= 9708) {
-									lsAddLootBag(xpos, ypos, ((ActionTakeNode *)action)->ItemId - 9700);
-									Planing_Loot[((ActionTakeNode *)action)->ItemId - 9701] = 1;
-									SetP(dbGetObject
-									     (((ActionTakeNode *)action)->ItemId),
-									     hasLoot(i),
-									     dbGetObject(((ActionTakeNode *)action)->LootId),
-									     GetP(dbGetObject(PersonsList->getNthNode(i)->_nr),
-									          take_RelId,
-									          dbGetObject(((ActionTakeNode *)action)->LootId)));
+								if (curAct->ItemId >= 9701 && curAct->ItemId <= 9708) {
+									lsAddLootBag(xpos, ypos, curAct->ItemId - 9700);
+									Planing_Loot[curAct->ItemId - 9701] = 1;
+									SetP(dbGetObject(curAct->ItemId), hasLoot(i), dbGetObject(curAct->LootId),
+										GetP(dbGetObject(PersonsList->getNthNode(i)->_nr), take_RelId, dbGetObject(curAct->LootId)));
 								} else {
-									if (CHECK_STATE
-									        (lsGetObjectState
-									         (((ActionTakeNode *)action)->ItemId),
-									         Const_tcTAKE_BIT)) {
-										lsTurnObject((LSObjectNode *)
-										             dbGetObject(((ActionTakeNode *)action)->ItemId),
-										             LS_OBJECT_VISIBLE,
-										             LS_COLLISION);
-										lsSetObjectState(((ActionTakeNode *)action)->
-										                 ItemId,
-										                 Const_tcACCESS_BIT, 1);
+									if (CHECK_STATE(lsGetObjectState(curAct->ItemId), Const_tcTAKE_BIT)) {
+										lsTurnObject((LSObjectNode*)dbGetObject(curAct->ItemId), LS_OBJECT_VISIBLE, LS_COLLISION);
+										lsSetObjectState(curAct->ItemId, Const_tcACCESS_BIT, 1);
 									}
 
-									SetP(dbGetObject
-									     (((ActionTakeNode *)action)->ItemId),
-									     hasLoot(i),
-									     dbGetObject(((ActionTakeNode *)action)->LootId),
-									     GetP(dbGetObject
-									          (((ActionTakeNode *)action)->ItemId),
-									          hasLoot_Clone_RelId,
-									          dbGetObject(((ActionTakeNode *)action)->LootId)));
+									SetP(dbGetObject(curAct->ItemId), hasLoot(i), dbGetObject(curAct->LootId),
+										GetP(dbGetObject(curAct->ItemId), hasLoot_Clone_RelId, dbGetObject(curAct->LootId)));
 								}
 
-								UnSet(dbGetObject
-								      (PersonsList->getNthNode(i)->_nr),
-								      take_RelId,
-								      dbGetObject(((ActionTakeNode *)action)->LootId));
+								UnSet(dbGetObject(PersonsList->getNthNode(i)->_nr), take_RelId, dbGetObject(curAct->LootId));
 								Planing_Weight[i] -= weightLoot;
 								Planing_Volume[i] -= volumeLoot;
 							}
 
-							plRefresh(((ActionTakeNode *)action)->ItemId);
+							plRefresh(curAct->ItemId);
+						}
 						}
 						break;
 
-					case ACTION_DROP:
+					case ACTION_DROP: {
+						ActionDropNode* curAct = (ActionDropNode *)action;
+
 						if (ActionStarted(plSys)) {
 							if (direction)
-								lsSetObjectState(((ActionDropNode *)action)->ItemId,
-								                 Const_tcIN_PROGRESS_BIT, 1);
+								lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 1);
 							else
-								lsSetObjectState(((ActionDropNode *)action)->ItemId,
-								                 Const_tcIN_PROGRESS_BIT, 0);
+								lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 0);
 						}
 
 						if (ActionEnded(plSys)) {
 							if (direction) {
-								uint32 weightLoot = ((LootNode *)dbGetObject(((ActionDropNode *)action)->LootId))->Weight;
-								uint32 volumeLoot = ((LootNode *)dbGetObject(((ActionDropNode *)action)->LootId))->Volume;
+								uint32 weightLoot = ((LootNode *)dbGetObject(curAct->LootId))->Weight;
+								uint32 volumeLoot = ((LootNode *)dbGetObject(curAct->LootId))->Volume;
 
-								lsSetObjectState(((ActionDropNode *)action)->ItemId, Const_tcIN_PROGRESS_BIT, 1);
+								lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 1);
 
-								if (((ActionDropNode *)action)->ItemId >= 9701 && ((ActionDropNode *)action)->ItemId <= 9708) {
-									lsAddLootBag(xpos, ypos, ((ActionDropNode *)action)->ItemId - 9700);
-									Planing_Loot[((ActionDropNode *)action)->ItemId - 9701] = 1;
-									SetP(dbGetObject
-									     (((ActionDropNode *)action)->ItemId),
-									     hasLoot(i),
-									     dbGetObject(((ActionDropNode *)action)->LootId),
-									     GetP(dbGetObject(PersonsList->getNthNode(i)->_nr),
-									          take_RelId,
-									          dbGetObject(((ActionDropNode *)action)->LootId)));
+								if (curAct->ItemId >= 9701 && curAct->ItemId <= 9708) {
+									lsAddLootBag(xpos, ypos, curAct->ItemId - 9700);
+									Planing_Loot[curAct->ItemId - 9701] = 1;
+									SetP(dbGetObject(curAct->ItemId), hasLoot(i), dbGetObject(curAct->LootId),
+										GetP(dbGetObject(PersonsList->getNthNode(i)->_nr), take_RelId, dbGetObject(curAct->LootId)));
 								} else {
-									if (CHECK_STATE
-									        (lsGetObjectState
-									         (((ActionDropNode *)action)->ItemId),
-									         Const_tcTAKE_BIT)) {
-										lsTurnObject((LSObjectNode *)
-										             dbGetObject(((ActionDropNode *)action)->ItemId),
-										             LS_OBJECT_VISIBLE,
-										             LS_COLLISION);
-										lsSetObjectState(((ActionDropNode *)action)->
-										                 ItemId,
-										                 Const_tcACCESS_BIT, 1);
+									if (CHECK_STATE(lsGetObjectState(curAct->ItemId), Const_tcTAKE_BIT)) {
+										lsTurnObject((LSObjectNode *)dbGetObject(curAct->ItemId), LS_OBJECT_VISIBLE, LS_COLLISION);
+										lsSetObjectState(curAct->ItemId, Const_tcACCESS_BIT, 1);
 									}
 
-									SetP(dbGetObject(((ActionDropNode *)action)->ItemId),
-									     hasLoot(i),
-									     dbGetObject(((ActionDropNode *)action)->LootId),
-									     GetP(dbGetObject(((ActionDropNode *)action)->ItemId),
-									          hasLoot_Clone_RelId,
-									          dbGetObject(((ActionDropNode *)action)->LootId)));
+									SetP(dbGetObject(curAct->ItemId), hasLoot(i), dbGetObject(curAct->LootId),
+										GetP(dbGetObject(curAct->ItemId), hasLoot_Clone_RelId, dbGetObject(curAct->LootId)));
 								}
 
-								UnSet(dbGetObject(PersonsList->getNthNode(i)->_nr),
-								      take_RelId,
-								      dbGetObject(((ActionDropNode *)action)->LootId));
+								UnSet(dbGetObject(PersonsList->getNthNode(i)->_nr), take_RelId, dbGetObject(curAct->LootId));
 								Planing_Weight[i] -= weightLoot;
 								Planing_Volume[i] -= volumeLoot;
 							} else {
-								uint32 weightLoot =
-								    ((LootNode *)
-								     dbGetObject(((ActionDropNode *)action)->LootId))->Weight;
-								uint32 volumeLoot =
-								    ((LootNode *)
-								     dbGetObject(((ActionDropNode *)action)->LootId))->Volume;
+								uint32 weightLoot = ((LootNode *)dbGetObject(curAct->LootId))->Weight;
+								uint32 volumeLoot = ((LootNode *)dbGetObject(curAct->LootId))->Volume;
 
-								lsSetObjectState(((ActionDropNode *)action)->ItemId, Const_tcIN_PROGRESS_BIT, 0);
+								lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 0);
 
-								if (((ActionDropNode *)action)->ItemId >= 9701 && ((ActionDropNode *)action)->ItemId <= 9708) {
-									lsRemLootBag(((ActionDropNode *)action)->ItemId);
-									Planing_Loot[((ActionDropNode *)action)->ItemId - 9701] = 0;
-								} else {
-									if (CHECK_STATE(lsGetObjectState(((ActionTakeNode *)action)->ItemId), Const_tcTAKE_BIT)) {
-										lsTurnObject((LSObjectNode *)
-										             dbGetObject(((ActionTakeNode *)action)->ItemId),
-										             LS_OBJECT_INVISIBLE,
-										             LS_NO_COLLISION);
-										lsSetObjectState(((ActionTakeNode *)action)->
-										                 ItemId,
-										                 Const_tcACCESS_BIT, 0);
-									}
+								if (curAct->ItemId >= 9701 && curAct->ItemId <= 9708) {
+									lsRemLootBag(curAct->ItemId);
+									Planing_Loot[curAct->ItemId - 9701] = 0;
+								} else if (CHECK_STATE(lsGetObjectState(curAct->ItemId), Const_tcTAKE_BIT)) {
+									lsTurnObject((LSObjectNode *)dbGetObject(curAct->ItemId), LS_OBJECT_INVISIBLE, LS_NO_COLLISION);
+									lsSetObjectState(curAct->ItemId, Const_tcACCESS_BIT, 0);
 								}
 
-								{
-									uint32 newValue =
-									    GetP(dbGetObject
-									         (((ActionDropNode *)action)->ItemId),
-									         hasLoot(i),
-									         dbGetObject(((ActionDropNode *)action)->
-									                     LootId));
+								uint32 newValue = GetP(dbGetObject(curAct->ItemId), hasLoot(i), dbGetObject(curAct->LootId));
 
-									if (Ask
-									        (dbGetObject(BurglarsList->getNthNode(i)->_nr),
-									         take_RelId,
-									         dbGetObject(((ActionDropNode *)action)->LootId))) {
-										uint32 oldValue =
-										    GetP(dbGetObject(BurglarsList->getNthNode(i)->_nr),
-										         take_RelId,
-										         dbGetObject(((ActionDropNode *)action)->LootId));
+								if (Ask(dbGetObject(BurglarsList->getNthNode(i)->_nr), take_RelId, dbGetObject(curAct->LootId))) {
+									uint32 oldValue = GetP(dbGetObject(BurglarsList->getNthNode(i)->_nr), take_RelId, dbGetObject(curAct->LootId));
+									SetP(dbGetObject(BurglarsList->getNthNode(i)->_nr), take_RelId, dbGetObject(curAct->LootId), oldValue + newValue);
+								} else
+									SetP(dbGetObject(BurglarsList->getNthNode(i)->_nr), take_RelId, dbGetObject(curAct->LootId), newValue);
 
-										SetP(dbGetObject(BurglarsList->getNthNode(i)->_nr),
-										     take_RelId,
-										     dbGetObject(((ActionDropNode *)action)->LootId),
-										     oldValue + newValue);
-									} else
-										SetP(dbGetObject(BurglarsList->getNthNode(i)->_nr),
-										     take_RelId,
-										     dbGetObject(((ActionDropNode *)action)->LootId), newValue);
-								}
-
-								UnSet(dbGetObject
-								      (((ActionDropNode *)action)->
-								       ItemId), hasLoot(i),
-								      dbGetObject(((ActionDropNode *)action)->LootId));
+								UnSet(dbGetObject(curAct->ItemId), hasLoot(i), dbGetObject(curAct->LootId));
 
 								Planing_Weight[i] += weightLoot;
 								Planing_Volume[i] += volumeLoot;
 							}
 
-							plRefresh(((ActionDropNode *)action)->ItemId);
+							plRefresh(curAct->ItemId);
+						}
 						}
 						break;
 
