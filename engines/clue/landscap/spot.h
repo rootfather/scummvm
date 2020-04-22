@@ -42,16 +42,14 @@ namespace Clue {
 #define LS_ALL_VISIBLE_SPOTS        1
 #define LS_ALL_INVISIBLE_SPOTS      2
 
-struct SpotPosition {
-	Node Link;
-
+class SpotPosition : public NewNode {
+public:
 	uint16 us_XPos;
 	uint16 us_YPos;
 };
 
-struct Spot {
-	Node Link;
-
+class SpotNode : public NewNode {
+public:
 	uint16 us_Size;
 	uint16 us_Speed;        /* secconds per move */
 
@@ -66,8 +64,7 @@ struct Spot {
 
 	uint16 us_PosCount;
 
-	List *p_positions;
-
+	NewList<SpotPosition> *p_positions;
 	SpotPosition *p_CurrPos; /* for fast access */
 };
 
@@ -76,21 +73,21 @@ extern void lsDoneSpots();
 
 extern void lsMoveAllSpots(uint32 time);
 extern void lsShowAllSpots(uint32 time, uint32 mode);
-extern void lsShowSpot(Spot *s, uint32 time);
-extern void lsHideSpot(Spot *s);
+extern void lsShowSpot(SpotNode *s, uint32 time);
+extern void lsHideSpot(SpotNode *s);
 
 extern void lsBlitSpot(uint16 us_Size, uint16 us_XPos, uint16 us_YPos, byte visible);
 
 extern void lsSetSpotStatus(uint32 CtrlObjId, byte uch_Status);
 
-extern void lsAddSpotPosition(Spot *spot, uint16 us_XPos, uint16 us_YPos);
+extern void lsAddSpotPosition(SpotNode *spot, uint16 us_XPos, uint16 us_YPos);
 extern void lsLoadSpots(uint32 bldId, char *uch_FileName);
 extern void lsWriteSpots(const char *uch_FileName);
 extern void lsFreeAllSpots();
-extern void lsRemSpot(Spot *spot);
+extern void lsRemSpot(SpotNode *spot);
 
-extern List *lsGetSpotList();
-extern Spot *lsAddSpot(uint16 us_Size, uint16 us_Speed, uint32 ul_CtrlObjId);
+extern NewList<SpotNode> *lsGetSpotList();
+extern SpotNode *lsAddSpot(uint16 us_Size, uint16 us_Speed, uint32 ul_CtrlObjId);
 
 #if 0
 extern Spot *lsGetSpot(const char *uch_Name);

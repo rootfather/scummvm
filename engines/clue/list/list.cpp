@@ -11,7 +11,7 @@
   distribution.
  ****************************************************************************/
 
-
+#if 0
 #include "clue/list/list.h"
 #include "clue/memory/memory.h"
 #include "clue/text.h"
@@ -160,10 +160,10 @@ void *GetNthNode(List *list, uint32 nth) {
 uint32 GetNrOfNodes(List *list) {
 	uint32 i = 0;
 
-	for (Node *node = LIST_HEAD(list); NODE_SUCC(node); i++, node = NODE_SUCC(node))
-		;
+	for (Node *node = LIST_HEAD(list); NODE_SUCC(node); node = NODE_SUCC(node))
+		++i;
 
 	return i;
 }
-
 } // End of namespace Clue
+#endif

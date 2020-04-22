@@ -24,13 +24,14 @@
 #include "clue/planing/sync.h"
 
 namespace Clue {
-
+class System;
+	
 /* Database offset & relations */
 #define PLANING_DB_OFFSET              1300000
 #define take_RelId                     PLANING_DB_OFFSET+1
 #define hasLoot_Clone_RelId            PLANING_DB_OFFSET+2
 
-extern struct System *plSys;
+extern System *plSys;
 
 extern Common::String txtTooLoud;
 extern Common::String txtTimer;

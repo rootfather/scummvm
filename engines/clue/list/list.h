@@ -16,6 +16,7 @@
 #ifndef MODULE_LIST
 #define MODULE_LIST
 
+#if 0
 #include "common/str.h"
 
 namespace Common {
@@ -76,7 +77,7 @@ void FreeNode(void *node);
 void *GetNode(List *list, const char *name);
 void *GetNthNode(List *list, uint32 nth);
 uint32 GetNrOfNodes(List *list);
-
 } // End of namespace Clue
+#endif
 
 #endif              /* MODULE_LIST */

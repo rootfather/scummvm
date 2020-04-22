@@ -19,6 +19,7 @@
  ****************************************************************************/
 
 namespace Clue {
+class LSDoorRefreshNode;
 
 #define  LS_COLL16_MEM_RP       AnimRPInMem
 #define  LS_COLL32_MEM_RP       AddRPInMem
@@ -130,7 +131,7 @@ struct LandScape {
 	NewObjectList<dbObjectNode> *p_ObjectRetrievalLists[3];
 	uint32 ul_ObjectRetrievalAreaId[3];
 
-	List *p_DoorRefreshList;
+	NewList<LSDoorRefreshNode> *p_DoorRefreshList;
 
 	uint16 us_LivingXSpeed;
 	uint16 us_LivingYSpeed;
@@ -151,11 +152,10 @@ struct LSFloorSquare {
 	byte uch_FloorType; /* 7 : object, 6 : Micro , siehe floor defines ! */
 };
 
-struct LSDoorRefreshNode {  /* für jede Tür existiert eine Node */
-	Node Link;
-
+class LSDoorRefreshNode : public NewNode {  /* für jede Tür existiert eine Node */
+public:
+	
 	LSObjectNode *lso;
-
 	uint16 us_XOffset;
 	uint16 us_YOffset;
 };

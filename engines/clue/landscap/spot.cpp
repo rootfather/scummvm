@@ -33,21 +33,20 @@ namespace Clue {
 
 void lsLoadSpotBitMap(MemRastPort *rp);
 
-struct SpotControl {
-	List *p_spots;
-
+class SpotControl {
+public:
+	NewList<SpotNode> *p_spots;
 	MemRastPort RP;
 };
 
-static struct SpotControl *sc = NULL;
+static SpotControl *sc = nullptr;
 
 void lsInitSpots() {
 	if (sc)
 		lsDoneSpots();
 
-	sc = (SpotControl *)TCAllocMem(sizeof(*sc), 0);
-
-	sc->p_spots = CreateList();
+	sc = new SpotControl;
+	sc->p_spots = new NewList<SpotNode>;
 
 	gfxInitMemRastPort(&sc->RP, LS_SPOT_BITMAP_WIDTH, LS_SPOT_BITMAP_HEIGHT);
 
@@ -57,18 +56,14 @@ void lsInitSpots() {
 void lsDoneSpots() {
 	if (sc) {
 		lsFreeAllSpots();
-
-		RemoveList(sc->p_spots);
-
+		sc->p_spots->removeList();
 		gfxDoneMemRastPort(&sc->RP);
-
-		TCFreeMem(sc, sizeof(*sc));
+		delete sc;
+		sc = nullptr;
 	}
-
-	sc = NULL;
 }
 
-static int32 lsIsSpotVisible(struct Spot *spot) {
+static int32 lsIsSpotVisible(SpotNode *spot) {
 	return 1;
 }
 
@@ -76,9 +71,7 @@ void lsMoveAllSpots(uint32 time) {
 /*
  * zeigt alle Spots, die sich bewegen
  */
-
-	for (Spot *spot = (Spot *) LIST_HEAD(sc->p_spots); NODE_SUCC(spot)
-		; spot = (Spot *) NODE_SUCC(spot)) {
+	for (SpotNode *spot = sc->p_spots->getListHead(); spot->_succ; spot = (SpotNode *) spot->_succ) {
 		if (spot->us_PosCount > 1) {
 			if (lsIsSpotVisible(spot)) {
 				if (lsIsLSObjectInActivArea((LSObjectNode *)dbGetObject(spot->ul_CtrlObjId))) { /* wenn der Steuerkasten in dieser Area -> */
@@ -91,8 +84,7 @@ void lsMoveAllSpots(uint32 time) {
 }
 
 void lsShowAllSpots(uint32 time, uint32 mode) {
-	for (Spot *spot = (Spot *) LIST_HEAD(sc->p_spots); NODE_SUCC(spot);
-	        spot = (Spot *) NODE_SUCC(spot)) {
+	for (SpotNode *spot = sc->p_spots->getListHead(); spot->_succ; spot = (SpotNode *) spot->_succ) {
 		if (lsIsLSObjectInActivArea((LSObjectNode *)dbGetObject(spot->ul_CtrlObjId))) {   /* wenn der Steuerkasten in dieser Area -> */
 			if (mode & LS_ALL_VISIBLE_SPOTS) {
 				if (spot->uch_Status & LS_SPOT_ON)
@@ -107,7 +99,7 @@ void lsShowAllSpots(uint32 time, uint32 mode) {
 	}
 }
 
-void lsShowSpot(struct Spot *s, uint32 time) {
+void lsShowSpot(SpotNode *s, uint32 time) {
 	/* zum Abspielen! */
 	if (!(time % s->us_Speed)) {    /* nur alle x Sekunden Bewegung */
 		uint32 count = (time / s->us_Speed);
@@ -123,7 +115,7 @@ void lsShowSpot(struct Spot *s, uint32 time) {
 		} else
 			count = 0;
 
-		struct SpotPosition *pos = s->p_CurrPos = (struct SpotPosition *) GetNthNode(s->p_positions, count);
+		SpotPosition *pos = s->p_CurrPos = s->p_positions->getNthNode(count);
 
 		/* alte Position löschen */
 		lsHideSpot(s);
@@ -136,13 +128,13 @@ void lsShowSpot(struct Spot *s, uint32 time) {
 	}
 }
 
-void lsHideSpot(struct Spot *s) {
+void lsHideSpot(SpotNode *s) {
 	/* den alten Spot löschen!  */
-	if ((s->us_OldXPos != (uint16) - 1) && (s->us_OldYPos != (uint16) - 1))
+	if ((s->us_OldXPos != (uint16) -1) && (s->us_OldYPos != (uint16) -1))
 		lsBlitSpot(s->us_Size, s->us_OldXPos, s->us_OldYPos, 0);
 }
 
-static void lsGetAreaForSpot(struct Spot *spot) {
+static void lsGetAreaForSpot(SpotNode *spot) {
 	uint32 area = (spot->ul_CtrlObjId / 1000) * 1000;
 
 	switch (area) {
@@ -235,36 +227,35 @@ static void lsGetAreaForSpot(struct Spot *spot) {
 	}
 }
 
-struct Spot *lsAddSpot(uint16 us_Size, uint16 us_Speed, uint32 ul_CtrlObjId) {
-	uint32 SpotNr = GetNrOfNodes(sc->p_spots);
-	char line[TXT_KEY_LENGTH];
-	sprintf(line, "*%s%u", LS_SPOT_NAME, SpotNr);
+SpotNode *lsAddSpot(uint16 us_Size, uint16 us_Speed, uint32 ul_CtrlObjId) {
+	uint32 SpotNr = sc->p_spots->getNrOfNodes();
+	Common::String line = Common::String::format("*%s%u", LS_SPOT_NAME, SpotNr);
 
-	Spot *spot = (Spot *) CreateNode(sc->p_spots, sizeof(*spot), line);
+	SpotNode *spot = sc->p_spots->createNode(line);
 	spot->us_Size = us_Size;
 	spot->us_Speed = us_Speed;
-	spot->p_positions = CreateList();
-	spot->us_OldXPos = (uint16) - 1;
-	spot->us_OldYPos = (uint16) - 1;
+	spot->p_positions = new NewList<SpotPosition>;
+	spot->us_OldXPos = (uint16) -1;
+	spot->us_OldYPos = (uint16) -1;
 	spot->uch_Status = LS_SPOT_ON;
 	spot->us_PosCount = 0;
-	spot->p_CurrPos = NULL;
+	spot->p_CurrPos = nullptr;
 	spot->ul_CtrlObjId = ul_CtrlObjId;
 
 	lsGetAreaForSpot(spot);
 
-	return (spot);
+	return spot;
 }
 
 void lsSetSpotStatus(uint32 CtrlObjId, byte uch_Status) {
-	for (Spot *s = (Spot *) LIST_HEAD(sc->p_spots); NODE_SUCC(s); s = (Spot *) NODE_SUCC(s)) {
+	for (SpotNode *s = sc->p_spots->getListHead(); s->_succ; s = (SpotNode *) s->_succ) {
 		if (s->ul_CtrlObjId == CtrlObjId)
 			s->uch_Status = uch_Status;
 	}
 }
 
-void lsAddSpotPosition(struct Spot *spot, uint16 us_XPos, uint16 us_YPos) {
-	SpotPosition *pos = (SpotPosition *) CreateNode(spot->p_positions, sizeof(*pos), NULL);
+void lsAddSpotPosition(SpotNode *spot, uint16 us_XPos, uint16 us_YPos) {
+	SpotPosition *pos = spot->p_positions->createNode(nullptr);
 
 	pos->us_XPos = (int16) us_XPos + (int16) LS_PC_CORRECT_X;
 	pos->us_YPos = (int16) us_YPos + (int16) LS_PC_CORRECT_Y;
@@ -321,7 +312,7 @@ void lsLoadSpots(uint32 bldId, char *uch_FileName) {
 		uint16 Count;
 		dskGetLine_U16(file, &Count);
 
-		struct Spot *spot = lsAddSpot(Size, Speed, CtrlObjId);
+		SpotNode *spot = lsAddSpot(Size, Speed, CtrlObjId);
 
 		for (uint16 j = 0; j < Count; j++) {
 			uint16 XPos;
@@ -333,19 +324,20 @@ void lsLoadSpots(uint32 bldId, char *uch_FileName) {
 			lsAddSpotPosition(spot, XPos, YPos);
 		}
 
-		if (!LIST_EMPTY(sc->p_spots))
-			spot->p_CurrPos = (SpotPosition *) LIST_HEAD(sc->p_spots);
+		if (!sc->p_spots->isEmpty())
+			// CHECKME: The original was casting the spot list head to a position
+			spot->p_CurrPos = sc->p_spots->getListHead()->p_positions->getListHead();
 	}
 
 	dskClose(file);
 }
 
 void lsFreeAllSpots() {
-	for (Spot *spot = (Spot *) LIST_HEAD(sc->p_spots); NODE_SUCC(spot); spot = (Spot *) NODE_SUCC(spot))
-		RemoveList(spot->p_positions);
+	for (SpotNode *spot = sc->p_spots->getListHead(); spot->_succ; spot = (SpotNode *) spot->_succ)
+		spot->p_positions->removeList();
 }
 
-List *lsGetSpotList() {
+NewList<SpotNode> *lsGetSpotList() {
 	return sc->p_spots;
 }
 

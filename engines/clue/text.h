@@ -149,6 +149,7 @@ public:
 	void replaceNode(Common::String name, T *newNode);
 
 	T *getListHead() { return (T *)_head->_succ; }
+	T* getListTail() { return (T*)_tail->_pred;  }
 	bool isEmpty() { return getListHead()->_succ == nullptr; }
 };
 

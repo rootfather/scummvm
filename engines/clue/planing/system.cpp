@@ -32,8 +32,7 @@
 
 namespace Clue {
 
-size_t sysUsedMem = 0;
-
+#if 0
 size_t sizeofAction[] = {
 	0,              /* first index is not used yet */
 	sizeof(struct ActionGo),
@@ -47,67 +46,54 @@ size_t sizeofAction[] = {
 	sizeof(struct ActionClose),
 	sizeof(struct ActionControl)
 };
+#endif
 
-Handler *FindHandler(System *sys, uint32 id) {
+HandlerNode *FindHandler(System *sys, uint32 id) {
 	if (sys) {
-		for (Handler *h = (Handler *) LIST_HEAD(sys->Handlers); NODE_SUCC(h);
-		        h = (Handler *) NODE_SUCC(h)) {
+		for (HandlerNode *h = sys->Handlers->getListHead(); h->_succ; h = (HandlerNode *) h->_succ) {
 			if (h->Id == id)
 				return h;
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 System *InitSystem() {
-	System *sys = (System *) TCAllocMem(sizeof(*sys), 0);
+	System *sys = new System;
 
-	if (sys) {
-		sys->Handlers = CreateList();
-		sys->Signals = CreateList();
-
-		sys->ActivHandler = NULL;
-
-		if (!sys->Handlers || !sys->Signals) {
-			CloseSystem(sys);
-			sys = NULL;
-		}
-	}
+	sys->Handlers = new NewList<HandlerNode>;
+	sys->Signals = new NewList<plSignalNode>;
+	sys->ActivHandler = nullptr;
 
 	return sys;
 }
 
 void CloseSystem(System *sys) {
 	if (sys) {
-		RemoveList(sys->Handlers);
-		RemoveList(sys->Signals);
-
-		TCFreeMem(sys, sizeof(*sys));
+		delete sys->Handlers;
+		delete sys->Signals;
 	}
+	delete sys;
 }
 
 void SetActivHandler(System *sys, uint32 id) {
-	Handler *h = FindHandler(sys, id);
-
-	if (h)
-		sys->ActivHandler = (Node *) h;
-	else
-		sys->ActivHandler = NULL;
+	HandlerNode *h = FindHandler(sys, id);
+	sys->ActivHandler = h;
 }
 
 void SaveSystem(Common::Stream *fh, System *sys) {
 	if (fh) {
 		dskSetLine(fh, FILE_SYSTEM_ID);
 
-		for (Handler *h = (Handler *) LIST_HEAD(sys->Handlers); NODE_SUCC(h); h = (Handler *) NODE_SUCC(h)) {
+		for (HandlerNode *h = sys->Handlers->getListHead(); h->_succ; h = (HandlerNode *) h->_succ) {
 			dskSetLine(fh, FILE_HANDLER_ID);
 			dskSetLine_U32(fh, h->Id);
 		}
 	}
 }
 
-NewList<NewNode> *LoadSystem(Common::Stream *fh, struct System *sys) {
+NewList<NewNode> *LoadSystem(Common::Stream *fh, System *sys) {
 	NewList<NewNode> *l = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_GUYS_MISSING_1");
 	bool foundAll = true;
 	uint8 knowsSomebody = 1, handlerNr = 0;
@@ -165,118 +151,103 @@ NewList<NewNode> *LoadSystem(Common::Stream *fh, struct System *sys) {
 	return l;
 }
 
-Handler *InitHandler(struct System *sys, uint32 id, uint32 flags) {
-	Handler *h = nullptr;
+HandlerNode *InitHandler(System *sys, uint32 id, uint32 flags) {
+	HandlerNode *h = nullptr;
 
 	if (sys && !FindHandler(sys, id)) {
-		if ((h = (Handler *) CreateNode(sys->Handlers, sizeof(*h), NULL))) {
-			h->Id = id;
-			h->Timer = 0;
-			h->Flags = flags;
-			h->CurrentAction = NULL;
-
-			if (!(h->Actions = CreateList())) {
-				RemNode(h);
-				FreeNode(h);
-				h = NULL;
-			}
-
-			sys->ActivHandler = (Node *) h;
-		}
-	}
-
-	return h;
-}
-
-void CloseHandler(struct System *sys, uint32 id) {
-	Handler *h = FindHandler(sys, id);
-
-	if (h) {
-		CorrectMem(h->Actions);
-
-		if (h->Actions)
-			RemoveList(h->Actions);
-
-		RemNode(h);
-		FreeNode(h);
-	}
-}
-
-struct Handler *ClearHandler(struct System *sys, uint32 id) {
-	Handler *h = FindHandler(sys, id);
-
-	if (h) {
-		CorrectMem(h->Actions);
-
-		if (h->Actions)
-			RemoveList(h->Actions);
-
-		if (!(h->Actions = CreateList())) {
-			RemNode(h);
-			FreeNode(h);
-			h = NULL;
-		}
-
-		// FIXME: This is obviously wrong. I guess those two lines should be in an else statement
+		h = sys->Handlers->createNode(nullptr);
+		h->Id = id;
 		h->Timer = 0;
-		h->CurrentAction = NULL;
+		h->Flags = flags;
+		h->CurrentAction = nullptr;
+		h->Actions = new NewList<ActionNode>();
+
+		sys->ActivHandler = h;
 	}
 
 	return h;
 }
 
-bool IsHandlerCleared(struct System *sys) {
-	Handler *h;
+void CloseHandler(System *sys, uint32 id) {
+	HandlerNode *h = FindHandler(sys, id);
 
-	if (sys && (h = (Handler *) sys->ActivHandler)) {
-		if (LIST_EMPTY(h->Actions))
-			return true;
+	if (h) {
+		if (h->Actions)
+			h->Actions->removeList();
+
+		h->remNode();
+		delete h;
 	}
+}
+
+HandlerNode *ClearHandler(System *sys, uint32 id) {
+	HandlerNode *h = FindHandler(sys, id);
+
+	if (h) {
+		if (h->Actions)
+			h->Actions->removeList();
+
+		h->Actions = new NewList<ActionNode>;
+		h->Timer = 0;
+		h->CurrentAction = nullptr;
+	}
+
+	return h;
+}
+
+bool IsHandlerCleared(System *sys) {
+	if (!sys)
+		return true;
+
+	HandlerNode *h = sys->ActivHandler;
+
+	if (h && h->Actions->isEmpty())
+		return true;
 
 	return false;
 }
 
-void SaveHandler(Common::Stream *fh, struct System *sys, uint32 id) {
-	Handler *h;
+void SaveHandler(Common::Stream *fh, System *sys, uint32 id) {
+	if (!fh || !sys)
+		return;
+	
+	HandlerNode *h = FindHandler(sys, id);
 
-	if (fh && sys && (h = FindHandler(sys, id))) {
-		dskSetLine(fh, FILE_ACTION_LIST_ID);
-		dskSetLine_U32(fh, id);
+	if (!h)
+		return;
 
-		for (Action *a = (Action *) LIST_HEAD(h->Actions); NODE_SUCC(a); a = (Action *) NODE_SUCC(a)) {
-			dskSetLine(fh, FILE_ACTION_ID);
-			dskSetLine_U16(fh, a->Type);
-			dskSetLine_U16(fh, a->TimeNeeded);
+	dskSetLine(fh, FILE_ACTION_LIST_ID);
+	dskSetLine_U32(fh, id);
 
-			switch (a->Type) {
-			case ACTION_GO:
-				dskSetLine_U16(fh,
-				        ActionData(a, ActionGo *)->Direction);
-				break;
+	for (ActionNode *a = h->Actions->getListHead(); a->_succ; a = (ActionNode *) a->_succ) {
+		dskSetLine(fh, FILE_ACTION_ID);
+		dskSetLine_U16(fh, a->Type);
+		dskSetLine_U16(fh, a->TimeNeeded);
 
-			case ACTION_USE:
-			case ACTION_TAKE:
-			case ACTION_DROP:
-				dskSetLine_U16(fh,
-				        ActionData(a, ActionUse *)->ToolId);
-				dskSetLine_U16(fh,
-				        ActionData(a, ActionUse *)->ItemId);
-				break;
+		switch (a->Type) {
+		case ACTION_GO:
+			dskSetLine_U16(fh, ((ActionGoNode *) a)->Direction);
+			break;
 
-			case ACTION_OPEN:
-			case ACTION_CLOSE:
-			case ACTION_CONTROL:
-			case ACTION_SIGNAL:
-			case ACTION_WAIT_SIGNAL:
-				dskSetLine_U16(fh,
-				        ActionData(a, ActionOpen *)->ItemId);
-				break;
-			}
+		case ACTION_USE:
+		case ACTION_TAKE:
+		case ACTION_DROP:
+			dskSetLine_U16(fh, ((ActionUseNode *)a)->ToolId);
+			dskSetLine_U16(fh, ((ActionUseNode *)a)->ItemId);
+			break;
+
+		case ACTION_OPEN:
+		case ACTION_CLOSE:
+		case ACTION_CONTROL:
+		case ACTION_SIGNAL:
+		case ACTION_WAIT_SIGNAL:
+			dskSetLine_U16(fh, ((ActionOpenNode *)a)->ItemId);
+			break;
 		}
 	}
 }
 
-bool LoadHandler(Common::Stream *fh, struct System *sys, uint32 id) {
+bool LoadHandler(Common::Stream *fh, System *sys, uint32 id) {
 	if (fh && sys && (FindHandler(sys, id))) {
 		//rewind(fh);
 
@@ -296,24 +267,24 @@ bool LoadHandler(Common::Stream *fh, struct System *sys, uint32 id) {
 						dskGetLine_U16(fh, &time);
 
 						if (type) {
-							Action *a = InitAction(sys, type, 0, 0, time);
+							ActionNode *a = InitAction(sys, type, 0, 0, time);
 							uint16 value16;
 							uint32 value32;
 
 							switch (type) {
 							case ACTION_GO:
 								dskGetLine_U16(fh, &value16);
-								ActionData(a, ActionGo *)->Direction = value16;
+								((ActionGoNode *)a)->Direction = value16;
 								break;
 
 							case ACTION_USE:
 							case ACTION_TAKE:
 							case ACTION_DROP:
 								dskGetLine_U32(fh, &value32);
-								ActionData(a, ActionUse *)->ToolId = value32;
+								((ActionUseNode *)a)->ToolId = value32;
 
 								dskGetLine_U32(fh, &value32);
-								ActionData(a, ActionUse *)->ItemId = value32;
+								((ActionUseNode *)a)->ItemId = value32;
 								break;
 
 							case ACTION_OPEN:
@@ -322,7 +293,7 @@ bool LoadHandler(Common::Stream *fh, struct System *sys, uint32 id) {
 							case ACTION_WAIT_SIGNAL:
 							case ACTION_SIGNAL:
 								dskGetLine_U32(fh, &value32);
-								ActionData(a, ActionOpen *)->ItemId = value32;
+								((ActionOpenNode *)a)->ItemId = value32;
 								break;
 							}
 						} else
@@ -339,172 +310,214 @@ bool LoadHandler(Common::Stream *fh, struct System *sys, uint32 id) {
 	return false;
 }
 
-Action *InitAction(struct System *sys, uint16 type, uint32 data1, uint32 data2, uint32 time) {
-	Handler *h;
-	Action *a = nullptr;
+ActionNode* createActionNode(NewList<ActionNode>* list, uint16 type)
+{
+	ActionNode *act = nullptr;
+	switch (type) {
+	case 0: // Unknown/Unused? action created as an ActionNode in the original
+	case ACTION_WAIT: // ACTION_WAIT uses a standard ActionNode
+		act = new ActionNode;
+		break;
+	case ACTION_GO:
+		act = new ActionGoNode;
+		break;
+	case ACTION_SIGNAL:
+		act = new ActionSignalNode;
+		break;
+	case ACTION_WAIT_SIGNAL:
+		act = new ActionWaitSignalNode;
+		break;
+	case ACTION_USE:
+		act = new ActionUseNode;
+		break;
+	case ACTION_TAKE:
+		act = new ActionTakeNode;
+		break;
+	case ACTION_DROP:
+		act = new ActionDropNode;
+		break;
+	case ACTION_OPEN:
+		act = new ActionOpenNode;
+		break;
+	case ACTION_CLOSE:
+		act = new ActionCloseNode;
+		break;
+	case ACTION_CONTROL:
+		act = new ActionControlNode;
+		break;
+	default:
+		error("createActionNode - Invalid Type");
+	}
 
-	if (sys && (h = (Handler *) sys->ActivHandler)) {
-		if ((sysUsedMem + sizeof(struct Action) + sizeofAction[type]) <= SYS_MAX_MEMORY_SIZE) {
-			sysUsedMem += sizeof(struct Action) + sizeofAction[type];
+	list->addTailNode(act);
+	return act;
+}
 
-			a = (Action *) CreateNode(h->Actions, sizeof(struct Action) + sizeofAction[type], NULL);
-			if (a) {
-				a->Type = type;
-				a->TimeNeeded = time;
-				a->Timer = time;
+ActionNode *InitAction(System *sys, uint16 type, uint32 data1, uint32 data2, uint32 time) {
+	if (!sys)
+		return nullptr;
 
-				h->Timer += time;
-				h->CurrentAction = (Node *) a;
+	HandlerNode* h = sys->ActivHandler;
+	if (!h)
+		return nullptr;
 
-				switch (type) {
-				case ACTION_GO:
-					ActionData(a, ActionGo *)->Direction = (uint16) data1;
-					break;
+	ActionNode *a = createActionNode(h->Actions, type);
+	if (a) {
+		a->Type = type;
+		a->TimeNeeded = time;
+		a->Timer = time;
 
-				case ACTION_USE:
-				case ACTION_TAKE:
-				case ACTION_DROP:
-					ActionData(a, ActionUse *)->ItemId = data1;
-					ActionData(a, ActionUse *)->ToolId = data2;
-					break;
+		h->Timer += time;
+		h->CurrentAction = a;
 
-				case ACTION_SIGNAL:
-				case ACTION_WAIT_SIGNAL:
-				case ACTION_OPEN:
-				case ACTION_CLOSE:
-				case ACTION_CONTROL:
-					ActionData(a, ActionOpen *)->ItemId = data1;
-					break;
-				}
-			}
+		switch (type) {
+		case ACTION_GO:
+			((ActionGoNode *)a)->Direction = (uint16) data1;
+			break;
+
+		case ACTION_USE:
+		case ACTION_TAKE:
+		case ACTION_DROP:
+			((ActionUseNode *)a)->ItemId = data1;
+			((ActionUseNode *)a)->ToolId = data2;
+			break;
+
+		case ACTION_SIGNAL:
+		case ACTION_WAIT_SIGNAL:
+		case ACTION_OPEN:
+		case ACTION_CLOSE:
+		case ACTION_CONTROL:
+			((ActionOpenNode *)a)->ItemId = data1;
+			break;
 		}
 	}
 
 	return a;
 }
 
-Action *CurrentAction(System *sys) {
-	Handler *h;
+ActionNode *CurrentAction(System *sys) {
+	HandlerNode *h;
 
-	if (sys && (h = (Handler *) sys->ActivHandler))
-		return (Action *) h->CurrentAction;
+	if (sys && (h = sys->ActivHandler))
+		return h->CurrentAction;
 
-	return NULL;
+	return nullptr;
 }
 
-Action *GoFirstAction(struct System *sys) {
-	Handler *h;
+ActionNode *GoFirstAction(System *sys) {
+	if (!sys)
+		return nullptr;
 
-	if (sys && (h = (Handler *) sys->ActivHandler)) {
-		if (!LIST_EMPTY(h->Actions)) {
-			h->CurrentAction = LIST_HEAD(h->Actions);
-			((Action *) h->CurrentAction)->Timer = 0;
-			h->Timer = 0;
-		} else
-			h->CurrentAction = NULL;
+	HandlerNode* h = sys->ActivHandler;
+	if (!h)
+		return nullptr;
+	
+	if (!h->Actions->isEmpty()) {
+		h->CurrentAction = h->Actions->getListHead();
+		h->CurrentAction->Timer = 0;
+		h->Timer = 0;
+	} else
+		h->CurrentAction = nullptr;
 
-		return (Action *) h->CurrentAction;
-	}
-
-	return NULL;
+	return h->CurrentAction;
 }
 
-Action *GoLastAction(struct System *sys) {
-	Handler *h;
+ActionNode *GoLastAction(System *sys) {
+	if (!sys)
+		return nullptr;
 
-	if (sys && (h = (Handler *) sys->ActivHandler)) {
-		if (!LIST_EMPTY(h->Actions)) {
-			h->CurrentAction = LIST_TAIL(h->Actions);
-			((Action *) h->CurrentAction)->Timer =
-			    ((Action *) h->CurrentAction)->TimeNeeded;
-			h->Timer = GetMaxTimer(sys);
-		} else
-			h->CurrentAction = NULL;
+	HandlerNode* h = sys->ActivHandler;
+	if (!h)
+		return nullptr;
 
-		return (Action *) h->CurrentAction;
-	}
+	if (!h->Actions->isEmpty()) {
+		h->CurrentAction = h->Actions->getListTail();
+		h->CurrentAction->Timer = h->CurrentAction->TimeNeeded;
+		h->Timer = GetMaxTimer(sys);
+	} else
+		h->CurrentAction = nullptr;
 
-	return NULL;
+	return h->CurrentAction;
 }
 
-struct Action *NextAction(struct System *sys) {
-	Handler *h;
+ActionNode *NextAction(System *sys) {
+	if (!sys)
+		return nullptr;
+	
+	HandlerNode* h = sys->ActivHandler;
+	if (!h)
+		return nullptr;
 
-	if (sys && (h = (Handler *) sys->ActivHandler)) {
-		if ((Action *) h->CurrentAction) {
-			if (((Action *) h->CurrentAction)->Timer ==
-			        ((Action *) h->CurrentAction)->TimeNeeded) {
-				if (NODE_SUCC(NODE_SUCC(h->CurrentAction))) {
-					h->CurrentAction = NODE_SUCC(h->CurrentAction);
-
-					((Action *) h->CurrentAction)->Timer = 1;
-					h->Timer++;
-				} else {
-					if (h->Flags & SHF_AUTOREVERS) {
-						h->CurrentAction = LIST_HEAD(h->Actions);
-						((Action *) h->CurrentAction)->Timer = 1;
-						h->Timer++;
-					} else {
-						h->CurrentAction = LIST_TAIL(h->Actions);
-						((Action *) h->CurrentAction)->Timer = ((Action *) h->CurrentAction)->TimeNeeded;
-						h->Timer = GetMaxTimer(sys);
-
-						return NULL;
-					}
-				}
-			} else {
-				((Action *) h->CurrentAction)->Timer++;
+	if (h->CurrentAction) {
+		if (h->CurrentAction->Timer == h->CurrentAction->TimeNeeded) {
+			if (h->CurrentAction->_succ->_succ) {
+				h->CurrentAction = (ActionNode *)h->CurrentAction->_succ;
+				h->CurrentAction->Timer = 1;
 				h->Timer++;
-			}
-		}
-
-		return (Action *) h->CurrentAction;
-	}
-
-	return NULL;
-}
-
-struct Action *PrevAction(struct System *sys) {
-	Handler *h;
-
-	if (sys && (h = (Handler *) sys->ActivHandler)) {
-		if ((Action *) h->CurrentAction) {
-			if (((Action *) h->CurrentAction)->Timer == 1) {
-				if (NODE_PRED(NODE_PRED(h->CurrentAction))) {
-					h->CurrentAction = NODE_PRED(h->CurrentAction);
-
-					((Action *) h->CurrentAction)->Timer = ((Action *) h->CurrentAction)->TimeNeeded;
-					h->Timer--;
-				} else {
-					if ((h->Flags & SHF_AUTOREVERS) && h->Timer) {
-						h->CurrentAction = LIST_TAIL(h->Actions);
-						((Action *) h->CurrentAction)->Timer = ((Action *) h->CurrentAction)->TimeNeeded;
-						h->Timer--;
-					} else {
-						h->CurrentAction = LIST_HEAD(h->Actions);
-						((Action *) h->CurrentAction)->Timer = 0;
-						h->Timer = 0;
-
-						return NULL;
-					}
-				}
+			} else if (h->Flags & SHF_AUTOREVERS) {
+				h->CurrentAction = h->Actions->getListHead();
+				h->CurrentAction->Timer = 1;
+				h->Timer++;
 			} else {
-				((Action *) h->CurrentAction)->Timer--;
-				h->Timer--;
+				h->CurrentAction = h->Actions->getListTail();
+				h->CurrentAction->Timer = h->CurrentAction->TimeNeeded;
+				h->Timer = GetMaxTimer(sys);
+
+				return nullptr;
 			}
+		} else {
+			h->CurrentAction->Timer++;
+			h->Timer++;
 		}
 
-		return (Action *) h->CurrentAction;
+		return h->CurrentAction;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
-bool ActionStarted(struct System *sys) {
-	Handler *h;
+ActionNode *PrevAction(System *sys) {
+	if (!sys)
+		return nullptr;
+	
+	HandlerNode *h = sys->ActivHandler;
+	if (!h)
+		return nullptr;
 
-	if (sys && (h = (Handler *) sys->ActivHandler)) {
-		Action *a = (Action *) h->CurrentAction;
+	if (h->CurrentAction) {
+		if (h->CurrentAction->Timer == 1) {
+			if (h->CurrentAction->_pred->_pred) {
+				h->CurrentAction = (ActionNode *)h->CurrentAction->_pred;
+
+				h->CurrentAction->Timer = h->CurrentAction->TimeNeeded;
+				h->Timer--;
+			} else if ((h->Flags & SHF_AUTOREVERS) && h->Timer) {
+				h->CurrentAction = h->Actions->getListTail();
+				h->CurrentAction->Timer = h->CurrentAction->TimeNeeded;
+				h->Timer--;
+			} else {
+				h->CurrentAction = h->Actions->getListHead();
+				h->CurrentAction->Timer = 0;
+				h->Timer = 0;
+
+				return nullptr;
+			}
+		} else {
+			h->CurrentAction->Timer--;
+			h->Timer--;
+		}
+	}
+
+	return h->CurrentAction;
+}
+
+bool ActionStarted(System *sys) {
+	if (!sys)
+		return false;
+	HandlerNode *h = sys->ActivHandler;
+
+	if (h) {
+		ActionNode *a = h->CurrentAction;
 		if (a) {
 			if (a->Timer == 1)
 				return true;
@@ -514,61 +527,68 @@ bool ActionStarted(struct System *sys) {
 	return false;
 }
 
-byte ActionEnded(struct System *sys) {
-	Handler *h;
-
-	if (sys && (h = (Handler *) sys->ActivHandler)) {
-		Action *a = (Action *) h->CurrentAction;
+bool ActionEnded(System *sys) {
+	if (!sys)
+		return false;
+	
+	HandlerNode *h = sys->ActivHandler;
+	if (h) {
+		ActionNode *a = h->CurrentAction;
 		if (a) {
 			if (a->Timer == a->TimeNeeded)
-				return 1;
+				return true;
 		}
 	}
 
-	return 0;
+	return false;
 }
 
-void RemLastAction(struct System *sys) {
-	Handler *h = (Handler *)sys->ActivHandler;
+void RemLastAction(System *sys) {
+	if (!sys)
+		return;
+	
+	HandlerNode *h = sys->ActivHandler;
+	if (!h)
+		return;
+	
+	if (!h->Actions->isEmpty()) {
+		if (h->Actions->getNrOfNodes() > 1) {
+			ActionNode *n = h->Actions->remTailNode();
+			delete n;
 
-	if (sys && h) {
-		if (!LIST_EMPTY(h->Actions)) {
-			if (GetNrOfNodes(h->Actions) > 1) {
-				Node *n = (Node *) RemTailNode(h->Actions);
-				sysUsedMem -= NODE_SIZE(n);
-				FreeNode(n);
+			h->Timer = GetMaxTimer(sys);
+			h->CurrentAction = h->Actions->getListTail();
+			h->CurrentAction->Timer = h->CurrentAction->TimeNeeded;
+		} else
+			ClearHandler(sys, h->Id);
+	}
+}
 
-				h->Timer = GetMaxTimer(sys);
-				h->CurrentAction = LIST_TAIL(h->Actions);
-				((Action *) h->CurrentAction)->Timer = ((Action *) h->CurrentAction)->TimeNeeded;
-			} else
-				ClearHandler(sys, h->Id);
+void IgnoreAction(System *sys) {
+	if (!sys)
+		return;
+	
+	HandlerNode *h = sys->ActivHandler;
+	if (!h)
+		return;
+
+	if (h->CurrentAction) {
+		if (h->CurrentAction->_succ->_succ) {
+			h->CurrentAction = (ActionNode *) h->CurrentAction->_succ;
+			h->CurrentAction->Timer = 0;
+		} else {
+			h->CurrentAction = h->Actions->getListTail();
+			h->CurrentAction->Timer = h->CurrentAction->TimeNeeded;
 		}
 	}
 }
 
-void IgnoreAction(struct System *sys) {
-	Handler *h;
-
-	if (sys && (h = (Handler *) sys->ActivHandler)) {
-		if ((Action *) h->CurrentAction) {
-			if (NODE_SUCC(NODE_SUCC(h->CurrentAction))) {
-				h->CurrentAction = NODE_SUCC(h->CurrentAction);
-
-				((Action *) h->CurrentAction)->Timer = 0;
-			} else {
-				h->CurrentAction = LIST_TAIL(h->Actions);
-				((Action *) h->CurrentAction)->Timer = ((Action *) h->CurrentAction)->TimeNeeded;
-			}
-		}
-	}
-}
-
-struct plSignal *InitSignal(struct System *sys, uint32 sender, uint32 receiver) {
-	struct plSignal *s = NULL;
+plSignalNode *InitSignal(System *sys, uint32 sender, uint32 receiver) {
+	plSignalNode *s = nullptr;
 
 	if (sys) {
-		if ((s = (plSignal *) CreateNode(sys->Signals, sizeof(*s), NULL))) {
+		s = sys->Signals->createNode(nullptr);
+		if (s) {
 			s->SenderId = sender;
 			s->ReceiverId = receiver;
 		}
@@ -577,43 +597,48 @@ struct plSignal *InitSignal(struct System *sys, uint32 sender, uint32 receiver) 
 	return s;
 }
 
-void CloseSignal(struct plSignal *s) {
+void CloseSignal(plSignalNode *s) {
 	if (s) {
-		RemNode(s);
-		FreeNode(s);
+		s->remNode();
+		delete s;
+		s = nullptr;
 	}
 }
 
-plSignal *IsSignal(System *sys, uint32 sender, uint32 receiver) {
+plSignalNode *IsSignal(System *sys, uint32 sender, uint32 receiver) {
 	if (sys) {
-		for (plSignal *s = (plSignal *) LIST_HEAD(sys->Signals); NODE_SUCC(s);
-		        s = (plSignal *) NODE_SUCC(s)) {
+		for (plSignalNode *s = sys->Signals->getListHead(); s->_succ; s = (plSignalNode *) s->_succ) {
 			if ((s->SenderId == sender) && (s->ReceiverId == receiver))
 				return s;
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 uint32 CurrentTimer(System *sys) {
-	Handler *h;
-
-	if (sys && (h = (Handler *) sys->ActivHandler))
+	if (!sys)
+		return 0;
+	
+	HandlerNode *h = sys->ActivHandler;
+	if (h)
 		return h->Timer;
 
 	return 0;
 }
 
-void IncCurrentTimer(System *sys, uint32 time, byte alsoTime) {
-	Handler *h;
+void IncCurrentTimer(System *sys, uint32 time, bool alsoTime) {
+	if (!sys)
+		return;
+	
+	HandlerNode *h = sys->ActivHandler;
 
-	if (sys && (h = (Handler *) sys->ActivHandler)) {
+	if (h) {
 		if (h->CurrentAction) {
-			((Action *) h->CurrentAction)->TimeNeeded += time;
+			h->CurrentAction->TimeNeeded += time;
 
 			if (alsoTime) {
-				((Action *) h->CurrentAction)->Timer += time;
+				h->CurrentAction->Timer += time;
 				h->Timer += time;
 			}
 		}
@@ -621,30 +646,18 @@ void IncCurrentTimer(System *sys, uint32 time, byte alsoTime) {
 }
 
 uint32 GetMaxTimer(System *sys) {
-	Handler *h;
+	if (!sys)
+		return 0;
+
+	HandlerNode *h = sys->ActivHandler;
 	uint32 time = 0;
 
-	if (sys && (h = (Handler *) sys->ActivHandler)) {
-		for (Action *a = (Action *) LIST_HEAD(h->Actions); NODE_SUCC(a);
-		        a = (Action *) NODE_SUCC(a))
+	if (h) {
+		for (ActionNode *a = h->Actions->getListHead(); a->_succ; a = (ActionNode *) a->_succ)
 			time += a->TimeNeeded;
 	}
 
 	return time;
 }
 
-void CorrectMem(List *l) {
-	for (Node *n = LIST_HEAD(l); NODE_SUCC(n); n = NODE_SUCC(n))
-		sysUsedMem -= NODE_SIZE(n);
-}
-
-#if 0
-void ResetMem() {
-	sysUsedMem = 0;
-}
-
-size_t plGetUsedMem() {
-	return sysUsedMem;
-}
-#endif
 } // End of namespace Clue

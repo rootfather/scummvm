@@ -22,7 +22,7 @@
 
 namespace Clue {
 
-void grdDo(Common::Stream *fh, struct System *sys, NewObjectList<dbObjectNode> *personsList, uint32 burglarsNr, uint32 personsNr, byte grdAction) {
+void grdDo(Common::Stream *fh, System *sys, NewObjectList<dbObjectNode> *personsList, uint32 burglarsNr, uint32 personsNr, byte grdAction) {
 	for (uint32 i = burglarsNr; i < personsNr; i++) {
 		switch (grdAction) {
 		case GUARDS_DO_SAVE:
@@ -76,7 +76,7 @@ bool grdDraw(_GC *gc, uint32 bldId, uint32 areaId) {
 			uint16 xpos = 0, ypos = 0;
 
 			uint32 GuardsNr = GuardsList->getNrOfNodes();
-			struct System *grdSys = InitSystem();
+			System *grdSys = InitSystem();
 
 			for (uint32 i = 0; i < GuardsNr; i++) {
 				InitHandler(grdSys, GuardsList->getNthNode(i)->_nr, SHF_AUTOREVERS);
@@ -89,7 +89,7 @@ bool grdDraw(_GC *gc, uint32 bldId, uint32 areaId) {
 
 			for (uint32 i = 0; i < GuardsNr; i++) {
 				if (areaId == isGuardedbyGet(bldId, GuardsList->getNthNode(i)->_nr)) {
-					struct Handler *h = FindHandler(grdSys, GuardsList->getNthNode(i)->_nr);
+					HandlerNode *h = FindHandler(grdSys, GuardsList->getNthNode(i)->_nr);
 
 					/* getting start coordinates */
 					switch (i) {
@@ -111,12 +111,10 @@ bool grdDraw(_GC *gc, uint32 bldId, uint32 areaId) {
 					gfxMoveCursor(gc, xpos, ypos);
 
 					/* drawing system */
-					for (Action *action = (Action *) LIST_HEAD(h->Actions);
-					        NODE_SUCC(action);
-					        action = (Action *) NODE_SUCC(action)) {
+					for (ActionNode *action = h->Actions->getListHead(); action->_succ; action = (ActionNode *) action->_succ) {
 						switch (action->Type) {
 						case ACTION_GO:
-							switch ((ActionData(action, struct ActionGo *))-> Direction) {
+							switch (((ActionGoNode *)action)-> Direction) {
 							case DIRECTION_LEFT:
 								xpos -= action->TimeNeeded;
 								break;

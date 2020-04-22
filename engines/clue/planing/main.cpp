@@ -24,7 +24,7 @@
 
 namespace Clue {
 
-struct System *plSys = NULL;
+System *plSys = nullptr;
 
 Common::String txtTooLoud;
 Common::String txtTimer;

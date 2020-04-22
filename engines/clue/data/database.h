@@ -68,6 +68,8 @@ Common::String dbGetObjectName(uint32 nr);
 
 bool dbIsObject(uint32 nr, uint32 type);
 
+void dbObjectMapper(dbObjectNode* destNode, dbObjectNode* srcNode);
+
 /* public prototypes - OBJECTNODE */
 void dbAddObjectNode(NewObjectList<dbObjectNode> *objectList, uint32 nr, uint32 flags);
 void dbRemObjectNode(NewList<dbObjectNode> *objectList, uint32 nr);

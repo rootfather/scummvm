@@ -84,11 +84,11 @@ void lsInitLandScape(uint32 bID, byte mode) {
 	ls->us_DoorXOffset = 0;
 	ls->us_DoorYOffset = 32;    /* above are 16er objects */
 
-	ls->p_DoorRefreshList = CreateList();
+	ls->p_DoorRefreshList = new NewList<LSDoorRefreshNode>;
 
 	lsInitFloorSquares();
 
-	lsInitActivArea(ls->ul_AreaID, (uint16) - 1, (uint16) - 1, NULL);
+	lsInitActivArea(ls->ul_AreaID, (uint16) -1, (uint16) -1, nullptr);
 	lsShowEscapeCar();
 }
 
@@ -344,10 +344,10 @@ void lsDoneLandScape() {
 		lsDoneFloorSquares();
 
 		if (ls->p_DoorRefreshList)
-			RemoveList(ls->p_DoorRefreshList);
+			ls->p_DoorRefreshList->removeList();
 
-		TCFreeMem(ls, sizeof(*ls));
-		ls = NULL;
+		delete ls;
+		ls = nullptr;
 	}
 }
 

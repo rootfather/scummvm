@@ -53,7 +53,7 @@ byte plIgnoreLock(uint32 objId);
 void plMove(uint32 current, byte direction);
 void plWork(uint32 current);
 
-NewObjectList<dbObjectNode> *plGetObjectsList(uint32 current, byte addLootBags);
+NewObjectList<dbObjectNode> *plGetObjectsList(uint32 current, bool addLootBags);
 void plInsertGuard(NewObjectList<dbObjectNode> *list, uint32 current, uint32 guard);
 bool plObjectInReach(uint32 current, uint32 objId);
 

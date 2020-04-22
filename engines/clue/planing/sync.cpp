@@ -174,10 +174,8 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 			if (CurrentTimer(plSys) == targetTime)
 				continue;
 
-			if (!direction && (i < BurglarsNr)) {
-				if (GetMaxTimer(plSys) < (targetTime + times - seconds))
-					continue;
-			}
+			if (!direction && (i < BurglarsNr) && (GetMaxTimer(plSys) < targetTime + times - seconds))
+				continue;
 
 			if ((i >= BurglarsNr) && Planing_Guard[i - BurglarsNr]) {
 				if (animate & PLANING_ANIMATE_STD) {
@@ -193,7 +191,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 					}
 				}
 			} else {
-				struct Action *action;
+				ActionNode *action;
 				if (direction)
 					action = NextAction(plSys);
 				else
@@ -228,45 +226,21 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 
 					switch (action->Type) {
 					case ACTION_GO:
-						xpos =
-						    plXMoveSync(i, xpos, animate, direction,
-						                ActionData(action,
-						                           struct ActionGo *)->
-						                Direction);
-						ypos =
-						    plYMoveSync(i, ypos, animate, direction,
-						                ActionData(action,
-						                           struct ActionGo *)->
-						                Direction);
+						xpos = plXMoveSync(i, xpos, animate, direction, ((ActionGoNode *)action)->Direction);
+						ypos = plYMoveSync(i, ypos, animate, direction, ((ActionGoNode *)action)->Direction);
 						break;
 
 					case ACTION_USE:
 						if (ActionStarted(plSys)) {
-							if (plIsStair
-							        (ActionData(action, struct ActionUse *)->
-							         ItemId)) {
+							if (plIsStair(((ActionUseNode *)action)->ItemId)) {
 								if (direction)
 									livLivesInArea(Planing_Name[i],
-									               StairConnectsGet(ActionData
-									                                (action,
-									                                 struct
-									                                 ActionUse
-									                                 *)->ItemId,
-									                                ActionData
-									                                (action,
-									                                 struct
-									                                 ActionUse
-									                                 *)->
-									                                ItemId));
+										StairConnectsGet(((ActionUseNode *)action)->ItemId,
+										((ActionUseNode *)action)->ItemId));
 								else
-									livLivesInArea(Planing_Name[i],
-									               ActionData(action,
-									                          struct ActionUse
-									                          *)->ToolId);
-							} else if (dbIsObject
-							           (ActionData(action, struct ActionUse *)->
-							            ItemId, Object_Police)) {
-								PoliceNode *pol = (PoliceNode *) dbGetObject(ActionData(action, struct ActionUse *)->ItemId);
+									livLivesInArea(Planing_Name[i], ((ActionUseNode *)action)->ToolId);
+							} else if (dbIsObject(((ActionUseNode *)action)->ItemId, Object_Police)) {
+								PoliceNode *pol = (PoliceNode *) dbGetObject(((ActionUseNode *)action)->ItemId);
 
 								if (direction)
 									Planing_Guard[pol->LivingID - BurglarsNr] = 1;
@@ -274,16 +248,11 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 									Planing_Guard[pol->LivingID - BurglarsNr] = 0;
 							} else {
 								if (direction)
-									lsSetObjectState(ActionData
-									                 (action,
-									                  struct ActionUse *)->
-									                 ItemId,
+									lsSetObjectState(((ActionUseNode *)action)->ItemId,
 									                 Const_tcIN_PROGRESS_BIT,
 									                 1);
 								else
-									lsSetObjectState(ActionData
-									                 (action,
-									                  struct ActionUse *)->
+									lsSetObjectState(((ActionUseNode *)action)->
 									                 ItemId,
 									                 Const_tcIN_PROGRESS_BIT,
 									                 0);
@@ -291,31 +260,17 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 						}
 
 						if (ActionEnded(plSys)) {
-							if (plIsStair
-							        (ActionData(action, struct ActionUse *)->
-							         ItemId)) {
+							if (plIsStair(((ActionUseNode *)action)->ItemId)) {
 								if (i == CurrentPerson) {
 									if (direction)
 										lastAreaId =
-										    StairConnectsGet(ActionData
-										                     (action,
-										                      struct ActionUse
-										                      *)->ItemId,
-										                     ActionData(action,
-										                                struct
-										                                ActionUse
-										                                *)->
-										                     ItemId);
+										    StairConnectsGet(((ActionUseNode *)action)->ItemId,
+										((ActionUseNode *)action)->ItemId);
 									else
-										lastAreaId =
-										    ActionData(action,
-										               struct ActionUse *)->
-										    ToolId;
+										lastAreaId = ((ActionUseNode *)action)->ToolId;
 								}
-							} else if (dbIsObject
-							           (ActionData(action, struct ActionUse *)->
-							            ItemId, Object_Police)) {
-								PoliceNode *pol = (PoliceNode *) dbGetObject(ActionData (action, struct ActionUse *)->ItemId);
+							} else if (dbIsObject(((ActionUseNode *)action)->ItemId, Object_Police)) {
+								PoliceNode *pol = (PoliceNode *) dbGetObject(((ActionUseNode *)action)->ItemId);
 
 								if (direction)
 									Planing_Guard[pol->LivingID - BurglarsNr] = 2;
@@ -323,66 +278,35 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 									Planing_Guard[pol->LivingID - BurglarsNr] = 1;
 							} else {
 								if (direction) {
-									lsSetObjectState(ActionData
-									                 (action,
-									                  struct ActionUse *)->
+									lsSetObjectState(((ActionUseNode *)action)->
 									                 ItemId,
 									                 Const_tcIN_PROGRESS_BIT,
 									                 0);
 
-									if (!plIgnoreLock
-									        (ActionData
-									         (action,
-									          struct ActionUse *)->ItemId)) {
+									if (!plIgnoreLock(((ActionUseNode *)action)->ItemId)) {
 										if (!CHECK_STATE
 										        (lsGetObjectState
-										         (ActionData
-										          (action,
-										           struct ActionUse *)->ItemId),
+										         (((ActionUseNode *)action)->ItemId),
 										         Const_tcLOCK_UNLOCK_BIT)) {
-											lsSetObjectState(ActionData
-											                 (action,
-											                  struct ActionUse
-											                  *)->ItemId,
+											lsSetObjectState(((ActionUseNode *)action)->ItemId,
 											                 Const_tcLOCK_UNLOCK_BIT,
 											                 1);
 
 											if (((ToolNode *)
-											        dbGetObject(ActionData
-											                    (action,
-											                     struct ActionUse
-											                     *)->ToolId))->
+											        dbGetObject(((ActionUseNode *)action)->ToolId))->
 											        Effect & Const_tcTOOL_OPENS) {
-												lsSetObjectState(ActionData
-												                 (action,
-												                  struct
-												                  ActionUse *)->
-												                 ItemId,
+												lsSetObjectState(((ActionUseNode *)action)->ItemId,
 												                 Const_tcOPEN_CLOSE_BIT,
 												                 1);
 												plCorrectOpened((LSObjectNode *)
-												                dbGetObject
-												                (ActionData
-												                 (action,
-												                  struct
-												                  ActionUse *)->
-												                 ItemId), 1);
+												                dbGetObject(((ActionUseNode *)action)->ItemId), 1);
 											}
 										} else {
 											if ((((LSObjectNode *)
-											        dbGetObject(ActionData
-											                    (action,
-											                     struct ActionUse
-											                     *)->ItemId))->
-											        Type == Item_Fenster)) {
+											        dbGetObject(((ActionUseNode *)action)->ItemId))->Type == Item_Fenster)) {
 												lsWalkThroughWindow((LSObjectNode *)
 												                    dbGetObject
-												                    (ActionData
-												                     (action,
-												                      struct
-												                      ActionUse
-												                      *)->
-												                     ItemId),
+												                    (((ActionUseNode *)action)->ItemId),
 												                    xpos, ypos,
 												                    &xpos,
 												                    &ypos);
@@ -394,39 +318,21 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 										}
 									}
 								} else {
-									lsSetObjectState(ActionData
-									                 (action,
-									                  struct ActionUse *)->
-									                 ItemId,
+									lsSetObjectState(((ActionUseNode *)action)->ItemId,
 									                 Const_tcIN_PROGRESS_BIT,
 									                 1);
 
-									if (!plIgnoreLock
-									        (ActionData
-									         (action,
-									          struct ActionUse *)->ItemId)) {
+									if (!plIgnoreLock(((ActionUseNode *)action)->ItemId)) {
 										if (CHECK_STATE
 										        (lsGetObjectState
-										         (ActionData
-										          (action,
-										           struct ActionUse *)->ItemId),
+										         (((ActionUseNode *)action)->ItemId),
 										         Const_tcLOCK_UNLOCK_BIT)) {
 											if ((((LSObjectNode *)
-											        dbGetObject(ActionData
-											                    (action,
-											                     struct ActionUse
-											                     *)->ItemId))->
-											        Type == Item_Fenster)
-											        && !ActionData(action,
-											                       struct ActionUse
-											                       *)->ToolId) {
+											        dbGetObject(((ActionUseNode *)action)->ItemId))->Type == Item_Fenster)
+											        && !((ActionUseNode *)action)->ToolId) {
 												lsWalkThroughWindow((LSObjectNode *)
 												                    dbGetObject
-												                    (ActionData
-												                     (action,
-												                      struct
-												                      ActionUse
-												                      *)->
+												                    (((ActionUseNode *)action)->
 												                     ItemId),
 												                    xpos, ypos,
 												                    &xpos,
@@ -436,37 +342,18 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 
 												livRefreshAll();
 											} else {
-												lsSetObjectState(ActionData
-												                 (action,
-												                  struct
-												                  ActionUse *)->
-												                 ItemId,
+												lsSetObjectState(((ActionUseNode *)action)->ItemId,
 												                 Const_tcLOCK_UNLOCK_BIT,
 												                 0);
 
 												if (((ToolNode *)
-												        dbGetObject(ActionData
-												                    (action,
-												                     struct
-												                     ActionUse *)->
-												                    ToolId))->
-												        Effect & Const_tcTOOL_OPENS) {
-													lsSetObjectState(ActionData
-													                 (action,
-													                  struct
-													                  ActionUse
-													                  *)->
-													                 ItemId,
+												        dbGetObject(((ActionUseNode *)action)->ToolId))->Effect & Const_tcTOOL_OPENS) {
+													lsSetObjectState(((ActionUseNode *)action)->ItemId,
 													                 Const_tcOPEN_CLOSE_BIT,
 													                 0);
 													plCorrectOpened((LSObjectNode *)
 													                dbGetObject
-													                (ActionData
-													                 (action,
-													                  struct
-													                  ActionUse
-													                  *)->
-													                 ItemId),
+													                (((ActionUseNode *)action)->ItemId),
 													                0);
 												}
 											}
@@ -474,52 +361,27 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 									}
 								}
 
-								if (plIgnoreLock
-								        (ActionData(action, struct ActionUse *)->
-								         ItemId)) {
-									uint32 state =
-									    lsGetObjectState(ActionData
-									                     (action,
-									                      struct ActionUse *)->
-									                     ItemId);
+								if (plIgnoreLock(((ActionUseNode *)action)->ItemId)) {
+									uint32 state = lsGetObjectState(((ActionUseNode *)action)->ItemId);
 
 									if (CHECK_STATE(state, Const_tcON_OFF)) {
-										lsSetObjectState(ActionData(action, struct ActionUse *)->ItemId, Const_tcON_OFF, 0);    /* on setzen  */
+										lsSetObjectState(((ActionUseNode *)action)->ItemId, Const_tcON_OFF, 0);    /* on setzen  */
 
-										if (plIgnoreLock
-										        (ActionData
-										         (action,
-										          struct ActionUse *)->ItemId) ==
-										        PLANING_POWER) {
-											lsSetSpotStatus(ActionData
-											                (action,
-											                 struct ActionUse
-											                 *)->ItemId,
-											                LS_SPOT_ON);
-											lsShowAllSpots(CurrentTimer(plSys),
-											               LS_ALL_VISIBLE_SPOTS);
+										if (plIgnoreLock(((ActionUseNode *)action)->ItemId) == PLANING_POWER) {
+											lsSetSpotStatus(((ActionUseNode *)action)->ItemId, LS_SPOT_ON);
+											lsShowAllSpots(CurrentTimer(plSys), LS_ALL_VISIBLE_SPOTS);
 										}
 									} else {
-										lsSetObjectState(ActionData(action, struct ActionUse *)->ItemId, Const_tcON_OFF, 1);    /* off setzen */
+										lsSetObjectState(((ActionUseNode *)action)->ItemId, Const_tcON_OFF, 1);    /* off setzen */
 
-										if (plIgnoreLock
-										        (ActionData
-										         (action,
-										          struct ActionUse *)->ItemId) ==
-										        PLANING_POWER) {
-											lsSetSpotStatus(ActionData
-											                (action,
-											                 struct ActionUse
-											                 *)->ItemId,
-											                LS_SPOT_OFF);
-											lsShowAllSpots(CurrentTimer(plSys),
-											               LS_ALL_INVISIBLE_SPOTS);
+										if (plIgnoreLock(((ActionUseNode *)action)->ItemId) == PLANING_POWER) {
+											lsSetSpotStatus(((ActionUseNode *)action)->ItemId, LS_SPOT_OFF);
+											lsShowAllSpots(CurrentTimer(plSys), LS_ALL_INVISIBLE_SPOTS);
 										}
 									}
 								}
 
-								plRefresh(ActionData
-								          (action, struct ActionUse *)->ItemId);
+								plRefresh(((ActionUseNode *)action)->ItemId);
 							}
 						}
 						break;
@@ -527,67 +389,31 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 					case ACTION_TAKE:
 						if (ActionStarted(plSys)) {
 							if (direction)
-								lsSetObjectState(ActionData
-								                 (action,
-								                  struct ActionTake *)->ItemId,
-								                 Const_tcIN_PROGRESS_BIT, 1);
+								lsSetObjectState(((ActionTakeNode *)action)->ItemId, Const_tcIN_PROGRESS_BIT, 1);
 							else
-								lsSetObjectState(ActionData
-								                 (action,
-								                  struct ActionTake *)->ItemId,
-								                 Const_tcIN_PROGRESS_BIT, 0);
+								lsSetObjectState(((ActionTakeNode *)action)->ItemId, Const_tcIN_PROGRESS_BIT, 0);
 						}
 
 						if (ActionEnded(plSys)) {
 							if (direction) {
 								uint32 weightLoot =
-								    ((LootNode *)
-								     dbGetObject(ActionData
-								                 (action,
-								                  struct ActionTake *)->
-								                 LootId))->Weight;
+								    ((LootNode *) dbGetObject(((ActionTakeNode *)action)->LootId))->Weight;
 								uint32 volumeLoot =
-								    ((LootNode *)
-								     dbGetObject(ActionData
-								                 (action,
-								                  struct ActionTake *)->
-								                 LootId))->Volume;
+								    ((LootNode *) dbGetObject(((ActionTakeNode *)action)->LootId))->Volume;
 
-								lsSetObjectState(ActionData
-								                 (action,
-								                  struct ActionTake *)->ItemId,
-								                 Const_tcIN_PROGRESS_BIT, 0);
+								lsSetObjectState(((ActionTakeNode *)action)->ItemId, Const_tcIN_PROGRESS_BIT, 0);
 
-								if ((ActionData(action, struct ActionTake *)->
-								        ItemId >= 9701)
-								        &&
-								        (ActionData(action, struct ActionTake *)->
-								         ItemId <= 9708)) {
-									lsRemLootBag(ActionData
-									             (action,
-									              struct ActionTake *)->ItemId);
-									Planing_Loot[ActionData
-									             (action,
-									              struct ActionTake *)->ItemId -
-									             9701] = 0;
+								if (((ActionTakeNode *)action)->ItemId >= 9701
+								        && ((ActionTakeNode *)action)->ItemId <= 9708) {
+									lsRemLootBag(((ActionTakeNode *)action)->ItemId);
+									Planing_Loot[((ActionTakeNode *)action)->ItemId - 9701] = 0;
 								} else {
-									if (CHECK_STATE
-									        (lsGetObjectState
-									         (ActionData
-									          (action,
-									           struct ActionTake *)->ItemId),
-									         Const_tcTAKE_BIT)) {
+									if (CHECK_STATE(lsGetObjectState(((ActionTakeNode *)action)->ItemId), Const_tcTAKE_BIT)) {
 										lsTurnObject((LSObjectNode *)
-										             dbGetObject(ActionData
-										                         (action,
-										                          struct
-										                          ActionTake
-										                          *)->ItemId),
+										             dbGetObject(((ActionTakeNode *)action)->ItemId),
 										             LS_OBJECT_INVISIBLE,
 										             LS_NO_COLLISION);
-										lsSetObjectState(ActionData
-										                 (action,
-										                  struct ActionTake *)->
+										lsSetObjectState(((ActionTakeNode *)action)->
 										                 ItemId,
 										                 Const_tcACCESS_BIT, 0);
 									}
@@ -596,322 +422,161 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 								{
 									uint32 newValue =
 									    GetP(dbGetObject
-									         (ActionData
-									          (action,
-									           struct ActionTake *)->ItemId),
-									         hasLoot(i),
-									         dbGetObject(ActionData
-									                     (action,
-									                      struct ActionTake *)->
-									                     LootId));
+									         (((ActionTakeNode *)action)->ItemId), hasLoot(i),
+									         dbGetObject(((ActionTakeNode *)action)->LootId));
 
-									if (Ask
-									        (dbGetObject(BurglarsList->getNthNode(i)->_nr),
-									         take_RelId,
-									         dbGetObject(ActionData
-									                     (action,
-									                      struct ActionTake *)->
-									                     LootId))) {
+									if (Ask(dbGetObject(BurglarsList->getNthNode(i)->_nr), take_RelId,
+									         dbGetObject(((ActionTakeNode *)action)->LootId))) {
 										uint32 oldValue =
 										    GetP(dbGetObject(BurglarsList->getNthNode(i)->_nr),
 										         take_RelId,
-										         dbGetObject(ActionData
-										                     (action,
-										                      struct ActionTake
-										                      *)->LootId));
+										         dbGetObject(((ActionTakeNode *)action)->LootId));
 
 										SetP(dbGetObject(BurglarsList->getNthNode(i)->_nr),
 										     take_RelId,
-										     dbGetObject(ActionData
-										                 (action,
-										                  struct ActionTake *)->
+										     dbGetObject(((ActionTakeNode *)action)->
 										                 LootId),
 										     oldValue + newValue);
 									} else
 										SetP(dbGetObject(BurglarsList->getNthNode(i)->_nr),
 										     take_RelId,
-										     dbGetObject(ActionData
-										                 (action,
-										                  struct ActionTake *)->
+										     dbGetObject(((ActionTakeNode *)action)->
 										                 LootId), newValue);
 								}
 
 								UnSet(dbGetObject
-								      (ActionData(action, struct ActionTake *)->
-								       ItemId), hasLoot(i),
-								      dbGetObject(ActionData
-								                  (action,
-								                   struct ActionTake *)->
-								                  LootId));
+								      (((ActionTakeNode *)action)->ItemId), hasLoot(i),
+								      dbGetObject(((ActionTakeNode *)action)->LootId));
 
 								Planing_Weight[i] += weightLoot;
 								Planing_Volume[i] += volumeLoot;
 							} else {
-								uint32 weightLoot =
-								    ((LootNode *)
-								     dbGetObject(ActionData
-								                 (action,
-								                  struct ActionTake *)->
-								                 LootId))->Weight;
-								uint32 volumeLoot =
-								    ((LootNode *)
-								     dbGetObject(ActionData
-								                 (action,
-								                  struct ActionTake *)->
-								                 LootId))->Volume;
+								uint32 weightLoot = ((LootNode *)dbGetObject(((ActionTakeNode *)action)->LootId))->Weight;
+								uint32 volumeLoot = ((LootNode *)dbGetObject(((ActionTakeNode *)action)->LootId))->Volume;
 
-								lsSetObjectState(ActionData
-								                 (action,
-								                  struct ActionTake *)->ItemId,
+								lsSetObjectState(((ActionTakeNode *)action)->ItemId,
 								                 Const_tcIN_PROGRESS_BIT, 1);
 
-								if ((ActionData(action, struct ActionTake *)->
-								        ItemId >= 9701)
-								        &&
-								        (ActionData(action, struct ActionTake *)->
-								         ItemId <= 9708)) {
-									lsAddLootBag(xpos, ypos,
-									             ActionData(action,
-									                        struct ActionTake
-									                        *)->ItemId - 9700);
-									Planing_Loot[ActionData
-									             (action,
-									              struct ActionTake *)->ItemId -
-									             9701] = 1;
+								if (((ActionTakeNode *)action)->ItemId >= 9701 && ((ActionTakeNode *)action)->ItemId <= 9708) {
+									lsAddLootBag(xpos, ypos, ((ActionTakeNode *)action)->ItemId - 9700);
+									Planing_Loot[((ActionTakeNode *)action)->ItemId - 9701] = 1;
 									SetP(dbGetObject
-									     (ActionData
-									      (action,
-									       struct ActionTake *)->ItemId),
+									     (((ActionTakeNode *)action)->ItemId),
 									     hasLoot(i),
-									     dbGetObject(ActionData
-									                 (action,
-									                  struct ActionTake *)->
-									                 LootId),
+									     dbGetObject(((ActionTakeNode *)action)->LootId),
 									     GetP(dbGetObject(PersonsList->getNthNode(i)->_nr),
 									          take_RelId,
-									          dbGetObject(ActionData
-									                      (action,
-									                       struct ActionTake
-									                       *)->LootId)));
+									          dbGetObject(((ActionTakeNode *)action)->LootId)));
 								} else {
 									if (CHECK_STATE
 									        (lsGetObjectState
-									         (ActionData
-									          (action,
-									           struct ActionTake *)->ItemId),
+									         (((ActionTakeNode *)action)->ItemId),
 									         Const_tcTAKE_BIT)) {
 										lsTurnObject((LSObjectNode *)
-										             dbGetObject(ActionData
-										                         (action,
-										                          struct
-										                          ActionTake
-										                          *)->ItemId),
+										             dbGetObject(((ActionTakeNode *)action)->ItemId),
 										             LS_OBJECT_VISIBLE,
 										             LS_COLLISION);
-										lsSetObjectState(ActionData
-										                 (action,
-										                  struct ActionTake *)->
+										lsSetObjectState(((ActionTakeNode *)action)->
 										                 ItemId,
 										                 Const_tcACCESS_BIT, 1);
 									}
 
 									SetP(dbGetObject
-									     (ActionData
-									      (action,
-									       struct ActionTake *)->ItemId),
+									     (((ActionTakeNode *)action)->ItemId),
 									     hasLoot(i),
-									     dbGetObject(ActionData
-									                 (action,
-									                  struct ActionTake *)->
-									                 LootId),
+									     dbGetObject(((ActionTakeNode *)action)->LootId),
 									     GetP(dbGetObject
-									          (ActionData
-									           (action,
-									            struct ActionTake *)->ItemId),
+									          (((ActionTakeNode *)action)->ItemId),
 									          hasLoot_Clone_RelId,
-									          dbGetObject(ActionData
-									                      (action,
-									                       struct ActionTake
-									                       *)->LootId)));
+									          dbGetObject(((ActionTakeNode *)action)->LootId)));
 								}
 
 								UnSet(dbGetObject
 								      (PersonsList->getNthNode(i)->_nr),
 								      take_RelId,
-								      dbGetObject(ActionData
-								                  (action,
-								                   struct ActionTake *)->
-								                  LootId));
+								      dbGetObject(((ActionTakeNode *)action)->LootId));
 								Planing_Weight[i] -= weightLoot;
 								Planing_Volume[i] -= volumeLoot;
 							}
 
-							plRefresh(ActionData(action, struct ActionTake *)->
-							          ItemId);
+							plRefresh(((ActionTakeNode *)action)->ItemId);
 						}
 						break;
 
 					case ACTION_DROP:
 						if (ActionStarted(plSys)) {
 							if (direction)
-								lsSetObjectState(ActionData
-								                 (action,
-								                  struct ActionDrop *)->ItemId,
+								lsSetObjectState(((ActionDropNode *)action)->ItemId,
 								                 Const_tcIN_PROGRESS_BIT, 1);
 							else
-								lsSetObjectState(ActionData
-								                 (action,
-								                  struct ActionDrop *)->ItemId,
+								lsSetObjectState(((ActionDropNode *)action)->ItemId,
 								                 Const_tcIN_PROGRESS_BIT, 0);
 						}
 
 						if (ActionEnded(plSys)) {
 							if (direction) {
-								uint32 weightLoot =
-								    ((LootNode *)
-								     dbGetObject(ActionData
-								                 (action,
-								                  struct ActionDrop *)->
-								                 LootId))->Weight;
-								uint32 volumeLoot =
-								    ((LootNode *)
-								     dbGetObject(ActionData
-								                 (action,
-								                  struct ActionDrop *)->
-								                 LootId))->Volume;
+								uint32 weightLoot = ((LootNode *)dbGetObject(((ActionDropNode *)action)->LootId))->Weight;
+								uint32 volumeLoot = ((LootNode *)dbGetObject(((ActionDropNode *)action)->LootId))->Volume;
 
-								lsSetObjectState(ActionData
-								                 (action,
-								                  struct ActionDrop *)->ItemId,
-								                 Const_tcIN_PROGRESS_BIT, 1);
+								lsSetObjectState(((ActionDropNode *)action)->ItemId, Const_tcIN_PROGRESS_BIT, 1);
 
-								if ((ActionData(action, struct ActionDrop *)->
-								        ItemId >= 9701)
-								        &&
-								        (ActionData(action, struct ActionDrop *)->
-								         ItemId <= 9708)) {
-									lsAddLootBag(xpos, ypos,
-									             ActionData(action,
-									                        struct ActionDrop
-									                        *)->ItemId - 9700);
-									Planing_Loot[ActionData
-									             (action,
-									              struct ActionDrop *)->ItemId -
-									             9701] = 1;
+								if (((ActionDropNode *)action)->ItemId >= 9701 && ((ActionDropNode *)action)->ItemId <= 9708) {
+									lsAddLootBag(xpos, ypos, ((ActionDropNode *)action)->ItemId - 9700);
+									Planing_Loot[((ActionDropNode *)action)->ItemId - 9701] = 1;
 									SetP(dbGetObject
-									     (ActionData
-									      (action,
-									       struct ActionDrop *)->ItemId),
+									     (((ActionDropNode *)action)->ItemId),
 									     hasLoot(i),
-									     dbGetObject(ActionData
-									                 (action,
-									                  struct ActionDrop *)->
-									                 LootId),
+									     dbGetObject(((ActionDropNode *)action)->LootId),
 									     GetP(dbGetObject(PersonsList->getNthNode(i)->_nr),
 									          take_RelId,
-									          dbGetObject(ActionData
-									                      (action,
-									                       struct ActionDrop
-									                       *)->LootId)));
+									          dbGetObject(((ActionDropNode *)action)->LootId)));
 								} else {
 									if (CHECK_STATE
 									        (lsGetObjectState
-									         (ActionData
-									          (action,
-									           struct ActionTake *)->ItemId),
+									         (((ActionDropNode *)action)->ItemId),
 									         Const_tcTAKE_BIT)) {
 										lsTurnObject((LSObjectNode *)
-										             dbGetObject(ActionData
-										                         (action,
-										                          struct
-										                          ActionDrop
-										                          *)->ItemId),
+										             dbGetObject(((ActionDropNode *)action)->ItemId),
 										             LS_OBJECT_VISIBLE,
 										             LS_COLLISION);
-										lsSetObjectState(ActionData
-										                 (action,
-										                  struct ActionDrop *)->
+										lsSetObjectState(((ActionDropNode *)action)->
 										                 ItemId,
 										                 Const_tcACCESS_BIT, 1);
 									}
 
-									SetP(dbGetObject
-									     (ActionData
-									      (action,
-									       struct ActionDrop *)->ItemId),
+									SetP(dbGetObject(((ActionDropNode *)action)->ItemId),
 									     hasLoot(i),
-									     dbGetObject(ActionData
-									                 (action,
-									                  struct ActionDrop *)->
-									                 LootId),
-									     GetP(dbGetObject
-									          (ActionData
-									           (action,
-									            struct ActionDrop *)->ItemId),
+									     dbGetObject(((ActionDropNode *)action)->LootId),
+									     GetP(dbGetObject(((ActionDropNode *)action)->ItemId),
 									          hasLoot_Clone_RelId,
-									          dbGetObject(ActionData
-									                      (action,
-									                       struct ActionDrop
-									                       *)->LootId)));
+									          dbGetObject(((ActionDropNode *)action)->LootId)));
 								}
 
 								UnSet(dbGetObject(PersonsList->getNthNode(i)->_nr),
 								      take_RelId,
-								      dbGetObject(ActionData
-								                  (action,
-								                   struct ActionDrop *)->
-								                  LootId));
+								      dbGetObject(((ActionDropNode *)action)->LootId));
 								Planing_Weight[i] -= weightLoot;
 								Planing_Volume[i] -= volumeLoot;
 							} else {
 								uint32 weightLoot =
 								    ((LootNode *)
-								     dbGetObject(ActionData
-								                 (action,
-								                  struct ActionDrop *)->
-								                 LootId))->Weight;
+								     dbGetObject(((ActionDropNode *)action)->LootId))->Weight;
 								uint32 volumeLoot =
 								    ((LootNode *)
-								     dbGetObject(ActionData
-								                 (action,
-								                  struct ActionDrop *)->
-								                 LootId))->Volume;
+								     dbGetObject(((ActionDropNode *)action)->LootId))->Volume;
 
-								lsSetObjectState(ActionData
-								                 (action,
-								                  struct ActionDrop *)->ItemId,
-								                 Const_tcIN_PROGRESS_BIT, 0);
+								lsSetObjectState(((ActionDropNode *)action)->ItemId, Const_tcIN_PROGRESS_BIT, 0);
 
-								if ((ActionData(action, struct ActionDrop *)->
-								        ItemId >= 9701)
-								        &&
-								        (ActionData(action, struct ActionDrop *)->
-								         ItemId <= 9708)) {
-									lsRemLootBag(ActionData
-									             (action,
-									              struct ActionDrop *)->ItemId);
-									Planing_Loot[ActionData
-									             (action,
-									              struct ActionDrop *)->ItemId -
-									             9701] = 0;
+								if (((ActionDropNode *)action)->ItemId >= 9701 && ((ActionDropNode *)action)->ItemId <= 9708) {
+									lsRemLootBag(((ActionDropNode *)action)->ItemId);
+									Planing_Loot[((ActionDropNode *)action)->ItemId - 9701] = 0;
 								} else {
-									if (CHECK_STATE
-									        (lsGetObjectState
-									         (ActionData
-									          (action,
-									           struct ActionTake *)->ItemId),
-									         Const_tcTAKE_BIT)) {
+									if (CHECK_STATE(lsGetObjectState(((ActionTakeNode *)action)->ItemId), Const_tcTAKE_BIT)) {
 										lsTurnObject((LSObjectNode *)
-										             dbGetObject(ActionData
-										                         (action,
-										                          struct
-										                          ActionTake
-										                          *)->ItemId),
+										             dbGetObject(((ActionTakeNode *)action)->ItemId),
 										             LS_OBJECT_INVISIBLE,
 										             LS_NO_COLLISION);
-										lsSetObjectState(ActionData
-										                 (action,
-										                  struct ActionTake *)->
+										lsSetObjectState(((ActionTakeNode *)action)->
 										                 ItemId,
 										                 Const_tcACCESS_BIT, 0);
 									}
@@ -920,60 +585,40 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 								{
 									uint32 newValue =
 									    GetP(dbGetObject
-									         (ActionData
-									          (action,
-									           struct ActionDrop *)->ItemId),
+									         (((ActionDropNode *)action)->ItemId),
 									         hasLoot(i),
-									         dbGetObject(ActionData
-									                     (action,
-									                      struct ActionDrop *)->
+									         dbGetObject(((ActionDropNode *)action)->
 									                     LootId));
 
 									if (Ask
 									        (dbGetObject(BurglarsList->getNthNode(i)->_nr),
 									         take_RelId,
-									         dbGetObject(ActionData
-									                     (action,
-									                      struct ActionDrop *)->
-									                     LootId))) {
+									         dbGetObject(((ActionDropNode *)action)->LootId))) {
 										uint32 oldValue =
 										    GetP(dbGetObject(BurglarsList->getNthNode(i)->_nr),
 										         take_RelId,
-										         dbGetObject(ActionData
-										                     (action,
-										                      struct ActionDrop
-										                      *)->LootId));
+										         dbGetObject(((ActionDropNode *)action)->LootId));
 
 										SetP(dbGetObject(BurglarsList->getNthNode(i)->_nr),
 										     take_RelId,
-										     dbGetObject(ActionData
-										                 (action,
-										                  struct ActionDrop *)->
-										                 LootId),
+										     dbGetObject(((ActionDropNode *)action)->LootId),
 										     oldValue + newValue);
 									} else
 										SetP(dbGetObject(BurglarsList->getNthNode(i)->_nr),
 										     take_RelId,
-										     dbGetObject(ActionData
-										                 (action,
-										                  struct ActionDrop *)->
-										                 LootId), newValue);
+										     dbGetObject(((ActionDropNode *)action)->LootId), newValue);
 								}
 
 								UnSet(dbGetObject
-								      (ActionData(action, struct ActionDrop *)->
+								      (((ActionDropNode *)action)->
 								       ItemId), hasLoot(i),
-								      dbGetObject(ActionData
-								                  (action,
-								                   struct ActionDrop *)->
-								                  LootId));
+								      dbGetObject(((ActionDropNode *)action)->LootId));
 
 								Planing_Weight[i] += weightLoot;
 								Planing_Volume[i] += volumeLoot;
 							}
 
-							plRefresh(ActionData(action, struct ActionDrop *)->
-							          ItemId);
+							plRefresh(((ActionDropNode *)action)->ItemId);
 						}
 						break;
 
@@ -981,17 +626,11 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 						if (ActionStarted(plSys)) {
 							if (i < BurglarsNr) {
 								if (direction)
-									lsSetObjectState(ActionData
-									                 (action,
-									                  struct ActionOpen *)->
-									                 ItemId,
+									lsSetObjectState(((ActionOpenNode *)action)->ItemId,
 									                 Const_tcIN_PROGRESS_BIT,
 									                 1);
 								else
-									lsSetObjectState(ActionData
-									                 (action,
-									                  struct ActionOpen *)->
-									                 ItemId,
+									lsSetObjectState(((ActionOpenNode *)action)->ItemId,
 									                 Const_tcIN_PROGRESS_BIT,
 									                 0);
 							}
@@ -1000,46 +639,26 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 						if (ActionEnded(plSys)) {
 							if (direction) {
 								if (i < BurglarsNr)
-									lsSetObjectState(ActionData
-									                 (action,
-									                  struct ActionOpen *)->
-									                 ItemId,
+									lsSetObjectState(((ActionOpenNode *)action)->ItemId,
 									                 Const_tcIN_PROGRESS_BIT,
 									                 0);
 
-								lsSetObjectState(ActionData
-								                 (action,
-								                  struct ActionOpen *)->ItemId,
-								                 Const_tcOPEN_CLOSE_BIT, 1);
+								lsSetObjectState(((ActionOpenNode *)action)->ItemId, Const_tcOPEN_CLOSE_BIT, 1);
 
-								plCorrectOpened((LSObjectNode *)
-								                dbGetObject(ActionData
-								                            (action,
-								                             struct ActionOpen
-								                             *)->ItemId), 1);
+								plCorrectOpened((LSObjectNode *)dbGetObject(((ActionOpenNode *)action)->ItemId), 1);
 							} else {
 								if (i < BurglarsNr)
-									lsSetObjectState(ActionData
-									                 (action,
-									                  struct ActionOpen *)->
-									                 ItemId,
+									lsSetObjectState(((ActionOpenNode *)action)->ItemId,
 									                 Const_tcIN_PROGRESS_BIT,
 									                 1);
 
-								lsSetObjectState(ActionData
-								                 (action,
-								                  struct ActionOpen *)->ItemId,
+								lsSetObjectState(((ActionOpenNode *)action)->ItemId,
 								                 Const_tcOPEN_CLOSE_BIT, 0);
 
-								plCorrectOpened((LSObjectNode *)
-								                dbGetObject(ActionData
-								                            (action,
-								                             struct ActionOpen
-								                             *)->ItemId), 0);
+								plCorrectOpened((LSObjectNode *)dbGetObject(((ActionOpenNode *)action)->ItemId), 0);
 							}
 
-							plRefresh(ActionData(action, struct ActionOpen *)->
-							          ItemId);
+							plRefresh(((ActionOpenNode *)action)->ItemId);
 						}
 						break;
 
@@ -1047,16 +666,12 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 						if (ActionStarted(plSys)) {
 							if (i < BurglarsNr) {
 								if (direction)
-									lsSetObjectState(ActionData
-									                 (action,
-									                  struct ActionClose *)->
+									lsSetObjectState(((ActionCloseNode *)action)->
 									                 ItemId,
 									                 Const_tcIN_PROGRESS_BIT,
 									                 1);
 								else
-									lsSetObjectState(ActionData
-									                 (action,
-									                  struct ActionClose *)->
+									lsSetObjectState(((ActionCloseNode *)action)->
 									                 ItemId,
 									                 Const_tcIN_PROGRESS_BIT,
 									                 0);
@@ -1066,46 +681,29 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 						if (ActionEnded(plSys)) {
 							if (direction) {
 								if (i < BurglarsNr)
-									lsSetObjectState(ActionData
-									                 (action,
-									                  struct ActionClose *)->
-									                 ItemId,
+									lsSetObjectState(((ActionCloseNode *)action)->ItemId,
 									                 Const_tcIN_PROGRESS_BIT,
 									                 0);
 
-								lsSetObjectState(ActionData
-								                 (action,
-								                  struct ActionClose *)->ItemId,
+								lsSetObjectState(((ActionCloseNode *)action)->ItemId,
 								                 Const_tcOPEN_CLOSE_BIT, 0);
 
 								plCorrectOpened((LSObjectNode *)
-								                dbGetObject(ActionData
-								                            (action,
-								                             struct ActionClose
-								                             *)->ItemId), 0);
+								                dbGetObject(((ActionCloseNode *)action)->ItemId), 0);
 							} else {
 								if (i < BurglarsNr)
-									lsSetObjectState(ActionData
-									                 (action,
-									                  struct ActionClose *)->
-									                 ItemId,
+									lsSetObjectState(((ActionCloseNode *)action)->ItemId,
 									                 Const_tcIN_PROGRESS_BIT,
 									                 1);
 
-								lsSetObjectState(ActionData
-								                 (action,
-								                  struct ActionClose *)->ItemId,
+								lsSetObjectState(((ActionCloseNode *)action)->ItemId,
 								                 Const_tcOPEN_CLOSE_BIT, 1);
 
 								plCorrectOpened((LSObjectNode *)
-								                dbGetObject(ActionData
-								                            (action,
-								                             struct ActionClose
-								                             *)->ItemId), 1);
+								                dbGetObject(((ActionCloseNode *)action)->ItemId), 1);
 							}
 
-							plRefresh(ActionData(action, struct ActionClose *)->
-							          ItemId);
+							plRefresh(((ActionCloseNode *)action)->ItemId);
 						}
 						break;
 					}
@@ -1116,7 +714,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 			}
 
 			if (animate & PLANING_ANIMATE_NO) {
-				Handler *h = (Handler *) plSys->ActivHandler;
+				HandlerNode *h = plSys->ActivHandler;
 				uint16 dir;
 
 				if (i < BurglarsNr)
@@ -1125,11 +723,10 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 					dir = ANM_MOVE_DOWN;
 
 				if (CurrentTimer(plSys) != 0) {
-					for (Action *a = (Action *) LIST_HEAD(h->Actions);
-					        NODE_SUCC(a); a = (Action *) NODE_SUCC(a)) {
+					for (ActionNode *a = h->Actions->getListHead(); a->_succ; a = (ActionNode *) a->_succ) {
 						switch (a->Type) {
 						case ACTION_GO:
-							switch (ActionData(a, struct ActionGo *)->Direction) {
+							switch (((ActionGoNode *)a)->Direction) {
 							case DIRECTION_LEFT:
 								dir = ANM_MOVE_LEFT;
 								break;
@@ -1158,7 +755,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 							break;
 						}
 
-						if (a == (Action *) h->CurrentAction)
+						if (a == h->CurrentAction)
 							break;
 					}
 				}

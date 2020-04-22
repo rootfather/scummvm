@@ -35,11 +35,11 @@ namespace Clue {
 #define GUARD_DIRECTORY    DATA_DIRECTORY
 
 
-struct System;
+class System;
 struct _GC;
 
 /* main method */
-void grdDo(Common::Stream *fh, struct System *sys, NewObjectList<dbObjectNode> *PersonsList, uint32 BurglarsNr, uint32 PersonsNr, byte grdAction);
+void grdDo(Common::Stream *fh, System *sys, NewObjectList<dbObjectNode> *PersonsList, uint32 BurglarsNr, uint32 PersonsNr, byte grdAction);
 
 /* support */
 bool grdAddToList(uint32 bldId, NewObjectList<dbObjectNode>*l);

@@ -124,7 +124,7 @@ extern byte lsScrollLandScape(byte direction);
 extern byte lsInitScrollLandScape(byte direction, byte mode);
 
 extern NewObjectList<dbObjectNode> *lsGetObjectsByList(uint16 x, uint16 y, uint16 width, uint16 height,
-                                byte showInvisible, byte addLootBags);
+                                byte showInvisible, bool addLootBags);
 
 void lsInitActivArea(uint32 areaID, uint16 x, uint16 y, char *livingName);
 extern void lsDoneActivArea(uint32 newAreaID);

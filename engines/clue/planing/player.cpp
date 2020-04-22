@@ -61,7 +61,7 @@ namespace Clue {
 
 /* Player data structure */
 static struct {
-	Action *action;
+	ActionNode *action;
 
 	byte handlerEnded[PLANING_NR_PERSONS];
 	byte guardKO[PLANING_NR_GUARDS];
@@ -163,7 +163,7 @@ static void UnableToWork(uint32 current, uint32 action) {
 	}
 
 	if (action != ACTION_WAIT)
-		IncCurrentTimer(plSys, 1, 0);
+		IncCurrentTimer(plSys, 1, false);
 }
 
 static byte plGetMood(uint32 time) {
@@ -485,7 +485,7 @@ static void plPlayerAction() {
 						if (Search.Exhaust[i] > PLANING_EXHAUST_MAX)
 							UnableToWork(i, ACTION_EXHAUST);
 						else {
-							plMove(i, ActionData(PD.action, ActionGo *)->Direction);
+							plMove(i, ((ActionGoNode *)PD.action)->Direction);
 
 							if (livCanWalk(Planing_Name[i])) {
 								PD.currLoudness[i] = tcGetWalkLoudness();
@@ -495,23 +495,16 @@ static void plPlayerAction() {
 								Search.WalkTime[i]++;
 
 								if (i == CurrentPerson) {
-									lsInitScrollLandScape(ActionData
-									                      (PD.action,
-									                       ActionGo *)->
-									                      Direction,
-									                      LS_SCROLL_PREPARE);
+									lsInitScrollLandScape(((ActionGoNode *)PD.action)->Direction, LS_SCROLL_PREPARE);
 									DoScrolling = 1;
 								}
 							} else {
-								if (livWhereIs(Planing_Name[i]) ==
-								        lsGetActivAreaID())
+								if (livWhereIs(Planing_Name[i]) == lsGetActivAreaID())
 									UnableToWork(i, ACTION_GO);
 							}
 						}
 					} else
-						plMove(i,
-						       ActionData(PD.action,
-						                  ActionGo *)->Direction);
+						plMove(i, ((ActionGoNode *)PD.action)->Direction);
 					break;
 
 				case ACTION_WAIT:
@@ -526,10 +519,7 @@ static void plPlayerAction() {
 						if (ActionStarted(plSys)) {
 							Search.CallCount++;
 
-							InitSignal(plSys, PersonsList->getNthNode(i)->_nr,
-							           ActionData(PD.action,
-							                      ActionSignal *)->
-							           ReceiverId);
+							InitSignal(plSys, PersonsList->getNthNode(i)->_nr, ((ActionSignalNode *)PD.action)->ReceiverId);
 
 #ifndef PLAN_IS_PERFECT
 							if (tcAlarmByRadio(PD.bldObj))
@@ -539,12 +529,7 @@ static void plPlayerAction() {
 						}
 
 						if (ActionEnded(plSys)) {
-							plSignal *sig =
-							    IsSignal(plSys,
-							             PersonsList->getNthNode(i)->_nr,
-							             ActionData(PD.action,
-							                        ActionSignal *)->
-							             ReceiverId);
+							plSignalNode *sig = IsSignal(plSys, PersonsList->getNthNode(i)->_nr, ((ActionSignalNode *)PD.action)->ReceiverId);
 
 							if (sig)
 								CloseSignal(sig);
@@ -554,12 +539,7 @@ static void plPlayerAction() {
 
 				case ACTION_WAIT_SIGNAL:
 					if (i < BurglarsNr) {
-						plSignal *sig =
-						    IsSignal(plSys,
-						             ActionData(PD.action,
-						                        ActionWaitSignal *)->
-						             SenderId,
-						             PersonsList->getNthNode(i)->_nr);
+						plSignalNode *sig = IsSignal(plSys, ((ActionWaitSignalNode *)PD.action)->SenderId, PersonsList->getNthNode(i)->_nr);
 
 						if (sig)
 							CloseSignal(sig);
@@ -577,64 +557,30 @@ static void plPlayerAction() {
 						PD.unableToWork[i] = 0;
 
 						if (ActionStarted(plSys)) {
-							if (plIsStair
-							        (ActionData(PD.action, ActionUse *)->
-							         ItemId))
+							if (plIsStair(((ActionUseNode *)PD.action)->ItemId))
 								livLivesInArea(Planing_Name[i],
-								               StairConnectsGet(ActionData
-								                                (PD.action,
-								                                 struct
-								                                 ActionUse *)->
-								                                ItemId,
-								                                ActionData(PD.
-								                                        action,
-								                                        struct
-								                                        ActionUse
-								                                        *)->
-								                                ItemId));
+									StairConnectsGet(((ActionUseNode *)PD.action)->ItemId, ((ActionUseNode *)PD.action)->ItemId));
 							else {
 								uint32 needTime = PD.action->TimeNeeded;
 								uint32 realTime = 0;
 
-								if (dbIsObject
-								        (ActionData(PD.action, ActionUse *)->
-								         ItemId, Object_Police)) {
-									if (plObjectInReach
-									        (i,
-									         ActionData(PD.action,
-									                    ActionUse *)->
-									         ItemId)) {
+								if (dbIsObject(((ActionUseNode *)PD.action)->ItemId, Object_Police)) {
+									if (plObjectInReach(i, ((ActionUseNode *)PD.action)->ItemId)) {
 										PD.currLoudness[i] =
 										    tcGetToolLoudness(
-										                      PersonsList->getNthNode(i)->_nr,
-										                      ActionData(PD.
-										                                 action,
-										                                 struct
-										                                 ActionUse
-										                                 *)->
-										                      ToolId,
-										                      Item_Wache);
-										PD.guardKO[((PoliceNode *)
-										            dbGetObject(ActionData
-										                        (PD.action,
-										                         struct
-										                         ActionUse *)->
-										                        ItemId))->
-										           LivingID - BurglarsNr] = 1;
+										        PersonsList->getNthNode(i)->_nr,
+												((ActionUseNode *)PD.action)->ToolId,
+										        Item_Wache);
+										PD.guardKO[((PoliceNode *) dbGetObject(((ActionUseNode *)PD.action)->ItemId))
+											->LivingID - BurglarsNr] = 1;
 										PD.changeCount += 5;
 
 										realTime =
 										    tcGuyUsesToolInPlayer(PersonsList->getNthNode(i)->_nr,
-										                          PD.bldObj,
-										                          ActionData(PD.
-										                                     action,
-										                                     struct
-										                                     ActionUse
-										                                     *)->
-										                          ToolId,
-										                          Item_Wache,
-										                          needTime /
-										                          PLANING_CORRECT_TIME);
+										        PD.bldObj,
+												((ActionUseNode *)PD.action)->ToolId,
+										        Item_Wache,
+										        needTime / PLANING_CORRECT_TIME);
 										Search.KillTime[i] += realTime;
 									} else {
 										Search.DeriTime +=
@@ -650,77 +596,36 @@ static void plPlayerAction() {
 								} else {
 									if (!CHECK_STATE
 									        (lsGetObjectState
-									         (ActionData
-									          (PD.action,
-									           ActionUse *)->ItemId),
+									         (((ActionUseNode *)PD.action)->ItemId),
 									         Const_tcLOCK_UNLOCK_BIT))
 										PD.currLoudness[i] =
-										    tcGetToolLoudness(PersonsList->getNthNode(i)->_nr,
-										                      ActionData(PD.
-										                                 action,
-										                                 struct
-										                                 ActionUse
-										                                 *)->
-										                      ToolId,
-										                      ((LSObjectNode *)
-										                       dbGetObject
-										                       (ActionData
-										                        (PD.action,
-										                         struct
-										                         ActionUse *)->
-										                        ItemId))->Type);
-									else if ((((LSObjectNode *)
-									           dbGetObject(ActionData
-									                       (PD.action,
-									                        ActionUse
-									                        *)->ItemId))->
-									          Type == Item_Fenster))
-										PD.currLoudness[i] =
-										    PLANING_LOUDNESS_STD;
-									else if (!plIgnoreLock
-									         (ActionData
-									          (PD.action,
-									           ActionUse *)->ItemId)) {
-										Search.DeriTime +=
-										    PLANING_DERI_IGNORE_ACTION;
+											tcGetToolLoudness(PersonsList->getNthNode(i)->_nr,
+											((ActionUseNode *)PD.action)->ToolId,
+										    ((LSObjectNode *) dbGetObject(((ActionUseNode *)PD.action)->ItemId))->Type);
+									else if (((LSObjectNode *) dbGetObject(((ActionUseNode *)PD.action)->ItemId))->Type == Item_Fenster)
+										PD.currLoudness[i] = PLANING_LOUDNESS_STD;
+									else if (!plIgnoreLock(((ActionUseNode *)PD.action)->ItemId)) {
+										Search.DeriTime += PLANING_DERI_IGNORE_ACTION;
 										IgnoreAction(plSys);
 
 										plSay("PLAYER_IGNORE_2", i);
-										inpSetWaitTicks
-										(INP_AS_FAST_AS_POSSIBLE);
+										inpSetWaitTicks(INP_AS_FAST_AS_POSSIBLE);
 
 										break;
 									}
 #ifndef PLAN_IS_PERFECT
-									if (tcGetDanger
-									        (PersonsList->getNthNode(i)->_nr,
-									         ActionData(PD.action,
-									                    ActionUse *)->ToolId,
-									         ((LSObjectNode *)
-									          dbGetObject(ActionData
-									                      (PD.action,
-									                       ActionUse *)->
-									                      ItemId))->Type))
+									if (tcGetDanger(
+										PersonsList->getNthNode(i)->_nr,
+										((ActionUseNode *)PD.action)->ToolId,
+										((LSObjectNode *) dbGetObject(((ActionUseNode *)PD.action)->ItemId))->Type))
 										PD.handlerEnded[i] = 2;
 #endif
 
 									realTime =
 									    tcGuyUsesToolInPlayer(PersonsList->getNthNode(i)->_nr, PD.bldObj,
-									                          ActionData(PD.
-									                                     action,
-									                                     struct
-									                                     ActionUse
-									                                     *)->
-									                          ToolId,
-									                          ((LSObjectNode *)
-									                           dbGetObject
-									                           (ActionData
-									                            (PD.action,
-									                             struct
-									                             ActionUse *)->
-									                            ItemId))->Type,
-									                          needTime /
-									                          PLANING_CORRECT_TIME);
+											((ActionUseNode *)PD.action)->ToolId,
+											((LSObjectNode *) dbGetObject(((ActionUseNode *)PD.action)->ItemId))->Type,
+											needTime / PLANING_CORRECT_TIME);
 								}
 
 								if (realTime) {
@@ -731,21 +636,16 @@ static void plPlayerAction() {
 									IncCurrentTimer(plSys,
 									                realTime *
 									                PLANING_CORRECT_TIME -
-									                needTime, 0);
+									                needTime, false);
 								}
 
-								plPersonLearns(PersonsList->getNthNode(i)->_nr,
-								               ActionData(PD.action,
-								                          ActionUse *)->
-								               ToolId);
+								plPersonLearns(PersonsList->getNthNode(i)->_nr, ((ActionUseNode *)PD.action)->ToolId);
 							}
 						}
 #ifndef PLAN_IS_PERFECT
 						if (!(Search.EscapeBits & FAHN_ALARM_ALARM)
 						        &&
-						        tcAlarmByTouch(ActionData
-						                       (PD.action,
-						                        ActionUse *)->ItemId)) {
+						        tcAlarmByTouch(((ActionUseNode *)PD.action)->ItemId)) {
 							Search.DeriTime += PLANING_DERI_ALARM;
 							Search.EscapeBits |= FAHN_ALARM | FAHN_ALARM_ALARM;
 							plSay("PLAYER_ALARM", i);
@@ -754,31 +654,17 @@ static void plPlayerAction() {
 #endif
 
 						if (ActionEnded(plSys)) {
-							if (!plIgnoreLock
-							        (ActionData(PD.action, ActionUse *)->
-							         ItemId)) {
-								if (plIsStair
-								        (ActionData(PD.action, ActionUse *)->
-								         ItemId)) {
+							if (!plIgnoreLock(((ActionUseNode *)PD.action)->ItemId)) {
+								if (plIsStair(((ActionUseNode *)PD.action)->ItemId)) {
 									if (i == CurrentPerson) {
 										uint32 newAreaId =
-										    StairConnectsGet(ActionData
-										                     (PD.action,
-										                      ActionUse
-										                      *)->ItemId,
-										                     ActionData(PD.
-										                                action,
-										                                struct
-										                                ActionUse
-										                                *)->
-										                     ItemId);
+										    StairConnectsGet(((ActionUseNode *)PD.action)->ItemId,
+											((ActionUseNode *)PD.action)->ItemId);
 
 										lsDoneActivArea(newAreaId);
 										lsInitActivArea(newAreaId,
-										                livGetXPos(Planing_Name
-										                           [i]),
-										                livGetYPos(Planing_Name
-										                           [i]),
+										                livGetXPos(Planing_Name[i]),
+										                livGetYPos(Planing_Name[i]),
 										                Planing_Name[i]);
 
 										if (lsGetStartArea() ==
@@ -788,158 +674,74 @@ static void plPlayerAction() {
 										livRefreshAll();
 									}
 								} else if (dbIsObject
-								           (ActionData
-								            (PD.action,
-								             ActionUse *)->ItemId,
+								           (((ActionUseNode *)PD.action)->ItemId,
 								            Object_Police)) {
 									if (tcKillTheGuard
 									        (PersonsList->getNthNode(i)->_nr,
 									         PD.bldId))
 										PD.guardKO[((PoliceNode *)
-										            dbGetObject(ActionData
-										                        (PD.action,
-										                         struct
-										                         ActionUse *)->
-										                        ItemId))->
-										           LivingID - BurglarsNr] = 2;
+										            dbGetObject(((ActionUseNode *)PD.action)->ItemId))->LivingID - BurglarsNr] = 2;
 									else {
-										if (!
-										        (Search.
-										         EscapeBits & FAHN_ALARM_GUARD)) {
+										if (!(Search.EscapeBits & FAHN_ALARM_GUARD)) {
 											plSay("PLAYER_GUARD_ALARM_5",
-											      ((PoliceNode *)
-											       dbGetObject(ActionData
-											                   (PD.action,
-											                    ActionUse
-											                    *)->ItemId))->
-											      LivingID);
-											inpSetWaitTicks
-											(INP_AS_FAST_AS_POSSIBLE);
-											Search.DeriTime +=
-											    PLANING_DERI_ALARM;
-											Search.EscapeBits |=
-											    FAHN_ALARM | FAHN_ALARM_GUARD;
+											      ((PoliceNode *) dbGetObject(((ActionUseNode *)PD.action)->ItemId))->LivingID);
+											inpSetWaitTicks(INP_AS_FAST_AS_POSSIBLE);
+											Search.DeriTime += PLANING_DERI_ALARM;
+											Search.EscapeBits |= FAHN_ALARM | FAHN_ALARM_GUARD;
 										}
 
 										PD.handlerEnded[i] = 32;
 										PD.guardKO[((PoliceNode *)
-										            dbGetObject(ActionData
-										                        (PD.action,
-										                         struct
-										                         ActionUse *)->
-										                        ItemId))->
-										           LivingID - BurglarsNr] = 3;
+										            dbGetObject(((ActionUseNode *)PD.action)->ItemId))->LivingID - BurglarsNr] = 3;
 									}
 								} else {
-									if (!CHECK_STATE
-									        (lsGetObjectState
-									         (ActionData
-									          (PD.action,
-									           ActionUse *)->ItemId),
-									         Const_tcLOCK_UNLOCK_BIT)) {
+									if (!CHECK_STATE(lsGetObjectState(((ActionUseNode *)PD.action)->ItemId), Const_tcLOCK_UNLOCK_BIT)) {
 										PD.changeCount++;
 
-										lsSetObjectState(ActionData
-										                 (PD.action,
-										                  ActionUse *)->
-										                 ItemId,
-										                 Const_tcLOCK_UNLOCK_BIT,
-										                 1);
+										lsSetObjectState(((ActionUseNode *)PD.action)->ItemId, Const_tcLOCK_UNLOCK_BIT, 1);
 
-										if (((ToolNode *)
-										        dbGetObject(ActionData
-										                    (PD.action,
-										                     ActionUse *)->
-										                    ToolId))->
-										        Effect & Const_tcTOOL_OPENS) {
-											lsSetObjectState(ActionData
-											                 (PD.action,
-											                  ActionUse
-											                  *)->ItemId,
-											                 Const_tcOPEN_CLOSE_BIT,
-											                 1);
-											plCorrectOpened((LSObjectNode *)
-											                dbGetObject
-											                (ActionData
-											                 (PD.action,
-											                  ActionUse
-											                  *)->ItemId), 1);
+										if (((ToolNode *) dbGetObject(((ActionUseNode *)PD.action)->ToolId))->Effect & Const_tcTOOL_OPENS) {
+											lsSetObjectState(((ActionUseNode *)PD.action)->ItemId, Const_tcOPEN_CLOSE_BIT, 1);
+											plCorrectOpened((LSObjectNode *) dbGetObject(((ActionUseNode *)PD.action)->ItemId), 1);
 										}
 
-										if (ActionData
-										        (PD.action,
-										         ActionUse *)->ToolId ==
-										        Tool_Stechkarte)
+										if (((ActionUseNode *)PD.action)->ToolId == Tool_Stechkarte)
 											tcRefreshTimeClock(PD.bldId,
-											                   ActionData(PD.
-											                              action,
-											                              struct
-											                              ActionUse
-											                              *)->
-											                   ItemId);
+											((ActionUseNode *)PD.action)->ItemId);
 									} else {
-										if ((((LSObjectNode *)
-										        dbGetObject(ActionData
-										                    (PD.action,
-										                     ActionUse *)->
-										                    ItemId))->Type ==
-										        Item_Fenster)) {
+										if (((LSObjectNode *)
+											dbGetObject(((ActionUseNode *)PD.action)->ItemId))->Type == Item_Fenster) {
 											uint16 xpos, ypos;
 
-											lsWalkThroughWindow((LSObjectNode *)
-											                    dbGetObject
-											                    (ActionData
-											                     (PD.action,
-											                      struct
-											                      ActionUse *)->
-											                     ItemId),
-											                    livGetXPos
-											                    (Planing_Name
-											                     [i]),
-											                    livGetYPos
-											                    (Planing_Name
-											                     [i]), &xpos,
-											                    &ypos);
-											livSetPos(Planing_Name[i], xpos,
-											          ypos);
+											lsWalkThroughWindow(
+												(LSObjectNode *) dbGetObject(((ActionUseNode *)PD.action)->ItemId),
+												livGetXPos(Planing_Name[i]),
+											    livGetYPos(Planing_Name[i]),
+												&xpos, &ypos);
+											livSetPos(Planing_Name[i], xpos, ypos);
 
 											livRefreshAll();
 										}
 									}
 								}
 							} else {
-								uint32 state =
-								    lsGetObjectState(ActionData
-								                     (PD.action,
-								                      ActionUse *)->
-								                     ItemId);
+								uint32 state = lsGetObjectState(((ActionUseNode *)PD.action)->ItemId);
 
 								if (CHECK_STATE(state, Const_tcON_OFF)) {
-									lsSetObjectState(ActionData(PD.action, ActionUse *)->ItemId, Const_tcON_OFF, 0); /* on setzen  */
+									lsSetObjectState(((ActionUseNode *)PD.action)->ItemId, Const_tcON_OFF, 0); /* on setzen  */
 
 									PD.changeCount--;
 
-									if (plIgnoreLock
-									        (ActionData
-									         (PD.action,
-									          ActionUse *)->ItemId) ==
-									        PLANING_POWER) {
-										lsSetSpotStatus(ActionData
-										                (PD.action,
-										                 ActionUse *)->
-										                ItemId, LS_SPOT_ON);
-										lsShowAllSpots(PD.realTime,
-										               LS_ALL_VISIBLE_SPOTS);
+									if (plIgnoreLock(((ActionUseNode *)PD.action)->ItemId) == PLANING_POWER) {
+										lsSetSpotStatus(((ActionUseNode *)PD.action)->ItemId, LS_SPOT_ON);
+										lsShowAllSpots(PD.realTime, LS_ALL_VISIBLE_SPOTS);
 									}
 								} else {
-									lsSetObjectState(ActionData(PD.action, ActionUse *)->ItemId, Const_tcON_OFF, 1); /* off setzen */
+									lsSetObjectState(((ActionUseNode *)PD.action)->ItemId, Const_tcON_OFF, 1); /* off setzen */
 
 									PD.changeCount++;
 
-									switch (plIgnoreLock
-									        (ActionData
-									         (PD.action,
-									          ActionUse *)->ItemId)) {
+									switch (plIgnoreLock(((ActionUseNode *)PD.action)->ItemId)) {
 									case PLANING_ALARM_TOP3:
 										if (PD.alarmTimer)
 											PD.alarmTimer =
@@ -950,29 +752,16 @@ static void plPlayerAction() {
 										break;
 
 									case PLANING_POWER:
-										lsSetSpotStatus(ActionData
-										                (PD.action,
-										                 ActionUse *)->
-										                ItemId, LS_SPOT_OFF);
-										lsShowAllSpots(PD.realTime,
-										               LS_ALL_INVISIBLE_SPOTS);
+										lsSetSpotStatus(((ActionUseNode *)PD.action)->ItemId, LS_SPOT_OFF);
+										lsShowAllSpots(PD.realTime, LS_ALL_INVISIBLE_SPOTS);
 
 #ifndef PLAN_IS_PERFECT
-										if (!
-										        (Search.
-										         EscapeBits & FAHN_ALARM_POWER)
-										        &&
-										        tcAlarmByPowerLoss(ActionData
-										                           (PD.action,
-										                            ActionUse
-										                            *)->ItemId)) {
-											Search.EscapeBits |=
-											    FAHN_ALARM | FAHN_ALARM_POWER;
-											Search.DeriTime +=
-											    PLANING_DERI_ALARM;
+										if (!(Search.EscapeBits & FAHN_ALARM_POWER)
+											&& tcAlarmByPowerLoss(((ActionUseNode *)PD.action)->ItemId)) {
+											Search.EscapeBits |= FAHN_ALARM | FAHN_ALARM_POWER;
+											Search.DeriTime += PLANING_DERI_ALARM;
 											plSay("PLAYER_POWER", i);
-											inpSetWaitTicks
-											(INP_AS_FAST_AS_POSSIBLE);
+											inpSetWaitTicks(INP_AS_FAST_AS_POSSIBLE);
 										}
 #endif
 										break;
@@ -980,8 +769,7 @@ static void plPlayerAction() {
 								}
 							}
 
-							plRefresh(ActionData
-							          (PD.action, ActionUse *)->ItemId);
+							plRefresh(((ActionUseNode *)PD.action)->ItemId);
 							plDisplayInfo();
 						}
 					}
@@ -999,26 +787,18 @@ static void plPlayerAction() {
 
 						if (Ask
 						        (dbGetObject
-						         (ActionData(PD.action, ActionTake *)->
+						         (((ActionTakeNode *)PD.action)->
 						          ItemId), hasLoot(i),
-						         dbGetObject(ActionData
-						                     (PD.action,
-						                      ActionTake *)->LootId))
+						         dbGetObject(((ActionTakeNode *)PD.action)->LootId))
 						        && plObjectInReach(i,
-						                           ActionData(PD.action,
-						                                      ActionTake *)->
-						                           ItemId)) {
-							lsSetObjectState(ActionData
-							                 (PD.action,
-							                  ActionTake *)->ItemId,
+							((ActionTakeNode *)PD.action)->ItemId)) {
+							lsSetObjectState(((ActionTakeNode *)PD.action)->ItemId,
 							                 Const_tcIN_PROGRESS_BIT, 1);
 
 #ifndef PLAN_IS_PERFECT
 							if (!(Search.EscapeBits & FAHN_ALARM_ALARM)
 							        &&
-							        tcAlarmByTouch(ActionData
-							                       (PD.action,
-							                        ActionUse *)->ItemId)) {
+							        tcAlarmByTouch(((ActionUseNode *)PD.action)->ItemId)) {
 								Search.DeriTime += PLANING_DERI_ALARM;
 								Search.EscapeBits |=
 								    FAHN_ALARM | FAHN_ALARM_ALARM;
@@ -1030,114 +810,69 @@ static void plPlayerAction() {
 							if (ActionEnded(plSys)) {
 								uint32 newValue =
 								    GetP(dbGetObject
-								         (ActionData
-								          (PD.action,
-								           ActionTake *)->ItemId),
+								         (((ActionTakeNode *)PD.action)->ItemId),
 								         hasLoot(i),
-								         dbGetObject(ActionData
-								                     (PD.action,
-								                      ActionTake *)->
+								         dbGetObject(((ActionTakeNode *)PD.action)->
 								                     LootId));
 
 								Planing_Weight[i] +=
 								    ((LootNode *)
-								     dbGetObject(ActionData
-								                 (PD.action,
-								                  ActionTake *)->
+								     dbGetObject(((ActionTakeNode *)PD.action)->
 								                 LootId))->Weight;
 								Planing_Volume[i] +=
 								    ((LootNode *)
-								     dbGetObject(ActionData
-								                 (PD.action,
-								                  ActionTake *)->
+								     dbGetObject(((ActionTakeNode *)PD.action)->
 								                 LootId))->Volume;
 
-								lsSetObjectState(ActionData
-								                 (PD.action,
-								                  ActionTake *)->ItemId,
+								lsSetObjectState(((ActionTakeNode *)PD.action)->ItemId,
 								                 Const_tcIN_PROGRESS_BIT, 0);
 
-								if ((ActionData
-								        (PD.action,
-								         ActionTake *)->ItemId >= 9701)
+								if ((((ActionTakeNode *)PD.action)->ItemId >= 9701)
 								        &&
-								        (ActionData
-								         (PD.action,
-								          ActionTake *)->ItemId <= 9708)) {
-									lsRemLootBag(ActionData
-									             (PD.action,
-									              ActionTake *)->ItemId);
-									Planing_Loot[ActionData
-									             (PD.action,
-									              ActionTake *)->ItemId -
-									             9701] = 0;
+								        (((ActionTakeNode *)PD.action)->ItemId <= 9708)) {
+									lsRemLootBag(((ActionTakeNode *)PD.action)->ItemId);
+									Planing_Loot[((ActionTakeNode *)PD.action)->ItemId - 9701] = 0;
 								} else {
 									if (CHECK_STATE
 									        (lsGetObjectState
-									         (ActionData
-									          (PD.action,
-									           ActionTake *)->ItemId),
+									         (((ActionTakeNode *)PD.action)->ItemId),
 									         Const_tcTAKE_BIT)) {
-										lsSetObjectState(ActionData
-										                 (PD.action,
-										                  ActionTake *)->
+										lsSetObjectState(((ActionTakeNode *)PD.action)->
 										                 ItemId,
 										                 Const_tcACCESS_BIT, 0);
 										lsTurnObject((LSObjectNode *)
-										             dbGetObject(ActionData
-										                         (PD.action,
-										                          struct
-										                          ActionTake
-										                          *)->ItemId),
+										             dbGetObject(((ActionTakeNode *)PD.action)->ItemId),
 										             LS_OBJECT_INVISIBLE,
 										             LS_NO_COLLISION);
 									}
 								}
 
 								UnSet(dbGetObject
-								      (ActionData
-								       (PD.action,
-								        ActionTake *)->ItemId),
+								      (((ActionTakeNode *)PD.action)->ItemId),
 								      hasLoot(i),
-								      dbGetObject(ActionData
-								                  (PD.action,
-								                   ActionTake *)->
-								                  LootId));
+								      dbGetObject(((ActionTakeNode *)PD.action)->LootId));
 
 								if (Ask
 								        (dbGetObject(PersonsList->getNthNode(i)->_nr),
 								         take_RelId,
-								         dbGetObject(ActionData
-								                     (PD.action,
-								                      ActionTake *)->
+								         dbGetObject(((ActionTakeNode *)PD.action)->
 								                     LootId))) {
 									uint32 oldValue =
 									    GetP(dbGetObject(PersonsList->getNthNode(i)->_nr),
 									         take_RelId,
-									         dbGetObject(ActionData
-									                     (PD.action,
-									                      ActionTake *)->
-									                     LootId));
+									         dbGetObject(((ActionTakeNode *)PD.action)->LootId));
 
 									SetP(dbGetObject(PersonsList->getNthNode(i)->_nr),
 									     take_RelId,
-									     dbGetObject(ActionData
-									                 (PD.action,
-									                  ActionTake *)->
-									                 LootId),
+									     dbGetObject(((ActionTakeNode *)PD.action)->LootId),
 									     oldValue + newValue);
 								} else
 									SetP(dbGetObject
 									     (PersonsList->getNthNode(i)->_nr),
 									     take_RelId,
-									     dbGetObject(ActionData
-									                 (PD.action,
-									                  ActionTake *)->
-									                 LootId), newValue);
+									     dbGetObject(((ActionTakeNode *)PD.action)->LootId), newValue);
 
-								plRefresh(ActionData
-								          (PD.action,
-								           ActionTake *)->ItemId);
+								plRefresh(((ActionTakeNode *)PD.action)->ItemId);
 								plDisplayInfo();
 							}
 						} else {
@@ -1163,12 +898,8 @@ static void plPlayerAction() {
 						if (Ask
 						        (dbGetObject(PersonsList->getNthNode(i)->_nr),
 						         take_RelId,
-						         dbGetObject(ActionData
-						                     (PD.action,
-						                      ActionDrop *)->LootId))) {
-							lsSetObjectState(ActionData
-							                 (PD.action,
-							                  ActionDrop *)->ItemId,
+						         dbGetObject(((ActionDropNode *)PD.action)->LootId))) {
+							lsSetObjectState(((ActionDropNode *)PD.action)->ItemId,
 							                 Const_tcIN_PROGRESS_BIT, 1);
 
 							if (ActionEnded(plSys)) {
@@ -1176,81 +907,46 @@ static void plPlayerAction() {
 								    GetP(dbGetObject
 								         (PersonsList->getNthNode(i)->_nr),
 								         take_RelId,
-								         dbGetObject(ActionData
-								                     (PD.action,
-								                      ActionDrop *)->
+								         dbGetObject(((ActionDropNode *)PD.action)->
 								                     LootId));
 
 								Planing_Weight[i] -=
 								    ((LootNode *)
-								     dbGetObject(ActionData
-								                 (PD.action,
-								                  ActionDrop *)->
-								                 LootId))->Weight;
+								     dbGetObject(((ActionDropNode *)PD.action)->LootId))->Weight;
 								Planing_Volume[i] -=
 								    ((LootNode *)
-								     dbGetObject(ActionData
-								                 (PD.action,
-								                  ActionDrop *)->
-								                 LootId))->Volume;
+								     dbGetObject(((ActionDropNode *)PD.action)->LootId))->Volume;
 
-								lsSetObjectState(ActionData
-								                 (PD.action,
-								                  ActionDrop *)->ItemId,
+								lsSetObjectState(((ActionDropNode *)PD.action)->ItemId,
 								                 Const_tcIN_PROGRESS_BIT, 1);
 
-								if ((ActionData
-								        (PD.action,
-								         ActionDrop *)->ItemId >= 9701)
-								        &&
-								        (ActionData
-								         (PD.action,
-								          ActionDrop *)->ItemId <= 9708)) {
+								if (((ActionDropNode *)PD.action)->ItemId >= 9701 && ((ActionDropNode *)PD.action)->ItemId <= 9708) {
 									lsAddLootBag(livGetXPos(Planing_Name[i]),
 									             livGetYPos(Planing_Name[i]),
-									             ActionData(PD.action,
-									                        ActionDrop
-									                        *)->ItemId - 9700);
-									Planing_Loot[ActionData
-									             (PD.action,
-									              ActionDrop *)->ItemId -
-									             9701] = 1;
+										((ActionDropNode *)PD.action)->ItemId - 9700);
+									Planing_Loot[((ActionDropNode *)PD.action)->ItemId - 9701] = 1;
 								} else {
 									if (CHECK_STATE
 									        (lsGetObjectState
-									         (ActionData
-									          (PD.action,
-									           ActionTake *)->ItemId),
+									         (((ActionTakeNode *)PD.action)->ItemId),
 									         Const_tcTAKE_BIT))
 										lsTurnObject((LSObjectNode *)
-										             dbGetObject(ActionData
-										                         (PD.action,
-										                          struct
-										                          ActionDrop
-										                          *)->ItemId),
+										             dbGetObject(((ActionDropNode *)PD.action)->ItemId),
 										             LS_OBJECT_VISIBLE,
 										             LS_COLLISION);
 								}
 
 								SetP(dbGetObject
-								     (ActionData
-								      (PD.action, ActionDrop *)->ItemId),
+								     (((ActionDropNode *)PD.action)->ItemId),
 								     hasLoot(i),
-								     dbGetObject(ActionData
-								                 (PD.action,
-								                  ActionDrop *)->LootId),
+								     dbGetObject(((ActionDropNode *)PD.action)->LootId),
 								     newValue);
 								UnSet(dbGetObject
 								      (PersonsList->getNthNode(i)->_nr),
 								      take_RelId,
-								      dbGetObject(ActionData
-								                  (PD.action,
-								                   ActionDrop *)->
-								                  LootId));
+								      dbGetObject(((ActionDropNode *)PD.action)->LootId));
 
-								plRefresh(ActionData
-								          (PD.action,
-								           ActionDrop *)->ItemId);
+								plRefresh(((ActionDropNode *)PD.action)->ItemId);
 								plDisplayInfo();
 							}
 						} else {
@@ -1268,7 +964,7 @@ static void plPlayerAction() {
 #ifndef PLAN_IS_PERFECT
 							if (CHECK_STATE
 							        (lsGetObjectState
-							         (ActionData(PD.action, ActionOpen *)->
+							         (((ActionOpenNode *)PD.action)->
 							          ItemId), Const_tcOPEN_CLOSE_BIT)) {
 								if (!(Search.EscapeBits & FAHN_ALARM_GUARD)) {
 									plSay("PLAYER_GUARD_ALARM_3", i);
@@ -1278,8 +974,7 @@ static void plPlayerAction() {
 									    FAHN_ALARM | FAHN_ALARM_GUARD;
 								}
 
-								PD.guardKO[((PoliceNode *)dbGetObject(PersonsList->getNthNode(i)->_nr))->LivingID -
-								           BurglarsNr] = 3;
+								PD.guardKO[((PoliceNode *)dbGetObject(PersonsList->getNthNode(i)->_nr))->LivingID - BurglarsNr] = 3;
 
 								break;
 							}
@@ -1289,43 +984,31 @@ static void plPlayerAction() {
 
 					if ((i >= BurglarsNr)
 					        ||
-					        plIgnoreLock(ActionData
-					                     (PD.action, ActionOpen *)->ItemId)
+					        plIgnoreLock(((ActionOpenNode *)PD.action)->ItemId)
 					        ||
 					        CHECK_STATE(lsGetObjectState
-					                    (ActionData
-					                     (PD.action, ActionOpen *)->ItemId),
+					                    (((ActionOpenNode *)PD.action)->ItemId),
 					                    Const_tcLOCK_UNLOCK_BIT)) {
 						if ((i >= BurglarsNr)
 						        ||
-						        plIgnoreLock(ActionData
-						                     (PD.action,
-						                      ActionOpen *)->ItemId)
+						        plIgnoreLock(((ActionOpenNode *)PD.action)->ItemId)
 						        ||
 						        !CHECK_STATE(lsGetObjectState
-						                     (ActionData
-						                      (PD.action,
-						                       ActionOpen *)->ItemId),
+						                     (((ActionOpenNode *)PD.action)->ItemId),
 						                     Const_tcOPEN_CLOSE_BIT)) {
 							if (i < BurglarsNr) {
 								PD.currLoudness[i] =
 								    PLANING_LOUDNESS_OPEN_CLOSE;
 								Search.WorkTime[i]++;
-								lsSetObjectState(ActionData
-								                 (PD.action,
-								                  ActionOpen *)->ItemId,
+								lsSetObjectState(((ActionOpenNode *)PD.action)->ItemId,
 								                 Const_tcIN_PROGRESS_BIT, 1);
 
 #ifndef PLAN_IS_PERFECT
 								if (!(Search.EscapeBits & FAHN_ALARM_ALARM)
 								        &&
-								        tcAlarmByTouch(ActionData
-								                       (PD.action,
-								                        ActionUse *)->
-								                       ItemId)) {
+								        tcAlarmByTouch(((ActionUseNode *)PD.action)->ItemId)) {
 									Search.DeriTime += PLANING_DERI_ALARM;
-									Search.EscapeBits |=
-									    FAHN_ALARM | FAHN_ALARM_ALARM;
+									Search.EscapeBits |= FAHN_ALARM | FAHN_ALARM_ALARM;
 									plSay("PLAYER_ALARM", i);
 									inpSetWaitTicks(INP_AS_FAST_AS_POSSIBLE);
 								}
@@ -1335,38 +1018,27 @@ static void plPlayerAction() {
 							if (ActionEnded(plSys)) {
 								if (i < BurglarsNr) {
 									PD.changeCount++;
-									lsSetObjectState(ActionData
-									                 (PD.action,
-									                  ActionOpen *)->
+									lsSetObjectState(((ActionOpenNode *)PD.action)->
 									                 ItemId,
 									                 Const_tcIN_PROGRESS_BIT,
 									                 0);
 								}
 
 								if ((((LSObjectNode *)
-								        dbGetObject(ActionData
-								                    (PD.action,
-								                     ActionOpen *)->
+								        dbGetObject(((ActionOpenNode *)PD.action)->
 								                    ItemId))->Type == Item_WC)
 								        && (g_clue->calcRandomNr(0, 3) == 1)) {
 									sndPrepareFX("wc.voc");
 									sndPlayFX();
 								}
 
-								lsSetObjectState(ActionData
-								                 (PD.action,
-								                  ActionOpen *)->ItemId,
+								lsSetObjectState(((ActionOpenNode *)PD.action)->ItemId,
 								                 Const_tcOPEN_CLOSE_BIT, 1);
 
 								plCorrectOpened((LSObjectNode *)
-								                dbGetObject(ActionData
-								                            (PD.action,
-								                             ActionOpen
-								                             *)->ItemId), 1);
+								                dbGetObject(((ActionOpenNode *)PD.action)->ItemId), 1);
 
-								plRefresh(ActionData
-								          (PD.action,
-								           ActionOpen *)->ItemId);
+								plRefresh(((ActionOpenNode *)PD.action)->ItemId);
 								plDisplayInfo();
 							}
 						} else {
@@ -1388,7 +1060,7 @@ static void plPlayerAction() {
 #ifndef PLAN_IS_PERFECT
 							if (!CHECK_STATE
 							        (lsGetObjectState
-							         (ActionData(PD.action, ActionOpen *)->
+							         (((ActionOpenNode *)PD.action)->
 							          ItemId), Const_tcOPEN_CLOSE_BIT)) {
 								if (!(Search.EscapeBits & FAHN_ALARM_GUARD)) {
 									plSay("PLAYER_GUARD_ALARM_4", i);
@@ -1410,39 +1082,29 @@ static void plPlayerAction() {
 
 					if ((i >= BurglarsNr)
 					        ||
-					        plIgnoreLock(ActionData
-					                     (PD.action, ActionClose *)->ItemId)
+					        plIgnoreLock(((ActionCloseNode *)PD.action)->ItemId)
 					        ||
 					        CHECK_STATE(lsGetObjectState
-					                    (ActionData
-					                     (PD.action, ActionOpen *)->ItemId),
+					                    (((ActionOpenNode *)PD.action)->ItemId),
 					                    Const_tcLOCK_UNLOCK_BIT)) {
 						if ((i >= BurglarsNr)
 						        ||
-						        plIgnoreLock(ActionData
-						                     (PD.action,
-						                      ActionClose *)->ItemId)
+						        plIgnoreLock(((ActionCloseNode *)PD.action)->ItemId)
 						        ||
 						        CHECK_STATE(lsGetObjectState
-						                    (ActionData
-						                     (PD.action,
-						                      ActionClose *)->ItemId),
+						                    (((ActionCloseNode *)PD.action)->ItemId),
 						                    Const_tcOPEN_CLOSE_BIT)) {
 							if (i < BurglarsNr) {
 								PD.currLoudness[i] =
 								    PLANING_LOUDNESS_OPEN_CLOSE;
 								Search.WorkTime[i]++;
-								lsSetObjectState(ActionData
-								                 (PD.action,
-								                  ActionClose *)->ItemId,
+								lsSetObjectState(((ActionCloseNode *)PD.action)->ItemId,
 								                 Const_tcIN_PROGRESS_BIT, 1);
 
 #ifndef PLAN_IS_PERFECT
 								if (!(Search.EscapeBits & FAHN_ALARM_ALARM)
 								        &&
-								        tcAlarmByTouch(ActionData
-								                       (PD.action,
-								                        ActionUse *)->
+								        tcAlarmByTouch(((ActionUseNode *)PD.action)->
 								                       ItemId)) {
 									Search.DeriTime += PLANING_DERI_ALARM;
 									Search.EscapeBits |=
@@ -1456,28 +1118,17 @@ static void plPlayerAction() {
 							if (ActionEnded(plSys)) {
 								if (i < BurglarsNr) {
 									PD.changeCount--;
-									lsSetObjectState(ActionData
-									                 (PD.action,
-									                  ActionClose *)->
+									lsSetObjectState(((ActionCloseNode *)PD.action)->
 									                 ItemId,
 									                 Const_tcIN_PROGRESS_BIT,
 									                 0);
 								}
 
-								lsSetObjectState(ActionData
-								                 (PD.action,
-								                  ActionClose *)->ItemId,
-								                 Const_tcOPEN_CLOSE_BIT, 0);
+								lsSetObjectState(((ActionCloseNode *)PD.action)->ItemId, Const_tcOPEN_CLOSE_BIT, 0);
 
-								plCorrectOpened((LSObjectNode *)
-								                dbGetObject(ActionData
-								                            (PD.action,
-								                             ActionClose
-								                             *)->ItemId), 0);
+								plCorrectOpened((LSObjectNode *) dbGetObject(((ActionCloseNode *)PD.action)->ItemId), 0);
 
-								plRefresh(ActionData
-								          (PD.action,
-								           ActionClose *)->ItemId);
+								plRefresh(((ActionCloseNode *)PD.action)->ItemId);
 								plDisplayInfo();
 							}
 						} else {
@@ -1495,9 +1146,7 @@ static void plPlayerAction() {
 #ifndef PLAN_IS_PERFECT
 					if (tcGuardChecksObject
 					        ((LSObjectNode *)
-					         dbGetObject(ActionData
-					                     (PD.action,
-					                      ActionControl *)->ItemId))) {
+					         dbGetObject(((ActionControlNode *)PD.action)->ItemId))) {
 						if (!(Search.EscapeBits & FAHN_ALARM_GUARD)) {
 							plSay("PLAYER_GUARD_ALARM_2", i);
 							inpSetWaitTicks(INP_AS_FAST_AS_POSSIBLE);
@@ -1512,11 +1161,10 @@ static void plPlayerAction() {
 #endif
 
 					if (((LSObjectNode *)
-					        dbGetObject(ActionData(PD.action, ActionUse *)->
+					        dbGetObject(((ActionUseNode *)PD.action)->
 					                    ItemId))->Type == Item_Stechuhr)
 						tcRefreshTimeClock(PD.bldId,
-						                   ActionData(PD.action,
-						                              ActionUse *)->
+						((ActionUseNode *)PD.action)->
 						                   ItemId);
 					break;
 				}

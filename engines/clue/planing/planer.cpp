@@ -103,7 +103,7 @@ static bool plRemLastAction() {
 
 /* actions */
 static void plActionGo() {
-	Action *action = CurrentAction(plSys);
+	ActionNode *action = CurrentAction(plSys);
 
 	plMessage("WALK", PLANING_MSG_REFRESH);
 
@@ -138,9 +138,7 @@ static void plActionGo() {
 
 				if (!lsInitScrollLandScape(direction, LS_SCROLL_PREPARE)) {
 					if (!action || (action->Type != ACTION_GO)) {
-						if ((action =
-						            InitAction(plSys, ACTION_GO, (uint32) direction, 0,
-						                       0)))
+						if ((action = InitAction(plSys, ACTION_GO, (uint32) direction, 0, 0)))
 							PlanChanged = true;
 						else {
 							plSay("PLANING_END", CurrentPerson);
@@ -151,9 +149,8 @@ static void plActionGo() {
 						}
 					}
 
-					if (ActionData(action, ActionGo *)->Direction ==
-					        (uint16) direction)
-						IncCurrentTimer(plSys, 1, 1);
+					if (((ActionGoNode *) action)->Direction == (uint16) direction)
+						IncCurrentTimer(plSys, 1, true);
 					else {
 						if ((action = InitAction(plSys, ACTION_GO, direction, 0, 1)))
 							PlanChanged = true;
@@ -259,15 +256,11 @@ static void plActionWait() {
 			inpTurnESC(true);
 
 			if (choice2) {
-				if (InitAction
-				        (plSys, ACTION_WAIT, 0, 0,
-				         choice2 * PLANING_CORRECT_TIME)) {
+				if (InitAction(plSys, ACTION_WAIT, 0, 0, choice2 * PLANING_CORRECT_TIME)) {
 					PlanChanged = true;
 
-					livAnimate(Planing_Name[CurrentPerson], ANM_STAND, 0,
-					           0);
-					plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys),
-					       choice2 * PLANING_CORRECT_TIME, 1);
+					livAnimate(Planing_Name[CurrentPerson], ANM_STAND, 0, 0);
+					plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), choice2 * PLANING_CORRECT_TIME, 1);
 					livRefreshAll();
 				} else {
 					plSay("PLANING_END", CurrentPerson);
@@ -330,11 +323,11 @@ static void plLevelDesigner(LSObjectNode *lso) {
 	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_8");
 	bool endLoop = false;
 	byte activ = 0;
-	uint16 originX = lso->us_DestX, originY = lso->us_DestY;
+	uint16 originX = lso->us_DestX;
+	uint16 originY = lso->us_DestY;
 	uint32 area = lsGetActivAreaID();
 
-	uint32 bitset = BIT(PLANING_LD_MOVE) +
-	         BIT(PLANING_LD_REFRESH) + BIT(PLANING_LD_OK) + BIT(PLANING_LD_CANCEL);
+	uint32 bitset = BIT(PLANING_LD_MOVE) + BIT(PLANING_LD_REFRESH) + BIT(PLANING_LD_OK) + BIT(PLANING_LD_CANCEL);
 
 	while (!endLoop) {
 		plDisplayTimer(0, 1);
@@ -421,7 +414,7 @@ static void plLevelDesigner(LSObjectNode *lso) {
 }
 
 static void plActionOpenClose(uint16 what) {
-	NewObjectList<dbObjectNode> *actionList = plGetObjectsList(CurrentPerson, 0);
+	NewObjectList<dbObjectNode> *actionList = plGetObjectsList(CurrentPerson, false);
 
 	if (actionList->isEmpty())
 		plMessage("NO_OBJECTS", PLANING_MSG_WAIT);
@@ -461,13 +454,8 @@ static void plActionOpenClose(uint16 what) {
 							                Tool_Hand) * PLANING_CORRECT_TIME,
 							       1);
 
-							lsSetObjectState(choice1, Const_tcOPEN_CLOSE_BIT,
-							                 ((what == ACTION_OPEN) ? 1 : 0));
-
-							if (what == ACTION_OPEN)
-								plCorrectOpened((LSObjectNode *) dbGetObject(choice1), 1);
-							else
-								plCorrectOpened((LSObjectNode *) dbGetObject(choice1), 0);
+							lsSetObjectState(choice1, Const_tcOPEN_CLOSE_BIT, (what == ACTION_OPEN) ? 1 : 0);
+							plCorrectOpened((LSObjectNode *)dbGetObject(choice1), (what == ACTION_OPEN) ? 1 : 0);
 
 							plRefresh(choice1);
 							livRefreshAll();
@@ -719,7 +707,7 @@ static void plCorrectToolsList(uint32 flags) {
 }
 
 static void plActionUse() {
-	NewObjectList<dbObjectNode> *actionList = plGetObjectsList(CurrentPerson, 0);
+	NewObjectList<dbObjectNode> *actionList = plGetObjectsList(CurrentPerson, false);
 
 	if (CurrentPerson < BurglarsNr) {
 		for (byte i = BurglarsNr; i < PersonsNr; i++)

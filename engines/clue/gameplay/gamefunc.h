@@ -85,6 +85,7 @@ struct NewScene {
 	uint32 NewOrt;          /* Ort der Scene */
 };
 
+#if 0
 struct SceneNode {
 	struct Node Link;
 	struct NewScene ns;
@@ -99,7 +100,7 @@ struct EventNode {
 	struct Node Link;
 	struct NewEvent ne;
 };
-
+#endif
 
 /* Prototypes */
 /* Story */
@@ -123,7 +124,8 @@ extern void RemoveAllEvents();
 /* Specials */
 char *GetName(uint32 EventNr);
 
-
+#if 0
 extern struct NewStory *story;
+#endif
 
 } // End of namespace Clue

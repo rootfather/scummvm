@@ -383,14 +383,14 @@ void lsRefreshAllLootBags() {
 }
 
 void lsGuyInsideSpot(uint16 *us_XPos, uint16 *us_YPos, uint32 *areaId) {
-	List *spots = lsGetSpotList();
+	NewList<SpotNode> *spots = lsGetSpotList();
 
-	for (struct Spot* s = (Spot*)LIST_HEAD(spots); NODE_SUCC(s); s = (Spot *) NODE_SUCC(s)) {
+	for (SpotNode* s = spots->getListHead(); s->_succ; s = (SpotNode *) s->_succ) {
 		if (s->uch_Status & LS_SPOT_ON) {
 			for (int32 i = 0; i < 4; i++) {
-				if ((us_XPos[i] != (uint16) - 1) && (us_YPos[i] != (uint16) - 1)) {
+				if ((us_XPos[i] != (uint16) -1) && (us_YPos[i] != (uint16) -1)) {
 					if (areaId[i] == s->ul_AreaId) {
-						if (((Spot *) s)->p_CurrPos) {
+						if (s->p_CurrPos) {
 							int32 x = s->p_CurrPos->us_XPos;    /* linke, obere */
 							int32 y = s->p_CurrPos->us_YPos;    /* Ecke des Spot! */
 							int32 size = s->us_Size - 4;
@@ -515,17 +515,16 @@ void lsCalcExactSize(LSObjectNode *lso, uint16 *x0, uint16 *y0, uint16 *x1, uint
 	}
 }
 
-void lsInitDoorRefresh(uint32 ObjId)
+void lsInitDoorRefresh(uint32 ObjId) {
 /* copies a background that is covered by a door into a mem buffer */
-{
 	LSObjectNode *lso = (LSObjectNode *)dbGetObject(ObjId);
-	struct LSDoorRefreshNode *drn;
-	byte found = 0;
+	LSDoorRefreshNode *drn;
+	bool found = false;
 
-	for (drn = (struct LSDoorRefreshNode *) LIST_HEAD(ls->p_DoorRefreshList);
-	        NODE_SUCC(drn); drn = (struct LSDoorRefreshNode *) NODE_SUCC(drn))
+	for (drn = ls->p_DoorRefreshList->getListHead(); drn->_succ; drn = (LSDoorRefreshNode *)drn->_succ) {
 		if (drn->lso == lso)
-			found = 1;
+			found = true;
+	}
 
 	if (!found) {
 		uint16 width = lso->uch_Size;
@@ -551,10 +550,9 @@ void lsInitDoorRefresh(uint32 ObjId)
 			        GFX_ROP_BLIT);
 		}
 
-		drn = (LSDoorRefreshNode *) CreateNode(ls->p_DoorRefreshList, sizeof(*drn), NULL);
+		drn = ls->p_DoorRefreshList->createNode(nullptr);
 
 		drn->lso = lso;
-
 		drn->us_XOffset = ls->us_DoorXOffset;
 		drn->us_YOffset = ls->us_DoorYOffset;
 
@@ -568,12 +566,11 @@ void lsInitDoorRefresh(uint32 ObjId)
 	}
 }
 
-void lsDoDoorRefresh(LSObjectNode *lso)
+void lsDoDoorRefresh(LSObjectNode *lso) {
 /* restore the background of a door from a mem buffer */
-{
-	struct LSDoorRefreshNode *drn;
+	LSDoorRefreshNode *drn;
 
-	for (drn = (LSDoorRefreshNode *)LIST_HEAD(ls->p_DoorRefreshList); NODE_SUCC(drn); drn = (LSDoorRefreshNode *)NODE_SUCC(drn)) {
+	for (drn = ls->p_DoorRefreshList->getListHead(); drn->_succ; drn = (LSDoorRefreshNode *)drn->_succ) {
 		if (drn->lso == lso)
 			break;
 	}

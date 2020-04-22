@@ -193,7 +193,7 @@ void plWork(uint32 current) {
 	}
 }
 
-NewObjectList<dbObjectNode> *plGetObjectsList(uint32 current, byte addLootBags) {
+NewObjectList<dbObjectNode> *plGetObjectsList(uint32 current, bool addLootBags) {
 	NewObjectList<dbObjectNode> *list = nullptr;
 
 	uint32 areaId = livWhereIs(Planing_Name[current]);
@@ -275,7 +275,7 @@ void plInsertGuard(NewObjectList<dbObjectNode> *list, uint32 current, uint32 gua
 }
 
 bool plObjectInReach(uint32 current, uint32 objId) {
-	NewObjectList<dbObjectNode> *actionList = plGetObjectsList(current, 1);
+	NewObjectList<dbObjectNode> *actionList = plGetObjectsList(current, true);
 	bool ret = false;
 
 	for (byte i = BurglarsNr; i < PersonsNr; i++)

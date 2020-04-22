@@ -196,23 +196,21 @@ uint16 lsGetFloorIndex(uint16 x, uint16 y) {
 	return (uint16)(line * fpl + row);
 }
 
-static void lsExtendGetList(NewObjectList<dbObjectNode> *list, uint32 nr, uint32 type, void *data) {
-	error("STUB - lsExtendGetList");
-#if 0
-	dbObjectNode *newNode =
-	    dbAddObjectNode(list, type, OLF_INCLUDE_NAME | OLF_INSERT_STAR);
+static void lsExtendGetList(NewObjectList<dbObjectNode> * list, uint32 nr, uint32 type, dbObjectNode * data) {
+	dbAddObjectNode(list, type, OLF_INCLUDE_NAME | OLF_INSERT_STAR);
+	dbObjectNode* newNode = list->getListTail();
 
 	newNode->_nr = nr;
 	newNode->_type = type;
-	newNode->_data = data;
-#endif
+	dbObjectMapper(newNode, data);
 }
 
 NewObjectList<dbObjectNode> *lsGetObjectsByList(uint16 x, uint16 y, uint16 width, uint16 height,
-                         byte showInvisible, byte addLootBags) {
+                         byte showInvisible, bool addLootBags) {
 	NewObjectList<dbObjectNode> *list = new NewObjectList<dbObjectNode>;
 
 	/* diverse Objekte eintragen */
+	/* enter various objects */
 	for (dbObjectNode* node = ls->p_ObjectRetrieval->getListHead(); node->_succ; node = (dbObjectNode *) node->_succ) {
 		LSObjectNode *lso = (LSObjectNode *) node;
 
@@ -223,6 +221,7 @@ NewObjectList<dbObjectNode> *lsGetObjectsByList(uint16 x, uint16 y, uint16 width
 	}
 
 	/* Ausnahme: Beutesack eintragen! */
+	/* Exception: enter the loot bag! */
 	if (addLootBags) {
 		for (uint32 i = 9701; i <= 9708; i++) {
 			LSObjectNode *lso = (LSObjectNode *)dbGetObject(i);
