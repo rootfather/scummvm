@@ -483,88 +483,67 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 						}
 						break;
 
-					case ACTION_OPEN:
+					case ACTION_OPEN: {
+						ActionOpenNode* curAct = (ActionOpenNode*)action;
+
 						if (ActionStarted(plSys)) {
 							if (i < BurglarsNr) {
 								if (direction)
-									lsSetObjectState(((ActionOpenNode *)action)->ItemId,
-									                 Const_tcIN_PROGRESS_BIT,
-									                 1);
+									lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 1);
 								else
-									lsSetObjectState(((ActionOpenNode *)action)->ItemId,
-									                 Const_tcIN_PROGRESS_BIT,
-									                 0);
+									lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 0);
 							}
 						}
 
 						if (ActionEnded(plSys)) {
 							if (direction) {
 								if (i < BurglarsNr)
-									lsSetObjectState(((ActionOpenNode *)action)->ItemId,
-									                 Const_tcIN_PROGRESS_BIT,
-									                 0);
+									lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 0);
 
-								lsSetObjectState(((ActionOpenNode *)action)->ItemId, Const_tcOPEN_CLOSE_BIT, 1);
-
-								plCorrectOpened((LSObjectNode *)dbGetObject(((ActionOpenNode *)action)->ItemId), 1);
+								lsSetObjectState(curAct->ItemId, Const_tcOPEN_CLOSE_BIT, 1);
+								plCorrectOpened((LSObjectNode*)dbGetObject(curAct->ItemId), 1);
 							} else {
 								if (i < BurglarsNr)
-									lsSetObjectState(((ActionOpenNode *)action)->ItemId,
-									                 Const_tcIN_PROGRESS_BIT,
-									                 1);
+									lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 1);
 
-								lsSetObjectState(((ActionOpenNode *)action)->ItemId,
-								                 Const_tcOPEN_CLOSE_BIT, 0);
-
-								plCorrectOpened((LSObjectNode *)dbGetObject(((ActionOpenNode *)action)->ItemId), 0);
+								lsSetObjectState(curAct->ItemId, Const_tcOPEN_CLOSE_BIT, 0);
+								plCorrectOpened((LSObjectNode*)dbGetObject(curAct->ItemId), 0);
 							}
 
-							plRefresh(((ActionOpenNode *)action)->ItemId);
+							plRefresh(curAct->ItemId);
+						}
 						}
 						break;
 
-					case ACTION_CLOSE:
+					case ACTION_CLOSE: {
+						ActionOpenNode* curAct = (ActionOpenNode*)action;
+
 						if (ActionStarted(plSys)) {
 							if (i < BurglarsNr) {
 								if (direction)
-									lsSetObjectState(((ActionCloseNode *)action)->
-									                 ItemId,
-									                 Const_tcIN_PROGRESS_BIT,
-									                 1);
+									lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 1);
 								else
-									lsSetObjectState(((ActionCloseNode *)action)->
-									                 ItemId,
-									                 Const_tcIN_PROGRESS_BIT,
-									                 0);
+									lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 0);
 							}
 						}
 
 						if (ActionEnded(plSys)) {
 							if (direction) {
 								if (i < BurglarsNr)
-									lsSetObjectState(((ActionCloseNode *)action)->ItemId,
-									                 Const_tcIN_PROGRESS_BIT,
-									                 0);
+									lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 0);
 
-								lsSetObjectState(((ActionCloseNode *)action)->ItemId,
-								                 Const_tcOPEN_CLOSE_BIT, 0);
-
-								plCorrectOpened((LSObjectNode *)
-								                dbGetObject(((ActionCloseNode *)action)->ItemId), 0);
+								lsSetObjectState(curAct->ItemId, Const_tcOPEN_CLOSE_BIT, 0);
+								plCorrectOpened((LSObjectNode*)dbGetObject(curAct->ItemId), 0);
 							} else {
 								if (i < BurglarsNr)
-									lsSetObjectState(((ActionCloseNode *)action)->ItemId,
-									                 Const_tcIN_PROGRESS_BIT,
-									                 1);
+									lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 1);
 
-								lsSetObjectState(((ActionCloseNode *)action)->ItemId,
-								                 Const_tcOPEN_CLOSE_BIT, 1);
-
-								plCorrectOpened((LSObjectNode *)
-								                dbGetObject(((ActionCloseNode *)action)->ItemId), 1);
+								lsSetObjectState(curAct->ItemId, Const_tcOPEN_CLOSE_BIT, 1);
+								plCorrectOpened((LSObjectNode*)dbGetObject(curAct->ItemId), 1);
 							}
 
-							plRefresh(((ActionCloseNode *)action)->ItemId);
+							plRefresh(curAct->ItemId);
+						}
 						}
 						break;
 					}
