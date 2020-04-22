@@ -230,18 +230,32 @@ void SaveHandler(Common::Stream *fh, System *sys, uint32 id) {
 			break;
 
 		case ACTION_USE:
-		case ACTION_TAKE:
-		case ACTION_DROP:
 			dskSetLine_U16(fh, ((ActionUseNode *)a)->ToolId);
 			dskSetLine_U16(fh, ((ActionUseNode *)a)->ItemId);
 			break;
+		case ACTION_TAKE:
+			dskSetLine_U16(fh, ((ActionTakeNode *)a)->LootId);
+			dskSetLine_U16(fh, ((ActionTakeNode *)a)->ItemId);
+			break;
+		case ACTION_DROP:
+			dskSetLine_U16(fh, ((ActionDropNode *)a)->LootId);
+			dskSetLine_U16(fh, ((ActionDropNode *)a)->ItemId);
+			break;
 
 		case ACTION_OPEN:
-		case ACTION_CLOSE:
-		case ACTION_CONTROL:
-		case ACTION_SIGNAL:
-		case ACTION_WAIT_SIGNAL:
 			dskSetLine_U16(fh, ((ActionOpenNode *)a)->ItemId);
+			break;
+		case ACTION_CLOSE:
+			dskSetLine_U16(fh, ((ActionCloseNode *)a)->ItemId);
+			break;
+		case ACTION_CONTROL:
+			dskSetLine_U16(fh, ((ActionControlNode *)a)->ItemId);
+			break;
+		case ACTION_SIGNAL:
+			dskSetLine_U16(fh, ((ActionSignalNode *)a)->ReceiverId);
+			break;
+		case ACTION_WAIT_SIGNAL:
+			dskSetLine_U16(fh, ((ActionWaitSignalNode *)a)->SenderId);
 			break;
 		}
 	}
@@ -276,24 +290,52 @@ bool LoadHandler(Common::Stream *fh, System *sys, uint32 id) {
 								dskGetLine_U16(fh, &value16);
 								((ActionGoNode *)a)->Direction = value16;
 								break;
-
-							case ACTION_USE:
-							case ACTION_TAKE:
-							case ACTION_DROP:
+							case ACTION_USE: {
+								ActionUseNode *curAct = (ActionUseNode *)a;
 								dskGetLine_U32(fh, &value32);
-								((ActionUseNode *)a)->ToolId = value32;
+								curAct->ToolId = value32;
 
 								dskGetLine_U32(fh, &value32);
-								((ActionUseNode *)a)->ItemId = value32;
+								curAct->ItemId = value32;
+								}
 								break;
+							case ACTION_TAKE: {
+								ActionTakeNode *curAct = (ActionTakeNode *)a;
+								dskGetLine_U32(fh, &value32);
+								curAct->LootId = value32;
 
+								dskGetLine_U32(fh, &value32);
+								curAct->ItemId = value32;
+								}
+								break;
+							case ACTION_DROP: {
+								ActionDropNode *curAct= (ActionDropNode *)a;
+								dskGetLine_U32(fh, &value32);
+								curAct->LootId = value32;
+
+								dskGetLine_U32(fh, &value32);
+								curAct->ItemId = value32;
+								break;
+								}
 							case ACTION_OPEN:
-							case ACTION_CLOSE:
-							case ACTION_CONTROL:
-							case ACTION_WAIT_SIGNAL:
-							case ACTION_SIGNAL:
 								dskGetLine_U32(fh, &value32);
 								((ActionOpenNode *)a)->ItemId = value32;
+								break;
+							case ACTION_CLOSE:
+								dskGetLine_U32(fh, &value32);
+								((ActionCloseNode *)a)->ItemId = value32;
+								break;
+							case ACTION_CONTROL:
+								dskGetLine_U32(fh, &value32);
+								((ActionControlNode *)a)->ItemId = value32;
+								break;
+							case ACTION_WAIT_SIGNAL:
+								dskGetLine_U32(fh, &value32);
+								((ActionWaitSignalNode *)a)->SenderId = value32;
+								break;
+							case ACTION_SIGNAL:
+								dskGetLine_U32(fh, &value32);
+								((ActionSignalNode *)a)->ReceiverId = value32;
 								break;
 							}
 						} else
@@ -374,20 +416,38 @@ ActionNode *InitAction(System *sys, uint16 type, uint32 data1, uint32 data2, uin
 		case ACTION_GO:
 			((ActionGoNode *)a)->Direction = (uint16) data1;
 			break;
-
-		case ACTION_USE:
-		case ACTION_TAKE:
-		case ACTION_DROP:
-			((ActionUseNode *)a)->ItemId = data1;
-			((ActionUseNode *)a)->ToolId = data2;
+		case ACTION_USE: {
+			ActionUseNode *curAct = (ActionUseNode *)a;
+			curAct->ItemId = data1;
+			curAct->ToolId = data2;
+			}
 			break;
-
+		case ACTION_TAKE: {
+			ActionTakeNode *curAct = (ActionTakeNode *)a;
+			curAct->ItemId = data1;
+			curAct->LootId = data2;
+			}
+			break;
+		case ACTION_DROP: {
+			ActionDropNode *curAct = (ActionDropNode *)a;
+			curAct->ItemId = data1;
+			curAct->LootId = data2;
+			}
+			break;
 		case ACTION_SIGNAL:
+			((ActionSignalNode *)a)->ReceiverId = data1;
+			break;
 		case ACTION_WAIT_SIGNAL:
+			((ActionWaitSignalNode *)a)->SenderId = data1;
+			break;
 		case ACTION_OPEN:
-		case ACTION_CLOSE:
-		case ACTION_CONTROL:
 			((ActionOpenNode *)a)->ItemId = data1;
+			break;
+		case ACTION_CLOSE:
+			((ActionCloseNode *)a)->ItemId = data1;
+			break;
+		case ACTION_CONTROL:
+			((ActionControlNode *)a)->ItemId = data1;
 			break;
 		}
 	}
@@ -608,7 +668,7 @@ void CloseSignal(plSignalNode *s) {
 plSignalNode *IsSignal(System *sys, uint32 sender, uint32 receiver) {
 	if (sys) {
 		for (plSignalNode *s = sys->Signals->getListHead(); s->_succ; s = (plSignalNode *) s->_succ) {
-			if ((s->SenderId == sender) && (s->ReceiverId == receiver))
+			if (s->SenderId == sender && s->ReceiverId == receiver)
 				return s;
 		}
 	}
