@@ -35,7 +35,7 @@ static uint16 plXMoveSync(uint32 id, uint16 xpos, byte animate, byte direction, 
 				           -1 * LS_STD_SCROLL_SPEED, 0);
 
 			if ((animate & PLANING_ANIMATE_FOCUS) && (id == CurrentPerson))
-				lsScrollLandScape((byte) - 1);
+				lsScrollLandScape((byte) -1);
 
 			xpos = (uint16)(xpos - LS_STD_SCROLL_SPEED);
 			break;
@@ -46,7 +46,7 @@ static uint16 plXMoveSync(uint32 id, uint16 xpos, byte animate, byte direction, 
 				           1 * LS_STD_SCROLL_SPEED, 0);
 
 			if ((animate & PLANING_ANIMATE_FOCUS) && (id == CurrentPerson))
-				lsScrollLandScape((byte) - 1);
+				lsScrollLandScape((byte) -1);
 
 			xpos = (uint16)(xpos + LS_STD_SCROLL_SPEED);
 			break;
@@ -71,7 +71,7 @@ static uint16 plXMoveSync(uint32 id, uint16 xpos, byte animate, byte direction, 
 				           1 * LS_STD_SCROLL_SPEED, 0);
 
 			if ((animate & PLANING_ANIMATE_FOCUS) && (id == CurrentPerson))
-				lsScrollLandScape((byte) - 1);
+				lsScrollLandScape((byte) -1);
 
 			xpos = (uint16)(xpos + LS_STD_SCROLL_SPEED);
 			break;
@@ -82,7 +82,7 @@ static uint16 plXMoveSync(uint32 id, uint16 xpos, byte animate, byte direction, 
 				           -1 * LS_STD_SCROLL_SPEED, 0);
 
 			if ((animate & PLANING_ANIMATE_FOCUS) && (id == CurrentPerson))
-				lsScrollLandScape((byte) - 1);
+				lsScrollLandScape((byte) -1);
 
 			xpos = (uint16)(xpos - LS_STD_SCROLL_SPEED);
 			break;
@@ -225,164 +225,132 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 					}
 
 					switch (action->Type) {
-					case ACTION_GO:
-						xpos = plXMoveSync(i, xpos, animate, direction, ((ActionGoNode *)action)->Direction);
-						ypos = plYMoveSync(i, ypos, animate, direction, ((ActionGoNode *)action)->Direction);
+					case ACTION_GO: {
+						ActionGoNode *curAct = (ActionGoNode *)action;
+						xpos = plXMoveSync(i, xpos, animate, direction, curAct->Direction);
+						ypos = plYMoveSync(i, ypos, animate, direction, curAct->Direction);
+						}
 						break;
 
-					case ACTION_USE:
+					case ACTION_USE: {
+						ActionUseNode *curAct = (ActionUseNode *)action;
 						if (ActionStarted(plSys)) {
-							if (plIsStair(((ActionUseNode *)action)->ItemId)) {
+							if (plIsStair(curAct->ItemId)) {
 								if (direction)
 									livLivesInArea(Planing_Name[i],
-										StairConnectsGet(((ActionUseNode *)action)->ItemId,
-										((ActionUseNode *)action)->ItemId));
+										StairConnectsGet(curAct->ItemId, curAct->ItemId));
 								else
-									livLivesInArea(Planing_Name[i], ((ActionUseNode *)action)->ToolId);
-							} else if (dbIsObject(((ActionUseNode *)action)->ItemId, Object_Police)) {
-								PoliceNode *pol = (PoliceNode *) dbGetObject(((ActionUseNode *)action)->ItemId);
+									livLivesInArea(Planing_Name[i], curAct->ToolId);
+							}
+							else if (dbIsObject(curAct->ItemId, Object_Police)) {
+								PoliceNode *pol = (PoliceNode *)dbGetObject(curAct->ItemId);
 
 								if (direction)
 									Planing_Guard[pol->LivingID - BurglarsNr] = 1;
 								else
 									Planing_Guard[pol->LivingID - BurglarsNr] = 0;
-							} else {
+							}
+							else {
 								if (direction)
-									lsSetObjectState(((ActionUseNode *)action)->ItemId,
-									                 Const_tcIN_PROGRESS_BIT,
-									                 1);
+									lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 1);
 								else
-									lsSetObjectState(((ActionUseNode *)action)->
-									                 ItemId,
-									                 Const_tcIN_PROGRESS_BIT,
-									                 0);
+									lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 0);
 							}
 						}
 
 						if (ActionEnded(plSys)) {
-							if (plIsStair(((ActionUseNode *)action)->ItemId)) {
+							if (plIsStair(curAct->ItemId)) {
 								if (i == CurrentPerson) {
 									if (direction)
-										lastAreaId =
-										    StairConnectsGet(((ActionUseNode *)action)->ItemId,
-										((ActionUseNode *)action)->ItemId);
+										lastAreaId = StairConnectsGet(curAct->ItemId, curAct->ItemId);
 									else
-										lastAreaId = ((ActionUseNode *)action)->ToolId;
+										lastAreaId = curAct->ToolId;
 								}
-							} else if (dbIsObject(((ActionUseNode *)action)->ItemId, Object_Police)) {
-								PoliceNode *pol = (PoliceNode *) dbGetObject(((ActionUseNode *)action)->ItemId);
+							}
+							else if (dbIsObject(curAct->ItemId, Object_Police)) {
+								PoliceNode *pol = (PoliceNode *)dbGetObject(curAct->ItemId);
 
 								if (direction)
 									Planing_Guard[pol->LivingID - BurglarsNr] = 2;
 								else
 									Planing_Guard[pol->LivingID - BurglarsNr] = 1;
-							} else {
+							}
+							else {
 								if (direction) {
-									lsSetObjectState(((ActionUseNode *)action)->
-									                 ItemId,
-									                 Const_tcIN_PROGRESS_BIT,
-									                 0);
+									lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 0);
 
-									if (!plIgnoreLock(((ActionUseNode *)action)->ItemId)) {
-										if (!CHECK_STATE
-										        (lsGetObjectState
-										         (((ActionUseNode *)action)->ItemId),
-										         Const_tcLOCK_UNLOCK_BIT)) {
-											lsSetObjectState(((ActionUseNode *)action)->ItemId,
-											                 Const_tcLOCK_UNLOCK_BIT,
-											                 1);
+									if (!plIgnoreLock(curAct->ItemId)) {
+										if (!CHECK_STATE(lsGetObjectState(curAct->ItemId), Const_tcLOCK_UNLOCK_BIT)) {
+											lsSetObjectState(curAct->ItemId, Const_tcLOCK_UNLOCK_BIT, 1);
 
-											if (((ToolNode *)
-											        dbGetObject(((ActionUseNode *)action)->ToolId))->
-											        Effect & Const_tcTOOL_OPENS) {
-												lsSetObjectState(((ActionUseNode *)action)->ItemId,
-												                 Const_tcOPEN_CLOSE_BIT,
-												                 1);
-												plCorrectOpened((LSObjectNode *)
-												                dbGetObject(((ActionUseNode *)action)->ItemId), 1);
+											if (((ToolNode *)dbGetObject(curAct->ToolId))->Effect & Const_tcTOOL_OPENS) {
+												lsSetObjectState(curAct->ItemId, Const_tcOPEN_CLOSE_BIT, 1);
+												plCorrectOpened((LSObjectNode *)dbGetObject(curAct->ItemId), 1);
 											}
-										} else {
-											if ((((LSObjectNode *)
-											        dbGetObject(((ActionUseNode *)action)->ItemId))->Type == Item_Fenster)) {
-												lsWalkThroughWindow((LSObjectNode *)
-												                    dbGetObject
-												                    (((ActionUseNode *)action)->ItemId),
-												                    xpos, ypos,
-												                    &xpos,
-												                    &ypos);
-												livSetPos(Planing_Name[i], xpos,
-												          ypos);
+										}
+										else {
+											if (((LSObjectNode *)dbGetObject(curAct->ItemId))->Type == Item_Fenster) {
+												lsWalkThroughWindow(
+													(LSObjectNode *)dbGetObject(curAct->ItemId),
+													xpos, ypos,
+													&xpos, &ypos);
+												livSetPos(Planing_Name[i], xpos, ypos);
 
 												livRefreshAll();
 											}
 										}
 									}
-								} else {
-									lsSetObjectState(((ActionUseNode *)action)->ItemId,
-									                 Const_tcIN_PROGRESS_BIT,
-									                 1);
+								}
+								else {
+									lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 1);
 
-									if (!plIgnoreLock(((ActionUseNode *)action)->ItemId)) {
-										if (CHECK_STATE
-										        (lsGetObjectState
-										         (((ActionUseNode *)action)->ItemId),
-										         Const_tcLOCK_UNLOCK_BIT)) {
-											if ((((LSObjectNode *)
-											        dbGetObject(((ActionUseNode *)action)->ItemId))->Type == Item_Fenster)
-											        && !((ActionUseNode *)action)->ToolId) {
-												lsWalkThroughWindow((LSObjectNode *)
-												                    dbGetObject
-												                    (((ActionUseNode *)action)->
-												                     ItemId),
-												                    xpos, ypos,
-												                    &xpos,
-												                    &ypos);
-												livSetPos(Planing_Name[i], xpos,
-												          ypos);
+									if (!plIgnoreLock(curAct->ItemId)) {
+										if (CHECK_STATE(lsGetObjectState(curAct->ItemId), Const_tcLOCK_UNLOCK_BIT)) {
+											if (((LSObjectNode *)dbGetObject(curAct->ItemId))->Type == Item_Fenster && !curAct->ToolId) {
+												lsWalkThroughWindow(
+													(LSObjectNode *)dbGetObject(curAct->ItemId),
+													xpos, ypos,
+													&xpos, &ypos);
+												livSetPos(Planing_Name[i], xpos, ypos);
 
 												livRefreshAll();
-											} else {
-												lsSetObjectState(((ActionUseNode *)action)->ItemId,
-												                 Const_tcLOCK_UNLOCK_BIT,
-												                 0);
+											}
+											else {
+												lsSetObjectState(curAct->ItemId, Const_tcLOCK_UNLOCK_BIT, 0);
 
-												if (((ToolNode *)
-												        dbGetObject(((ActionUseNode *)action)->ToolId))->Effect & Const_tcTOOL_OPENS) {
-													lsSetObjectState(((ActionUseNode *)action)->ItemId,
-													                 Const_tcOPEN_CLOSE_BIT,
-													                 0);
-													plCorrectOpened((LSObjectNode *)
-													                dbGetObject
-													                (((ActionUseNode *)action)->ItemId),
-													                0);
+												if (((ToolNode *)dbGetObject(curAct->ToolId))->Effect & Const_tcTOOL_OPENS) {
+													lsSetObjectState(curAct->ItemId, Const_tcOPEN_CLOSE_BIT, 0);
+													plCorrectOpened((LSObjectNode *)dbGetObject(curAct->ItemId), 0);
 												}
 											}
 										}
 									}
 								}
 
-								if (plIgnoreLock(((ActionUseNode *)action)->ItemId)) {
-									uint32 state = lsGetObjectState(((ActionUseNode *)action)->ItemId);
+								if (plIgnoreLock(curAct->ItemId)) {
+									uint32 state = lsGetObjectState(curAct->ItemId);
 
 									if (CHECK_STATE(state, Const_tcON_OFF)) {
-										lsSetObjectState(((ActionUseNode *)action)->ItemId, Const_tcON_OFF, 0);    /* on setzen  */
+										lsSetObjectState(curAct->ItemId, Const_tcON_OFF, 0);    /* on setzen  */
 
-										if (plIgnoreLock(((ActionUseNode *)action)->ItemId) == PLANING_POWER) {
-											lsSetSpotStatus(((ActionUseNode *)action)->ItemId, LS_SPOT_ON);
+										if (plIgnoreLock(curAct->ItemId) == PLANING_POWER) {
+											lsSetSpotStatus(curAct->ItemId, LS_SPOT_ON);
 											lsShowAllSpots(CurrentTimer(plSys), LS_ALL_VISIBLE_SPOTS);
 										}
-									} else {
-										lsSetObjectState(((ActionUseNode *)action)->ItemId, Const_tcON_OFF, 1);    /* off setzen */
+									}
+									else {
+										lsSetObjectState(curAct->ItemId, Const_tcON_OFF, 1);    /* off setzen */
 
-										if (plIgnoreLock(((ActionUseNode *)action)->ItemId) == PLANING_POWER) {
-											lsSetSpotStatus(((ActionUseNode *)action)->ItemId, LS_SPOT_OFF);
+										if (plIgnoreLock(curAct->ItemId) == PLANING_POWER) {
+											lsSetSpotStatus(curAct->ItemId, LS_SPOT_OFF);
 											lsShowAllSpots(CurrentTimer(plSys), LS_ALL_INVISIBLE_SPOTS);
 										}
 									}
 								}
 
-								plRefresh(((ActionUseNode *)action)->ItemId);
+								plRefresh(curAct->ItemId);
 							}
+						}
 						}
 						break;
 
