@@ -387,8 +387,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 								uint32 weightLoot = ((LootNode*)dbGetObject(curAct->LootId))->Weight;
 								uint32 volumeLoot = ((LootNode*)dbGetObject(curAct->LootId))->Volume;
 
-								lsSetObjectState(curAct->ItemId,
-									Const_tcIN_PROGRESS_BIT, 1);
+								lsSetObjectState(curAct->ItemId, Const_tcIN_PROGRESS_BIT, 1);
 
 								if (curAct->ItemId >= 9701 && curAct->ItemId <= 9708) {
 									lsAddLootBag(xpos, ypos, curAct->ItemId - 9700);
@@ -613,8 +612,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 	if (lastAreaId && (lastAreaId != lsGetActivAreaID())) {
 		lsDoneActivArea(lastAreaId);
 		lsInitActivArea(lastAreaId, livGetXPos(Planing_Name[CurrentPerson]),
-		                livGetYPos(Planing_Name[CurrentPerson]),
-		                Planing_Name[CurrentPerson]);
+		                livGetYPos(Planing_Name[CurrentPerson]), Planing_Name[CurrentPerson]);
 
 		if (lsGetStartArea() == lsGetActivAreaID())
 			lsShowEscapeCar();  /* Auto neu zeichnen */
