@@ -86,7 +86,8 @@ void tcBuyCar() {
 
 			ShowMenuBackground();
 
-			if (ChoiceOk(choice = Bubble((NewList<NewNode> *)bubble, 0, 0, 0), GET_OUT, bubble)) {
+			choice = Bubble((NewList<NewNode> *)bubble, 0, 0, 0);
+			if (ChoiceOk(choice, GET_OUT, bubble)) {
 				CarNode *matts_car = (CarNode *) dbGetObject(bubble->getNthNode((uint32) choice)->_nr);
 
 				SetCarColors((byte) matts_car->ColorIndex);
@@ -171,7 +172,7 @@ void tcColorCar(CarNode *car) {
 	NewList<NewNode> *bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "LACKIEREN", (uint32) costs, NULL);
 
 	SetPictID(marc->PictID);
-	Bubble(bubble, 0, 0, 0);
+	Bubble(bubble, 0, nullptr, 0);
 	bubble->removeList();
 
 	if (Say(BUSINESS_TXT, 0, MATT_PICTID, "LACKIEREN_ANT") == 0) {
@@ -187,7 +188,7 @@ void tcColorCar(CarNode *car) {
 			colors->createNode(exp);
 			// 
 
-			byte choice = Bubble(colors, (byte) car->ColorIndex, 0, 0);
+			byte choice = Bubble(colors, (byte) car->ColorIndex, nullptr, 0);
 			if (ChoiceOkHack(choice, GET_OUT, colors)) {
 				car->ColorIndex = (ColorE) choice;
 
@@ -226,7 +227,7 @@ void tcSellCar(uint32 ObjectID) {
 		bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "ANGEBOT", tcRGetCarValue(car), tcRGetCarAge(car), offer, NULL);
 
 	SetPictID(marc->PictID);
-	Bubble(bubble, 0, 0, 0);
+	Bubble(bubble, 0, nullptr, 0);
 	bubble->removeList();
 
 	if ((Say(BUSINESS_TXT, 0, MATT_PICTID, "VERKAUF")) == 0) {
@@ -363,7 +364,8 @@ uint32 tcChooseCar(uint32 backgroundNr) {
 
 			Say(BUSINESS_TXT, 0, 7, "ES GEHT UM..");
 
-			if (ChoiceOk(choice = Bubble((NewList<NewNode>*)bubble, 0, 0, 0), GET_OUT, bubble))
+			choice = Bubble((NewList<NewNode>*)bubble, 0, nullptr, 0);
+			if (ChoiceOk(choice, GET_OUT, bubble))
 				carID = bubble->getNthNode((uint32) choice)->_nr;
 			else
 				choice = GET_OUT;
@@ -389,7 +391,7 @@ void tcCarGeneralOverhoul(CarNode *car) {
 
 	NewList<NewNode> *bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "GENERAL_OVERHOUL",
 	                      (uint32)((tcCostsPerTotalRepair(car) * 255) / 8), NULL);
-	Bubble(bubble, 0, 0, 0);
+	Bubble(bubble, 0, nullptr, 0);
 	bubble->removeList();
 
 	byte choice = Say(BUSINESS_TXT, 0, MATT_PICTID, "GENERAL_OVERHOUL_QUEST");

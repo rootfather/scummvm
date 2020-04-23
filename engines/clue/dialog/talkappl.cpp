@@ -33,7 +33,7 @@ void tcJobOffer(PersonNode *p) {
 	NewList<NewNode> *bubble = g_clue->_txtMgr->goKeyAndInsert(BUSINESS_TXT, "JOB_ANSWER", (uint32) part, NULL);
 
 	SetPictID(p->PictID);
-	Bubble(bubble, 0, 0, 0);
+	Bubble(bubble, 0, nullptr, 0);
 	bubble->removeList();
 
 	choice = Say(BUSINESS_TXT, 0, MATT_PICTID, "NEW_THEEF");
@@ -79,7 +79,7 @@ void tcPrisonAnswer(PersonNode *p) {
 
 	SetPictID(p->PictID);
 	bubble->createNode(line);
-	Bubble(bubble, 0, 0, 0);
+	Bubble(bubble, 0, nullptr, 0);
 
 	source->removeList();
 	bubble->removeList();
@@ -91,7 +91,7 @@ void tcAbilityAnswer(uint32 personID) {
 	Common::String name = dbGetObjectName(personID);
 	NewList<NewNode> *bubble = g_clue->_txtMgr->goKey(ABILITY_TXT, name.c_str());
 	SetPictID(p->PictID);
-	Bubble(bubble, 0, 0, 0);
+	Bubble(bubble, 0, nullptr, 0);
 
 	bubble->removeList();
 }

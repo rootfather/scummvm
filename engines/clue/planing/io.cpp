@@ -150,7 +150,7 @@ byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 				PlanList->createNode(exp);
 				// 
 
-				int i = Bubble((NewList<NewNode>*)PlanList, 0, NULL, 0);
+				int i = Bubble((NewList<NewNode>*)PlanList, 0, nullptr, 0);
 
 				if (ChoiceOkHack(i, GET_OUT, (NewList<NewNode>*)PlanList)) {
 					IODataNode *data = PlanList->getNthNode(i);
@@ -247,12 +247,12 @@ void plLoad(uint32 objId) {
 			grdDo(fh, plSys, PersonsList, BurglarsNr, PersonsNr,
 			      GUARDS_DO_LOAD);
 		else {
-			NewList<NewNode> *l = NULL;
+			NewList<NewNode> *l = nullptr;
 			bool goon = true;
 
 			if ((l = LoadSystem(fh, plSys))) {
 				inpTurnESC(false);
-				Bubble(l, 0, NULL, 0);
+				Bubble(l, 0, nullptr, 0);
 				inpTurnESC(true);
 				l->removeList();
 

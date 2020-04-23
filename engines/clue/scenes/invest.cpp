@@ -52,7 +52,7 @@ void Investigate(const char *location) {
 		if (buiID == Building_Buckingham_Palace) {
 			NewList<NewNode> *bubble_l = g_clue->_txtMgr->goKey(INVESTIGATIONS_TXT, "BuckinghamBeobachtet");
 			SetBubbleType(THINK_BUBBLE);
-			Bubble(bubble_l, 0, 0, 0);
+			Bubble(bubble_l, 0, nullptr, 0);
 			bubble_l->removeList();
 			return;
 		}

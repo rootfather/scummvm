@@ -287,7 +287,7 @@ uint32 tcChooseDriver(uint32 persID) {
 		Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
 		list->expandObjectList(exp);
 
-		byte choice = Bubble((NewList<NewNode>*)list, 0, 0, 0);
+		byte choice = Bubble((NewList<NewNode>*)list, 0, nullptr, 0);
 		if (ChoiceOk(choice, GET_OUT, list)) {
 			uint32 newPersID = list->getNthNode((uint32) choice)->_nr;
 
@@ -353,7 +353,7 @@ uint32 tcChooseEscapeCar(uint32 objID) {
 		Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
 		l1->expandObjectList(exp);
 
-		byte choice = Bubble((NewList<NewNode>*)l1, 0, 0, 0);
+		byte choice = Bubble((NewList<NewNode>*)l1, 0, nullptr, 0);
 		if (ChoiceOk(choice, GET_OUT, l1)) {
 			uint32 newObjID = l1->getNthNode((uint32) choice)->_nr;
 
@@ -489,7 +489,7 @@ void tcRemGuyFromParty() {
 		Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
 		list->expandObjectList(exp);
 
-		byte choice = Bubble((NewList<NewNode>*)list, 0, 0, 0);
+		byte choice = Bubble((NewList<NewNode>*)list, 0, nullptr, 0);
 		if (ChoiceOk(choice, GET_OUT, list)) {
 			uint32 persID = list->getNthNode((uint32) choice)->_nr;
 

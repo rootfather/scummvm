@@ -244,7 +244,7 @@ void DoneParking() {
 			byte choice = 0;
 
 			while (choice != 2) {
-				choice = Bubble(bubble, 0, 0, 0);
+				choice = Bubble(bubble, 0, nullptr, 0);
 
 				switch (choice) {
 				case 0:

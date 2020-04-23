@@ -429,7 +429,7 @@ static void plActionOpenClose(uint16 what) {
 		actionList->expandObjectList(exp);
 		SetPictID(((PersonNode *) dbGetObject(PersonsList->getNthNode(CurrentPerson)->_nr))->PictID);
 
-		uint32 choice1 = Bubble((NewList<NewNode>*)actionList, 0, NULL, 0);
+		uint32 choice1 = Bubble((NewList<NewNode>*)actionList, 0, nullptr, 0);
 
 		if (ChoiceOk(choice1, GET_OUT, actionList)) {
 			choice1 = actionList->getNthNode(choice1)->_nr;
@@ -730,7 +730,7 @@ static void plActionUse() {
 				Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 				actionList->expandObjectList(exp);
 
-				uint32 choice1 = Bubble((NewList<NewNode>*)actionList, 0, NULL, 0);
+				uint32 choice1 = Bubble((NewList<NewNode>*)actionList, 0, nullptr, 0);
 
 				if (ChoiceOk(choice1, GET_OUT, actionList)) {
 					choice1 = actionList->getNthNode(choice1)->_nr;
@@ -787,7 +787,7 @@ static void plActionUse() {
 
 							SetPictID(((PersonNode *)dbGetObject(PersonsList->getNthNode(CurrentPerson)->_nr))->PictID);
 
-							uint32 choice2 = Bubble((NewList<NewNode>*)objList, 0, NULL, 0);
+							uint32 choice2 = Bubble((NewList<NewNode>*)objList, 0, nullptr, 0);
 
 							if (ChoiceOk(choice2, GET_OUT, objList)) {
 								choice2 = objList->getNthNode(choice2)->_nr;
@@ -860,7 +860,7 @@ static void plActionUse() {
 
 									SetPictID(((PersonNode *)dbGetObject(PersonsList->getNthNode(CurrentPerson)->_nr))->PictID);
 
-									uint32 choice2 = Bubble((NewList<NewNode>*)ObjectList, 0, NULL, 0);
+									uint32 choice2 = Bubble((NewList<NewNode>*)ObjectList, 0, nullptr, 0);
 
 									if (ChoiceOk(choice2, GET_OUT, ObjectList)) {
 										choice2 = ObjectList->getNthNode(choice2)->_nr;
@@ -1055,7 +1055,7 @@ static void plActionUse() {
 			Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 			actionList->expandObjectList(exp);
 
-			uint32 choice1 = Bubble((NewList<NewNode>*)actionList, 0, NULL, 0);
+			uint32 choice1 = Bubble((NewList<NewNode>*)actionList, 0, nullptr, 0);
 
 			if (ChoiceOk(choice1, GET_OUT, actionList)) {
 				choice1 = actionList->getNthNode(choice1)->_nr;
@@ -1143,14 +1143,12 @@ static void plAction() {
 
 			if (GamePlayMode & GP_GUARD_DESIGN) {
 				if (PersonsNr > 2)
-					choice1 =
-					    (uint32) Bubble((NewList<NewNode>*)PersonsList, CurrentPerson, NULL, 0);
+					choice1 = (uint32) Bubble((NewList<NewNode>*)PersonsList, CurrentPerson, nullptr, 0);
 				else
 					choice1 = ((CurrentPerson) ? 0 : 1);
 			} else {
 				if (BurglarsNr > 2)
-					choice1 =
-					    (uint32) Bubble((NewList<NewNode>*)BurglarsList, CurrentPerson, NULL, 0);
+					choice1 = (uint32) Bubble((NewList<NewNode>*)BurglarsList, CurrentPerson, nullptr, 0);
 				else
 					choice1 = ((CurrentPerson) ? 0 : 1);
 			}
@@ -1220,7 +1218,7 @@ static void plAction() {
 				Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 				ObjectList->expandObjectList(exp);
 
-				choice1 = Bubble((NewList<NewNode>*)ObjectList, 0, NULL, 0);
+				choice1 = Bubble((NewList<NewNode>*)ObjectList, 0, nullptr, 0);
 
 				if (ChoiceOk(choice1, GET_OUT, ObjectList)) {
 					choice1 = ObjectList->getNthNode(choice1)->_nr;
@@ -1316,7 +1314,7 @@ static void plNoteBook() {
 	while (choice1 != GET_OUT) {
 		SetBubbleType(THINK_BUBBLE);
 
-		choice1 = Bubble(bubble, choice1, 0, 0);
+		choice1 = Bubble(bubble, choice1, nullptr, 0);
 		uint32 choice2 = 0;
 
 		switch (choice1) {
@@ -1331,7 +1329,7 @@ static void plNoteBook() {
 
 				SetBubbleType(THINK_BUBBLE);
 
-				choice2 = Bubble((NewList<NewNode>*)BurglarsList, choice2, 0, 0);
+				choice2 = Bubble((NewList<NewNode>*)BurglarsList, choice2, nullptr, 0);
 
 				if (ChoiceOk(choice2, GET_OUT, BurglarsList))
 					Present(BurglarsList->getNthNode(choice2)->_nr, "Person", InitPersonPresent);
@@ -1359,7 +1357,7 @@ static void plNoteBook() {
 				while (choice2 != GET_OUT) {
 					SetBubbleType(THINK_BUBBLE);
 
-					choice2 = Bubble((NewList<NewNode>*)l, choice2, 0, 0);
+					choice2 = Bubble((NewList<NewNode>*)l, choice2, nullptr, 0);
 
 					if (ChoiceOk(choice2, GET_OUT, l))
 						Present(l->getNthNode(choice2)->_nr, "Tool",
@@ -1472,7 +1470,7 @@ static void plLook() {
 			plMessage("CHANGE_PERSON_2", PLANING_MSG_REFRESH);
 
 			if (PersonsNr > 2)
-				choice1 = (uint32) Bubble((NewList<NewNode>*)PersonsList, CurrentPerson, NULL, 0);
+				choice1 = (uint32) Bubble((NewList<NewNode>*)PersonsList, CurrentPerson, nullptr, 0);
 			else
 				choice1 = ((CurrentPerson) ? 0 : 1);
 

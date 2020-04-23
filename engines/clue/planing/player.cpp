@@ -1021,7 +1021,7 @@ static void plPlayerAction() {
 int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32)) {
 	Common::Stream *fh = nullptr;
 	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "PLAYER_MENU");
-	uint32 timeLeft = 0, choice1, choice2;
+	uint32 timeLeft = 0, choice1;
 	int32 ret = 0;
 
 	plPrepareSys(0, objId,
@@ -1180,11 +1180,10 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 						SetPictID(((PersonNode *)dbGetObject(BurglarsList->getNthNode(0)->_nr))->PictID);
 						SetBubbleType(RADIO_BUBBLE);
 
-						if ((choice1 = Bubble(l, 0, nullptr, 0)) != GET_OUT) {
-							if (choice1 < 2) {
-								tcCalcCallValue(choice1, PD.realTime, 0);
-								Search.CallCount++;
-							}
+						choice1 = Bubble(l, 0, nullptr, 0);
+						if (choice1 != GET_OUT && choice1 < 2) {
+							tcCalcCallValue(choice1, PD.realTime, 0);
+							Search.CallCount++;
 						}
 
 						l->removeList();
@@ -1219,13 +1218,10 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 							SetPictID(((PersonNode *)dbGetObject(BurglarsList->getNthNode(0)->_nr))->PictID);
 							SetBubbleType(RADIO_BUBBLE);
 
-							if ((choice2 =
-							            (uint32) Bubble(l, 0, NULL, 0)) != GET_OUT) {
-								if (choice2 < 3) {
-									tcCalcCallValue(choice2 + 2, PD.realTime,
-									                choice1);
-									Search.CallCount++;
-								}
+							uint32 choice2 = (uint32)Bubble(l, 0, NULL, 0);
+							if (choice2 != GET_OUT && choice2 < 3) {
+								tcCalcCallValue(choice2 + 2, PD.realTime, choice1);
+								Search.CallCount++;
 							}
 
 							l->removeList();
@@ -1291,13 +1287,10 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 					plSay("PLAYER_LEAVE_LOOTS_1", 0);
 
 					while (plCarTooFull()) {
-						uint32 choice;
+						hasAll(Person_Matt_Stuvysunt, OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_NORMAL, Object_Loot);
 
-						hasAll(Person_Matt_Stuvysunt,
-						       OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_NORMAL,
-						       Object_Loot);
-
-						if ((choice = Bubble((NewList<NewNode>*)ObjectList, 0, 0, 0)) != GET_OUT)
+						uint32 choice = Bubble((NewList<NewNode>*)ObjectList, 0, 0, 0);
+						if (choice != GET_OUT)
 							hasUnSet(Person_Matt_Stuvysunt, ObjectList->getNthNode((uint32) choice)->_nr);
 						else
 							plSay("PLAYER_LEAVE_LOOTS_2", 0);

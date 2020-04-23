@@ -58,6 +58,7 @@ bool ChoiceOk(byte choice, byte exit, NewObjectList<dbObjectNode> *l) {
 }
 
 bool ChoiceOkHack(byte choice, byte exit, NewList<NewNode> *l) {
+	warning("ChoiceOkHack");
 	if (choice == GET_OUT || choice == exit)
 		return false;
 

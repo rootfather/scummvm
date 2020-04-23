@@ -126,7 +126,7 @@ void tcDealerSays(PersonNode *dealer, byte textNr, int32 perc) {
 		dealerOffer->createNode(dealerText->getNthNode(5)->_name);
 
 		SetPictID(dealer->PictID);
-		Bubble(dealerOffer, 0, 0, 0);
+		Bubble(dealerOffer, 0, nullptr, 0);
 	} else {
 		hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Loot);
 		perc = tcGetDealerPerc(dealer, perc);
@@ -162,7 +162,7 @@ void tcDealerSays(PersonNode *dealer, byte textNr, int32 perc) {
 				}
 
 				SetPictID(dealer->PictID);
-				Bubble(dealerOffer, 0, 0, 0);
+				Bubble(dealerOffer, 0, nullptr, 0);
 
 				if (!(Say(BUSINESS_TXT, 0, MATT_PICTID, "DEALER_ANSWER"))) {
 					hasUnSet(Person_Matt_Stuvysunt, n->_nr);
