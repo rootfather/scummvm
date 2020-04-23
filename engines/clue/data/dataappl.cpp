@@ -32,7 +32,7 @@ static bool tcIsConnectedWithEnabledAlarm(uint32 lsoId);
 
 uint8 TeamMood = 127;
 
-bool tcSpendMoney(uint32 money, uint8 breakAnim) {
+bool tcSpendMoney(uint32 money, bool breakAnim) {
 	bool enough = true;
 
 	if (money > tcGetPlayerMoney) {

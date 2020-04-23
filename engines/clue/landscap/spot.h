@@ -76,7 +76,7 @@ extern void lsShowAllSpots(uint32 time, uint32 mode);
 extern void lsShowSpot(SpotNode *s, uint32 time);
 extern void lsHideSpot(SpotNode *s);
 
-extern void lsBlitSpot(uint16 us_Size, uint16 us_XPos, uint16 us_YPos, byte visible);
+extern void lsBlitSpot(uint16 us_Size, uint16 us_XPos, uint16 us_YPos, bool visible);
 
 extern void lsSetSpotStatus(uint32 CtrlObjId, byte uch_Status);
 

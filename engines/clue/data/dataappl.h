@@ -33,7 +33,7 @@
 
 namespace Clue {
 
-extern bool tcSpendMoney(uint32 money, uint8 breakAnim);
+extern bool tcSpendMoney(uint32 money, bool breakAnim);
 
 extern uint32 GetObjNrOfLocation(uint32 LocNr);
 extern uint32 GetObjNrOfBuilding(uint32 LocNr);

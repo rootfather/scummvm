@@ -108,7 +108,7 @@ byte plIsStair(uint32 objId) {
 }
 
 /* special items support */
-void plCorrectOpened(LSObjectNode *obj, byte open) {
+void plCorrectOpened(LSObjectNode *obj, bool open) {
 	switch (obj->Type) {
 	case Item_Holztuer:
 	case Item_Stahltuer:

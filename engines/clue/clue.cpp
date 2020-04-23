@@ -75,8 +75,8 @@ Common::Error ClueEngine::run() {
 			-1, -1);
 
 		/* mouse to white - assume we need to set 15 and 16 */
-		gfxSetRGB(NULL, 15, 255, 255, 255);
-		gfxSetRGB(NULL, 16, 255, 255, 255);
+		gfxSetRGB(nullptr, 15, 255, 255, 255);
+		gfxSetRGB(nullptr, 16, 255, 255, 255);
 
 		SetBubbleType(SPEAK_BUBBLE);
 

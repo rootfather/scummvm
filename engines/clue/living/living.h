@@ -84,7 +84,7 @@ extern void livSetSpeed(const char *uch_Name, int16 s_Speed);
 extern void livAnimate(const char *uch_Name, byte uch_Action, int16 s_XSpeed,
                        int16 s_YSpeed);
 extern void livPrepareAnims();
-extern void livDoAnims(byte uch_Play, byte uch_Move);
+extern void livDoAnims(byte uch_Play, bool uch_Move);
 
 /* uint16 spotInit(bitmap, uint16 1 = 48, 2 = 32, 3 = 16 ); */
 /* uint16 spotDone */

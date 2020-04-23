@@ -68,7 +68,7 @@ void tcBuyCar() {
 	PersonNode *marc = (PersonNode *) dbGetObject(Person_Marc_Smith);
 
 	byte choice = 0, choice1 = 0;
-	while ((choice1 != 2) && (choice != GET_OUT)) {
+	while (choice1 != 2 && choice != GET_OUT) {
 		ObjectListSuccString = tcShowPriceOfCar;
 		ObjectListWidth = 48;
 
@@ -101,7 +101,7 @@ void tcBuyCar() {
 					if (choice1 == 1) {
 						uint32 price = tcGetCarPrice(matts_car);
 
-						if (tcSpendMoney(price, 0)) {
+						if (tcSpendMoney(price, false)) {
 							uint32 carID = bubble->getNthNode((uint32) choice)->_nr;
 
 							hasSet(Person_Matt_Stuvysunt, carID);
@@ -110,8 +110,7 @@ void tcBuyCar() {
 							Say(BUSINESS_TXT, 0, marc->PictID, "GOOD CAR");
 						}
 
-						if (Say(BUSINESS_TXT, 0, MATT_PICTID, "NACH_AUTOKAUF")
-						        == 1)
+						if (Say(BUSINESS_TXT, 0, MATT_PICTID, "NACH_AUTOKAUF") == 1)
 							choice1 = 2;
 					}
 				}
@@ -180,7 +179,7 @@ void tcColorCar(CarNode *car) {
 
 		colors->putCharacter(0, '*');
 
-		if (tcSpendMoney(costs, 1)) {
+		if (tcSpendMoney(costs, true)) {
 			Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
 			// FIXME : weird call. Replaced by createNode to have something visible for a test
 			// colors->expandObjectList(exp);
@@ -265,7 +264,7 @@ void tcRepairCar(CarNode *car, const char *repairWhat) {
 	} else
 		costs = tcCostsPerTotalRepair(car);
 	
-	if (!(enough = tcSpendMoney(costs, 0)))
+	if (!(enough = tcSpendMoney(costs, false)))
 		return;
 
 	list = g_clue->_txtMgr->goKey(PRESENT_TXT, repairWhat);
@@ -283,7 +282,7 @@ void tcRepairCar(CarNode *car, const char *repairWhat) {
 
 		AddVTime(3);
 
-		AddPresentTextLine(presentationData, NULL, 0, list, line++);
+		AddPresentTextLine(presentationData, nullptr, 0, list, line++);
 
 		if (item)
 			AddPresentLine(presentationData, PRESENT_AS_BAR, (uint32)(*item), 255, list, line++);
@@ -297,12 +296,12 @@ void tcRepairCar(CarNode *car, const char *repairWhat) {
 
 		DrawPresent(presentationData, 0, u_gc, (byte)presentationData->getNrOfNodes());
 
-		presentationData->removeNode(NULL);
+		presentationData->removeNode(nullptr);
 
 		choice = inpWaitFor(INP_LBUTTONP | INP_TIME);
 
 		if (choice & INP_TIME) {
-			if ((enough = tcSpendMoney(costs, 1))) {
+			if ((enough = tcSpendMoney(costs, true))) {
 				totalCosts += costs;
 
 				if (type & 1)

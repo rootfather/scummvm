@@ -91,7 +91,7 @@ void livLivesInArea(const char *uch_Name, uint32 areaId) {
 }
 
 void livRefreshAll() {
-	livDoAnims(0, 0);
+	livDoAnims(0, false);
 }
 
 void livSetAllInvisible() {
@@ -187,7 +187,7 @@ void NewLiving::livCorrectViewDirection() {
 void livPrepareAnims() {
 }
 
-void livDoAnims(byte uch_Play, byte uch_Move) {
+void livDoAnims(byte uch_Play, bool uch_Move) {
 	livPrepareAnims();
 	lsDoScroll();
 

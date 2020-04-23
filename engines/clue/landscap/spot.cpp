@@ -121,7 +121,7 @@ void lsShowSpot(SpotNode *s, uint32 time) {
 		lsHideSpot(s);
 
 		/* Spot setzen */
-		lsBlitSpot(s->us_Size, pos->us_XPos, pos->us_YPos, 1);
+		lsBlitSpot(s->us_Size, pos->us_XPos, pos->us_YPos, true);
 
 		s->us_OldXPos = pos->us_XPos;
 		s->us_OldYPos = pos->us_YPos;
@@ -131,7 +131,7 @@ void lsShowSpot(SpotNode *s, uint32 time) {
 void lsHideSpot(SpotNode *s) {
 	/* den alten Spot löschen!  */
 	if ((s->us_OldXPos != (uint16) -1) && (s->us_OldYPos != (uint16) -1))
-		lsBlitSpot(s->us_Size, s->us_OldXPos, s->us_OldYPos, 0);
+		lsBlitSpot(s->us_Size, s->us_OldXPos, s->us_OldYPos, false);
 }
 
 static void lsGetAreaForSpot(SpotNode *spot) {
@@ -341,7 +341,7 @@ NewList<SpotNode> *lsGetSpotList() {
 	return sc->p_spots;
 }
 
-void lsBlitSpot(uint16 us_Size, uint16 us_XPos, uint16 us_YPos, byte visible) {
+void lsBlitSpot(uint16 us_Size, uint16 us_XPos, uint16 us_YPos, bool visible) {
 	uint16 sourceX = 0;
 
 	switch (us_Size) {

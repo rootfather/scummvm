@@ -70,7 +70,7 @@ byte tcBuyTool(byte choice) {
 			if (has(Person_Matt_Stuvysunt, toolID))
 				Say(BUSINESS_TXT, 0, mary->PictID, "AUSVERKAUFT");
 			else {
-				if (tcSpendMoney(price, 0)) {
+				if (tcSpendMoney(price, false)) {
 					hasSet(Person_Matt_Stuvysunt, toolID);
 					Say(BUSINESS_TXT, 0, mary->PictID, "GOOD TOOL");
 				}

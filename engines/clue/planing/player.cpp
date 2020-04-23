@@ -264,7 +264,7 @@ static void plPlayerAction() {
 	PD.timer++;
 	PD.realTime = PD.timer / PLANING_CORRECT_TIME;
 
-	plDisplayTimer(PD.realTime, 0);
+	plDisplayTimer(PD.realTime, false);
 
 	if (PD.sndState && (PD.timer > (PD.maxTimer * 20) / 100) && (PD.bldId != Building_Starford_Kaserne)) {
 		sndPlaySound(PLANING_MUSIC_PLAYER_END_STD, 0);
@@ -645,7 +645,7 @@ static void plPlayerAction() {
 
 										if (((ToolNode *)dbGetObject(curAct->ToolId))->Effect & Const_tcTOOL_OPENS) {
 											lsSetObjectState(curAct->ItemId, Const_tcOPEN_CLOSE_BIT, 1);
-											plCorrectOpened((LSObjectNode *)dbGetObject(curAct->ItemId), 1);
+											plCorrectOpened((LSObjectNode *)dbGetObject(curAct->ItemId), true);
 										}
 
 										if (curAct->ToolId == Tool_Stechkarte)
@@ -872,7 +872,7 @@ static void plPlayerAction() {
 
 								lsSetObjectState(curAct->ItemId, Const_tcOPEN_CLOSE_BIT, 1);
 
-								plCorrectOpened((LSObjectNode *)dbGetObject(curAct->ItemId), 1);
+								plCorrectOpened((LSObjectNode *)dbGetObject(curAct->ItemId), true);
 
 								plRefresh(curAct->ItemId);
 								plDisplayInfo();
@@ -939,7 +939,7 @@ static void plPlayerAction() {
 								}
 
 								lsSetObjectState(curAct->ItemId, Const_tcOPEN_CLOSE_BIT, 0);
-								plCorrectOpened((LSObjectNode *)dbGetObject(curAct->ItemId), 0);
+								plCorrectOpened((LSObjectNode *)dbGetObject(curAct->ItemId), false);
 
 								plRefresh(curAct->ItemId);
 								plDisplayInfo();
@@ -1005,7 +1005,7 @@ static void plPlayerAction() {
 	if (DoScrolling)
 		lsScrollLandScape((byte) -1);
 
-	livDoAnims((AnimCounter++) % 2, 1);
+	livDoAnims((AnimCounter++) % 2, true);
 
 	PD.ende = 1;
 
@@ -1129,7 +1129,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 					if (has(Person_Matt_Stuvysunt, Tool_Funkgeraet))
 						bitset += BIT(PLANING_PLAYER_RADIO_ALL) + BIT(PLANING_PLAYER_RADIO_ONE);
 
-					plDisplayTimer(PD.realTime, 1);
+					plDisplayTimer(PD.realTime, true);
 					plDisplayInfo();
 
 					ShowMenuBackground();
@@ -1150,12 +1150,12 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 							if (PersonsNr > 2)
 								choice1 = (uint32) Bubble((NewList<NewNode>*)PersonsList, CurrentPerson, nullptr, 0);
 							else
-								choice1 = ((CurrentPerson) ? 0 : 1);
+								choice1 = CurrentPerson ? 0 : 1;
 						} else {
 							if (BurglarsNr > 2)
 								choice1 = (uint32) Bubble((NewList<NewNode>*)BurglarsList, CurrentPerson, nullptr, 0);
 							else
-								choice1 = ((CurrentPerson) ? 0 : 1);
+								choice1 = CurrentPerson ? 0 : 1;
 						}
 
 						if (choice1 != GET_OUT) {

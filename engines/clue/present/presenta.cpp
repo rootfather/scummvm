@@ -82,10 +82,10 @@ void InitObjectPresent(uint32 nr, NewList<PresentationInfoNode>* presentationDat
 	AddPresentTextLine(presentationData, data, 0, texts, 0);
 
 	if (lso->uch_Chained & Const_tcCHAINED_TO_ALARM)
-		AddPresentTextLine(presentationData, NULL, 0, texts, 2);
+		AddPresentTextLine(presentationData, nullptr, 0, texts, 2);
 
 	if (lso->uch_Chained & Const_tcCHAINED_TO_POWER)
-		AddPresentTextLine(presentationData, NULL, 0, texts, 1);
+		AddPresentTextLine(presentationData, nullptr, 0, texts, 1);
 
 	if (lso->Type == Item_Stechuhr)
 		AddPresentLine(presentationData, PRESENT_AS_NUMBER, ClockTimerGet(nr, nr), 0, texts, 8);
@@ -93,7 +93,7 @@ void InitObjectPresent(uint32 nr, NewList<PresentationInfoNode>* presentationDat
 	NewList<NewNode> *l = tcMakeLootList(nr, hasLootRelationID);
 
 	if (l->isEmpty())
-		AddPresentTextLine(presentationData, NULL, 0, texts, 3);
+		AddPresentTextLine(presentationData, nullptr, 0, texts, 3);
 
 	l->removeList();
 }
@@ -125,7 +125,7 @@ void InitToolPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData,
 	toolRequiresAll(nr, OLF_INCLUDE_NAME | OLF_NORMAL, Object_Ability);
 
 	if (!ObjectList->isEmpty()) {
-		AddPresentTextLine(presentationData, NULL, 0, texts, 8);    /* "benötigt Wissen über..." */
+		AddPresentTextLine(presentationData, nullptr, 0, texts, 8);    /* "benötigt Wissen über..." */
 
 		for (n = ObjectList->getListHead(); n->_succ; n = (dbObjectNode *)n->_succ) {
 			AbilityNode *ability = (AbilityNode *)n;
@@ -141,7 +141,7 @@ void InitToolPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData,
 	breakAll(nr, OLF_INCLUDE_NAME | OLF_NORMAL, Object_Item);
 
 	if (!ObjectList->isEmpty())
-		AddPresentTextLine(presentationData, NULL, 0, texts, 7);
+		AddPresentTextLine(presentationData, nullptr, 0, texts, 7);
 
 	for (n = ObjectList->getListHead(); n->_succ; n = (dbObjectNode *)n->_succ) {
 		uint32 itemNr = n->_nr;
@@ -219,7 +219,7 @@ void InitPersonPresent(uint32 nr, NewList<PresentationInfoNode>* presentationDat
 	NewList<dbObjectNode> *abilities = ObjectListPrivate;
 
 	if (!abilities->isEmpty()) {
-		AddPresentTextLine(presentationData, NULL, 0, texts, 16);
+		AddPresentTextLine(presentationData, nullptr, 0, texts, 16);
 
 		byte i;
 		NewNode *node;

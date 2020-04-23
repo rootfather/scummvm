@@ -52,7 +52,7 @@ void plMessage(Common::String msg, byte flags) {
 	plMessage(msg.c_str(), flags);
 }
 	
-void plDisplayTimer(uint32 time, byte doSpotsImmediatly) {
+void plDisplayTimer(uint32 time, bool doSpotsImmediatly) {
 	/* 2014-06-28 LucyG : static */
 	static uint32 oldTimer = (uint32) -1;
 
@@ -114,7 +114,7 @@ byte plSay(const char *msg, uint32 persId) {
 
 	l->removeList();
 
-	plDisplayTimer(0, 1);
+	plDisplayTimer(0, true);
 	plDisplayInfo();
 
 	return choice;

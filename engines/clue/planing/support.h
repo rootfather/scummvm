@@ -47,7 +47,7 @@ bool plLivingsPosAtCar(uint32 bldId);
 bool plAllInCar(uint32 bldId);
 byte plIsStair(uint32 objId);
 
-void plCorrectOpened(LSObjectNode *obj, byte open);
+void plCorrectOpened(LSObjectNode *obj, bool open);
 byte plIgnoreLock(uint32 objId);
 
 void plMove(uint32 current, byte direction);

@@ -92,7 +92,7 @@ static bool plRemLastAction() {
 
 		RemLastAction(plSys);
 
-		plDisplayTimer(0, 1);
+		plDisplayTimer(0, true);
 		plDisplayInfo();
 
 		return true;
@@ -167,9 +167,9 @@ static void plActionGo() {
 					plMove(CurrentPerson, direction);
 
 					lsScrollLandScape((byte) - 1);
-					livDoAnims((AnimCounter++) % 2, 1);
+					livDoAnims((AnimCounter++) % 2, true);
 
-					plDisplayTimer(0, 0);
+					plDisplayTimer(0, false);
 				}
 			}
 		}
@@ -193,7 +193,7 @@ static void plActionWait() {
 				bitset += BIT(PLANING_WAIT_RADIO);
 		}
 
-		plDisplayTimer(0, 1);
+		plDisplayTimer(0, true);
 		plDisplayInfo();
 
 		ShowMenuBackground();
@@ -330,7 +330,7 @@ static void plLevelDesigner(LSObjectNode *lso) {
 	uint32 bitset = BIT(PLANING_LD_MOVE) + BIT(PLANING_LD_REFRESH) + BIT(PLANING_LD_OK) + BIT(PLANING_LD_CANCEL);
 
 	while (!endLoop) {
-		plDisplayTimer(0, 1);
+		plDisplayTimer(0, true);
 		plDisplayInfo();
 
 		ShowMenuBackground();
@@ -454,8 +454,8 @@ static void plActionOpenClose(uint16 what) {
 							                Tool_Hand) * PLANING_CORRECT_TIME,
 							       1);
 
-							lsSetObjectState(choice1, Const_tcOPEN_CLOSE_BIT, (what == ACTION_OPEN) ? 1 : 0);
-							plCorrectOpened((LSObjectNode *)dbGetObject(choice1), (what == ACTION_OPEN) ? 1 : 0);
+							lsSetObjectState(choice1, Const_tcOPEN_CLOSE_BIT, what == ACTION_OPEN ? 1 : 0);
+							plCorrectOpened((LSObjectNode *)dbGetObject(choice1), what == ACTION_OPEN);
 
 							plRefresh(choice1);
 							livRefreshAll();
@@ -480,7 +480,7 @@ static void plActionOpenClose(uint16 what) {
 static void plActionTake() {
 	error("STUB - plActionTake");
 #if 0
-	NewList<dbObjectNode> *actionList = plGetObjectsList(CurrentPerson, 1);
+	NewList<dbObjectNode> *actionList = plGetObjectsList(CurrentPerson, true);
 
 	if (actionList->isEmpty())
 		plMessage("NO_OBJECTS", PLANING_MSG_WAIT);
@@ -902,7 +902,7 @@ static void plActionUse() {
 																(choice1,
 																 Const_tcOPEN_CLOSE_BIT,
 																 1);
-																plCorrectOpened((LSObjectNode *) dbGetObject(choice1), 1);
+																plCorrectOpened((LSObjectNode *) dbGetObject(choice1), true);
 															}
 														} else {
 															state =
@@ -1118,7 +1118,7 @@ static void plAction() {
 				bitset += BIT(PLANING_PERSON_CHANGE);
 		}
 
-		plDisplayTimer(0, 1);
+		plDisplayTimer(0, true);
 		plDisplayInfo();
 
 		ShowMenuBackground();
@@ -1127,7 +1127,7 @@ static void plAction() {
 		inpTurnFunctionKey(false);
 		inpTurnMouse(false);
 
-		activ = Menu(menu, bitset, activ, NULL, 0);
+		activ = Menu(menu, bitset, activ, nullptr, 0);
 
 		inpTurnMouse(true);
 		inpTurnFunctionKey(true);
@@ -1145,12 +1145,12 @@ static void plAction() {
 				if (PersonsNr > 2)
 					choice1 = (uint32) Bubble((NewList<NewNode>*)PersonsList, CurrentPerson, nullptr, 0);
 				else
-					choice1 = ((CurrentPerson) ? 0 : 1);
+					choice1 = CurrentPerson ? 0 : 1;
 			} else {
 				if (BurglarsNr > 2)
 					choice1 = (uint32) Bubble((NewList<NewNode>*)BurglarsList, CurrentPerson, nullptr, 0);
 				else
-					choice1 = ((CurrentPerson) ? 0 : 1);
+					choice1 = CurrentPerson ? 0 : 1;
 			}
 
 			if (choice1 != GET_OUT) {
@@ -1204,8 +1204,7 @@ static void plAction() {
 			break;
 
 		case PLANING_ACTION_DROP:
-			SetObjectListAttr(OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_NORMAL,
-			                  0);
+			SetObjectListAttr(OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_NORMAL, 0);
 			AskAll(dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr),
 			       take_RelId, BuildObjectList);
 
@@ -1286,8 +1285,7 @@ static void plAction() {
 				}
 
 				if (choice1 != GET_OUT) {
-					if (InitAction
-					        (plSys, ACTION_SIGNAL, choice1, 0,
+					if (InitAction(plSys, ACTION_SIGNAL, choice1, 0,
 					         PLANING_TIME_RADIO * PLANING_CORRECT_TIME)) {
 						PlanChanged = true;
 
@@ -1360,8 +1358,7 @@ static void plNoteBook() {
 					choice2 = Bubble((NewList<NewNode>*)l, choice2, nullptr, 0);
 
 					if (ChoiceOk(choice2, GET_OUT, l))
-						Present(l->getNthNode(choice2)->_nr, "Tool",
-						        InitToolPresent);
+						Present(l->getNthNode(choice2)->_nr, "Tool", InitToolPresent);
 					else
 						choice2 = GET_OUT;
 				}
@@ -1383,15 +1380,14 @@ static void plNoteBook() {
 static void plLook() {
 	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_7");
 	byte activ = 0;
-	uint32 timer = 0, maxTimer = GetMaxTimer(plSys), realCurrentPerson =
-	                                  CurrentPerson, choice1;
+	uint32 timer = 0, maxTimer = GetMaxTimer(plSys), realCurrentPerson = CurrentPerson, choice1;
 
 	plMessage("PERSON_NOTES", PLANING_MSG_REFRESH);
 	plSync(PLANING_ANIMATE_NO, timer, maxTimer, 0);
 	lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) - 1, (uint16) - 1);
 
 	while (activ != PLANING_LOOK_RETURN) {
-		plDisplayTimer(timer / PLANING_CORRECT_TIME, 0);
+		plDisplayTimer(timer / PLANING_CORRECT_TIME, false);
 		plDisplayInfo();
 
 		ShowMenuBackground();
@@ -1421,7 +1417,7 @@ static void plLook() {
 			inpSetKeyRepeat((0 << 5) | 0);
 
 			while (true) {
-				plDisplayTimer(timer / PLANING_CORRECT_TIME, 0);
+				plDisplayTimer(timer / PLANING_CORRECT_TIME, false);
 
 				byte choice = inpWaitFor(INP_MOVEMENT | INP_LBUTTONP);
 
@@ -1439,7 +1435,7 @@ static void plLook() {
 							timer++;
 							plSync(PLANING_ANIMATE_STD |
 							       PLANING_ANIMATE_FOCUS, timer, 1, 1);
-							livDoAnims((AnimCounter++) % 2, 1);
+							livDoAnims((AnimCounter++) % 2, true);
 						}
 					}
 
@@ -1453,7 +1449,7 @@ static void plLook() {
 							timer--;
 							plSync(PLANING_ANIMATE_STD |
 							       PLANING_ANIMATE_FOCUS, timer, 1, 0);
-							livDoAnims((AnimCounter++) % 2, 1);
+							livDoAnims((AnimCounter++) % 2, true);
 						}
 					}
 				}
@@ -1472,7 +1468,7 @@ static void plLook() {
 			if (PersonsNr > 2)
 				choice1 = (uint32) Bubble((NewList<NewNode>*)PersonsList, CurrentPerson, nullptr, 0);
 			else
-				choice1 = ((CurrentPerson) ? 0 : 1);
+				choice1 = CurrentPerson ? 0 : 1;
 
 			if (choice1 != GET_OUT) {
 				plPrepareSys(choice1, 0, PLANING_HANDLER_SET);
@@ -1551,7 +1547,7 @@ void plPlaner(uint32 objId) {
 	}
 
 	while (activ != PLANING_RETURN) {
-		plDisplayTimer(0, 1);
+		plDisplayTimer(0, true);
 		plDisplayInfo();
 
 		ShowMenuBackground();

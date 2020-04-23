@@ -89,8 +89,8 @@ bool ClueEngine::tcInit() {
 
 	hscReset();
 
-	gfxSetRGB(NULL, 0, 0, 64, 48);
-	gfxSetRGB(NULL, 255, 255, 255, 255);    /* mouse */
+	gfxSetRGB(nullptr, 0, 0, 64, 48);
+	gfxSetRGB(nullptr, 255, 255, 255, 255);    /* mouse */
 
 	/* Start game. */
 	inpMousePtrOn();
