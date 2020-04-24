@@ -100,19 +100,6 @@ public:
 	byte _ioData;
 
 	IODataNode() { _ioData = 0; }
-	~IODataNode() {}
-};
-
-class PresentationInfoNode : public NewNode {
-public:
-	char _extendedText[70];
-	uint32 _extendedNr;
-	uint32 _maxNr;
-
-	byte _presentHow;
-
-	PresentationInfoNode() { _extendedText[0] = '\0'; _extendedNr = _maxNr = _presentHow = 0; }
-	~PresentationInfoNode() {}
 };
 
 template <typename T>

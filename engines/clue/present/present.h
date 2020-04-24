@@ -26,11 +26,25 @@
 
 namespace Clue {
 
-#define PRESENT_AS_TEXT       1
-#define PRESENT_AS_BAR        2
-#define PRESENT_AS_NUMBER     3
+enum PresentationType {
+	PRESENT_NONE      = 0,
+	PRESENT_AS_TEXT   = 1,
+	PRESENT_AS_BAR    = 2,
+	PRESENT_AS_NUMBER = 3
+};
 
 struct _GC;
+
+class PresentationInfoNode : public NewNode {
+public:
+	Common::String _extendedText;
+	uint32 _extendedNr;
+	uint32 _maxNr;
+
+	PresentationType _presentHow;
+
+	PresentationInfoNode() { _extendedText = ""; _extendedNr = _maxNr = 0; _presentHow = PRESENT_NONE; }
+};
 
 extern byte Present(uint32 nr, const char *presentationText, void (*initPresentation)(uint32, NewList<PresentationInfoNode> *, NewList<NewNode> *));
 
@@ -45,11 +59,11 @@ extern void InitLootPresent(uint32 nr, NewList<PresentationInfoNode>* presentati
 extern void InitOneLootPresent(uint32 nr, NewList<PresentationInfoNode>* presentationData, NewList<NewNode>* texts);
 
 extern void prSetBarPrefs(struct _GC *gc, uint16 us_BarWidth, uint16 us_BarHeight, byte uch_FCol, byte uch_BCol, byte uch_TCol);
-extern void prDrawTextBar(const char *puch_Text, uint32 ul_Value, uint32 ul_Max, uint16 us_XPos, uint16 us_YPos);
+extern void prDrawTextBar(Common::String puch_Text, uint32 ul_Value, uint32 ul_Max, uint16 us_XPos, uint16 us_YPos);
 
 extern void DrawPresent(NewList<PresentationInfoNode> *present, uint8 firstLine, struct _GC *gc, uint8 max);
 void AddPresentTextLine(NewList<PresentationInfoNode> *l, Common::String data, uint32 max, NewList<NewNode> *texts, uint16 textNr);
-void AddPresentLine(NewList<PresentationInfoNode> *l, uint8 presentHow, uint32 data, uint32 max, NewList<NewNode> *texts, uint16 textNr);
+void AddPresentLine(NewList<PresentationInfoNode> *l, PresentationType presentHow, uint32 data, uint32 max, NewList<NewNode> *texts, uint16 textNr);
 
 } // End of namespace Clue
 

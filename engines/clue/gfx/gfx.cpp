@@ -497,16 +497,7 @@ void gfxSetFont(_GC *gc, Font *font) {
 	gc->font = font;
 }
 
-/* berechnet die Länge eines Textes in Pixel */
-uint16 gfxTextWidth(_GC *gc, const char *txt, size_t len) {
-	size_t w = len * gc->font->w;
-
-	if (w > USHRT_MAX)
-		return 0;
-
-	return w;
-}
-
+/* Compute the length of a text in pixels */
 uint16 gfxTextWidth(_GC *gc, Common::String txt) {
 	size_t w = txt.size() * gc->font->w;
 
@@ -666,8 +657,8 @@ static void ScreenBlitChar(_GC *gc, Graphics::Surface *src, Rect *src_rect,
 	}
 }
 
-void gfxPrintExact(_GC *gc, const char *txt, uint16 x, uint16 y) {
-	if (txt[0] == '\0')
+void gfxPrintExact(_GC *gc, Common::String txt, uint16 x, uint16 y) {
+	if (txt.empty())
 		return;
 
 	const Font *font = gc->font;
@@ -676,7 +667,7 @@ void gfxPrintExact(_GC *gc, const char *txt, uint16 x, uint16 y) {
 	             base = font->first;
 	const uint16 chars_per_line = SCREEN_WIDTH / w;
 	const uint8 fg = gc->foreground;
-	size_t len = strlen(txt);
+	uint len = txt.size();
 
 	Common::Rect area;
 	area.left = gc->clip.x;
@@ -737,12 +728,12 @@ void gfxPrint(_GC *gc, Common::String txt, uint16 y, uint32 mode) {
 		uint8 tmp = gc->foreground;
 		gc->foreground = gc->background;
 
-		gfxPrintExact(gc, txt.c_str(), x + 1, y + 1);
+		gfxPrintExact(gc, txt, x + 1, y + 1);
 
 		gc->foreground = tmp;
 	}
 
-	gfxPrintExact(gc, txt.c_str(), x, y);
+	gfxPrintExact(gc, txt, x, y);
 }
 /*******************************************************************
  * refresh...

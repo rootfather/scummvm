@@ -77,40 +77,28 @@ static void DrawMenu(NewList<NewNode>* menu, byte nr, int32 mode) {
 	else
 		gfxSetPens(m_gc, 248, GFX_SAME_PEN, GFX_SAME_PEN);
 
-	const char* m1 = nullptr;
-	const char* m2 = nullptr;
+	Common::String m1 = "";
+	Common::String m2 = "";
 
 	int32 x = 8;
-	int32 lastx = 0;
+	int16 lastx = 0;
 	byte i;
 
 	for (i = 0; i <= nr; i += 2) {
-		m1 = menu->getNthNode(i)->_name.c_str();
+			m1 = menu->getNthNode(i)->_name;
 
 		if (i + 1 <= nr)
-			m2 = menu->getNthNode(i + 1)->_name.c_str();
+			m2 = menu->getNthNode(i + 1)->_name;
 		else
-			m2 = nullptr;
+			m2 = "";
 
-		if (m2) {
-			if (strlen(m1) > strlen(m2)) {
-				lastx = gfxTextWidth(m_gc, m1, strlen(m1));
-				x += lastx;
-			}
-			else {
-				lastx = gfxTextWidth(m_gc, m2, strlen(m2));
-				x += lastx;
-			}
-		}
-		else {
-			lastx = gfxTextWidth(m_gc, m1, strlen(m1));
-			x += lastx;
-		}
+		lastx = MAX(gfxTextWidth(m_gc, m1), gfxTextWidth(m_gc, m2));
+		x += lastx;
 	}
 
 	if (nr == i - 2)
 		gfxPrintExact(m_gc, m1, x + 8 * nr - lastx, TXT_1ST_MENU_LINE_Y);
-	else if (m2)
+	else if (!m2.empty())
 		gfxPrintExact(m_gc, m2, x + 8 * (nr - 1) - lastx, TXT_2ND_MENU_LINE_Y);
 }
 
@@ -180,11 +168,11 @@ byte Menu(NewList<NewNode> *menu, uint32 possibility, byte activ, void (*func)(b
 			if ((max % 2) == 0) {
 				MenuCoords[max / 2] = x - 8;
 
-				uint16 l1 = gfxTextWidth(m_gc, n->_name.c_str(), n->_name.size());
+				uint16 l1 = gfxTextWidth(m_gc, n->_name);
 				uint16 l2 = 0;
 
 				if (n->_succ->_succ)
-					l2 = gfxTextWidth(m_gc, n->_succ->_name.c_str(), n->_succ->_name.size());
+					l2 = gfxTextWidth(m_gc, n->_succ->_name);
 
 				x += MAX(l1, l2) + 16;
 			}

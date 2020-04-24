@@ -225,13 +225,10 @@ void tcDisplayAbilities(uint32 personNr, uint32 displayData) {
 		unsigned i;
 
 		for (node = abilities->getListHead(), i = 0; node->_succ; node = (dbObjectNode *)node->_succ, i++) {
-			char line[TXT_KEY_LENGTH];
-
 			uint32 abiNr = abilities->getNthNode(i)->_nr;
 			uint32 ability = hasGet(personNr, abiNr);
 
-			sprintf(line, "%s %d%%", node->_name.c_str(), (uint16)((ability * 100) / 255));
-
+			Common::String line = node->_name + Common::String::format(" %d%%", (uint16)((ability * 100) / 255));
 			prDrawTextBar(line, ability, 255L,
 			              displayData * ORG_DISP_GUY_WIDTH + 5,
 			              ORG_DISP_ABILITIES_Y + i * (ORG_DISP_LINE + 4));
