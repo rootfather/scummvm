@@ -82,8 +82,6 @@ int16 dbStdCompareObjects(dbObjectNode *obj1, dbObjectNode *obj2);
 void dbSortObjectList(NewObjectList<dbObjectNode> **objectList, int16(*processNode)(dbObjectNode *, dbObjectNode *));
 void dbSortPartOfList(NewObjectList<dbObjectNode> *l, dbObjectNode *start, dbObjectNode *end, int16(*processNode)(dbObjectNode *, dbObjectNode *));
 
-void dbAddObjectNode(NewObjectList<dbObjectNode> *objectList, uint32 nr, uint32 flags);
-
 /* public prototypes */
 void dbInit();
 void dbDone();

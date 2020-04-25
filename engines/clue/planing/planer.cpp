@@ -85,10 +85,8 @@ static uint32 UseObject;
 /* action support functions */
 static bool plRemLastAction() {
 	if (!IsHandlerCleared(plSys)) {
-		plSync(PLANING_ANIMATE_NO,
-		       GetMaxTimer(plSys) - CurrentAction(plSys)->TimeNeeded,
-		       CurrentAction(plSys)->TimeNeeded, 0);
-		lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) - 1, (uint16) - 1);
+		plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys) - CurrentAction(plSys)->TimeNeeded, CurrentAction(plSys)->TimeNeeded, 0);
+		lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) -1, (uint16) -1);
 
 		RemLastAction(plSys);
 
@@ -151,16 +149,14 @@ static void plActionGo() {
 
 					if (((ActionGoNode *) action)->Direction == (uint16) direction)
 						IncCurrentTimer(plSys, 1, true);
+					else if ((action = InitAction(plSys, ACTION_GO, direction, 0, 1)))
+						PlanChanged = true;
 					else {
-						if ((action = InitAction(plSys, ACTION_GO, direction, 0, 1)))
-							PlanChanged = true;
-						else {
-							plSay("PLANING_END", CurrentPerson);
-							inpSetKeyRepeat((1 << 5) | 10);
-							inpTurnMouse(true);
-							inpTurnFunctionKey(true);
-							return;
-						}
+						plSay("PLANING_END", CurrentPerson);
+						inpSetKeyRepeat((1 << 5) | 10);
+						inpTurnMouse(true);
+						inpTurnFunctionKey(true);
+						return;
 					}
 
 					plSync(PLANING_ANIMATE_STD, GetMaxTimer(plSys), 1, 1);
@@ -188,10 +184,8 @@ static void plActionWait() {
 	while (activ != PLANING_WAIT_RETURN) {
 		uint32 bitset = BIT(PLANING_WAIT) + BIT(PLANING_WAIT_RETURN);
 
-		if (CurrentPerson < BurglarsNr) {
-			if (BurglarsNr > 1)
-				bitset += BIT(PLANING_WAIT_RADIO);
-		}
+		if (CurrentPerson < BurglarsNr && BurglarsNr > 1)
+			bitset += BIT(PLANING_WAIT_RADIO);
 
 		plDisplayTimer(0, true);
 		plDisplayInfo();
@@ -221,9 +215,7 @@ static void plActionWait() {
 			inpTurnMouse(false);
 
 			while (true) {
-				choice1 =
-				    inpWaitFor(INP_RIGHT | INP_LEFT | INP_UP | INP_DOWN |
-				               INP_LBUTTONP);
+				choice1 = inpWaitFor(INP_RIGHT | INP_LEFT | INP_UP | INP_DOWN | INP_LBUTTONP);
 
 				if (choice1 & INP_LBUTTONP)
 					break;
@@ -291,10 +283,8 @@ static void plActionWait() {
 					BurglarsList->link(node, help);
 					dbRemObjectNode(BurglarsList, 0);
 				} else {
-					choice1 =
-					    CurrentPerson ? BurglarsList->getNthNode(0)->_nr : BurglarsList->getNthNode(1)->_nr;
-					plMessage("RADIO_4",
-					          PLANING_MSG_WAIT | PLANING_MSG_REFRESH);
+					choice1 = CurrentPerson ? BurglarsList->getNthNode(0)->_nr : BurglarsList->getNthNode(1)->_nr;
+					plMessage("RADIO_4", PLANING_MSG_WAIT | PLANING_MSG_REFRESH);
 				}
 
 				if (choice1 != GET_OUT) {
@@ -302,8 +292,7 @@ static void plActionWait() {
 						PlanChanged = true;
 
 						livAnimate(Planing_Name[CurrentPerson], ANM_STAND, 0, 0);
-						plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys),
-						       PLANING_CORRECT_TIME, 1);
+						plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), PLANING_CORRECT_TIME, 1);
 						livRefreshAll();
 					} else {
 						plSay("PLANING_END", CurrentPerson);
@@ -419,11 +408,11 @@ static void plActionOpenClose(uint16 what) {
 	if (actionList->isEmpty())
 		plMessage("NO_OBJECTS", PLANING_MSG_WAIT);
 	else {
-		if (what == ACTION_OPEN) {
+		if (what == ACTION_OPEN)
 			plMessage("OPEN", PLANING_MSG_REFRESH);
-		} else {
+		else
 			plMessage("CLOSE", PLANING_MSG_REFRESH);
-		}
+
 		Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 
 		actionList->expandObjectList(exp);
@@ -461,12 +450,10 @@ static void plActionOpenClose(uint16 what) {
 							livRefreshAll();
 						} else
 							plSay("PLANING_END", CurrentPerson);
-					} else {
-						if (what == ACTION_OPEN)
-							plMessage("OPEN_OPENED", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
-						else
-							plMessage("CLOSE_CLOSED", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
-					}
+					} else if (what == ACTION_OPEN)
+						plMessage("OPEN_OPENED", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
+					else
+						plMessage("CLOSE_CLOSED", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
 				} else
 					plMessage("LOCKED", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
 			} else
@@ -496,19 +483,16 @@ static void plActionTake() {
 			if (!ObjectList->isEmpty()) {
 				if (CHECK_STATE(state, Const_tcTAKE_BIT)) {
 					dbObjectNode *h2 = ObjectList->getListHead();
-
 					dbObjectNode *h = takeableList->createNode(h2->_name);
 					h->_nr = h2->_nr;  /* Loot */
 					h->_type = n->_nr; /* Original */
 					h->_data = NULL;
-				} else {
-					if (CHECK_STATE(state, Const_tcOPEN_CLOSE_BIT)) {
-						for (dbObjectNode *h2 = ObjectList->getListHead(); h2->_succ; h2 = (dbObjectNode *) h2->_succ) {
-							dbObjectNode *h = takeableList->createNode(h2->_name);
-							h->_nr = h2->_nr;  /* Loot */
-							h->_type = n->_nr; /* Original */
-							h->_data = (void *) 1;
-						}
+				} else if (CHECK_STATE(state, Const_tcOPEN_CLOSE_BIT)) {
+					for (dbObjectNode *h2 = ObjectList->getListHead(); h2->_succ; h2 = (dbObjectNode *) h2->_succ) {
+						dbObjectNode *h = takeableList->createNode(h2->_name);
+						h->_nr = h2->_nr;  /* Loot */
+						h->_type = n->_nr; /* Original */
+						h->_data = (void *) 1;
 					}
 				}
 			}
@@ -525,10 +509,8 @@ static void plActionTake() {
 			uint32 choice = Bubble((NewList<NewNode>*)takeableList, 0, NULL, 0);
 
 			if (ChoiceOk(choice, GET_OUT, takeableList)) {
-				uint32 weightPerson =
-				    tcWeightPersCanCarry((PersonNode *)dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr));
-				uint32 volumePerson =
-				    tcVolumePersCanCarry((PersonNode *)dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr));
+				uint32 weightPerson = tcWeightPersCanCarry((PersonNode *)dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr));
+				uint32 volumePerson = tcVolumePersCanCarry((PersonNode *)dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr));
 
 				uint32 choice1 = takeableList->getNthNode(choice)->_nr;
 				uint32 choice2 = takeableList->getNthNode(choice)->_type;
@@ -536,51 +518,34 @@ static void plActionTake() {
 				uint32 weightLoot = ((LootNode *)dbGetObject(choice1))->Weight;
 				uint32 volumeLoot = ((LootNode *)dbGetObject(choice1))->Volume;
 
-				if ((Planing_Weight[CurrentPerson] + weightLoot) <=
-				        weightPerson) {
-					if ((Planing_Volume[CurrentPerson] + volumeLoot) <=
-					        volumePerson) {
-						if (InitAction
-						        (plSys, ACTION_TAKE, choice2, choice1,
-						         PLANING_TIME_TAKE * PLANING_CORRECT_TIME)) {
+				if ((Planing_Weight[CurrentPerson] + weightLoot) <= weightPerson) {
+					if ((Planing_Volume[CurrentPerson] + volumeLoot) <= volumePerson) {
+						if (InitAction(plSys, ACTION_TAKE, choice2, choice1, PLANING_TIME_TAKE * PLANING_CORRECT_TIME)) {
 							PlanChanged = true;
 
 							plWork(CurrentPerson);
-							plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys),
-							       PLANING_TIME_TAKE * PLANING_CORRECT_TIME, 1);
+							plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), PLANING_TIME_TAKE * PLANING_CORRECT_TIME, 1);
 
 							if (!takeableList->getNthNode(choice)) {
 								if ((choice2 >= 9701) && (choice2 <= 9708)) {
 									lsRemLootBag(choice2);
 									Planing_Loot[choice2 - 9701] = 0;
 								} else {
-									lsTurnObject((LSObjectNode *)
-									             dbGetObject(choice2),
-									             LS_OBJECT_INVISIBLE,
-									             LS_NO_COLLISION);
+									lsTurnObject((LSObjectNode *)dbGetObject(choice2), LS_OBJECT_INVISIBLE, LS_NO_COLLISION);
 									lsSetObjectState(choice2, Const_tcACCESS_BIT, 0);
 
 									plMessage("TAKEN_LOOT", PLANING_MSG_REFRESH);
 								}
 							}
 
-							{
-								uint32 newValue = GetP(dbGetObject(choice2), hasLoot(CurrentPerson), dbGetObject(choice1));
+							uint32 newValue = GetP(dbGetObject(choice2), hasLoot(CurrentPerson), dbGetObject(choice1));
 
-								if (Ask(dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr),
-								         take_RelId, dbGetObject(choice1))) {
-									uint32 oldValue =
-									    GetP(dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr),
-									         take_RelId, dbGetObject(choice1));
+							if (Ask(dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr), take_RelId, dbGetObject(choice1))) {
+								uint32 oldValue = GetP(dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr), take_RelId, dbGetObject(choice1));
 
-									SetP(dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr),
-									     take_RelId, dbGetObject(choice1),
-									     oldValue + newValue);
-								} else
-									SetP(dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr),
-									     take_RelId, dbGetObject(choice1),
-									     newValue);
-							}
+								SetP(dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr), take_RelId, dbGetObject(choice1), oldValue + newValue);
+							} else
+								SetP(dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr), take_RelId, dbGetObject(choice1), newValue);
 
 							Planing_Weight[CurrentPerson] += weightLoot;
 							Planing_Volume[CurrentPerson] += volumeLoot;
@@ -588,8 +553,7 @@ static void plActionTake() {
 							plRefresh(choice2);
 							livRefreshAll();
 
-							SetP(dbGetObject(choice1), hasLoot(CurrentPerson), dbGetObject(choice1),
-							     GetP(dbGetObject(choice2), hasLoot(CurrentPerson), dbGetObject(choice1)));
+							SetP(dbGetObject(choice1), hasLoot(CurrentPerson), dbGetObject(choice1), GetP(dbGetObject(choice2), hasLoot(CurrentPerson), dbGetObject(choice1)));
 							Present(choice1, "RasterObject", InitOneLootPresent);
 							UnSet(dbGetObject(choice1), hasLoot(CurrentPerson), dbGetObject(choice1));
 
@@ -713,8 +677,7 @@ static void plActionUse() {
 		for (byte i = BurglarsNr; i < PersonsNr; i++)
 			plInsertGuard(actionList, CurrentPerson, i);
 
-		hasAll(Person_Matt_Stuvysunt,
-		       OLF_NORMAL | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Tool);
+		hasAll(Person_Matt_Stuvysunt, OLF_NORMAL | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Tool);
 		plCorrectToolsList(OLF_INCLUDE_NAME | OLF_INSERT_STAR);
 
 		if (ObjectList->isEmpty())
@@ -738,47 +701,32 @@ static void plActionUse() {
 					if (plIsStair(choice1)) {
 						uint32 newAreaId = StairConnectsGet(choice1, choice1);
 
-						if (InitAction
-						        (plSys, ACTION_USE, choice1, lsGetActivAreaID(),
-						         PLANING_TIME_USE_STAIRS * PLANING_CORRECT_TIME)) {
+						if (InitAction(plSys, ACTION_USE, choice1, lsGetActivAreaID(), PLANING_TIME_USE_STAIRS * PLANING_CORRECT_TIME)) {
 							PlanChanged = true;
 
-							livLivesInArea(Planing_Name[CurrentPerson],
-							               newAreaId);
+							livLivesInArea(Planing_Name[CurrentPerson], newAreaId);
 
 							lsDoneActivArea(newAreaId);
-							lsInitActivArea(newAreaId,
-							                livGetXPos(Planing_Name
-							                           [CurrentPerson]),
-							                livGetYPos(Planing_Name
-							                           [CurrentPerson]),
-							                Planing_Name[CurrentPerson]);
+							lsInitActivArea(newAreaId, livGetXPos(Planing_Name[CurrentPerson]), livGetYPos(Planing_Name[CurrentPerson]), Planing_Name[CurrentPerson]);
 
 							if (lsGetStartArea() == lsGetActivAreaID())
 								lsShowEscapeCar();  /* Auto neu zeichnen */
 
 							livRefreshAll();
 
-							plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys),
-							       PLANING_TIME_USE_STAIRS *
-							       PLANING_CORRECT_TIME, 1);
-							lsSetActivLiving(Planing_Name[CurrentPerson],
-							                 (uint16) -1, (uint16) -1);
+							plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), PLANING_TIME_USE_STAIRS * PLANING_CORRECT_TIME, 1);
+							lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) -1, (uint16) -1);
 						} else
 							plSay("PLANING_END", CurrentPerson);
 					} else if (dbIsObject(choice1, Object_Police)) {
 						if (has(PersonsList->getNthNode(CurrentPerson)->_nr, Ability_Kampf)) {
 							NewObjectList<dbObjectNode> *objList = new NewObjectList<dbObjectNode>;
 
-							dbAddObjectNode(objList, Tool_Hand,
-							                OLF_INCLUDE_NAME | OLF_INSERT_STAR);
-							dbAddObjectNode(objList, Tool_Fusz,
-							                OLF_INCLUDE_NAME | OLF_INSERT_STAR);
+							dbAddObjectNode(objList, Tool_Hand, OLF_INCLUDE_NAME | OLF_INSERT_STAR);
+							dbAddObjectNode(objList, Tool_Fusz, OLF_INCLUDE_NAME | OLF_INSERT_STAR);
 
 							if (has(Person_Matt_Stuvysunt, Tool_Chloroform))
-								dbAddObjectNode(objList, Tool_Chloroform,
-								                OLF_INCLUDE_NAME |
-								                OLF_INSERT_STAR);
+								dbAddObjectNode(objList, Tool_Chloroform, OLF_INCLUDE_NAME | OLF_INSERT_STAR);
 
 							exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
 							objList->expandObjectList(exp);
@@ -792,11 +740,9 @@ static void plActionUse() {
 							if (ChoiceOk(choice2, GET_OUT, objList)) {
 								choice2 = objList->getNthNode(choice2)->_nr;
 
-								if (InitAction
-								        (plSys, ACTION_USE, choice1, choice2,
+								if (InitAction(plSys, ACTION_USE, choice1, choice2,
 								         tcGuyUsesTool(PersonsList->getNthNode(CurrentPerson)->_nr,
-											(BuildingNode *)dbGetObject(Planing_BldId), choice2, Item_Wache) *
-								         PLANING_CORRECT_TIME)) {
+											(BuildingNode *)dbGetObject(Planing_BldId), choice2, Item_Wache) * PLANING_CORRECT_TIME)) {
 									PlanChanged = true;
 
 									Planing_Guard[((PoliceNode *)dbGetObject(choice1))->LivingID - BurglarsNr] = 2;
@@ -806,8 +752,7 @@ static void plActionUse() {
 									       GetMaxTimer(plSys),
 									       tcGuyUsesTool((PersonsList->getNthNode(CurrentPerson)->_nr),
 									                     (BuildingNode *)dbGetObject(Planing_BldId),
-									                     choice2,
-									                     Item_Wache) * PLANING_CORRECT_TIME, 1);
+									                     choice2, Item_Wache) * PLANING_CORRECT_TIME, 1);
 									livRefreshAll();
 								} else
 									plSay("PLANING_END", CurrentPerson);
@@ -820,9 +765,7 @@ static void plActionUse() {
 						uint32 state = lsGetObjectState(choice1);
 
 						if (!CHECK_STATE(state, Const_tcIN_PROGRESS_BIT)) {
-							if (plIgnoreLock(choice1)
-							        && !CHECK_STATE(state,
-							                        Const_tcOPEN_CLOSE_BIT)) {
+							if (plIgnoreLock(choice1) && !CHECK_STATE(state, Const_tcOPEN_CLOSE_BIT)) {
 								switch (((LSObjectNode *) dbGetObject(choice1))->Type) {
 								case Item_Alarmanlage_Z3:
 								case Item_Alarmanlage_X3:
@@ -843,13 +786,8 @@ static void plActionUse() {
 									ObjectListWidth = 48;
 
 									hasAll(Person_Matt_Stuvysunt,
-									       OLF_NORMAL | OLF_INCLUDE_NAME |
-									       OLF_INSERT_STAR | OLF_ADD_SUCC_STRING
-									       | OLF_ALIGNED, Object_Tool);
-									plCorrectToolsList(OLF_INCLUDE_NAME |
-									                   OLF_INSERT_STAR |
-									                   OLF_ADD_SUCC_STRING |
-									                   OLF_ALIGNED);
+									       OLF_NORMAL | OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_ADD_SUCC_STRING | OLF_ALIGNED, Object_Tool);
+									plCorrectToolsList(OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_ADD_SUCC_STRING | OLF_ALIGNED);
 
 									ObjectListWidth = 0;
 									ObjectListSuccString = nullptr;
@@ -868,178 +806,92 @@ static void plActionUse() {
 										if (plCheckAbilities(PersonsList->getNthNode(CurrentPerson)->_nr, choice2)) {
 											if (plCheckRequiredTools(choice2)) {
 												if (break_(((LSObjectNode *)dbGetObject(choice1))->Type, choice2)) {
-													if (InitAction
-													        (plSys, ACTION_USE,
-													         choice1, choice2,
+													if (InitAction(plSys, ACTION_USE, choice1, choice2,
 													         tcGuyUsesTool(PersonsList->getNthNode(CurrentPerson)->_nr,
-													                       (BuildingNode *)dbGetObject(Planing_BldId),
-													                       choice2,
+													                       (BuildingNode *)dbGetObject(Planing_BldId), choice2,
 													                       ((LSObjectNode *) dbGetObject(choice1))->Type) * PLANING_CORRECT_TIME)) {
 														PlanChanged = true;
 
 														plWork(CurrentPerson);
-														plSync
-														(PLANING_ANIMATE_NO,
-														 GetMaxTimer(plSys),
+														plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys),
 														 tcGuyUsesTool(PersonsList->getNthNode(CurrentPerson)->_nr,
-														               (BuildingNode *)dbGetObject(Planing_BldId),
-														               choice2,
+														               (BuildingNode *)dbGetObject(Planing_BldId), choice2,
 														               ((LSObjectNode *) dbGetObject(choice1))->Type) * PLANING_CORRECT_TIME, 1);
 
-														if (!plIgnoreLock
-														        (choice1)) {
-															lsSetObjectState
-															(choice1,
-															 Const_tcLOCK_UNLOCK_BIT,
-															 1);
+														if (!plIgnoreLock(choice1)) {
+															lsSetObjectState(choice1, Const_tcLOCK_UNLOCK_BIT, 1);
 
-															if (((ToolNode *)
-															        dbGetObject
-															        (choice2))->
-															        Effect &
-															        Const_tcTOOL_OPENS) {
-																lsSetObjectState
-																(choice1,
-																 Const_tcOPEN_CLOSE_BIT,
-																 1);
+															if (((ToolNode *)dbGetObject(choice2))-> Effect & Const_tcTOOL_OPENS) {
+																lsSetObjectState(choice1, Const_tcOPEN_CLOSE_BIT, 1);
 																plCorrectOpened((LSObjectNode *) dbGetObject(choice1), true);
 															}
 														} else {
-															state =
-															    lsGetObjectState
-															    (choice1);
+															state = lsGetObjectState(choice1);
 
-															if (CHECK_STATE
-															        (state,
-															         Const_tcON_OFF)) {
+															if (CHECK_STATE(state, Const_tcON_OFF)) {
 																lsSetObjectState(choice1, Const_tcON_OFF, 0);   /* on setzen  */
 
-																if (plIgnoreLock
-																        (choice1) ==
-																        PLANING_POWER) {
-																	lsSetSpotStatus
-																	(choice1,
-																	 LS_SPOT_ON);
-																	lsShowAllSpots
-																	(CurrentTimer
-																	 (plSys),
-																	 LS_ALL_VISIBLE_SPOTS);
-																	plMessage
-																	("POWER_ON",
-																	 PLANING_MSG_REFRESH
-																	 |
-																	 PLANING_MSG_WAIT);
+																if (plIgnoreLock(choice1) == PLANING_POWER) {
+																	lsSetSpotStatus(choice1, LS_SPOT_ON);
+																	lsShowAllSpots(CurrentTimer(plSys), LS_ALL_VISIBLE_SPOTS);
+																	plMessage("POWER_ON", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
 																} else
-																	plMessage
-																	("ALARM_ON",
-																	 PLANING_MSG_REFRESH
-																	 |
-																	 PLANING_MSG_WAIT);
+																	plMessage("ALARM_ON", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
 															} else {
 																lsSetObjectState(choice1, Const_tcON_OFF, 1);   /* off setzen */
 
-																if (plIgnoreLock
-																        (choice1) ==
-																        PLANING_POWER) {
-																	lsSetSpotStatus
-																	(choice1,
-																	 LS_SPOT_OFF);
-																	lsShowAllSpots
-																	(CurrentTimer
-																	 (plSys),
-																	 LS_ALL_INVISIBLE_SPOTS);
-																	plMessage
-																	("POWER_OFF",
-																	 PLANING_MSG_REFRESH
-																	 |
-																	 PLANING_MSG_WAIT);
+																if (plIgnoreLock(choice1) == PLANING_POWER) {
+																	lsSetSpotStatus(choice1, LS_SPOT_OFF);
+																	lsShowAllSpots(CurrentTimer(plSys), LS_ALL_INVISIBLE_SPOTS);
+																	plMessage("POWER_OFF", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
 																} else
-																	plMessage
-																	("ALARM_OFF",
-																	 PLANING_MSG_REFRESH
-																	 |
-																	 PLANING_MSG_WAIT);
+																	plMessage("ALARM_OFF", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
 															}
 														}
 
 														plRefresh(choice1);
 														livRefreshAll();
 													} else
-														plSay("PLANING_END",
-														      CurrentPerson);
+														plSay("PLANING_END", CurrentPerson);
 												} else
-													plMessage("DOES_NOT_WORK",
-													          PLANING_MSG_REFRESH
-													          |
-													          PLANING_MSG_WAIT);
+													plMessage("DOES_NOT_WORK", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
 											} else
-												plMessage("TOOL_DOES_NOT_WORK",
-												          PLANING_MSG_REFRESH |
-												          PLANING_MSG_WAIT);
+												plMessage("TOOL_DOES_NOT_WORK", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
 										} else
-											plMessage("WRONG_ABILITY",
-											          PLANING_MSG_REFRESH |
-											          PLANING_MSG_WAIT);
+											plMessage("WRONG_ABILITY", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
 									}
-								} else if ((((LSObjectNode *) dbGetObject(choice1))->
-								            Type == Item_Fenster)) {
+								} else if (((LSObjectNode *) dbGetObject(choice1))->Type == Item_Fenster) {
 
 									if (g_clue->getFeatures() & GF_PROFIDISK && Planing_BldId == Building_Postzug)
 										plSay("PLANING_TRAIN", CurrentPerson);
-									else if (CHECK_STATE
-									         (lsGetObjectState(choice1),
-									          Const_tcOPEN_CLOSE_BIT)) {
-										if (has
-										        (Person_Matt_Stuvysunt,
-										         Tool_Strickleiter)) {
+									else if (CHECK_STATE(lsGetObjectState(choice1), Const_tcOPEN_CLOSE_BIT)) {
+										if (has(Person_Matt_Stuvysunt, Tool_Strickleiter)) {
 											uint16 xpos, ypos;
 
-											if (InitAction
-											        (plSys, ACTION_USE, choice1, 0,
-											         PLANING_TIME_THROUGH_WINDOW *
-											         PLANING_CORRECT_TIME)) {
+											if (InitAction(plSys, ACTION_USE, choice1, 0,
+											         PLANING_TIME_THROUGH_WINDOW * PLANING_CORRECT_TIME)) {
 												PlanChanged = true;
 
-												lsWalkThroughWindow((LSObjectNode *)
-												                    dbGetObject
-												                    (choice1),
-												                    livGetXPos
-												                    (Planing_Name
-												                     [CurrentPerson]),
-												                    livGetYPos
-												                    (Planing_Name
-												                     [CurrentPerson]),
-												                    &xpos,
-												                    &ypos);
+												lsWalkThroughWindow((LSObjectNode *)dbGetObject(choice1),
+												                    livGetXPos(Planing_Name[CurrentPerson]),
+												                    livGetYPos(Planing_Name[CurrentPerson]),
+												                    &xpos, &ypos);
 
-												livSetPos(Planing_Name
-												          [CurrentPerson], xpos,
-												          ypos);
-												plSync(PLANING_ANIMATE_NO,
-												       GetMaxTimer(plSys),
-												       PLANING_TIME_THROUGH_WINDOW
-												       * PLANING_CORRECT_TIME,
-												       1);
+												livSetPos(Planing_Name[CurrentPerson], xpos, ypos);
+												plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys),
+												       PLANING_TIME_THROUGH_WINDOW * PLANING_CORRECT_TIME, 1);
 												livRefreshAll();
 											} else
-												plSay("PLANING_END",
-												      CurrentPerson);
+												plSay("PLANING_END", CurrentPerson);
 										} else
-											plMessage("NO_STAIRS",
-											          PLANING_MSG_REFRESH |
-											          PLANING_MSG_WAIT);
+											plMessage("NO_STAIRS", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
 									} else
-										plMessage("WALK_WINDOW",
-										          PLANING_MSG_REFRESH |
-										          PLANING_MSG_WAIT);
+										plMessage("WALK_WINDOW", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
 								} else
-									plMessage("UNLOCK_UNLOCKED",
-									          PLANING_MSG_REFRESH |
-									          PLANING_MSG_WAIT);
+									plMessage("UNLOCK_UNLOCKED", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
 							}
 						} else
-							plMessage("IN_PROGRESS",
-							          PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
+							plMessage("IN_PROGRESS", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
 					}
 				}
 			}
@@ -1060,13 +912,10 @@ static void plActionUse() {
 			if (ChoiceOk(choice1, GET_OUT, actionList)) {
 				choice1 = actionList->getNthNode(choice1)->_nr;
 
-				if (InitAction
-				        (plSys, ACTION_CONTROL, choice1, 0,
-				         PLANING_TIME_CONTROL * PLANING_CORRECT_TIME)) {
+				if (InitAction(plSys, ACTION_CONTROL, choice1, 0, PLANING_TIME_CONTROL * PLANING_CORRECT_TIME)) {
 					PlanChanged = true;
 
-					plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys),
-					       PLANING_TIME_CONTROL * PLANING_CORRECT_TIME, 1);
+					plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), PLANING_TIME_CONTROL * PLANING_CORRECT_TIME, 1);
 
 					plRefresh(choice1);
 					livRefreshAll();
@@ -1091,27 +940,20 @@ static void plAction() {
 	while (activ != PLANING_ACTION_RETURN) {
 		uint32 choice1 = 0, choice2 = 0, bitset;
 		if (CurrentPerson < BurglarsNr) {
-			bitset = BIT(PLANING_PERSON_WALK) +
-			         BIT(PLANING_ACTION_USE) +
-			         BIT(PLANING_ACTION_OPEN) +
-			         BIT(PLANING_ACTION_CLOSE) +
-			         BIT(PLANING_ACTION_TAKE) +
-			         BIT(PLANING_ACTION_DROP) +
+			bitset = BIT(PLANING_PERSON_WALK) + BIT(PLANING_ACTION_USE) +
+			         BIT(PLANING_ACTION_OPEN) + BIT(PLANING_ACTION_CLOSE) +
+			         BIT(PLANING_ACTION_TAKE) + BIT(PLANING_ACTION_DROP) +
 			         BIT(PLANING_ACTION_WAIT) + BIT(PLANING_ACTION_RETURN);
 
 
-			if ((GamePlayMode & GP_GUARD_DESIGN) ? (PersonsNr > 1)
-			        : (BurglarsNr > 1))
+			if ((GamePlayMode & GP_GUARD_DESIGN) ? (PersonsNr > 1) : (BurglarsNr > 1))
 				bitset += BIT(PLANING_ACTION_RADIO);
 
-			if (!(Planing_BldId == Building_Starford_Kaserne)
-			        || (GamePlayMode & GP_GUARD_DESIGN))
+			if (!(Planing_BldId == Building_Starford_Kaserne) || (GamePlayMode & GP_GUARD_DESIGN))
 				bitset += BIT(PLANING_PERSON_CHANGE);
 		} else {
-			bitset = BIT(PLANING_PERSON_WALK) +
-			         BIT(PLANING_ACTION_USE) +
-			         BIT(PLANING_ACTION_OPEN) +
-			         BIT(PLANING_ACTION_CLOSE) +
+			bitset = BIT(PLANING_PERSON_WALK) + BIT(PLANING_ACTION_USE) +
+			         BIT(PLANING_ACTION_OPEN) + BIT(PLANING_ACTION_CLOSE) +
 			         BIT(PLANING_ACTION_WAIT) + BIT(PLANING_ACTION_RETURN);
 
 			if (PersonsNr > 1)
@@ -1162,19 +1004,15 @@ static void plAction() {
 
 				if (livWhereIs(Planing_Name[choice1]) != lsGetActivAreaID()) {
 					lsDoneActivArea(livWhereIs(Planing_Name[choice1]));
-					lsInitActivArea(livWhereIs(Planing_Name[choice1]),
-					                livGetXPos(Planing_Name[choice1]),
-					                livGetYPos(Planing_Name[choice1]),
-					                Planing_Name[choice1]);
+					lsInitActivArea(livWhereIs(Planing_Name[choice1]), livGetXPos(Planing_Name[choice1]),
+					                livGetYPos(Planing_Name[choice1]), Planing_Name[choice1]);
 				}
 
 				if (oldTime < GetMaxTimer(plSys))
-					plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys),
-					       GetMaxTimer(plSys) - oldTime, 1);
+					plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), GetMaxTimer(plSys) - oldTime, 1);
 
 				if (oldTime > GetMaxTimer(plSys))
-					plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys),
-					       oldTime - GetMaxTimer(plSys), 0);
+					plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), oldTime - GetMaxTimer(plSys), 0);
 
 				lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) -1, (uint16) -1);
 
@@ -1205,8 +1043,7 @@ static void plAction() {
 
 		case PLANING_ACTION_DROP:
 			SetObjectListAttr(OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_NORMAL, 0);
-			AskAll(dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr),
-			       take_RelId, BuildObjectList);
+			AskAll(dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr), take_RelId, BuildObjectList);
 
 			if (ObjectList->isEmpty())
 				plMessage("DROP_1", PLANING_MSG_WAIT);
@@ -1226,17 +1063,13 @@ static void plAction() {
 					uint32 volumeLoot = ((LootNode *)dbGetObject(choice1))->Volume;
 
 					if ((choice2 = plGetNextLoot())) {
-						if (InitAction
-						        (plSys, ACTION_DROP, choice2, choice1,
-						         PLANING_TIME_DROP * PLANING_CORRECT_TIME)) {
+						if (InitAction(plSys, ACTION_DROP, choice2, choice1, PLANING_TIME_DROP * PLANING_CORRECT_TIME)) {
 							PlanChanged = true;
 
 							plWork(CurrentPerson);
-							plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys),
-							       PLANING_TIME_DROP * PLANING_CORRECT_TIME, 1);
+							plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), PLANING_TIME_DROP * PLANING_CORRECT_TIME, 1);
 
-							SetP(dbGetObject(choice2), hasLoot(CurrentPerson),
-							     dbGetObject(choice1),
+							SetP(dbGetObject(choice2), hasLoot(CurrentPerson), dbGetObject(choice1),
 							     GetP(dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr), take_RelId, dbGetObject(choice1)));
 							UnSet(dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr), take_RelId, dbGetObject(choice1));
 							Planing_Weight[CurrentPerson] -= weightLoot;
@@ -1247,8 +1080,7 @@ static void plAction() {
 						} else
 							plSay("PLANING_END", CurrentPerson);
 					} else
-						plMessage("DROP_3",
-						          PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
+						plMessage("DROP_3", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
 				}
 			}
 			break;
@@ -1278,20 +1110,16 @@ static void plAction() {
 					BurglarsList->link(node, help);
 					dbRemObjectNode(BurglarsList, 0);
 				} else {
-					choice1 =
-					    CurrentPerson ? BurglarsList->getNthNode(0)->_nr : BurglarsList->getNthNode(1)->_nr;
-					plMessage("RADIO_3",
-					          PLANING_MSG_WAIT | PLANING_MSG_REFRESH);
+					choice1 = CurrentPerson ? BurglarsList->getNthNode(0)->_nr : BurglarsList->getNthNode(1)->_nr;
+					plMessage("RADIO_3", PLANING_MSG_WAIT | PLANING_MSG_REFRESH);
 				}
 
 				if (choice1 != GET_OUT) {
-					if (InitAction(plSys, ACTION_SIGNAL, choice1, 0,
-					         PLANING_TIME_RADIO * PLANING_CORRECT_TIME)) {
+					if (InitAction(plSys, ACTION_SIGNAL, choice1, 0, PLANING_TIME_RADIO * PLANING_CORRECT_TIME)) {
 						PlanChanged = true;
 
 						livAnimate(Planing_Name[CurrentPerson], ANM_MAKE_CALL, 0, 0);
-						plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys),
-						       PLANING_TIME_RADIO * PLANING_CORRECT_TIME, 1);
+						plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), PLANING_TIME_RADIO * PLANING_CORRECT_TIME, 1);
 						livRefreshAll();
 					} else
 						plSay("PLANING_END", CurrentPerson);
@@ -1343,9 +1171,7 @@ static void plNoteBook() {
 			break;
 
 		case PLANING_NOTE_TOOLS: {
-			hasAll(Person_Matt_Stuvysunt,
-			       OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
-			       Object_Tool);
+			hasAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Tool);
 			NewObjectList<dbObjectNode> *l = ObjectListPrivate;
 
 			if (!l->isEmpty()) {
@@ -1447,8 +1273,7 @@ static void plLook() {
 							}
 
 							timer--;
-							plSync(PLANING_ANIMATE_STD |
-							       PLANING_ANIMATE_FOCUS, timer, 1, 0);
+							plSync(PLANING_ANIMATE_STD | PLANING_ANIMATE_FOCUS, timer, 1, 0);
 							livDoAnims((AnimCounter++) % 2, true);
 						}
 					}
@@ -1476,10 +1301,8 @@ static void plLook() {
 
 				if (livWhereIs(Planing_Name[choice1]) != lsGetActivAreaID()) {
 					lsDoneActivArea(livWhereIs(Planing_Name[choice1]));
-					lsInitActivArea(livWhereIs(Planing_Name[choice1]),
-					                livGetXPos(Planing_Name[choice1]),
-					                livGetYPos(Planing_Name[choice1]),
-					                Planing_Name[choice1]);
+					lsInitActivArea(livWhereIs(Planing_Name[choice1]), livGetXPos(Planing_Name[choice1]),
+					                livGetYPos(Planing_Name[choice1]), Planing_Name[choice1]);
 				}
 
 				lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) -1, (uint16) -1);
@@ -1495,21 +1318,17 @@ static void plLook() {
 
 	if (livWhereIs(Planing_Name[CurrentPerson]) != lsGetActivAreaID()) {
 		lsDoneActivArea(livWhereIs(Planing_Name[CurrentPerson]));
-		lsInitActivArea(livWhereIs(Planing_Name[CurrentPerson]),
-		                livGetXPos(Planing_Name[CurrentPerson]),
-		                livGetYPos(Planing_Name[CurrentPerson]),
-		                Planing_Name[CurrentPerson]);
+		lsInitActivArea(livWhereIs(Planing_Name[CurrentPerson]), livGetXPos(Planing_Name[CurrentPerson]),
+		                livGetYPos(Planing_Name[CurrentPerson]), Planing_Name[CurrentPerson]);
 	}
 
 	plMessage("PERSON_NOTES", PLANING_MSG_REFRESH);
 
 	if (timer < GetMaxTimer(plSys))
-		plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys),
-		       GetMaxTimer(plSys) - timer, 1);
+		plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), GetMaxTimer(plSys) - timer, 1);
 
 	if (timer > GetMaxTimer(plSys))
-		plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys),
-		       timer - GetMaxTimer(plSys), 0);
+		plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), timer - GetMaxTimer(plSys), 0);
 
 	lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) -1, (uint16) -1);
 
@@ -1521,13 +1340,10 @@ void plPlaner(uint32 objId) {
 	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(PLAN_TXT, "MENU_1");
 	byte activ = 0;
 
-	plPrepareSys(0, objId,
-	             PLANING_INIT_PERSONSLIST | PLANING_HANDLER_ADD |
-	             PLANING_HANDLER_OPEN | PLANING_GUARDS_LOAD |
-	             PLANING_HANDLER_SET);
-	plPrepareGfx(objId, LS_COLL_PLAN,
-	             PLANING_GFX_LANDSCAPE | PLANING_GFX_SPRITES |
-	             PLANING_GFX_BACKGROUND);
+	plPrepareSys(0, objId, PLANING_INIT_PERSONSLIST | PLANING_HANDLER_ADD |
+	    PLANING_HANDLER_OPEN | PLANING_GUARDS_LOAD | PLANING_HANDLER_SET);
+	plPrepareGfx(objId, LS_COLL_PLAN, PLANING_GFX_LANDSCAPE |
+		PLANING_GFX_SPRITES | PLANING_GFX_BACKGROUND);
 	plPrepareRel();
 	plPrepareData();
 
@@ -1552,11 +1368,8 @@ void plPlaner(uint32 objId) {
 
 		ShowMenuBackground();
 
-		uint32 bitset = BIT(PLANING_START) +
-			BIT(PLANING_NOTE) +
-			BIT(PLANING_SAVE) +
-			BIT(PLANING_LOAD) +
-			BIT(PLANING_CLEAR) + BIT(PLANING_LOOK) + BIT(PLANING_RETURN);
+		uint32 bitset = BIT(PLANING_START) + BIT(PLANING_NOTE) + BIT(PLANING_SAVE) +
+			BIT(PLANING_LOAD) + BIT(PLANING_CLEAR) + BIT(PLANING_LOOK) + BIT(PLANING_RETURN);
 
 		inpTurnESC(false);
 		inpTurnFunctionKey(false);
