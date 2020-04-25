@@ -670,6 +670,92 @@ static void plCorrectToolsList(uint32 flags) {
 	dbRemObjectNode(ObjectList, Tool_Schutzanzug);
 }
 
+void plActionRadio() {
+	if (has(Person_Matt_Stuvysunt, Tool_Funkgeraet)) {
+		uint32 choice1;
+		if (BurglarsNr > 2) {
+			dbObjectNode* help;
+
+			plMessage("RADIO_1", PLANING_MSG_REFRESH);
+			SetPictID(((PersonNode*)dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr))->PictID);
+			dbObjectNode* node = BurglarsList->unLink(BurglarsList->getNthNode(CurrentPerson)->_name, &help);
+			Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
+			BurglarsList->expandObjectList(exp);
+
+			choice1 = Bubble((NewList<NewNode>*)BurglarsList, 0, nullptr, 0);
+
+			if (ChoiceOk(choice1, GET_OUT, BurglarsList))
+				choice1 = BurglarsList->getNthNode(choice1)->_nr;
+			else
+				choice1 = GET_OUT;
+
+			BurglarsList->link(node, help);
+			dbRemObjectNode(BurglarsList, 0);
+		} else {
+			choice1 = CurrentPerson ? BurglarsList->getNthNode(0)->_nr : BurglarsList->getNthNode(1)->_nr;
+			plMessage("RADIO_3", PLANING_MSG_WAIT | PLANING_MSG_REFRESH);
+		}
+
+		if (choice1 != GET_OUT) {
+			if (InitAction(plSys, ACTION_SIGNAL, choice1, 0, PLANING_TIME_RADIO * PLANING_CORRECT_TIME)) {
+				PlanChanged = true;
+
+				livAnimate(Planing_Name[CurrentPerson], ANM_MAKE_CALL, 0, 0);
+				plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), PLANING_TIME_RADIO * PLANING_CORRECT_TIME, 1);
+				livRefreshAll();
+			} else
+				plSay("PLANING_END", CurrentPerson);
+		}
+	} else
+		plMessage("NO_RADIO", PLANING_MSG_WAIT);
+
+}
+
+void plActionDrop() {
+	SetObjectListAttr(OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_NORMAL, 0);
+	AskAll(dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr), take_RelId, BuildObjectList);
+
+	if (ObjectList->isEmpty())
+		plMessage("DROP_1", PLANING_MSG_WAIT);
+	else {
+		plMessage("DROP_2", PLANING_MSG_REFRESH);
+
+		SetPictID(((PersonNode*)dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr))->PictID);
+		Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
+		ObjectList->expandObjectList(exp);
+
+		uint32 choice1 = Bubble((NewList<NewNode>*)ObjectList, 0, nullptr, 0);
+
+		if (ChoiceOk(choice1, GET_OUT, ObjectList)) {
+			choice1 = ObjectList->getNthNode(choice1)->_nr;
+
+			uint32 weightLoot = ((LootNode*)dbGetObject(choice1))->Weight;
+			uint32 volumeLoot = ((LootNode*)dbGetObject(choice1))->Volume;
+
+			uint32 choice2 = plGetNextLoot();
+			if (choice2) {
+				if (InitAction(plSys, ACTION_DROP, choice2, choice1, PLANING_TIME_DROP * PLANING_CORRECT_TIME)) {
+					PlanChanged = true;
+
+					plWork(CurrentPerson);
+					plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), PLANING_TIME_DROP * PLANING_CORRECT_TIME, 1);
+
+					SetP(dbGetObject(choice2), hasLoot(CurrentPerson), dbGetObject(choice1),
+						GetP(dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr), take_RelId, dbGetObject(choice1)));
+					UnSet(dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr), take_RelId, dbGetObject(choice1));
+					Planing_Weight[CurrentPerson] -= weightLoot;
+					Planing_Volume[CurrentPerson] -= volumeLoot;
+
+					plRefresh(choice2);
+					livRefreshAll();
+				} else
+					plSay("PLANING_END", CurrentPerson);
+			} else
+				plMessage("DROP_3", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
+		}
+	}
+}
+
 static void plActionUse() {
 	NewObjectList<dbObjectNode> *actionList = plGetObjectsList(CurrentPerson, false);
 
@@ -1042,47 +1128,7 @@ static void plAction() {
 			break;
 
 		case PLANING_ACTION_DROP:
-			SetObjectListAttr(OLF_INCLUDE_NAME | OLF_INSERT_STAR | OLF_NORMAL, 0);
-			AskAll(dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr), take_RelId, BuildObjectList);
-
-			if (ObjectList->isEmpty())
-				plMessage("DROP_1", PLANING_MSG_WAIT);
-			else {
-				plMessage("DROP_2", PLANING_MSG_REFRESH);
-
-				SetPictID(((PersonNode *)dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr))->PictID);
-				Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
-				ObjectList->expandObjectList(exp);
-
-				choice1 = Bubble((NewList<NewNode>*)ObjectList, 0, nullptr, 0);
-
-				if (ChoiceOk(choice1, GET_OUT, ObjectList)) {
-					choice1 = ObjectList->getNthNode(choice1)->_nr;
-
-					uint32 weightLoot = ((LootNode *)dbGetObject(choice1))->Weight;
-					uint32 volumeLoot = ((LootNode *)dbGetObject(choice1))->Volume;
-
-					if ((choice2 = plGetNextLoot())) {
-						if (InitAction(plSys, ACTION_DROP, choice2, choice1, PLANING_TIME_DROP * PLANING_CORRECT_TIME)) {
-							PlanChanged = true;
-
-							plWork(CurrentPerson);
-							plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), PLANING_TIME_DROP * PLANING_CORRECT_TIME, 1);
-
-							SetP(dbGetObject(choice2), hasLoot(CurrentPerson), dbGetObject(choice1),
-							     GetP(dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr), take_RelId, dbGetObject(choice1)));
-							UnSet(dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr), take_RelId, dbGetObject(choice1));
-							Planing_Weight[CurrentPerson] -= weightLoot;
-							Planing_Volume[CurrentPerson] -= volumeLoot;
-
-							plRefresh(choice2);
-							livRefreshAll();
-						} else
-							plSay("PLANING_END", CurrentPerson);
-					} else
-						plMessage("DROP_3", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
-				}
-			}
+			plActionDrop();
 			break;
 
 		case PLANING_ACTION_WAIT:
@@ -1090,42 +1136,7 @@ static void plAction() {
 			break;
 
 		case PLANING_ACTION_RADIO:
-			if (has(Person_Matt_Stuvysunt, Tool_Funkgeraet)) {
-				if (BurglarsNr > 2) {
-					dbObjectNode *help;
-
-					plMessage("RADIO_1", PLANING_MSG_REFRESH);
-					SetPictID(((PersonNode *) dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr))->PictID);
-					dbObjectNode *node = BurglarsList->unLink(BurglarsList->getNthNode(CurrentPerson)->_name, &help);
-					Common::String exp = g_clue->_txtMgr->getFirstLine(PLAN_TXT, "EXPAND_ALL");
-					BurglarsList->expandObjectList(exp);
-
-					choice1 = Bubble((NewList<NewNode>*)BurglarsList, 0, nullptr, 0);
-
-					if (ChoiceOk(choice1, GET_OUT, BurglarsList))
-						choice1 = BurglarsList->getNthNode(choice1)->_nr;
-					else
-						choice1 = GET_OUT;
-
-					BurglarsList->link(node, help);
-					dbRemObjectNode(BurglarsList, 0);
-				} else {
-					choice1 = CurrentPerson ? BurglarsList->getNthNode(0)->_nr : BurglarsList->getNthNode(1)->_nr;
-					plMessage("RADIO_3", PLANING_MSG_WAIT | PLANING_MSG_REFRESH);
-				}
-
-				if (choice1 != GET_OUT) {
-					if (InitAction(plSys, ACTION_SIGNAL, choice1, 0, PLANING_TIME_RADIO * PLANING_CORRECT_TIME)) {
-						PlanChanged = true;
-
-						livAnimate(Planing_Name[CurrentPerson], ANM_MAKE_CALL, 0, 0);
-						plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), PLANING_TIME_RADIO * PLANING_CORRECT_TIME, 1);
-						livRefreshAll();
-					} else
-						plSay("PLANING_END", CurrentPerson);
-				}
-			} else
-				plMessage("NO_RADIO", PLANING_MSG_WAIT);
+			plActionRadio();
 			break;
 		}
 	}
