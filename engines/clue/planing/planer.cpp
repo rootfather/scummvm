@@ -465,8 +465,6 @@ static void plActionOpenClose(uint16 what) {
 }
 
 static void plActionTake() {
-	error("STUB - plActionTake");
-#if 0
 	NewList<dbObjectNode> *actionList = plGetObjectsList(CurrentPerson, true);
 
 	if (actionList->isEmpty())
@@ -486,13 +484,13 @@ static void plActionTake() {
 					dbObjectNode *h = takeableList->createNode(h2->_name);
 					h->_nr = h2->_nr;  /* Loot */
 					h->_type = n->_nr; /* Original */
-					h->_data = NULL;
+					h->_fakePtr = false;
 				} else if (CHECK_STATE(state, Const_tcOPEN_CLOSE_BIT)) {
 					for (dbObjectNode *h2 = ObjectList->getListHead(); h2->_succ; h2 = (dbObjectNode *) h2->_succ) {
 						dbObjectNode *h = takeableList->createNode(h2->_name);
 						h->_nr = h2->_nr;  /* Loot */
 						h->_type = n->_nr; /* Original */
-						h->_data = (void *) 1;
+						h->_fakePtr = true;
 					}
 				}
 			}
@@ -518,8 +516,8 @@ static void plActionTake() {
 				uint32 weightLoot = ((LootNode *)dbGetObject(choice1))->Weight;
 				uint32 volumeLoot = ((LootNode *)dbGetObject(choice1))->Volume;
 
-				if ((Planing_Weight[CurrentPerson] + weightLoot) <= weightPerson) {
-					if ((Planing_Volume[CurrentPerson] + volumeLoot) <= volumePerson) {
+				if (Planing_Weight[CurrentPerson] + weightLoot <= weightPerson) {
+					if (Planing_Volume[CurrentPerson] + volumeLoot <= volumePerson) {
 						if (InitAction(plSys, ACTION_TAKE, choice2, choice1, PLANING_TIME_TAKE * PLANING_CORRECT_TIME)) {
 							PlanChanged = true;
 
@@ -527,7 +525,7 @@ static void plActionTake() {
 							plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys), PLANING_TIME_TAKE * PLANING_CORRECT_TIME, 1);
 
 							if (!takeableList->getNthNode(choice)) {
-								if ((choice2 >= 9701) && (choice2 <= 9708)) {
+								if (choice2 >= 9701 && choice2 <= 9708) {
 									lsRemLootBag(choice2);
 									Planing_Loot[choice2 - 9701] = 0;
 								} else {
@@ -572,7 +570,6 @@ static void plActionTake() {
 	}
 
 	actionList->removeList();
-#endif
 }
 
 static Common::String plSetUseString(uint32 nr, uint32 type, dbObjectNode *node) {
@@ -1024,7 +1021,7 @@ static void plAction() {
 	byte activ = 0;
 
 	while (activ != PLANING_ACTION_RETURN) {
-		uint32 choice1 = 0, choice2 = 0, bitset;
+		uint32 choice1 = 0, bitset;
 		if (CurrentPerson < BurglarsNr) {
 			bitset = BIT(PLANING_PERSON_WALK) + BIT(PLANING_ACTION_USE) +
 			         BIT(PLANING_ACTION_OPEN) + BIT(PLANING_ACTION_CLOSE) +

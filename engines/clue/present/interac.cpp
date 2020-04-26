@@ -41,16 +41,13 @@ void SetMenuTimeOutFunc(void (*func)()) {
 }
 
 bool ChoiceOk(byte choice, byte exit, NewObjectList<dbObjectNode> *l) {
-	if (choice == GET_OUT)
-		return false;
-
-	if (choice == exit)
+	if (choice == GET_OUT || choice == exit)
 		return false;
 
 	if (l && !l->isEmpty()) {
 		dbObjectNode *objNode = l->getNthNode(choice);
 
-		if (!objNode->_nr && !objNode->_type)
+		if (!objNode->_nr && !objNode->_type && !objNode->_fakePtr)
 			return false;
 	}
 

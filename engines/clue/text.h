@@ -91,8 +91,10 @@ public:
 	uint32 _type;
 	uint32 _realNr;
 
+	bool _fakePtr;
+
 	dbObjectNode() { _nr = _type = _realNr = 0; } // CHECKME : Is it possible to get rid of it?
-	dbObjectNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : NewNode(name), _nr(nr), _type(type), _realNr(realNr) {}
+	dbObjectNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : NewNode(name), _nr(nr), _type(type), _realNr(realNr), _fakePtr(true) {}
 };
 
 class IODataNode : public NewNode {
@@ -400,6 +402,7 @@ void NewObjectList<T>::expandObjectList(Common::String expandItem) {
 
 	objNode->_nr = 0;
 	objNode->_type = 0;
+	objNode->_fakePtr = false;
 //	objNode->_data = nullptr;
 	warning("expandObjectList - objNode->data not handled");
 }

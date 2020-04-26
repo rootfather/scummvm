@@ -202,6 +202,8 @@ static void lsExtendGetList(NewObjectList<dbObjectNode> * list, uint32 nr, uint3
 
 	newNode->_nr = nr;
 	newNode->_type = type;
+	warning("HACK - lsExtendGetList");
+	return;
 	dbObjectMapper(newNode, data);
 }
 
