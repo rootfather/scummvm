@@ -659,9 +659,9 @@ static void plCorrectToolsList(uint32 flags) {
 		}
 	}
 
-	dbRemObjectNode(ObjectList, Tool_Handschuhe);
-	dbRemObjectNode(ObjectList, Tool_Schuhe);
-	dbRemObjectNode(ObjectList, Tool_Maske);
+	dbRemObjectNode(ObjectList, Tool_Gloves);
+	dbRemObjectNode(ObjectList, Tool_Shoes);
+	dbRemObjectNode(ObjectList, Tool_Mask);
 	dbRemObjectNode(ObjectList, Tool_Stromgenerator);
 	dbRemObjectNode(ObjectList, Tool_Batterie);
 	dbRemObjectNode(ObjectList, Tool_Schutzanzug);
@@ -802,7 +802,7 @@ static void plActionUse() {
 						} else
 							plSay("PLANING_END", CurrentPerson);
 					} else if (dbIsObject(choice1, Object_Police)) {
-						if (has(PersonsList->getNthNode(CurrentPerson)->_nr, Ability_Kampf)) {
+						if (has(PersonsList->getNthNode(CurrentPerson)->_nr, Ability_Fight)) {
 							NewObjectList<dbObjectNode> *objList = new NewObjectList<dbObjectNode>;
 
 							dbAddObjectNode(objList, Tool_Hand, OLF_INCLUDE_NAME | OLF_INSERT_STAR);

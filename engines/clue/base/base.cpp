@@ -483,13 +483,13 @@ void tcSetPermanentColors() {
 }
 
 void ClueEngine::setFullEnviroment() {
-	hasSetP(Person_Matt_Stuvysunt, Ability_Elektronik, 251);
-	hasSetP(Person_Matt_Stuvysunt, Ability_Schloesser, 210);
-	hasSetP(Person_Matt_Stuvysunt, Ability_Aufpassen, 180);
-	hasSetP(Person_Matt_Stuvysunt, Ability_Schloesser, 180);
+	hasSetP(Person_Matt_Stuvysunt, Ability_Electronic, 251);
+	hasSetP(Person_Matt_Stuvysunt, Ability_Locks, 210);
+	hasSetP(Person_Matt_Stuvysunt, Ability_Surveillance, 180);
+	hasSetP(Person_Matt_Stuvysunt, Ability_Locks, 180);
 
 	hasSetP(Person_Marc_Smith, Ability_Autos, 255);
-	hasSetP(Person_Mohammed_Abdula, Ability_Kampf, 255);
+	hasSetP(Person_Mohammed_Abdula, Ability_Fight, 255);
 
 	/* Matt has all cars */
 	hasSet(Person_Matt_Stuvysunt, Car_Triumph_Roadstar_1947);
@@ -514,18 +514,18 @@ void ClueEngine::setFullEnviroment() {
 	   Removed : Hand,
 	   Fuss,
 	   Stechkarte */
-	hasSet(Person_Matt_Stuvysunt, Tool_Dietrich);
+	hasSet(Person_Matt_Stuvysunt, Tool_Lockpick);
 	hasSet(Person_Matt_Stuvysunt, Tool_Hammer);
-	hasSet(Person_Matt_Stuvysunt, Tool_Axt);
-	hasSet(Person_Matt_Stuvysunt, Tool_Kernbohrer);
-	hasSet(Person_Matt_Stuvysunt, Tool_Handschuhe);
-	hasSet(Person_Matt_Stuvysunt, Tool_Schuhe);
-	hasSet(Person_Matt_Stuvysunt, Tool_Maske);
+	hasSet(Person_Matt_Stuvysunt, Tool_Axe);
+	hasSet(Person_Matt_Stuvysunt, Tool_Core_drill);
+	hasSet(Person_Matt_Stuvysunt, Tool_Gloves);
+	hasSet(Person_Matt_Stuvysunt, Tool_Shoes);
+	hasSet(Person_Matt_Stuvysunt, Tool_Mask);
 	hasSet(Person_Matt_Stuvysunt, Tool_Chloroform);
-	hasSet(Person_Matt_Stuvysunt, Tool_Brecheisen);
-	hasSet(Person_Matt_Stuvysunt, Tool_Winkelschleifer);
-	hasSet(Person_Matt_Stuvysunt, Tool_Bohrmaschine);
-	hasSet(Person_Matt_Stuvysunt, Tool_Bohrwinde);
+	hasSet(Person_Matt_Stuvysunt, Tool_Crowbar);
+	hasSet(Person_Matt_Stuvysunt, Tool_Angle_grinder);
+	hasSet(Person_Matt_Stuvysunt, Tool_Drilling_machine);
+	hasSet(Person_Matt_Stuvysunt, Tool_Drilling_winch);
 	hasSet(Person_Matt_Stuvysunt, Tool_Schloszstecher);
 	hasSet(Person_Matt_Stuvysunt, Tool_Schneidbrenner);
 	hasSet(Person_Matt_Stuvysunt, Tool_Sauerstofflanze);

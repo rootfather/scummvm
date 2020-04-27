@@ -40,12 +40,12 @@ typedef enum {
 	_Location_Nirvana,
 
 	_Ability_Autos,
-	_Ability_Schloesser,
-	_Ability_Sprengstoff,
+	_Ability_Locks,
+	_Ability_Explosive,
 	_Ability_Safes,
-	_Ability_Elektronik,
-	_Ability_Aufpassen,
-	_Ability_Kampf
+	_Ability_Electronic,
+	_Ability_Surveillance,
+	_Ability_Fight
 } KeyConflictE;
 
 /* implemented in data/database.c */
@@ -142,12 +142,12 @@ uint32 getKey(KeyConflictE key);
 #define Location_Nirvana                    _K(Location_Nirvana)
 
 #define Ability_Autos                       _K(Ability_Autos)
-#define Ability_Schloesser                  _K(Ability_Schloesser)
-#define Ability_Sprengstoff                 _K(Ability_Sprengstoff)
+#define Ability_Locks                       _K(Ability_Locks)
+#define Ability_Explosive                   _K(Ability_Explosive)
 #define Ability_Safes                       _K(Ability_Safes)
-#define Ability_Elektronik                  _K(Ability_Elektronik)
-#define Ability_Aufpassen                   _K(Ability_Aufpassen)
-#define Ability_Kampf                       _K(Ability_Kampf)
+#define Ability_Electronic                  _K(Ability_Electronic)
+#define Ability_Surveillance                _K(Ability_Surveillance)
+#define Ability_Fight                       _K(Ability_Fight)
 
 
 
@@ -253,18 +253,18 @@ uint32 getKey(KeyConflictE key);
 
 /* std */
 #define Tool_Hand                           9501
-#define Tool_Dietrich                       9502
+#define Tool_Lockpick                       9502
 #define Tool_Hammer                         9503
-#define Tool_Axt                            9504
-#define Tool_Kernbohrer                     9505
-#define Tool_Handschuhe                     9506
-#define Tool_Schuhe                         9507
-#define Tool_Maske                          9508
+#define Tool_Axe                            9504
+#define Tool_Core_drill                     9505
+#define Tool_Gloves                         9506
+#define Tool_Shoes                          9507
+#define Tool_Mask                           9508
 #define Tool_Chloroform                     9509
-#define Tool_Brecheisen                     9510
-#define Tool_Winkelschleifer                9511
-#define Tool_Bohrmaschine                   9512
-#define Tool_Bohrwinde                      9513
+#define Tool_Crowbar                        9510
+#define Tool_Angle_grinder                  9511
+#define Tool_Drilling_machine               9512
+#define Tool_Drilling_winch                 9513
 #define Tool_Schloszstecher                 9514
 #define Tool_Schneidbrenner                 9515
 #define Tool_Sauerstofflanze                9516

@@ -476,11 +476,11 @@ void tcDone1stBurglary() {
 		hasSet(Person_Marc_Smith, Car_Ford_Model_T__1926);
 	}
 
-	hasSet(Person_Mary_Bolton, Tool_Dietrich);
-	hasSet(Person_Mary_Bolton, Tool_Bohrmaschine);
+	hasSet(Person_Mary_Bolton, Tool_Lockpick);
+	hasSet(Person_Mary_Bolton, Tool_Drilling_machine);
 	hasSet(Person_Mary_Bolton, Tool_Strickleiter);
 	hasSet(Person_Mary_Bolton, Tool_Schloszstecher);
-	hasSet(Person_Mary_Bolton, Tool_Winkelschleifer);
+	hasSet(Person_Mary_Bolton, Tool_Angle_grinder);
 	hasSet(Person_Mary_Bolton, Tool_Schutzanzug);
 
 	livesInSet(London_London_1, Person_Marc_Smith);
@@ -562,7 +562,7 @@ void tcDone2ndBurglary() {
 
 	hasSet(Person_Mary_Bolton, Tool_Funkgeraet);
 	hasSet(Person_Mary_Bolton, Tool_Glasschneider);
-	hasSet(Person_Mary_Bolton, Tool_Bohrwinde);
+	hasSet(Person_Mary_Bolton, Tool_Drilling_winch);
 	hasSet(Person_Mary_Bolton, Tool_Elektroset);
 
 	livesInSet(London_London_1, Person_Margrete_Briggs);
@@ -618,7 +618,7 @@ void tcDone3rdBurglary() {
 	hasSet(Person_Mary_Bolton, Tool_Schneidbrenner);
 	hasSet(Person_Mary_Bolton, Tool_Stethoskop);
 	hasSet(Person_Mary_Bolton, Tool_Stromgenerator);
-	hasSet(Person_Mary_Bolton, Tool_Maske);
+	hasSet(Person_Mary_Bolton, Tool_Mask);
 
 	livesInSet(London_London_1, Person_Miguel_Garcia);
 	livesInSet(London_London_1, Person_John_O_Keef);
@@ -691,7 +691,7 @@ void tcDone4thBurglary() {
 		hasSet(Person_Marc_Smith, Car_Fiat_634_N_1943);
 
 	hasSet(Person_Mary_Bolton, Tool_Dynamit);
-	hasSet(Person_Mary_Bolton, Tool_Kernbohrer);
+	hasSet(Person_Mary_Bolton, Tool_Core_drill);
 	hasSet(Person_Mary_Bolton, Tool_Sauerstofflanze);
 	hasSet(Person_Mary_Bolton, Tool_Chloroform);
 
@@ -745,7 +745,7 @@ void tcDone5thBurglary() {
 		hasSet(Person_Marc_Smith, Car_Bentley_Continental_Typ_R_1953);
 	}
 
-	hasSet(Person_Mary_Bolton, Tool_Schuhe);
+	hasSet(Person_Mary_Bolton, Tool_Shoes);
 	hasSet(Person_Mary_Bolton, Tool_Elektrohammer);
 
 	livesInSet(London_London_1, Person_Thomas_Smith);
@@ -1617,18 +1617,18 @@ void tcInitTowerBurglary() {
 	knowsSet(Person_Matt_Stuvysunt, Person_Mohammed_Abdula);
 
 	/* all tools */
-	hasSet(Person_Matt_Stuvysunt, Tool_Dietrich);
+	hasSet(Person_Matt_Stuvysunt, Tool_Lockpick);
 	hasSet(Person_Matt_Stuvysunt, Tool_Hammer);
-	hasSet(Person_Matt_Stuvysunt, Tool_Axt);
-	hasSet(Person_Matt_Stuvysunt, Tool_Kernbohrer);
-	hasSet(Person_Matt_Stuvysunt, Tool_Handschuhe);
-	hasSet(Person_Matt_Stuvysunt, Tool_Schuhe);
-	hasSet(Person_Matt_Stuvysunt, Tool_Maske);
+	hasSet(Person_Matt_Stuvysunt, Tool_Axe);
+	hasSet(Person_Matt_Stuvysunt, Tool_Core_drill);
+	hasSet(Person_Matt_Stuvysunt, Tool_Gloves);
+	hasSet(Person_Matt_Stuvysunt, Tool_Shoes);
+	hasSet(Person_Matt_Stuvysunt, Tool_Mask);
 	hasSet(Person_Matt_Stuvysunt, Tool_Chloroform);
-	hasSet(Person_Matt_Stuvysunt, Tool_Brecheisen);
-	hasSet(Person_Matt_Stuvysunt, Tool_Winkelschleifer);
-	hasSet(Person_Matt_Stuvysunt, Tool_Bohrmaschine);
-	hasSet(Person_Matt_Stuvysunt, Tool_Bohrwinde);
+	hasSet(Person_Matt_Stuvysunt, Tool_Crowbar);
+	hasSet(Person_Matt_Stuvysunt, Tool_Angle_grinder);
+	hasSet(Person_Matt_Stuvysunt, Tool_Drilling_machine);
+	hasSet(Person_Matt_Stuvysunt, Tool_Drilling_winch);
 	hasSet(Person_Matt_Stuvysunt, Tool_Schloszstecher);
 	hasSet(Person_Matt_Stuvysunt, Tool_Schneidbrenner);
 	hasSet(Person_Matt_Stuvysunt, Tool_Sauerstofflanze);
@@ -1643,14 +1643,14 @@ void tcInitTowerBurglary() {
 	hasSet(Person_Matt_Stuvysunt, Tool_Strickleiter);
 	hasSet(Person_Matt_Stuvysunt, Tool_Funkgeraet);
 
-	if (hasGet(Person_Matt_Stuvysunt, Ability_Schloesser) < 210)
-		hasSetP(Person_Matt_Stuvysunt, Ability_Schloesser, 210);
+	if (hasGet(Person_Matt_Stuvysunt, Ability_Locks) < 210)
+		hasSetP(Person_Matt_Stuvysunt, Ability_Locks, 210);
 
-	if (hasGet(Person_Matt_Stuvysunt, Ability_Elektronik) < 251)
-		hasSetP(Person_Matt_Stuvysunt, Ability_Elektronik, 251);
+	if (hasGet(Person_Matt_Stuvysunt, Ability_Electronic) < 251)
+		hasSetP(Person_Matt_Stuvysunt, Ability_Electronic, 251);
 
 	hasSetP(Person_Marc_Smith, Ability_Autos, 255);
-	hasSetP(Person_Mohammed_Abdula, Ability_Kampf, 255);
+	hasSetP(Person_Mohammed_Abdula, Ability_Fight, 255);
 
 	hasSet(Person_Matt_Stuvysunt, Car_Cadillac_Club_1952);
 

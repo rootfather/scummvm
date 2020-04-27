@@ -97,7 +97,7 @@ static struct {
 
 static void CheckSurrounding(uint32 current) {
 #ifndef PLAN_IS_PERFECT
-	if (has(PersonsList->getNthNode(current)->_nr, Ability_Aufpassen)) {
+	if (has(PersonsList->getNthNode(current)->_nr, Ability_Surveillance)) {
 		int32 watch = 0;
 
 		if (Search.EscapeBits & FAHN_QUIET_ALARM)
@@ -186,16 +186,16 @@ static void plPersonLearns(uint32 persId, uint32 toolId) {
 	case Tool_Hand:
 	case Tool_Fusz:
 	case Tool_Chloroform:
-		para = learnedGet(persId, Ability_Kampf);
+		para = learnedGet(persId, Ability_Fight);
 
 		if (para == NO_PARAMETER)
-			learnedSetP(persId, Ability_Kampf, 1);
+			learnedSetP(persId, Ability_Fight, 1);
 		else
-			learnedSetP(persId, Ability_Kampf, para + 1);
+			learnedSetP(persId, Ability_Fight, para + 1);
 		break;
 
-	case Tool_Winkelschleifer:
-	case Tool_Kernbohrer:
+	case Tool_Angle_grinder:
+	case Tool_Core_drill:
 	case Tool_Schneidbrenner:
 	case Tool_Sauerstofflanze:
 	case Tool_Stethoskop:
@@ -208,36 +208,36 @@ static void plPersonLearns(uint32 persId, uint32 toolId) {
 			learnedSetP(persId, Ability_Safes, para + 1);
 		break;
 
-	case Tool_Dietrich:
-	case Tool_Brecheisen:
-	case Tool_Bohrmaschine:
-	case Tool_Bohrwinde:
+	case Tool_Lockpick:
+	case Tool_Crowbar:
+	case Tool_Drilling_machine:
+	case Tool_Drilling_winch:
 	case Tool_Schloszstecher:
 	case Tool_Glasschneider:
-		para = learnedGet(persId, Ability_Schloesser);
+		para = learnedGet(persId, Ability_Locks);
 
 		if (para == NO_PARAMETER)
-			learnedSetP(persId, Ability_Schloesser, 1);
+			learnedSetP(persId, Ability_Locks, 1);
 		else
-			learnedSetP(persId, Ability_Schloesser, para + 1);
+			learnedSetP(persId, Ability_Locks, para + 1);
 		break;
 
 	case Tool_Elektroset:
-		para = learnedGet(persId, Ability_Elektronik);
+		para = learnedGet(persId, Ability_Electronic);
 
 		if (para == NO_PARAMETER)
-			learnedSetP(persId, Ability_Elektronik, 1);
+			learnedSetP(persId, Ability_Electronic, 1);
 		else
-			learnedSetP(persId, Ability_Elektronik, para + 1);
+			learnedSetP(persId, Ability_Electronic, para + 1);
 		break;
 
 	case Tool_Dynamit:
-		para = learnedGet(persId, Ability_Sprengstoff);
+		para = learnedGet(persId, Ability_Explosive);
 
 		if (para == NO_PARAMETER)
-			learnedSetP(persId, Ability_Sprengstoff, 1);
+			learnedSetP(persId, Ability_Explosive, 1);
 		else
-			learnedSetP(persId, Ability_Sprengstoff, para + 1);
+			learnedSetP(persId, Ability_Explosive, para + 1);
 		break;
 	}
 }

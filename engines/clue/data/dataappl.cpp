@@ -131,7 +131,7 @@ int32 tcCalcEscapeTime() {
 bool tcKillTheGuard(uint32 guyId, uint32 buildingId) {
 	PersonNode *p = (PersonNode *)dbGetObject(guyId);
 	BuildingNode *b = (BuildingNode *)dbGetObject(buildingId);
-	uint32 power = hasGet(guyId, Ability_Kampf);
+	uint32 power = hasGet(guyId, Ability_Fight);
 
 	if (power >= b->GuardStrength)
 		return true;
@@ -237,29 +237,29 @@ uint32 tcGetPersOffer(PersonNode *person, uint8 persCount) {
 	/* Fähigkeiten der Person */
 	if ((i = hasGet(persID, Ability_Autos)) != NO_PARAMETER)
 		persCapability += i;
-	if ((i = hasGet(persID, Ability_Sprengstoff)) != NO_PARAMETER)
+	if ((i = hasGet(persID, Ability_Explosive)) != NO_PARAMETER)
 		persCapability += i;
 	if ((i = hasGet(persID, Ability_Safes)) != NO_PARAMETER)
 		persCapability += i;
-	if ((i = hasGet(persID, Ability_Elektronik)) != NO_PARAMETER)
+	if ((i = hasGet(persID, Ability_Electronic)) != NO_PARAMETER)
 		persCapability += i;
-	if ((i = hasGet(persID, Ability_Aufpassen)) != NO_PARAMETER)
+	if ((i = hasGet(persID, Ability_Surveillance)) != NO_PARAMETER)
 		persCapability += i;
-	if ((i = hasGet(persID, Ability_Schloesser)) != NO_PARAMETER)
+	if ((i = hasGet(persID, Ability_Locks)) != NO_PARAMETER)
 		persCapability += i;
 
 	/* Fähigkeiten von Matt */
 	if ((i = hasGet(Person_Matt_Stuvysunt, Ability_Autos)) != NO_PARAMETER)
 		mattCapability += i;
-	if ((i = hasGet(Person_Matt_Stuvysunt, Ability_Sprengstoff)) != NO_PARAMETER)
+	if ((i = hasGet(Person_Matt_Stuvysunt, Ability_Explosive)) != NO_PARAMETER)
 		mattCapability += i;
 	if ((i = hasGet(Person_Matt_Stuvysunt, Ability_Safes)) != NO_PARAMETER)
 		mattCapability += i;
-	if ((i = hasGet(Person_Matt_Stuvysunt, Ability_Elektronik)) != NO_PARAMETER)
+	if ((i = hasGet(Person_Matt_Stuvysunt, Ability_Electronic)) != NO_PARAMETER)
 		mattCapability += i;
-	if ((i = hasGet(Person_Matt_Stuvysunt, Ability_Aufpassen)) != NO_PARAMETER)
+	if ((i = hasGet(Person_Matt_Stuvysunt, Ability_Surveillance)) != NO_PARAMETER)
 		mattCapability += i;
-	if ((i = hasGet(Person_Matt_Stuvysunt, Ability_Schloesser)) != NO_PARAMETER)
+	if ((i = hasGet(Person_Matt_Stuvysunt, Ability_Locks)) != NO_PARAMETER)
 		mattCapability += i;
 
 	/* wieviel Prozent Leistung er bringt (Matt = 100 %) */
@@ -432,7 +432,7 @@ int32 tcGetTrail(PersonNode *p, uint8 which) {
 		trail = CalcValue(trail, 0, 255, 255 - p->Health, 15);
 		trail = CalcValue(trail, 0, 255, 255 - p->Strength, 5);
 
-		if (!has(Person_Matt_Stuvysunt, Tool_Handschuhe))
+		if (!has(Person_Matt_Stuvysunt, Tool_Gloves))
 			trail = CalcValue(trail, 0, 255, 255, 50);  /* um 50 % mehr ! */
 		break;
 
@@ -460,26 +460,26 @@ static uint32 tcGetNecessaryAbility(uint32 persId, uint32 toolId) {
 	case Tool_Fusz:
 	case Tool_Chloroform:
 	case Tool_Hand:
-		ability = hasGet(persId, Ability_Kampf);
+		ability = hasGet(persId, Ability_Fight);
 		break;
-	case Tool_Kernbohrer:
-	case Tool_Winkelschleifer:
+	case Tool_Core_drill:
+	case Tool_Angle_grinder:
 	case Tool_Schneidbrenner:
 	case Tool_Sauerstofflanze:
 	case Tool_Stethoskop:
 	case Tool_Elektrohammer:
 		ability = hasGet(persId, Ability_Safes);
 		break;
-	case Tool_Bohrmaschine:
-	case Tool_Bohrwinde:
-	case Tool_Dietrich:
-		ability = hasGet(persId, Ability_Schloesser);
+	case Tool_Drilling_machine:
+	case Tool_Drilling_winch:
+	case Tool_Lockpick:
+		ability = hasGet(persId, Ability_Locks);
 		break;
 	case Tool_Dynamit:
-		ability = hasGet(persId, Ability_Sprengstoff);
+		ability = hasGet(persId, Ability_Explosive);
 		break;
 	case Tool_Elektroset:
-		ability = hasGet(persId, Ability_Elektronik);
+		ability = hasGet(persId, Ability_Electronic);
 		break;
 	}
 
@@ -519,7 +519,7 @@ uint32 tcGuyUsesTool(uint32 persId, BuildingNode *b, uint32 toolId, uint32 itemI
 		switch (toolId) {   /* Zeit varieren */
 		case Tool_Elektrohammer:
 		case Tool_Hammer:
-		case Tool_Axt:
+		case Tool_Axe:
 			time =
 			    CalcValue(time, 0, origin * 4, 127 + (255 - p->Strength) / 2,
 			              5);
@@ -536,7 +536,7 @@ uint32 tcGuyUsesTool(uint32 persId, BuildingNode *b, uint32 toolId, uint32 itemI
 			    CalcValue(time, 0, origin * 4, 127 + (255 - p->Strength) / 2,
 			              10);
 			break;
-		case Tool_Bohrwinde:
+		case Tool_Drilling_winch:
 			time =
 			    CalcValue(time, 0, origin * 4, 127 + (255 - p->Stamina) / 2, 5);
 			time =
@@ -544,25 +544,25 @@ uint32 tcGuyUsesTool(uint32 persId, BuildingNode *b, uint32 toolId, uint32 itemI
 			break;
 		case Tool_Schloszstecher:
 		case Tool_Glasschneider:
-		case Tool_Bohrmaschine:
-		case Tool_Brecheisen:
+		case Tool_Drilling_machine:
+		case Tool_Crowbar:
 			time =
 			    CalcValue(time, 0, origin * 4, 127 + (255 - p->Strength) / 2,
 			              10);
 			time =
 			    CalcValue(time, 0, origin * 4, 127 + (255 - p->Skill) / 2, 10);
 			break;
-		case Tool_Winkelschleifer:
+		case Tool_Angle_grinder:
 		case Tool_Schneidbrenner:
 		case Tool_Sauerstofflanze:
-		case Tool_Kernbohrer:
+		case Tool_Core_drill:
 			time =
 			    CalcValue(time, 0, origin * 4, 127 + (255 - p->Strength) / 2,
 			              0);
 			time =
 			    CalcValue(time, 0, origin * 4, 127 + (255 - p->Skill) / 2, 10);
 			break;
-		case Tool_Dietrich:
+		case Tool_Lockpick:
 		case Tool_Strickleiter:
 			time =
 			    CalcValue(time, 0, origin * 4, 127 + (255 - p->Skill) / 2, 10);
@@ -653,7 +653,7 @@ int32 tcGetToolLoudness(uint32 persId, uint32 toolId, uint32 itemId) {
 int32 tcGetWalkLoudness() {
 	int32 loudness = tcWALK_LOUDNESS;
 
-	if (has(Person_Matt_Stuvysunt, Tool_Schuhe))
+	if (has(Person_Matt_Stuvysunt, Tool_Shoes))
 		loudness /= 2;
 
 	return loudness;
@@ -776,7 +776,7 @@ bool tcAlarmByMicro(uint16 us_XPos, uint16 us_YPos, int32 loudness) {
  */
 
 bool tcWatchDogWarning(uint32 persId) {
-	int32 watch = hasGet(persId, Ability_Aufpassen);
+	int32 watch = hasGet(persId, Ability_Surveillance);
 
 	int32 random = g_clue->calcRandomNr(0, 200) + /* Joe soll nicht gleich in der ersten */
 		g_clue->calcRandomNr(0, 200) + /* Sekunde etwas bemerken!             */
@@ -794,7 +794,7 @@ bool tcWatchDogWarning(uint32 persId) {
  */
 
 bool tcWrongWatchDogWarning(uint32 persId) {
-	uint32 watch = hasGet(persId, Ability_Aufpassen);
+	uint32 watch = hasGet(persId, Ability_Surveillance);
 
 	if (g_clue->calcRandomNr(0, 255) > watch) { /* Irrtum */
 		if (g_clue->calcRandomNr(0, watch * 50) == 1)   /* umso besser, umso kleiner Wahrscheinlichkeit */

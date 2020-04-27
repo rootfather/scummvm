@@ -190,7 +190,7 @@ bool tcStartEvidence() {
 			if (MyEvidence[i][j])
 				MyEvidence[i][j] = MAX(MyEvidence[i][j], 5);
 
-		if (has(Person_Matt_Stuvysunt, Tool_Maske))
+		if (has(Person_Matt_Stuvysunt, Tool_Mask))
 			MyEvidence[i][6] = (MyEvidence[i][6] * 2) / 3;
 
 		/* im Fluchtfall viele Gehspuren! */

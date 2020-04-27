@@ -1022,17 +1022,17 @@ static uint32 getKeyStd(KeyConflictE key) {
 
 	case _Ability_Autos:
 		return  140;
-	case _Ability_Schloesser:
+	case _Ability_Locks:
 		return  141;
-	case _Ability_Sprengstoff:
+	case _Ability_Explosive:
 		return  142;
 	case _Ability_Safes:
 		return  143;
-	case _Ability_Elektronik:
+	case _Ability_Electronic:
 		return  144;
-	case _Ability_Aufpassen:
+	case _Ability_Surveillance:
 		return  145;
-	case _Ability_Kampf:
+	case _Ability_Fight:
 		return  146;
 
 	default:
@@ -1088,17 +1088,17 @@ static uint32 getKeyProfi(KeyConflictE key) {
 
 	case _Ability_Autos:
 		return  173;
-	case _Ability_Schloesser:
+	case _Ability_Locks:
 		return  174;
-	case _Ability_Sprengstoff:
+	case _Ability_Explosive:
 		return  175;
 	case _Ability_Safes:
 		return  176;
-	case _Ability_Elektronik:
+	case _Ability_Electronic:
 		return  177;
-	case _Ability_Aufpassen:
+	case _Ability_Surveillance:
 		return  178;
-	case _Ability_Kampf:
+	case _Ability_Fight:
 		return  179;
 
 	default:
