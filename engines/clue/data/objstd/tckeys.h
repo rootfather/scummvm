@@ -276,7 +276,7 @@ uint32 getKey(KeyConflictE key);
 #define Tool_Dynamite                       9522
 #define Tool_Electric_hammer                9523
 #define Tool_Glass_cutter                   9524
-#define Tool_Fusz                           9525
+#define Tool_Foot                           9525
 #define Tool_Rope_ladder                    9526
 #define Tool_Radio_equipment                9527
 #define Tool_Stabbing_card                  9528

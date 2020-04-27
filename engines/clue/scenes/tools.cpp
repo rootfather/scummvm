@@ -170,7 +170,7 @@ void tcSellTool() {
 	NewObjectList<dbObjectNode> *tools = ObjectListPrivate;
 
 	dbRemObjectNode(tools, Tool_Hand);
-	dbRemObjectNode(tools, Tool_Fusz);
+	dbRemObjectNode(tools, Tool_Foot);
 
 	if (tools->isEmpty())
 		Say(BUSINESS_TXT, 0, MATT_PICTID, "MATT_HAS_NO_TOOL");
@@ -216,7 +216,7 @@ void tcSellTool() {
 		tools = ObjectListPrivate;
 
 		dbRemObjectNode(tools, Tool_Hand);
-		dbRemObjectNode(tools, Tool_Fusz);
+		dbRemObjectNode(tools, Tool_Foot);
 	}
 
 	tools->removeList();
@@ -225,7 +225,7 @@ void tcSellTool() {
 void tcToolsShop() {
 	static byte choice1 = 0;
 
-	if (!(knows(Person_Matt_Stuvysunt, Person_Mary_Bolton)))
+	if (!knows(Person_Matt_Stuvysunt, Person_Mary_Bolton))
 		knowsSet(Person_Matt_Stuvysunt, Person_Mary_Bolton);
 
 	byte choice = 0;

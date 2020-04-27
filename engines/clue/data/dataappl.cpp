@@ -454,7 +454,7 @@ static uint32 tcGetNecessaryAbility(uint32 persId, uint32 toolId) {
 	uint32 ability = 255;       /* andere Arbeiten optimal! */
 
 	switch (toolId) {
-	case Tool_Fusz:
+	case Tool_Foot:
 	case Tool_Chloroform:
 	case Tool_Hand:
 		ability = hasGet(persId, Ability_Fight);
@@ -521,7 +521,7 @@ uint32 tcGuyUsesTool(uint32 persId, BuildingNode *b, uint32 toolId, uint32 itemI
 			time = CalcValue(time, 0, origin * 4, 127 + (255 - p->Stamina) / 2, 10);
 			break;
 		case Tool_Hand:
-		case Tool_Fusz:
+		case Tool_Foot:
 		case Tool_Chloroform:
 			time = CalcValue(time, 0, origin * 4, 127 + (255 - p->Skill) / 2, 5);
 			time = CalcValue(time, 0, origin * 4, 127 + (255 - p->Strength) / 2, 10);

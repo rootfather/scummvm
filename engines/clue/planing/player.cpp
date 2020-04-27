@@ -184,7 +184,7 @@ static void plPersonLearns(uint32 persId, uint32 toolId) {
 	uint32 para;
 	switch (toolId) {
 	case Tool_Hand:
-	case Tool_Fusz:
+	case Tool_Foot:
 	case Tool_Chloroform:
 		para = learnedGet(persId, Ability_Fight);
 

@@ -806,7 +806,7 @@ static void plActionUse() {
 							NewObjectList<dbObjectNode> *objList = new NewObjectList<dbObjectNode>;
 
 							dbAddObjectNode(objList, Tool_Hand, OLF_INCLUDE_NAME | OLF_INSERT_STAR);
-							dbAddObjectNode(objList, Tool_Fusz, OLF_INCLUDE_NAME | OLF_INSERT_STAR);
+							dbAddObjectNode(objList, Tool_Foot, OLF_INCLUDE_NAME | OLF_INSERT_STAR);
 
 							if (has(Person_Matt_Stuvysunt, Tool_Chloroform))
 								dbAddObjectNode(objList, Tool_Chloroform, OLF_INCLUDE_NAME | OLF_INSERT_STAR);
