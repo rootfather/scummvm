@@ -25,7 +25,10 @@
 
 namespace Clue {
 
-void *StdBuffer1 = NULL;
+void *StdBuffer1 = nullptr;
+
+#define MAX_INTRO_TRACK 24
+#define MAX_INTRO_ANIM 6
 
 void tcDone() {
 	static bool inprogress;
@@ -62,6 +65,307 @@ void tcDone() {
 	}
 }
 
+void orbyte(uint8 *ptr, uint8 data, uint8 dmask) {
+	uint8 dmaskoff = ~dmask;
+
+	if (0x80 & data) *ptr++ |= dmask;
+	else *ptr++ &= dmaskoff;
+	if (0x40 & data) *ptr++ |= dmask;
+	else *ptr++ &= dmaskoff;
+	if (0x20 & data) *ptr++ |= dmask;
+	else *ptr++ &= dmaskoff;
+	if (0x10 & data) *ptr++ |= dmask;
+	else *ptr++ &= dmaskoff;
+	if (0x08 & data) *ptr++ |= dmask;
+	else *ptr++ &= dmaskoff;
+	if (0x04 & data) *ptr++ |= dmask;
+	else *ptr++ &= dmaskoff;
+	if (0x02 & data) *ptr++ |= dmask;
+	else *ptr++ &= dmaskoff;
+	if (0x01 & data) *ptr |= dmask;
+	else *ptr &= dmaskoff;
+}
+
+void ClueEngine::processIntroAnimation(uint8 *dp, uint8 *sp) {
+	/* skip header */
+	XMSOffset += 4;
+	/* get size */
+	uint32 size;
+	memcpy(&size, XMSHandle + XMSOffset, 4);
+	XMSOffset += 4;
+
+	uint32 rsize = amg2Pc(size);
+	uint8 *me = dp;
+
+	sp = XMSHandle + XMSOffset;
+	XMSOffset += rsize;
+
+	while (memcmp(sp, "DLTA", 4) != 0)
+		sp++;
+
+	sp += 8;
+	uint32 *lp = (uint32 *)sp;
+	uint8 *st = sp;            /* start of DLTA block */
+
+	uint32 offs[8];
+	for (int i = 0; i < 8; i++)
+		offs[i] = amg2Pc(lp[i]);
+
+	uint8 *me2 = me;
+
+	uint8 plane, planeMask;
+	for (plane = 0, planeMask = 1; plane < 8; plane++, planeMask <<= 1) {
+		if (offs[plane] != 0) {
+			sp = st + offs[plane];
+			uint8 *me1 = me2;
+
+			for (int col = 0; col < 40; col++) {
+				me = me1;
+				uint8 op_cnt = *sp++;
+
+				for (int i = 0; i < op_cnt; i++) {
+					uint8 op = *sp++;
+
+					if (op == 0) {
+						uint8 cnt = *sp++;
+						uint8 val = *sp++;
+
+						for (int j = 0; j < cnt; j++) {
+							orbyte(me, val, planeMask);
+							me += SCREEN_WIDTH;
+						}
+					} else {
+						if ((op & 0x80)) {
+							uint8 cnt = op & 0x7f;
+							for (int j = 0; j < cnt; j++) {
+								uint8 val = *sp++;
+								orbyte(me, val, planeMask);
+								me += SCREEN_WIDTH;
+							}
+						} else {
+							/* skip op */
+							me += (SCREEN_WIDTH * op);
+						}
+					}
+
+				}
+				me1 += 8;   /* next column */
+			}
+		}
+	}
+}
+
+uint32 ClueEngine::amg2Pc(uint32 s) {
+	return ((s & 255) << 24) +
+		(((s >> 8) & 255) << 16) +
+		(((s >> 16) & 255) << 8) + (((s >> 24) & 255));
+}
+void ClueEngine::showIntro() {
+	static const char *names[5] = {
+		"an1_1.anm",
+		"an2_4.anm",
+		"an3_11.anm",
+		"an4_11.anm",
+		"an5_11.anm"
+	};
+
+	static const char *fname[MAX_INTRO_ANIM] = {
+	"church.voc",
+	"church.voc",
+	"church.voc",
+	"church.voc",
+	"church.voc",
+	"church.voc"
+	};
+
+	static const int sync[MAX_INTRO_ANIM * 2] = {
+		0, 1,
+		0, 5,
+		1, 2,
+		1, 27,
+		1, 39,
+		1, 53
+	};
+
+	static const int CDFrames[MAX_INTRO_TRACK * 6] = {
+		/* Anim#, Frame#, (0..full frame; 1..partial frame), Frame Start, Frame End */
+
+		2, 100, 0, 3, 0, 0,
+		2, 143, 0, 4, 0, 0,
+		3, 5, 0, 23, 0, 0,
+		3, 74, 0, 8, 0, 0,
+		3, 90, 0, 24, 0, 0,
+		3, 118, 0, 9, 0, 0,
+		3, 137, 0, 14, 0, 0,
+		3, 177, 0, 19, 0, 0,
+		3, 205, 0, 10, 0, 0,
+		3, 222, 0, 15, 0, 0,
+		3, 242, 0, 20, 0, 0,
+		3, 260, 0, 16, 0, 0,
+		3, 293, 0, 21, 0, 0,
+		3, 327, 0, 11, 0, 0,
+		3, 344, 0, 17, 0, 0,
+		3, 375, 0, 5, 0, 0,
+		3, 427, 1, 12, 0, 2 * 75,
+		3, 445, 1, 12, 3 * 75, 5 * 75,
+		3, 467, 1, 12, 8 * 75, 11 * 75,
+		4, 5, 0, 18, 0, 0,
+		4, 44, 0, 22, 0, 0,
+		4, 66, 0, 6, 0, 0,
+		4, 115, 0, 13, 0, 0,
+		4, 153, 0, 7, 0, 0
+	};
+
+	static const int frames[5] = { 9, 67, 196, 500, 180 };
+	static const int rate[5] = { 60, 17, 7, 7, 7 };
+
+	XMSHandle = (uint8 *)malloc(818 * 1024);
+
+	/******************************** Init Gfx ********************************/
+	MemRastPort A, B;
+	gfxInitMemRastPort(&A, SCREEN_WIDTH, SCREEN_HEIGHT);
+	gfxInitMemRastPort(&B, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+	_GC ScreenGC;
+	gfxInitGC(&ScreenGC, 0, 0, 320, 200, 0, 255, nullptr);
+	gfxSetColorRange(0, 255);
+
+	uint8 colorTABLE[GFX_PALETTE_SIZE];
+	memset(colorTABLE, 0, sizeof(colorTABLE));
+	gfxSetRGBRange(colorTABLE, 0, 256);
+
+	for (int anims = 0; anims < 5; anims++) {
+		char pathName[DSK_PATH_MAX];
+
+		if (g_clue->getFeatures() & ADGF_CD)
+			CDROM_StopAudioTrack();
+
+		if (!dskBuildPathName(DISK_CHECK_FILE, INTRO_DIRECTORY, names[anims], pathName))
+			continue;
+
+		Common::Stream *fp = dskOpen(pathName, 0);
+		if (fp) {
+			XMSOffset = 0;
+
+			uint32 head;
+			dskRead_U32LE(fp, &head);
+			uint32 size;
+			dskRead_U32LE(fp, &size);
+			uint32 rsize = amg2Pc(size);
+
+			dskRead(fp, XMSHandle, rsize);
+			dskClose(fp);
+
+			/* skip header */
+			XMSOffset += 4;
+
+			uint8 *cp = XMSHandle + XMSOffset;
+
+			/* skip header */
+			XMSOffset += 4;
+			/* get size */
+			memcpy(&size, XMSHandle + XMSOffset, 4);
+			XMSOffset += 4;
+
+			rsize = amg2Pc(size);
+
+			XMSOffset += rsize;
+
+			gfxChangeColors(nullptr, 4, GFX_BLEND_UP, colorTABLE);
+			gfxClearArea(nullptr);
+
+			/* copy from file to A & B */
+			gfxSetCMAP(cp);
+			gfxILBMToRAW(cp, ScratchRP.pixels, SCREEN_SIZE);
+			gfxScratchToMem(&A);
+			gfxScratchToMem(&B);
+
+			bool endi = false;
+			bool showA;
+			int t;
+			for (t = 0, showA = true; t < frames[anims]; t++, showA = !showA) {
+
+				gfxScreenFreeze();
+
+				if (showA) {
+					gfxBlit(&ScreenGC, &A, 0, 0, 0, 0,
+						SCREEN_WIDTH, SCREEN_HEIGHT, false);
+				} else {
+					gfxBlit(&ScreenGC, &B, 0, 0, 0, 0,
+						SCREEN_WIDTH, SCREEN_HEIGHT, false);
+				}
+
+				if (t == 0) {
+					gfxChangeColors(nullptr, 4, GFX_BLEND_UP, ScratchRP.palette);
+				}
+
+				gfxScreenThaw(&ScreenGC, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+				inpSetWaitTicks(rate[anims]);
+				int32 action = inpWaitFor(INP_TIME | INP_KEYBOARD | INP_BUTTON);
+				if (action & (INP_KEYBOARD | INP_BUTTON)) {
+					endi = true;
+					goto endit;
+				}
+
+				if (showA) {
+					processIntroAnimation(B.pixels, cp);
+				} else {
+					processIntroAnimation(A.pixels, cp);
+				}
+
+				for (int s = 0; s < MAX_INTRO_ANIM; s++) {
+					if (sync[s * 2] == anims && sync[s * 2 + 1] - 1 == t) {
+						sndPrepareFX(fname[s]);
+						sndPlayFX();
+					}
+				}
+
+				if (anims == 1 && t == 62) {
+					sndPlaySound("title.bk", 0);
+				}
+
+				if (g_clue->getFeatures() & ADGF_CD) {
+					for (int s = 0; s < MAX_INTRO_TRACK; s++) {
+						if ((CDFrames[s * 6] == anims)
+							&& (CDFrames[s * 6 + 1] == t)) {
+							sndFading(16);
+
+							CDROM_StopAudioTrack();
+							if (CDFrames[s * 6 + 2] == 0)
+								CDROM_PlayAudioTrack(CDFrames[s * 6 + 3]);
+							else
+								CDROM_PlayAudioSequence(CDFrames[s * 6 + 3], CDFrames[s * 6 + 4], CDFrames[s * 6 + 5]);
+						}
+					}
+				}
+
+				endi = false;
+			}
+
+		endit:
+			gfxChangeColors(nullptr, 1, GFX_FADE_OUT, colorTABLE);
+
+			if (endi) {
+				goto endit2;
+			}
+		}
+	}
+
+endit2:
+	gfxClearArea(nullptr);
+
+	if (g_clue->getFeatures() & ADGF_CD) {
+		CDROM_StopAudioTrack();
+		sndFading(0);
+	}
+
+	gfxDoneMemRastPort(&A);
+	gfxDoneMemRastPort(&B);
+
+	free(XMSHandle);
+}
+	
 bool ClueEngine::tcInit() {
 	InitAudio();
 
@@ -85,7 +389,7 @@ bool ClueEngine::tcInit() {
 	inpOpenAllInputDevs();
 	inpMousePtrOff();
 
-	ShowIntro();
+	showIntro();
 
 	hscReset();
 

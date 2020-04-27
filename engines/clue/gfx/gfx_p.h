@@ -112,13 +112,8 @@ _GC *u_gc;
 struct Font *bubbleFont;
 struct Font *menuFont;
 
-static void gfxInitGC(_GC *gc, uint16 x, uint16 y, uint16 w, uint16 h,
-                      uint8 colorStart, uint8 colorEnd, Font *font);
-
 static void gfxInitCollList();
 static void gfxInitPictList();
-
-static void gfxSetCMAP(const uint8 *src);
 
 static Font *gfxOpenFont(const char *fileName, uint16 w, uint16 h,
                          unsigned char first, unsigned char last,

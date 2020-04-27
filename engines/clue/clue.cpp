@@ -36,6 +36,10 @@ ClueEngine *g_clue = NULL;
 
 ClueEngine::ClueEngine(OSystem *syst, const ADGameDescription *gameDesc) : Engine(syst), _gameDescription(gameDesc) {
 	g_clue = this;
+
+	XMSOffset = 0;
+	XMSHandle = nullptr;
+
 	// Set up debug channels
 	for (uint32 moduleId = ERROR_MODULE_BASE; moduleId < ERROR_MODULE_LAST; moduleId++) {
 		DebugMan.addDebugChannel(ERR_CHANNEL(moduleId), moduleNames[moduleId], "");

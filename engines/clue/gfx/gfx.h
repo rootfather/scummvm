@@ -22,12 +22,9 @@
 #define MODULE_GFX
 
 #include "graphics/surface.h"
-#include "clue/list/list.h"
 #include "clue/text.h"
 
 namespace Clue {
-struct _GC;
-
 #define GFX_NO_MEM_HANDLE   ((uint16) -1)
 
 /* defines for gfxPrint */
@@ -142,6 +139,24 @@ struct Font {
 	unsigned char last;
 };
 
+struct _GC {
+	Rect clip;
+
+	GfxDrawModeE mode;
+
+	uint8 foreground;              /* entspricht dem Farbregister */
+	uint8 background;              /* ebenfalls absolut und nicht relativ zum */
+	uint8 outline;                 /* Registerstart */
+
+	uint8 colorStart;
+	uint8 End;
+
+	uint16 cursorX;
+	uint16 cursorY;
+
+	Font *font;
+};
+
 extern _GC *l_gc;
 extern _GC *u_gc;
 extern _GC *m_gc;
@@ -235,7 +250,11 @@ void gfxScreenUnFreeze();
 
 void gfxGetMouseXY(_GC *gc, uint16 *pMouseX, uint16 *pMouseY);
 
-void ShowIntro();
+void gfxSetRGBRange(uint8 *colors, uint32 start, uint32 num);
+void gfxInitGC(_GC *gc, uint16 x, uint16 y, uint16 w, uint16 h,
+uint8 colorStart, uint8 colorEnd, Font *font);
+void gfxSetCMAP(const uint8 *src);
+void gfxILBMToRAW(const uint8 *src, uint8 *dst, size_t size);
 
 #if 0
 extern int32 gfxGetILBMSize(struct Collection *coll);

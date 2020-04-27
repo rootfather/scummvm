@@ -36,8 +36,16 @@ enum ClueGameFeatures {
 };
 
 class TextMgr;
-	
+
 class ClueEngine : public Engine {
+private:
+	size_t XMSOffset;
+	uint8 *XMSHandle;
+
+	uint32 amg2Pc(uint32 s);
+	void processIntroAnimation(uint8 *dp, uint8 *sp);
+	void showIntro();
+
 protected:
 	// Engine APIs
 	virtual Common::Error run();
