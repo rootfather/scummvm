@@ -65,10 +65,10 @@ bool lsIsObjectAStdObj(LSObjectNode *lso) {
 
 bool lsIsObjectADoor(LSObjectNode *lso) {
 	switch (lso->Type) {
-	case Item_Holztuer:
-	case Item_Stahltuer:
+	case Item_Wooden_door:
+	case Item_Steel_door:
 	case Item_Mauertor:
-	case Item_Tresorraum:
+	case Item_Vault:
 		return true;
 	}
 
@@ -77,9 +77,9 @@ bool lsIsObjectADoor(LSObjectNode *lso) {
 
 bool lsIsObjectAWall(LSObjectNode *lso) {
 	switch (lso->Type) {
-	case Item_Mauer:
-	case Item_Mauerecke:
-	case Item_Steinmauer:
+	case Item_Wall:
+	case Item_Wall_corner:
+	case Item_Stone_wall:
 	case Item_Sockel:
 		return true;
 	}
@@ -90,12 +90,12 @@ bool lsIsObjectAWall(LSObjectNode *lso) {
 		case Item_Gelaender:
 		case Item_Absperrung:
 		case Item_Postsack:
-		case Item_Lokomotive_vorne_rechts:
-		case Item_Lokomotive_vorne_links:
-		case Item_Lokomotive_oben:
-		case Item_Lokomotive_seitlich:
-		case Item_Lokomotive_Kabine:
-		case Item_Lokomotive_Tuer:
+		case Item_Locomotive_front_right:
+		case Item_Locomotive_front_left:
+		case Item_Locomotive_above:
+		case Item_Locomotive_side:
+		case Item_Locomotive_cabin:
+		case Item_Locomotive_door:
 			return true;
 		}
 	}

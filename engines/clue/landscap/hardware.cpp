@@ -106,9 +106,9 @@ void lsFastRefresh(LSObjectNode *lso) {
 	ls->uch_ShowObjectMask = 0x40;  /* ignore bit 6 */
 
 	switch (lso->Type) {
-	case Item_Holztuer:
-	case Item_Stahltuer:
-	case Item_Tresorraum:
+	case Item_Wooden_door:
+	case Item_Steel_door:
+	case Item_Vault:
 	case Item_Mauertor:
 		if (lso->ul_Status & (1 << Const_tcOPEN_CLOSE_BIT)) {
 			lsDoDoorRefresh(lso);
@@ -122,7 +122,7 @@ void lsFastRefresh(LSObjectNode *lso) {
 			lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_ALL);
 		break;
 
-	case Item_Gemaelde:
+	case Item_Painting:
 	case Item_Bild:
 		/* paintings and pictures are simply painted over with a gray RectFill
 		       (shadow colour) when they are taken */

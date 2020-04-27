@@ -110,9 +110,9 @@ byte plIsStair(uint32 objId) {
 /* special items support */
 void plCorrectOpened(LSObjectNode *obj, bool open) {
 	switch (obj->Type) {
-	case Item_Holztuer:
-	case Item_Stahltuer:
-	case Item_Tresorraum:
+	case Item_Wooden_door:
+	case Item_Steel_door:
+	case Item_Vault:
 	case Item_Mauertor:
 		if (open)
 			lsTurnObject(obj, LS_OBJECT_INVISIBLE, LS_NO_COLLISION);
@@ -128,19 +128,19 @@ byte plIgnoreLock(uint32 objId) {
 	byte back = 0;
 
 	switch (((LSObjectNode *) dbGetObject(objId))->Type) {
-	case Item_Alarmanlage_Z3:
+	case Item_Alarm_system_Z3:
 		back = PLANING_ALARM_Z3;
 		break;
 
-	case Item_Alarmanlage_X3:
+	case Item_Alarm_system_X3:
 		back = PLANING_ALARM_X5;
 		break;
 
-	case Item_Alarmanlage_Top:
+	case Item_Alarm_system_Top:
 		back = PLANING_ALARM_TOP3;
 		break;
 
-	case Item_Steuerkasten:
+	case Item_Control_Box:
 		back = PLANING_POWER;
 		break;
 	}

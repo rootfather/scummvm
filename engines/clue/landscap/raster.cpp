@@ -44,9 +44,9 @@ void lsShowRaster(uint32 areaID, byte perc) {
 			LSObjectNode *lso = (LSObjectNode *)node;
 
 			switch (lso->Type) {
-			case Item_Mauer:
-			case Item_Mauerecke:
-			case Item_Steinmauer:
+			case Item_Wall:
+			case Item_Wall_corner:
+			case Item_Stone_wall:
 				lsFadeRasterObject(areaID, lso, 1);
 				break;
 			default:
@@ -58,9 +58,9 @@ void lsShowRaster(uint32 areaID, byte perc) {
 			LSObjectNode *lso = (LSObjectNode *)node;
 
 			switch (lso->Type) {
-			case Item_Mauer:
-			case Item_Mauerecke:
-			case Item_Steinmauer:
+			case Item_Wall:
+			case Item_Wall_corner:
+			case Item_Stone_wall:
 				break;
 			default:
 				lsFadeRasterObject(areaID, lso, 1);
@@ -145,15 +145,15 @@ void lsShowAllConnections(uint32 areaID, dbObjectNode *node, byte perc) {
 	uint32 relID = 0;
 
 	switch (lso1->Type) {
-	case Item_Alarmanlage_Z3:
-	case Item_Alarmanlage_X3:
-	case Item_Alarmanlage_Top:
+	case Item_Alarm_system_Z3:
+	case Item_Alarm_system_X3:
+	case Item_Alarm_system_Top:
 		relID = hasAlarmRelationID;
 		if (Alarm_Power & 1)
 			lsShowRaster(areaID, perc);
 		Alarm_Power |= 1;
 		break;
-	case Item_Steuerkasten:
+	case Item_Control_Box:
 		relID = hasPowerRelationID;
 		if (Alarm_Power & 2)
 			lsShowRaster(areaID, perc);

@@ -448,7 +448,7 @@ void lsPatchObjects() {
 		case Item_Nachtkaestchen:
 			lso->ul_Status |= (1 << Const_tcLOCK_UNLOCK_BIT);  /* unlocked! */
 			break;
-		case Item_Steinmauer:
+		case Item_Stone_wall:
 		case Item_Tresen:
 		case Item_Vase:
 		case Item_Sockel:
@@ -495,7 +495,7 @@ void lsCalcExactSize(LSObjectNode *lso, uint16 *x0, uint16 *y0, uint16 *x1, uint
 
 	/* no idea why OPEN_CLOSE_BIT & HORIZ_VERT_BIT are swapped
 	   for painting and image, but they are */
-	if ((lso->Type == Item_Bild) || (lso->Type == Item_Gemaelde))
+	if (lso->Type == Item_Bild || lso->Type == Item_Painting)
 		vertical = lso->ul_Status & 3;
 	else
 		vertical = lso->ul_Status & 1;

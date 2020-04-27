@@ -584,12 +584,12 @@ uint32 tcGuyUsesTool(uint32 persId, BuildingNode *b, uint32 toolId, uint32 itemI
 		              127 + ((255 - tcGetNecessaryAbility(persId, toolId)) / 2), 50);
 
 		switch (itemId) {   /* Alarmanglagen bonus! */
-		case Item_Alarmanlage_Z3:
+		case Item_Alarm_system_Z3:
 			break;
-		case Item_Alarmanlage_X3:
+		case Item_Alarm_system_X3:
 			time = CalcValue(time, 0, origin * 4, 255, 30);
 			break;
-		case Item_Alarmanlage_Top:
+		case Item_Alarm_system_Top:
 			time = CalcValue(time, 0, origin * 4, 255, 50);
 			break;
 		default:
@@ -715,10 +715,10 @@ bool tcGuardChecksObject(LSObjectNode *lso) {
 		return true;
 
 	switch (lso->Type) {
-	case Item_Alarmanlage_Z3:
-	case Item_Alarmanlage_X3:
-	case Item_Alarmanlage_Top:
-	case Item_Steuerkasten:
+	case Item_Alarm_system_Z3:
+	case Item_Alarm_system_X3:
+	case Item_Alarm_system_Top:
+	case Item_Control_Box:
 		/* hier darf NICHT das OPEN_CLOSE_BIT geprüft werden */
 		/* sonst schlägt der Wächter Alarm, wenn er es öffnet! */
 		if (lso->ul_Status & (1 << Const_tcON_OFF))
@@ -726,7 +726,7 @@ bool tcGuardChecksObject(LSObjectNode *lso) {
 		break;
 	case Item_Bild:
 	case Item_Vase:
-	case Item_Gemaelde:
+	case Item_Painting:
 	case Item_Statue:
 		if (lso->uch_Visible == 0)
 			return true;

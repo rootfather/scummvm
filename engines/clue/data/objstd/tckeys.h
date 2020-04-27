@@ -192,25 +192,25 @@ uint32 getKey(KeyConflictE key);
 
 
 /* profidisk extra */
-#define Item_Lokomotive_vorne_rechts         290
-#define Item_Lokomotive_vorne_links          291
-#define Item_Lokomotive_oben                 292
-#define Item_Lokomotive_seitlich             293
-#define Item_Lokomotive_Kabine               294
-#define Item_Lokomotive_Tuer                 295
+#define Item_Locomotive_front_right          290
+#define Item_Locomotive_front_left           291
+#define Item_Locomotive_above                292
+#define Item_Locomotive_side                 293
+#define Item_Locomotive_cabin                294
+#define Item_Locomotive_door                 295
 
 
 /* std */
-#define Item_Holztuer                       9201
-#define Item_Stahltuer                      9202
-#define Item_Gemaelde                       9206
-#define Item_Tresorraum                     9207
-#define Item_Mauer                          9208
-#define Item_Mauerecke                      9209
-#define Item_Alarmanlage_Z3                 9210
-#define Item_Alarmanlage_X3                 9211
-#define Item_Alarmanlage_Top                9212
-#define Item_Steuerkasten                   9213
+#define Item_Wooden_door                    9201
+#define Item_Steel_door                     9202
+#define Item_Painting                       9206
+#define Item_Vault                          9207
+#define Item_Wall                           9208
+#define Item_Wall_corner                    9209
+#define Item_Alarm_system_Z3                9210
+#define Item_Alarm_system_X3                9211
+#define Item_Alarm_system_Top               9212
+#define Item_Control_Box                    9213
 #define Item_WC                             9214
 #define Item_Tresen                         9223
 #define Item_Kuehlschrank                   9224
@@ -220,7 +220,7 @@ uint32 getKey(KeyConflictE key);
 #define Item_Kranz                          9237
 #define Item_Treppe                         9238
 #define Item_Mauertor                       9250
-#define Item_Steinmauer                     9253
+#define Item_Stone_wall                     9253
 #define Item_Nachtkaestchen                 9260
 #define Item_Sockel                         9261
 #define Item_Kasse                          9262

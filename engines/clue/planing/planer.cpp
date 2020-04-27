@@ -850,13 +850,13 @@ static void plActionUse() {
 						if (!CHECK_STATE(state, Const_tcIN_PROGRESS_BIT)) {
 							if (plIgnoreLock(choice1) && !CHECK_STATE(state, Const_tcOPEN_CLOSE_BIT)) {
 								switch (((LSObjectNode *) dbGetObject(choice1))->Type) {
-								case Item_Alarmanlage_Z3:
-								case Item_Alarmanlage_X3:
-								case Item_Alarmanlage_Top:
+								case Item_Alarm_system_Z3:
+								case Item_Alarm_system_X3:
+								case Item_Alarm_system_Top:
 									plMessage("ALARM_OPEN", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
 									break;
 
-								case Item_Steuerkasten:
+								case Item_Control_Box:
 									plMessage("POWER_OPEN", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
 									break;
 								}

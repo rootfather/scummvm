@@ -327,8 +327,7 @@ void ClueEngine::showIntro() {
 
 				if (g_clue->getFeatures() & ADGF_CD) {
 					for (int s = 0; s < MAX_INTRO_TRACK; s++) {
-						if ((CDFrames[s * 6] == anims)
-							&& (CDFrames[s * 6 + 1] == t)) {
+						if (CDFrames[s * 6] == anims && CDFrames[s * 6 + 1] == t) {
 							sndFading(16);
 
 							CDROM_StopAudioTrack();
