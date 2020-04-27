@@ -825,7 +825,7 @@ static void plActionUse() {
 
 								if (InitAction(plSys, ACTION_USE, choice1, choice2,
 								         tcGuyUsesTool(PersonsList->getNthNode(CurrentPerson)->_nr,
-											(BuildingNode *)dbGetObject(Planing_BldId), choice2, Item_Wache) * PLANING_CORRECT_TIME)) {
+											(BuildingNode *)dbGetObject(Planing_BldId), choice2, Item_Guard) * PLANING_CORRECT_TIME)) {
 									PlanChanged = true;
 
 									Planing_Guard[((PoliceNode *)dbGetObject(choice1))->LivingID - BurglarsNr] = 2;
@@ -835,7 +835,7 @@ static void plActionUse() {
 									       GetMaxTimer(plSys),
 									       tcGuyUsesTool((PersonsList->getNthNode(CurrentPerson)->_nr),
 									                     (BuildingNode *)dbGetObject(Planing_BldId),
-									                     choice2, Item_Wache) * PLANING_CORRECT_TIME, 1);
+									                     choice2, Item_Guard) * PLANING_CORRECT_TIME, 1);
 									livRefreshAll();
 								} else
 									plSay("PLANING_END", CurrentPerson);
@@ -943,7 +943,7 @@ static void plActionUse() {
 										} else
 											plMessage("WRONG_ABILITY", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
 									}
-								} else if (((LSObjectNode *) dbGetObject(choice1))->Type == Item_Fenster) {
+								} else if (((LSObjectNode *) dbGetObject(choice1))->Type == Item_Window) {
 
 									if (g_clue->getFeatures() & GF_PROFIDISK && Planing_BldId == Building_Postzug)
 										plSay("PLANING_TRAIN", CurrentPerson);

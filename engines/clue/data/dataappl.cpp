@@ -724,7 +724,7 @@ bool tcGuardChecksObject(LSObjectNode *lso) {
 		if (lso->ul_Status & (1 << Const_tcON_OFF))
 			return true;
 		break;
-	case Item_Bild:
+	case Item_Picture:
 	case Item_Vase:
 	case Item_Painting:
 	case Item_Statue:
@@ -737,16 +737,16 @@ bool tcGuardChecksObject(LSObjectNode *lso) {
 
 	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		switch (lso->Type) {
-		case Item_Heiligenstatue:
-		case Item_Kerzenstaender:
-		case Item_Kirchenkreuz:
-		case Item_Hottentotten_Figur:
-		case Item_Batman_Figur:
-		case Item_Dicker_Man:
-		case Item_Unbekannter:
-		case Item_Jack_the_Ripper_Figur:
-		case Item_Koenigs_Figur:
-		case Item_Wache_Figur:
+		case Item_Statue_of_saint:
+		case Item_Candlestick:
+		case Item_Church_cross:
+		case Item_African_figure:
+		case Item_Batman_figure:
+		case Item_Fat_man:
+		case Item_Unknown:
+		case Item_Jack_the_Ripper_figure:
+		case Item_King_figure:
+		case Item_Guard_figure:
 		case Item_Miss_World_1952:
 			if (lso->uch_Visible == 0)
 				return true;

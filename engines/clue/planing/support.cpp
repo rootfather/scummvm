@@ -104,7 +104,7 @@ bool plAllInCar(uint32 bldId) {
 }
 
 byte plIsStair(uint32 objId) {
-	return (byte)((((LSObjectNode *) dbGetObject(objId))->Type == Item_Treppe));
+	return (byte)((((LSObjectNode *) dbGetObject(objId))->Type == Item_Stairway));
 }
 
 /* special items support */
@@ -113,7 +113,7 @@ void plCorrectOpened(LSObjectNode *obj, bool open) {
 	case Item_Wooden_door:
 	case Item_Steel_door:
 	case Item_Vault:
-	case Item_Mauertor:
+	case Item_Wall_gate:
 		if (open)
 			lsTurnObject(obj, LS_OBJECT_INVISIBLE, LS_NO_COLLISION);
 		else

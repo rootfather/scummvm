@@ -67,7 +67,7 @@ bool lsIsObjectADoor(LSObjectNode *lso) {
 	switch (lso->Type) {
 	case Item_Wooden_door:
 	case Item_Steel_door:
-	case Item_Mauertor:
+	case Item_Wall_gate:
 	case Item_Vault:
 		return true;
 	}
@@ -80,16 +80,16 @@ bool lsIsObjectAWall(LSObjectNode *lso) {
 	case Item_Wall:
 	case Item_Wall_corner:
 	case Item_Stone_wall:
-	case Item_Sockel:
+	case Item_Pedestal:
 		return true;
 	}
 
 	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		switch (lso->Type) {
-		case Item_verzierte_Saeule:
-		case Item_Gelaender:
-		case Item_Absperrung:
-		case Item_Postsack:
+		case Item_Decorated_column:
+		case Item_Railing:
+		case Item_Barrier:
+		case Item_Mailbag:
 		case Item_Locomotive_front_right:
 		case Item_Locomotive_front_left:
 		case Item_Locomotive_above:
@@ -107,14 +107,14 @@ bool lsIsObjectAWall(LSObjectNode *lso) {
 bool lsIsObjectSpecial(LSObjectNode *lso) {
 	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		switch (lso->Type) {
-		case Item_Heiligenstatue:
-		case Item_Hottentotten_Figur:
-		case Item_Batman_Figur:
-		case Item_Dicker_Man:
-		case Item_Unbekannter:
-		case Item_Jack_the_Ripper_Figur:
-		case Item_Koenigs_Figur:
-		case Item_Wache_Figur:
+		case Item_Statue_of_saint:
+		case Item_African_figure:
+		case Item_Batman_figure:
+		case Item_Fat_man:
+		case Item_Unknown:
+		case Item_Jack_the_Ripper_figure:
+		case Item_King_figure:
+		case Item_Guard_figure:
 		case Item_Miss_World_1952:
 			return true;
 		}
@@ -126,11 +126,11 @@ bool lsIsObjectSpecial(LSObjectNode *lso) {
 
 bool lsIsObjectAnAddOn(LSObjectNode *lso) {
 	switch (lso->Type) {
-	case Item_Kasse:
+	case Item_Cash_register:
 	case Item_Vase:
 	case Item_Statue:
-	case Item_Kreuz:
-	case Item_Kranz:
+	case Item_Cross:
+	case Item_Chaplet:
 		return true;
 	}
 
@@ -230,7 +230,7 @@ NewObjectList<dbObjectNode> *lsGetObjectsByList(uint16 x, uint16 y, uint16 width
 
 			if (lso->uch_Visible == LS_OBJECT_VISIBLE)
 				if (lsIsInside(lso, x, y, x + width, y + height))
-					lsExtendGetList(list, i, Item_Beutesack, lso);
+					lsExtendGetList(list, i, Item_Loot_bag, lso);
 		}
 	}
 

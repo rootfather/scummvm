@@ -285,7 +285,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 												plCorrectOpened((LSObjectNode *)dbGetObject(curAct->ItemId), true);
 											}
 										} else {
-											if (((LSObjectNode *)dbGetObject(curAct->ItemId))->Type == Item_Fenster) {
+											if (((LSObjectNode *)dbGetObject(curAct->ItemId))->Type == Item_Window) {
 												lsWalkThroughWindow(
 													(LSObjectNode *)dbGetObject(curAct->ItemId),
 													xpos, ypos,
@@ -301,7 +301,7 @@ void plSync(byte animate, uint32 targetTime, uint32 times, byte direction) {
 
 									if (!plIgnoreLock(curAct->ItemId)) {
 										if (CHECK_STATE(lsGetObjectState(curAct->ItemId), Const_tcLOCK_UNLOCK_BIT)) {
-											if (((LSObjectNode *)dbGetObject(curAct->ItemId))->Type == Item_Fenster && !curAct->ToolId) {
+											if (((LSObjectNode *)dbGetObject(curAct->ItemId))->Type == Item_Window && !curAct->ToolId) {
 												lsWalkThroughWindow(
 													(LSObjectNode *)dbGetObject(curAct->ItemId),
 													xpos, ypos,

@@ -87,7 +87,7 @@ void InitObjectPresent(uint32 nr, NewList<PresentationInfoNode>* presentationDat
 	if (lso->uch_Chained & Const_tcCHAINED_TO_POWER)
 		AddPresentTextLine(presentationData, nullptr, 0, texts, 1);
 
-	if (lso->Type == Item_Stechuhr)
+	if (lso->Type == Item_Clock)
 		AddPresentLine(presentationData, PRESENT_AS_NUMBER, ClockTimerGet(nr, nr), 0, texts, 8);
 
 	NewList<NewNode> *l = tcMakeLootList(nr, hasLootRelationID);

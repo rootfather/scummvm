@@ -226,7 +226,7 @@ void lsTurnObject(LSObjectNode *lso, byte status, byte Collis) {
 	if (status == LS_OBJECT_VISIBLE)
 		LS_SET_OBJECT(ls->p_CurrFloor[floorIndex].uch_FloorType);
 
-	if (lso->Type == Item_Mikrophon)
+	if (lso->Type == Item_Microphone)
 		LS_SET_MICRO_ON_FLOOR(ls->p_CurrFloor[floorIndex].uch_FloorType);
 }
 
@@ -262,7 +262,7 @@ void lsSetObjectState(uint32 objID, byte bitNr, byte value) {
 	LSObjectNode *object = (LSObjectNode *) dbGetObject(objID);
 
 	/* for a time clock the status must not change */
-	if (object->Type != Item_Stechuhr) {
+	if (object->Type != Item_Clock) {
 		if (value == 0)
 			object->ul_Status &= (0xffffffff - (1 << bitNr));
 
@@ -430,7 +430,7 @@ void lsWalkThroughWindow(LSObjectNode *lso, uint16 us_LivXPos, uint16 us_LivYPos
 }
 
 void lsPatchObjects() {
-	((ItemNode *) dbGetObject(Item_Fenster))->OffsetFact = 16;
+	((ItemNode *) dbGetObject(Item_Window))->OffsetFact = 16;
 
 	for (dbObjectNode* n = ls->p_ObjectRetrieval->getListHead(); n->_succ; n = (dbObjectNode *)n->_succ) {
 		LSObjectNode *lso = (LSObjectNode *)n;
@@ -444,14 +444,14 @@ void lsPatchObjects() {
 			lso->ul_Status |= (1 << Const_tcACCESS_BIT);
 			break;
 		case Item_WC:
-		case Item_Kuehlschrank:
-		case Item_Nachtkaestchen:
+		case Item_Fridge:
+		case Item_Night_box:
 			lso->ul_Status |= (1 << Const_tcLOCK_UNLOCK_BIT);  /* unlocked! */
 			break;
 		case Item_Stone_wall:
-		case Item_Tresen:
+		case Item_Bar:
 		case Item_Vase:
-		case Item_Sockel:
+		case Item_Pedestal:
 			lso->ul_Status &= (~(1 << Const_tcACCESS_BIT));    /* Steinmauern kein Access */
 			break;
 		default:
@@ -460,12 +460,12 @@ void lsPatchObjects() {
 
 		if (g_clue->getFeatures() & GF_PROFIDISK) {
 			switch (lso->Type) {
-			case Item_Beichtstuhl:
-			case Item_Postsack:
+			case Item_Confessional:
+			case Item_Mailbag:
 				lso->ul_Status |= (1 << Const_tcLOCK_UNLOCK_BIT);
 				/* unlocked! */
 				break;
-			case Item_Leiter:
+			case Item_Ladder:
 				lso->ul_Status &= (~(1 << Const_tcACCESS_BIT));
 				/* Steinmauern kein Access */
 				break;
@@ -495,7 +495,7 @@ void lsCalcExactSize(LSObjectNode *lso, uint16 *x0, uint16 *y0, uint16 *x1, uint
 
 	/* no idea why OPEN_CLOSE_BIT & HORIZ_VERT_BIT are swapped
 	   for painting and image, but they are */
-	if (lso->Type == Item_Bild || lso->Type == Item_Painting)
+	if (lso->Type == Item_Picture || lso->Type == Item_Painting)
 		vertical = lso->ul_Status & 3;
 	else
 		vertical = lso->ul_Status & 1;

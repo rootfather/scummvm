@@ -109,7 +109,7 @@ void lsFastRefresh(LSObjectNode *lso) {
 	case Item_Wooden_door:
 	case Item_Steel_door:
 	case Item_Vault:
-	case Item_Mauertor:
+	case Item_Wall_gate:
 		if (lso->ul_Status & (1 << Const_tcOPEN_CLOSE_BIT)) {
 			lsDoDoorRefresh(lso);
 
@@ -123,7 +123,7 @@ void lsFastRefresh(LSObjectNode *lso) {
 		break;
 
 	case Item_Painting:
-	case Item_Bild:
+	case Item_Picture:
 		/* paintings and pictures are simply painted over with a gray RectFill
 		       (shadow colour) when they are taken */
 
@@ -153,14 +153,14 @@ void lsFastRefresh(LSObjectNode *lso) {
 	default:
 		if (g_clue->getFeatures() & GF_PROFIDISK) {
 			switch (lso->Type) {
-			case Item_Heiligenstatue:
-			case Item_Hottentotten_Figur:
-			case Item_Batman_Figur:
-			case Item_Dicker_Man:
-			case Item_Unbekannter:
-			case Item_Jack_the_Ripper_Figur:
-			case Item_Koenigs_Figur:
-			case Item_Wache_Figur:
+			case Item_Statue_of_saint:
+			case Item_African_figure:
+			case Item_Batman_figure:
+			case Item_Fat_man:
+			case Item_Unknown:
+			case Item_Jack_the_Ripper_figure:
+			case Item_King_figure:
+			case Item_Guard_figure:
 			case Item_Miss_World_1952:
 				if (lso->uch_Visible == LS_OBJECT_VISIBLE)
 					lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS,
@@ -168,7 +168,7 @@ void lsFastRefresh(LSObjectNode *lso) {
 				else
 					lsDoDoorRefresh(lso);
 				break;
-			case Item_Postsack:
+			case Item_Mailbag:
 				break;
 			default:
 				lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_ALL);
@@ -181,7 +181,7 @@ void lsFastRefresh(LSObjectNode *lso) {
 	}
 
 	switch (lso->Type) {
-	case Item_Fenster:
+	case Item_Window:
 		lsSetAlarmPict(lso);
 		break;
 
@@ -240,7 +240,7 @@ bool lsShowOneObject(LSObjectNode *lso, int16 destx, int16 desty, uint32 ul_Mode
 	bool show = false;
 
 	switch (lso->Type) {
-	case Item_Sockel:       /* pedestal should not be displayed */
+	case Item_Pedestal:       /* pedestal should not be displayed */
 		break;
 
 	default:

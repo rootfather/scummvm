@@ -549,12 +549,12 @@ static void plPlayerAction() {
 
 								if (dbIsObject(curAct->ItemId, Object_Police)) {
 									if (plObjectInReach(i, curAct->ItemId)) {
-										PD.currLoudness[i] = tcGetToolLoudness(PersonsList->getNthNode(i)->_nr, curAct->ToolId, Item_Wache);
+										PD.currLoudness[i] = tcGetToolLoudness(PersonsList->getNthNode(i)->_nr, curAct->ToolId, Item_Guard);
 										PD.guardKO[((PoliceNode *)dbGetObject(curAct->ItemId))->LivingID - BurglarsNr] = 1;
 										PD.changeCount += 5;
 
 										realTime = tcGuyUsesToolInPlayer(PersonsList->getNthNode(i)->_nr,
-												PD.bldObj, curAct->ToolId, Item_Wache, needTime / PLANING_CORRECT_TIME);
+												PD.bldObj, curAct->ToolId, Item_Guard, needTime / PLANING_CORRECT_TIME);
 										Search.KillTime[i] += realTime;
 									} else {
 										Search.DeriTime += PLANING_DERI_GUARD_ESCAPED;
@@ -569,7 +569,7 @@ static void plPlayerAction() {
 									if (!CHECK_STATE(lsGetObjectState(curAct->ItemId),Const_tcLOCK_UNLOCK_BIT))
 										PD.currLoudness[i] = tcGetToolLoudness(PersonsList->getNthNode(i)->_nr,
 											curAct->ToolId, ((LSObjectNode *)dbGetObject(curAct->ItemId))->Type);
-									else if (((LSObjectNode *)dbGetObject(curAct->ItemId))->Type == Item_Fenster)
+									else if (((LSObjectNode *)dbGetObject(curAct->ItemId))->Type == Item_Window)
 										PD.currLoudness[i] = PLANING_LOUDNESS_STD;
 									else if (!plIgnoreLock(curAct->ItemId)) {
 										Search.DeriTime += PLANING_DERI_IGNORE_ACTION;
@@ -650,7 +650,7 @@ static void plPlayerAction() {
 
 										if (curAct->ToolId == Tool_Stechkarte)
 											tcRefreshTimeClock(PD.bldId, curAct->ItemId);
-									} else if (((LSObjectNode *)dbGetObject(curAct->ItemId))->Type == Item_Fenster) {
+									} else if (((LSObjectNode *)dbGetObject(curAct->ItemId))->Type == Item_Window) {
 										uint16 xpos, ypos;
 
 										lsWalkThroughWindow((LSObjectNode *)dbGetObject(curAct->ItemId),
@@ -974,7 +974,7 @@ static void plPlayerAction() {
 					}
 #endif
 
-					if (((LSObjectNode *)dbGetObject(curAct->ItemId))->Type == Item_Stechuhr)
+					if (((LSObjectNode *)dbGetObject(curAct->ItemId))->Type == Item_Clock)
 						tcRefreshTimeClock(PD.bldId,((ActionUseNode *)PD.action)->ItemId);
 					}
 					break;
