@@ -263,7 +263,7 @@ static void plActionWait() {
 		break;
 
 		case PLANING_WAIT_RADIO:
-			if (has(Person_Matt_Stuvysunt, Tool_Funkgeraet)) {
+			if (has(Person_Matt_Stuvysunt, Tool_Radio_equipment)) {
 				if (BurglarsNr > 2) {
 					plMessage("RADIO_2", PLANING_MSG_REFRESH);
 					SetPictID(((PersonNode *)dbGetObject(BurglarsList->getNthNode(CurrentPerson)->_nr))->PictID);
@@ -652,8 +652,8 @@ static void plCorrectToolsList(uint32 flags) {
 	if (PersonsNr > BurglarsNr) {
 		for (byte i = BurglarsNr; i < PersonsNr; i++) {
 			if (Planing_Guard[i - BurglarsNr] == 2) {
-				if (!dbHasObjectNode(ObjectList, Tool_Stechkarte))
-					dbAddObjectNode(ObjectList, Tool_Stechkarte, flags);
+				if (!dbHasObjectNode(ObjectList, Tool_Stabbing_card))
+					dbAddObjectNode(ObjectList, Tool_Stabbing_card, flags);
 				break;
 			}
 		}
@@ -662,13 +662,13 @@ static void plCorrectToolsList(uint32 flags) {
 	dbRemObjectNode(ObjectList, Tool_Gloves);
 	dbRemObjectNode(ObjectList, Tool_Shoes);
 	dbRemObjectNode(ObjectList, Tool_Mask);
-	dbRemObjectNode(ObjectList, Tool_Stromgenerator);
+	dbRemObjectNode(ObjectList, Tool_Power_generation);
 	dbRemObjectNode(ObjectList, Tool_Batterie);
-	dbRemObjectNode(ObjectList, Tool_Schutzanzug);
+	dbRemObjectNode(ObjectList, Tool_Protective_suit);
 }
 
 void plActionRadio() {
-	if (has(Person_Matt_Stuvysunt, Tool_Funkgeraet)) {
+	if (has(Person_Matt_Stuvysunt, Tool_Radio_equipment)) {
 		uint32 choice1;
 		if (BurglarsNr > 2) {
 			dbObjectNode* help;
@@ -948,7 +948,7 @@ static void plActionUse() {
 									if (g_clue->getFeatures() & GF_PROFIDISK && Planing_BldId == Building_Postzug)
 										plSay("PLANING_TRAIN", CurrentPerson);
 									else if (CHECK_STATE(lsGetObjectState(choice1), Const_tcOPEN_CLOSE_BIT)) {
-										if (has(Person_Matt_Stuvysunt, Tool_Strickleiter)) {
+										if (has(Person_Matt_Stuvysunt, Tool_Rope_ladder)) {
 											uint16 xpos, ypos;
 
 											if (InitAction(plSys, ACTION_USE, choice1, 0,

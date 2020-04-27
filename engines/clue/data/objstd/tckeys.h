@@ -265,29 +265,29 @@ uint32 getKey(KeyConflictE key);
 #define Tool_Angle_grinder                  9511
 #define Tool_Drilling_machine               9512
 #define Tool_Drilling_winch                 9513
-#define Tool_Schloszstecher                 9514
-#define Tool_Schneidbrenner                 9515
-#define Tool_Sauerstofflanze                9516
-#define Tool_Stethoskop                     9517
+#define Tool_Castle_engraver                9514
+#define Tool_Cutting_torch                  9515
+#define Tool_Oxyhydrogen_torch              9516
+#define Tool_Stethoscope                    9517
 #define Tool_Batterie                       9518
-#define Tool_Stromgenerator                 9519
-#define Tool_Elektroset                     9520
-#define Tool_Schutzanzug                    9521
-#define Tool_Dynamit                        9522
-#define Tool_Elektrohammer                  9523
-#define Tool_Glasschneider                  9524
+#define Tool_Power_generation               9519
+#define Tool_Electrical_set                 9520
+#define Tool_Protective_suit                9521
+#define Tool_Dynamite                       9522
+#define Tool_Electric_hammer                9523
+#define Tool_Glass_cutter                   9524
 #define Tool_Fusz                           9525
-#define Tool_Strickleiter                   9526
-#define Tool_Funkgeraet                     9527
-#define Tool_Stechkarte                     9528
+#define Tool_Rope_ladder                    9526
+#define Tool_Radio_equipment                9527
+#define Tool_Stabbing_card                  9528
 
 
 /* std */
-#define Loot_Gebeine                        9618
-#define Loot_Kronjuwelen                    9633
-#define Loot_Ring_des_Abtes                 9634
-#define Loot_Koffer                         9635
-#define Loot_Dokument                       9636
+#define Loot_Relics                         9618
+#define Loot_Crown_jewels                   9633
+#define Loot_Abbots_ring                    9634
+#define Loot_Trunk                          9635
+#define Loot_Deed                           9636
 
 
 /* std */

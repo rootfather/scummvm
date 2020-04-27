@@ -196,10 +196,10 @@ static void plPersonLearns(uint32 persId, uint32 toolId) {
 
 	case Tool_Angle_grinder:
 	case Tool_Core_drill:
-	case Tool_Schneidbrenner:
-	case Tool_Sauerstofflanze:
-	case Tool_Stethoskop:
-	case Tool_Elektrohammer:
+	case Tool_Cutting_torch:
+	case Tool_Oxyhydrogen_torch:
+	case Tool_Stethoscope:
+	case Tool_Electric_hammer:
 		para = learnedGet(persId, Ability_Safes);
 
 		if (para == NO_PARAMETER)
@@ -212,8 +212,8 @@ static void plPersonLearns(uint32 persId, uint32 toolId) {
 	case Tool_Crowbar:
 	case Tool_Drilling_machine:
 	case Tool_Drilling_winch:
-	case Tool_Schloszstecher:
-	case Tool_Glasschneider:
+	case Tool_Castle_engraver:
+	case Tool_Glass_cutter:
 		para = learnedGet(persId, Ability_Locks);
 
 		if (para == NO_PARAMETER)
@@ -222,7 +222,7 @@ static void plPersonLearns(uint32 persId, uint32 toolId) {
 			learnedSetP(persId, Ability_Locks, para + 1);
 		break;
 
-	case Tool_Elektroset:
+	case Tool_Electrical_set:
 		para = learnedGet(persId, Ability_Electronic);
 
 		if (para == NO_PARAMETER)
@@ -231,7 +231,7 @@ static void plPersonLearns(uint32 persId, uint32 toolId) {
 			learnedSetP(persId, Ability_Electronic, para + 1);
 		break;
 
-	case Tool_Dynamit:
+	case Tool_Dynamite:
 		para = learnedGet(persId, Ability_Explosive);
 
 		if (para == NO_PARAMETER)
@@ -648,7 +648,7 @@ static void plPlayerAction() {
 											plCorrectOpened((LSObjectNode *)dbGetObject(curAct->ItemId), true);
 										}
 
-										if (curAct->ToolId == Tool_Stechkarte)
+										if (curAct->ToolId == Tool_Stabbing_card)
 											tcRefreshTimeClock(PD.bldId, curAct->ItemId);
 									} else if (((LSObjectNode *)dbGetObject(curAct->ItemId))->Type == Item_Window) {
 										uint16 xpos, ypos;
@@ -1126,7 +1126,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 					if ((CurrentPerson < BurglarsNr) ? BurglarsNr > 1 : PersonsNr > 1)
 						bitset += BIT(PLANING_PLAYER_PERSON_CHANGE);
 
-					if (has(Person_Matt_Stuvysunt, Tool_Funkgeraet))
+					if (has(Person_Matt_Stuvysunt, Tool_Radio_equipment))
 						bitset += BIT(PLANING_PLAYER_RADIO_ALL) + BIT(PLANING_PLAYER_RADIO_ONE);
 
 					plDisplayTimer(PD.realTime, true);

@@ -321,8 +321,7 @@ uint32 tcGetBuildValues(BuildingNode *bui) {
 	uint32 x = (255 - bui->Exactlyness) / 3;
 
 	/* XXX: reordered some stuff just in case... */
-	uint32 v = CalcValue(bui->Values, 0, 500000 + bui->Values, g_clue->calcRandomNr(0, 255),
-	              x);
+	uint32 v = CalcValue(bui->Values, 0, 500000 + bui->Values, g_clue->calcRandomNr(0, 255), x);
 
 	return ((uint32)(Round(v, 3)));
 }
@@ -397,9 +396,7 @@ int32 tcGuyIsWaiting(uint32 persId, int32 exhaustion) {
 */
 
 int32 tcIsPlanPerfect(uint32 timer) {
-	int32 perfect =
-	    (255 * ((int32)(timer + 1) - (int32) Search.DeriTime)) /
-	    ((int32)(timer + 1));
+	int32 perfect = (255 * ((int32)(timer + 1) - (int32) Search.DeriTime)) / ((int32)(timer + 1));
 
 	perfect = MAX(perfect, 0);
 	perfect = ChangeAbs(perfect, Search.CallValue, 0, 255);
@@ -464,10 +461,10 @@ static uint32 tcGetNecessaryAbility(uint32 persId, uint32 toolId) {
 		break;
 	case Tool_Core_drill:
 	case Tool_Angle_grinder:
-	case Tool_Schneidbrenner:
-	case Tool_Sauerstofflanze:
-	case Tool_Stethoskop:
-	case Tool_Elektrohammer:
+	case Tool_Cutting_torch:
+	case Tool_Oxyhydrogen_torch:
+	case Tool_Stethoscope:
+	case Tool_Electric_hammer:
 		ability = hasGet(persId, Ability_Safes);
 		break;
 	case Tool_Drilling_machine:
@@ -475,10 +472,10 @@ static uint32 tcGetNecessaryAbility(uint32 persId, uint32 toolId) {
 	case Tool_Lockpick:
 		ability = hasGet(persId, Ability_Locks);
 		break;
-	case Tool_Dynamit:
+	case Tool_Dynamite:
 		ability = hasGet(persId, Ability_Explosive);
 		break;
-	case Tool_Elektroset:
+	case Tool_Electrical_set:
 		ability = hasGet(persId, Ability_Electronic);
 		break;
 	}
@@ -517,71 +514,51 @@ uint32 tcGuyUsesTool(uint32 persId, BuildingNode *b, uint32 toolId, uint32 itemI
 
 	if (time != (uint32) - 1) {
 		switch (toolId) {   /* Zeit varieren */
-		case Tool_Elektrohammer:
+		case Tool_Electric_hammer:
 		case Tool_Hammer:
 		case Tool_Axe:
-			time =
-			    CalcValue(time, 0, origin * 4, 127 + (255 - p->Strength) / 2,
-			              5);
-			time =
-			    CalcValue(time, 0, origin * 4, 127 + (255 - p->Stamina) / 2,
-			              10);
+			time = CalcValue(time, 0, origin * 4, 127 + (255 - p->Strength) / 2, 5);
+			time = CalcValue(time, 0, origin * 4, 127 + (255 - p->Stamina) / 2, 10);
 			break;
 		case Tool_Hand:
 		case Tool_Fusz:
 		case Tool_Chloroform:
-			time =
-			    CalcValue(time, 0, origin * 4, 127 + (255 - p->Skill) / 2, 5);
-			time =
-			    CalcValue(time, 0, origin * 4, 127 + (255 - p->Strength) / 2,
-			              10);
+			time = CalcValue(time, 0, origin * 4, 127 + (255 - p->Skill) / 2, 5);
+			time = CalcValue(time, 0, origin * 4, 127 + (255 - p->Strength) / 2, 10);
 			break;
 		case Tool_Drilling_winch:
-			time =
-			    CalcValue(time, 0, origin * 4, 127 + (255 - p->Stamina) / 2, 5);
-			time =
-			    CalcValue(time, 0, origin * 4, 127 + (255 - p->Skill) / 2, 10);
+			time = CalcValue(time, 0, origin * 4, 127 + (255 - p->Stamina) / 2, 5);
+			time = CalcValue(time, 0, origin * 4, 127 + (255 - p->Skill) / 2, 10);
 			break;
-		case Tool_Schloszstecher:
-		case Tool_Glasschneider:
+		case Tool_Castle_engraver:
+		case Tool_Glass_cutter:
 		case Tool_Drilling_machine:
 		case Tool_Crowbar:
-			time =
-			    CalcValue(time, 0, origin * 4, 127 + (255 - p->Strength) / 2,
-			              10);
-			time =
-			    CalcValue(time, 0, origin * 4, 127 + (255 - p->Skill) / 2, 10);
+			time = CalcValue(time, 0, origin * 4, 127 + (255 - p->Strength) / 2, 10);
+			time = CalcValue(time, 0, origin * 4, 127 + (255 - p->Skill) / 2, 10);
 			break;
 		case Tool_Angle_grinder:
-		case Tool_Schneidbrenner:
-		case Tool_Sauerstofflanze:
+		case Tool_Cutting_torch:
+		case Tool_Oxyhydrogen_torch:
 		case Tool_Core_drill:
-			time =
-			    CalcValue(time, 0, origin * 4, 127 + (255 - p->Strength) / 2,
-			              0);
-			time =
-			    CalcValue(time, 0, origin * 4, 127 + (255 - p->Skill) / 2, 10);
+			time = CalcValue(time, 0, origin * 4, 127 + (255 - p->Strength) / 2, 0);
+			time = CalcValue(time, 0, origin * 4, 127 + (255 - p->Skill) / 2, 10);
 			break;
 		case Tool_Lockpick:
-		case Tool_Strickleiter:
-			time =
-			    CalcValue(time, 0, origin * 4, 127 + (255 - p->Skill) / 2, 10);
+		case Tool_Rope_ladder:
+			time = CalcValue(time, 0, origin * 4, 127 + (255 - p->Skill) / 2, 10);
 			break;
-		case Tool_Stethoskop:
-		case Tool_Elektroset:
-		case Tool_Dynamit:
-			time =
-			    CalcValue(time, 0, origin * 4,
-			              127 + (255 - p->Intelligence) / 2, 10);
-			time =
-			    CalcValue(time, 0, origin * 4, 127 + (255 - p->Skill) / 2, 10);
+		case Tool_Stethoscope:
+		case Tool_Electrical_set:
+		case Tool_Dynamite:
+			time = CalcValue(time, 0, origin * 4, 127 + (255 - p->Intelligence) / 2, 10);
+			time = CalcValue(time, 0, origin * 4, 127 + (255 - p->Skill) / 2, 10);
 			break;
 		default:
 			break;
 		}
 
-		time = CalcValue(time, 0, origin * 4,
-		              127 + ((255 - tcGetNecessaryAbility(persId, toolId)) / 2), 50);
+		time = CalcValue(time, 0, origin * 4, 127 + ((255 - tcGetNecessaryAbility(persId, toolId)) / 2), 50);
 
 		switch (itemId) {   /* Alarmanglagen bonus! */
 		case Item_Alarm_system_Z3:
@@ -782,7 +759,7 @@ bool tcWatchDogWarning(uint32 persId) {
 		g_clue->calcRandomNr(0, 200) + /* Sekunde etwas bemerken!             */
 		g_clue->calcRandomNr(0, 200);   /* Risiko wird durch Addition GRÖßER!! */
 
-	if ((watch > random) && (g_clue->calcRandomNr(0, 40) == 1))
+	if (watch > random && g_clue->calcRandomNr(0, 40) == 1)
 		return true;
 
 	return false;
@@ -922,8 +899,7 @@ bool tcGuardDetectsGuy(NewObjectList<dbObjectNode> *roomsList, uint16 us_XPos, u
 
 	if (livWhereIs(puch_GuardName) == livWhereIs(puch_LivingName)) {
 		if (livIsPositionInViewDirection(us_XPos, us_YPos, livXPos, livYPos, uch_ViewDirection)) {
-			if (tcInsideSameRoom(roomsList, us_XPos + tcX_HOTSPOT, us_YPos,
-			         livXPos + tcX_HOTSPOT, livYPos))
+			if (tcInsideSameRoom(roomsList, us_XPos + tcX_HOTSPOT, us_YPos, livXPos + tcX_HOTSPOT, livYPos))
 				detected = true;
 		}
 	}

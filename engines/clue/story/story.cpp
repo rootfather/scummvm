@@ -312,7 +312,7 @@ void tcDoneMeetBriggs() {
 			Say(STORY_0_TXT, 0, MATT_PICTID, "EVIL_MATT_1");
 			Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "EVIL_OLD_MATT");
 
-			hasSetP(Person_Matt_Stuvysunt, Loot_Ring_des_Abtes, tcVALUE_OF_RING_OF_PATER);
+			hasSetP(Person_Matt_Stuvysunt, Loot_Abbots_ring, tcVALUE_OF_RING_OF_PATER);
 
 			AddVTime(1440 + 525 - GetMinute);
 
@@ -354,7 +354,7 @@ static void tcDoneAfterMeetingBriggs() {
 void tcDoneCallFromPooly() {
 	knowsSet(Person_Matt_Stuvysunt, Person_Eric_Pooly);
 
-	if (has(Person_Matt_Stuvysunt, Loot_Ring_des_Abtes)) {
+	if (has(Person_Matt_Stuvysunt, Loot_Abbots_ring)) {
 		tcSomebodyIsCalling();
 
 		Say(STORY_0_TXT, 0, PHONE_PICTID, "A_CALL_FOR_YOU");
@@ -478,10 +478,10 @@ void tcDone1stBurglary() {
 
 	hasSet(Person_Mary_Bolton, Tool_Lockpick);
 	hasSet(Person_Mary_Bolton, Tool_Drilling_machine);
-	hasSet(Person_Mary_Bolton, Tool_Strickleiter);
-	hasSet(Person_Mary_Bolton, Tool_Schloszstecher);
+	hasSet(Person_Mary_Bolton, Tool_Rope_ladder);
+	hasSet(Person_Mary_Bolton, Tool_Castle_engraver);
 	hasSet(Person_Mary_Bolton, Tool_Angle_grinder);
-	hasSet(Person_Mary_Bolton, Tool_Schutzanzug);
+	hasSet(Person_Mary_Bolton, Tool_Protective_suit);
 
 	livesInSet(London_London_1, Person_Marc_Smith);
 	livesInSet(London_London_1, Person_Robert_Bull);
@@ -560,10 +560,10 @@ void tcDone2ndBurglary() {
 		hasSet(Person_Marc_Smith, Car_Bentley_Continental_Typ_R_1952);
 	}
 
-	hasSet(Person_Mary_Bolton, Tool_Funkgeraet);
-	hasSet(Person_Mary_Bolton, Tool_Glasschneider);
+	hasSet(Person_Mary_Bolton, Tool_Radio_equipment);
+	hasSet(Person_Mary_Bolton, Tool_Glass_cutter);
 	hasSet(Person_Mary_Bolton, Tool_Drilling_winch);
-	hasSet(Person_Mary_Bolton, Tool_Elektroset);
+	hasSet(Person_Mary_Bolton, Tool_Electrical_set);
 
 	livesInSet(London_London_1, Person_Margrete_Briggs);
 	livesInSet(London_London_1, Person_Paul_O_Conner);
@@ -579,7 +579,7 @@ void tcDone2ndBurglary() {
 void tcCheckForBones() {
 	PersonNode *luthm = (PersonNode *)dbGetObject(Person_Luthmilla_Nervesaw);
 
-	if (has(Person_Matt_Stuvysunt, Loot_Gebeine)) {
+	if (has(Person_Matt_Stuvysunt, Loot_Relics)) {
 		if (knows(Person_Matt_Stuvysunt, Person_Luthmilla_Nervesaw)) {
 			PlayerNode *player = (PlayerNode *)dbGetObject(Player_Player_1);
 
@@ -594,7 +594,7 @@ void tcCheckForBones() {
 
 			livesInUnSet(London_London_1, Person_Luthmilla_Nervesaw);
 			tcMoveAPerson(Person_Luthmilla_Nervesaw, Location_Nirvana);
-			hasUnSet(Person_Matt_Stuvysunt, Loot_Gebeine);
+			hasUnSet(Person_Matt_Stuvysunt, Loot_Relics);
 		}
 	}
 }
@@ -615,9 +615,9 @@ void tcDone3rdBurglary() {
 
 	knowsSet(Person_Matt_Stuvysunt, Person_John_Gludo);
 
-	hasSet(Person_Mary_Bolton, Tool_Schneidbrenner);
-	hasSet(Person_Mary_Bolton, Tool_Stethoskop);
-	hasSet(Person_Mary_Bolton, Tool_Stromgenerator);
+	hasSet(Person_Mary_Bolton, Tool_Cutting_torch);
+	hasSet(Person_Mary_Bolton, Tool_Stethoscope);
+	hasSet(Person_Mary_Bolton, Tool_Power_generation);
 	hasSet(Person_Mary_Bolton, Tool_Mask);
 
 	livesInSet(London_London_1, Person_Miguel_Garcia);
@@ -643,7 +643,7 @@ void tcDone3rdBurglary() {
 }
 
 void tcCheckForDowning() {
-	if (has(Person_Matt_Stuvysunt, Loot_Dokument)) {
+	if (has(Person_Matt_Stuvysunt, Loot_Deed)) {
 		BuildingNode *bui = (BuildingNode *) dbGetObject(Building_Buckingham_Palace);
 
 		hasSet(Person_Matt_Stuvysunt, Building_Buckingham_Palace);
@@ -655,7 +655,7 @@ void tcCheckForDowning() {
 		Say(INVESTIGATIONS_TXT, 0, OLD_MATT_PICTID, "BuckinghamPlansFound");
 
 		Present(Building_Buckingham_Palace, "Building", InitBuildingPresent);
-		hasUnSet(Person_Matt_Stuvysunt, Loot_Dokument);
+		hasUnSet(Person_Matt_Stuvysunt, Loot_Deed);
 	}
 }
 
@@ -690,9 +690,9 @@ void tcDone4thBurglary() {
 	if (g_clue->getFeatures() & GF_PROFIDISK)
 		hasSet(Person_Marc_Smith, Car_Fiat_634_N_1943);
 
-	hasSet(Person_Mary_Bolton, Tool_Dynamit);
+	hasSet(Person_Mary_Bolton, Tool_Dynamite);
 	hasSet(Person_Mary_Bolton, Tool_Core_drill);
-	hasSet(Person_Mary_Bolton, Tool_Sauerstofflanze);
+	hasSet(Person_Mary_Bolton, Tool_Oxyhydrogen_torch);
 	hasSet(Person_Mary_Bolton, Tool_Chloroform);
 
 	livesInSet(London_London_1, Person_Garry_Stevenson);
@@ -746,7 +746,7 @@ void tcDone5thBurglary() {
 	}
 
 	hasSet(Person_Mary_Bolton, Tool_Shoes);
-	hasSet(Person_Mary_Bolton, Tool_Elektrohammer);
+	hasSet(Person_Mary_Bolton, Tool_Electric_hammer);
 
 	livesInSet(London_London_1, Person_Thomas_Smith);
 	livesInSet(London_London_1, Person_Albert_Liet);
@@ -1258,7 +1258,7 @@ void tcDone9thBurglary() {
 
 	SetMinute(540);
 
-	if (has(Person_Matt_Stuvysunt, Loot_Koffer)) {
+	if (has(Person_Matt_Stuvysunt, Loot_Trunk)) {
 		Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_15_OLD_0");
 		gfxShow(174, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);  /* cracks */
 	} else {
@@ -1629,19 +1629,19 @@ void tcInitTowerBurglary() {
 	hasSet(Person_Matt_Stuvysunt, Tool_Angle_grinder);
 	hasSet(Person_Matt_Stuvysunt, Tool_Drilling_machine);
 	hasSet(Person_Matt_Stuvysunt, Tool_Drilling_winch);
-	hasSet(Person_Matt_Stuvysunt, Tool_Schloszstecher);
-	hasSet(Person_Matt_Stuvysunt, Tool_Schneidbrenner);
-	hasSet(Person_Matt_Stuvysunt, Tool_Sauerstofflanze);
-	hasSet(Person_Matt_Stuvysunt, Tool_Stethoskop);
+	hasSet(Person_Matt_Stuvysunt, Tool_Castle_engraver);
+	hasSet(Person_Matt_Stuvysunt, Tool_Cutting_torch);
+	hasSet(Person_Matt_Stuvysunt, Tool_Oxyhydrogen_torch);
+	hasSet(Person_Matt_Stuvysunt, Tool_Stethoscope);
 	hasSet(Person_Matt_Stuvysunt, Tool_Batterie);
-	hasSet(Person_Matt_Stuvysunt, Tool_Stromgenerator);
-	hasSet(Person_Matt_Stuvysunt, Tool_Elektroset);
-	hasSet(Person_Matt_Stuvysunt, Tool_Schutzanzug);
-	hasSet(Person_Matt_Stuvysunt, Tool_Dynamit);
-	hasSet(Person_Matt_Stuvysunt, Tool_Elektrohammer);
-	hasSet(Person_Matt_Stuvysunt, Tool_Glasschneider);
-	hasSet(Person_Matt_Stuvysunt, Tool_Strickleiter);
-	hasSet(Person_Matt_Stuvysunt, Tool_Funkgeraet);
+	hasSet(Person_Matt_Stuvysunt, Tool_Power_generation);
+	hasSet(Person_Matt_Stuvysunt, Tool_Electrical_set);
+	hasSet(Person_Matt_Stuvysunt, Tool_Protective_suit);
+	hasSet(Person_Matt_Stuvysunt, Tool_Dynamite);
+	hasSet(Person_Matt_Stuvysunt, Tool_Electric_hammer);
+	hasSet(Person_Matt_Stuvysunt, Tool_Glass_cutter);
+	hasSet(Person_Matt_Stuvysunt, Tool_Rope_ladder);
+	hasSet(Person_Matt_Stuvysunt, Tool_Radio_equipment);
 
 	if (hasGet(Person_Matt_Stuvysunt, Ability_Locks) < 210)
 		hasSetP(Person_Matt_Stuvysunt, Ability_Locks, 210);
@@ -1679,7 +1679,7 @@ int32 tcDoTowerBurglary() {
 	int32 burglary = plPlayer(Building_Tower_of_London, 0, nullptr);
 
 	if (burglary) {
-		if (has(Person_Matt_Stuvysunt, Loot_Kronjuwelen))
+		if (has(Person_Matt_Stuvysunt, Loot_Crown_jewels))
 			Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_25_OLD_0");
 		else
 			Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_25O_OLD_0");
@@ -1809,9 +1809,7 @@ void tcDoneKaserne() {
 			else
 				Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_28_OLD_0");
 
-			gfxShow(224,
-			        GFX_NO_REFRESH | GFX_ONE_STEP | GFX_FADE_OUT | GFX_BLEND_UP,
-			        3, -1, -1);
+			gfxShow(224, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_FADE_OUT | GFX_BLEND_UP, 3, -1, -1);
 			Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_29_OLD_0");
 		} else {
 			/* sndPlaySound() in tcDonePrison() */
@@ -1848,17 +1846,17 @@ int32 tcIsLastBurglaryOk() {
 	if (!(right->ul_Status & (1 << Const_tcON_OFF)))
 		madeIt = false;
 
-	if (!has(Person_Matt_Stuvysunt, Loot_Dokument))
+	if (!has(Person_Matt_Stuvysunt, Loot_Deed))
 		madeIt = false;
 
 	/* alle anderen müssen beim Auto sein... */
 	for (int32 i = 1; i < 4; i++) {
-		if ((Search.GuyXPos[i] < carXPos0) || (Search.GuyXPos[i] > carXPos1) || (Search.GuyYPos[i] < carYPos0) || (Search.GuyYPos[i] > carYPos1))
+		if (Search.GuyXPos[i] < carXPos0 || Search.GuyXPos[i] > carXPos1 || Search.GuyYPos[i] < carYPos0 || Search.GuyYPos[i] > carYPos1)
 			madeIt = false;
 	}
 
 	// The original code was using i for the last check, thus making a read out of bound.
-	if ((Search.GuyXPos[0] >= carXPos0) && (Search.GuyXPos[0] <= carXPos1) && (Search.GuyYPos[0] >= carYPos0) && (Search.GuyYPos[0] <= carYPos1)) {
+	if (Search.GuyXPos[0] >= carXPos0 && Search.GuyXPos[0] <= carXPos1 && Search.GuyYPos[0] >= carYPos0 && Search.GuyYPos[0] <= carYPos1) {
 		warning("CHECKME: Modified check in tcIsLastBurglaryOk()");
 		madeIt = false;
 	}

@@ -526,19 +526,19 @@ void ClueEngine::setFullEnviroment() {
 	hasSet(Person_Matt_Stuvysunt, Tool_Angle_grinder);
 	hasSet(Person_Matt_Stuvysunt, Tool_Drilling_machine);
 	hasSet(Person_Matt_Stuvysunt, Tool_Drilling_winch);
-	hasSet(Person_Matt_Stuvysunt, Tool_Schloszstecher);
-	hasSet(Person_Matt_Stuvysunt, Tool_Schneidbrenner);
-	hasSet(Person_Matt_Stuvysunt, Tool_Sauerstofflanze);
-	hasSet(Person_Matt_Stuvysunt, Tool_Stethoskop);
+	hasSet(Person_Matt_Stuvysunt, Tool_Castle_engraver);
+	hasSet(Person_Matt_Stuvysunt, Tool_Cutting_torch);
+	hasSet(Person_Matt_Stuvysunt, Tool_Oxyhydrogen_torch);
+	hasSet(Person_Matt_Stuvysunt, Tool_Stethoscope);
 	hasSet(Person_Matt_Stuvysunt, Tool_Batterie);
-	hasSet(Person_Matt_Stuvysunt, Tool_Stromgenerator);
-	hasSet(Person_Matt_Stuvysunt, Tool_Elektroset);
-	hasSet(Person_Matt_Stuvysunt, Tool_Schutzanzug);
-	hasSet(Person_Matt_Stuvysunt, Tool_Dynamit);
-	hasSet(Person_Matt_Stuvysunt, Tool_Elektrohammer);
-	hasSet(Person_Matt_Stuvysunt, Tool_Glasschneider);
-	hasSet(Person_Matt_Stuvysunt, Tool_Strickleiter);
-	hasSet(Person_Matt_Stuvysunt, Tool_Funkgeraet);
+	hasSet(Person_Matt_Stuvysunt, Tool_Power_generation);
+	hasSet(Person_Matt_Stuvysunt, Tool_Electrical_set);
+	hasSet(Person_Matt_Stuvysunt, Tool_Protective_suit);
+	hasSet(Person_Matt_Stuvysunt, Tool_Dynamite);
+	hasSet(Person_Matt_Stuvysunt, Tool_Electric_hammer);
+	hasSet(Person_Matt_Stuvysunt, Tool_Glass_cutter);
+	hasSet(Person_Matt_Stuvysunt, Tool_Rope_ladder);
+	hasSet(Person_Matt_Stuvysunt, Tool_Radio_equipment);
 
 	/* Matt has asked all Persons for a job
 	   Removed : Old Matt,
