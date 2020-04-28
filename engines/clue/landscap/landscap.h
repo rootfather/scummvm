@@ -170,7 +170,7 @@ extern void lsPatchObjects();
 
 extern void lsSetVisibleWindow(uint16 x, uint16 y);
 
-extern byte lsIsInside(LSObjectNode *lso, uint16 x, uint16 y, uint16 x1, uint16 y1);
+extern bool lsIsInside(LSObjectNode *lso, uint16 x, uint16 y, uint16 x1, uint16 y1);
 
 extern uint32 lsGetStartArea();
 

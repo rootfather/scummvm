@@ -217,7 +217,6 @@ void lsSetDarkness(byte value) {
 	gfxSetDarkness(value);
 }
 
-
 void lsTurnObject(LSObjectNode *lso, byte status, byte Collis) {
 	uint16 floorIndex = lsGetFloorIndex(lso->us_DestX, lso->us_DestY);
 
@@ -230,15 +229,15 @@ void lsTurnObject(LSObjectNode *lso, byte status, byte Collis) {
 		LS_SET_MICRO_ON_FLOOR(ls->p_CurrFloor[floorIndex].uch_FloorType);
 }
 
-byte lsIsInside(LSObjectNode *lso, uint16 x, uint16 y, uint16 x1, uint16 y1) {
+bool lsIsInside(LSObjectNode *lso, uint16 x, uint16 y, uint16 x1, uint16 y1) {
 	uint16 lsoX, lsoY, lsoX1, lsoY1;
 
 	lsCalcExactSize(lso, &lsoX, &lsoY, &lsoX1, &lsoY1);
 
-	if ((lsoX <= x1) && (lsoX1 >= x) && (lsoY <= y1) && (lsoY1 >= y))
-		return (1);
+	if (lsoX <= x1 && lsoX1 >= x && lsoY <= y1 && lsoY1 >= y)
+		return true;
 
-	return (0);
+	return false;
 }
 
 void lsSetActivLiving(const char *Name, uint16 x, uint16 y) {

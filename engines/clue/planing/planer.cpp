@@ -904,7 +904,7 @@ static void plActionUse() {
 														if (!plIgnoreLock(choice1)) {
 															lsSetObjectState(choice1, Const_tcLOCK_UNLOCK_BIT, 1);
 
-															if (((ToolNode *)dbGetObject(choice2))-> Effect & Const_tcTOOL_OPENS) {
+															if (((ToolNode *)dbGetObject(choice2))->Effect & Const_tcTOOL_OPENS) {
 																lsSetObjectState(choice1, Const_tcOPEN_CLOSE_BIT, 1);
 																plCorrectOpened((LSObjectNode *) dbGetObject(choice1), true);
 															}

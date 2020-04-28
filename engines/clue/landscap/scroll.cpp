@@ -51,77 +51,66 @@ byte lsInitScrollLandScape(byte direction, byte mode) {
 	byte collis = 0;
 
 	if (direction & LS_SCROLL_LEFT) {
-		if ((l->us_WindowXPos >= speed) && (l->us_PersonXPos <= LS_CENTER_X)) {
+		if (l->us_WindowXPos >= speed && l->us_PersonXPos <= LS_CENTER_X) {
 			dx = -1;
 
 			l->us_LivingXSpeed = (int16) dx;
 			l->us_LivingYSpeed = 0;
 			l->uch_LivingAction = ANM_MOVE_LEFT;
-		} else {
-			if (l->us_PersonXPos > speed) {
-				px = -1;
+		} else if (l->us_PersonXPos > speed) {
+			px = -1;
 
-				l->us_LivingXSpeed = (int16) px;
-				l->us_LivingYSpeed = 0;
-				l->uch_LivingAction = ANM_MOVE_LEFT;
-			}
+			l->us_LivingXSpeed = (int16) px;
+			l->us_LivingYSpeed = 0;
+			l->uch_LivingAction = ANM_MOVE_LEFT;
 		}
 	}
 
 	if (direction & LS_SCROLL_RIGHT) {
-		if ((l->us_WindowXPos <=
-		        (LS_MAX_AREA_WIDTH - LS_VISIBLE_X_SIZE - speed))
-		        && (l->us_PersonXPos >= LS_CENTER_X)) {
+		if (l->us_WindowXPos <= LS_MAX_AREA_WIDTH - LS_VISIBLE_X_SIZE - speed && l->us_PersonXPos >= LS_CENTER_X) {
 			dx = 1;
 
 			l->us_LivingXSpeed = (int16) dx;
 			l->us_LivingYSpeed = 0;
 			l->uch_LivingAction = ANM_MOVE_RIGHT;
-		} else {
-			if (l->us_PersonXPos < (LS_VISIBLE_X_SIZE - speed)) {
-				px = 1;
+		} else if (l->us_PersonXPos < LS_VISIBLE_X_SIZE - speed) {
+			px = 1;
 
-				l->us_LivingXSpeed = (int16) px;
-				l->us_LivingYSpeed = 0;
-				l->uch_LivingAction = ANM_MOVE_RIGHT;
-			}
+			l->us_LivingXSpeed = (int16) px;
+			l->us_LivingYSpeed = 0;
+			l->uch_LivingAction = ANM_MOVE_RIGHT;
 		}
 	}
 
 	if (direction & LS_SCROLL_UP) {
-		if ((l->us_WindowYPos >= (speed)) && (l->us_PersonYPos <= LS_CENTER_Y)) {
+		if (l->us_WindowYPos >= speed && l->us_PersonYPos <= LS_CENTER_Y) {
 			dy = -1;
 
 			l->us_LivingXSpeed = 0;
 			l->us_LivingYSpeed = (int16) dy;
 			l->uch_LivingAction = ANM_MOVE_UP;
-		} else {
-			if (l->us_PersonYPos > (speed)) {
-				py = -1;
+		} else if (l->us_PersonYPos > speed) {
+			py = -1;
 
-				l->us_LivingXSpeed = 0;
-				l->us_LivingYSpeed = (int16) py;
-				l->uch_LivingAction = ANM_MOVE_UP;
-			}
+			l->us_LivingXSpeed = 0;
+			l->us_LivingYSpeed = (int16) py;
+			l->uch_LivingAction = ANM_MOVE_UP;
 		}
 	}
 
 	if (direction & LS_SCROLL_DOWN) {
-		if (l->us_WindowYPos <= (LS_MAX_AREA_HEIGHT - LS_VISIBLE_Y_SIZE - speed)
-		        && (l->us_PersonYPos >= LS_CENTER_Y)) {
+		if (l->us_WindowYPos <= LS_MAX_AREA_HEIGHT - LS_VISIBLE_Y_SIZE - speed && l->us_PersonYPos >= LS_CENTER_Y) {
 			dy = 1;
 
 			l->us_LivingXSpeed = 0;
 			l->us_LivingYSpeed = (int16) dy;
 			l->uch_LivingAction = ANM_MOVE_DOWN;
-		} else {
-			if (l->us_PersonYPos < (LS_VISIBLE_Y_SIZE - speed)) {
-				py = 1;
+		} else if (l->us_PersonYPos < LS_VISIBLE_Y_SIZE - speed) {
+			py = 1;
 
-				l->us_LivingXSpeed = 0;
-				l->us_LivingYSpeed = (int16) py;
-				l->uch_LivingAction = ANM_MOVE_DOWN;
-			}
+			l->us_LivingXSpeed = 0;
+			l->us_LivingYSpeed = (int16) py;
+			l->uch_LivingAction = ANM_MOVE_DOWN;
 		}
 	}
 
@@ -330,9 +319,7 @@ byte lsIsCollision(int32 x, int32 y, byte direction) {
 
 	/* from now on color[i] contains a non-zero value when there is a collision */
 	for (uint32 i = 0; i < 14; i++) {
-		if ((color[i] != LS_COLLIS_COLOR_0) && (color[i] != LS_COLLIS_COLOR_1)
-		        && (color[i] != LS_COLLIS_COLOR_2)
-		        && (color[i] != LS_COLLIS_COLOR_3))
+		if (color[i] != LS_COLLIS_COLOR_0 && color[i] != LS_COLLIS_COLOR_1 && color[i] != LS_COLLIS_COLOR_2 && color[i] != LS_COLLIS_COLOR_3)
 			color[i] = 0;
 		else
 			color[i] = 1;
