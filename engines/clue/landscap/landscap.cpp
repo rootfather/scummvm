@@ -33,7 +33,7 @@ uint32 hasLootRelationID = 0;
 uint32 hasRoomRelationID = 0;
 uint32 FloorLinkRelationID = 0;
 
-struct LandScape *ls = NULL;
+struct LandScape *ls = nullptr;
 
 void lsSafeRectFill(uint16 x0, uint16 y0, uint16 x1, uint16 y1, uint8 color) {
 	x0 = MIN(x0, (uint16)638);
@@ -47,15 +47,15 @@ void lsSafeRectFill(uint16 x0, uint16 y0, uint16 x1, uint16 y1, uint8 color) {
 }
 
 void lsSetVisibleWindow(uint16 x, uint16 y) {
-	int16 wX, wY;
-
 	int16 halfX = LS_VISIBLE_X_SIZE / 2;
 	int16 halfY = LS_VISIBLE_Y_SIZE / 2;
 
-	if ((wX = x - halfX) < 0)
+	int16 wX = x - halfX;
+	if (wX < 0)
 		wX = 0;
 
-	if ((wY = y - halfY) < 0)
+	int16 wY = y - halfY;
+	if (wY < 0)
 		wY = 0;
 
 	/* -1 is important, so that no position 320, 128 is possible     */
@@ -71,28 +71,6 @@ void lsSetVisibleWindow(uint16 x, uint16 y) {
 	livSetVisLScape(ls->us_WindowXPos, ls->us_WindowYPos);
 }
 
-#ifdef THECLOU_DEBUG
-static void lsShowRooms() {
-	if (GamePlayMode & GP_SHOW_ROOMS) {
-		LIST *rooms = lsGetRoomsOfArea(ls->ul_AreaID);
-		NODE *room;
-
-		for (room = LIST_HEAD(rooms); NODE_SUCC(room); room = NODE_SUCC(room)) {
-			LSRoom myroom = (LSRoom)OL_DATA(room);
-
-			gfxLSRectFill(myroom->us_LeftEdge, myroom->us_TopEdge,
-			              myroom->us_LeftEdge + myroom->us_Width - 1,
-			              myroom->us_TopEdge + myroom->us_Height - 1,
-			              249);
-
-			/* pcErrNewDebugMsg(ERR_WARNING, "tst", "ROOM X %d Y %d W %d H %d", myroom->us_LeftEdge, myroom->us_TopEdge, myroom->us_Width, myroom->us_Height); */
-		}
-
-		RemoveList(rooms);
-	}
-}
-#endif
-
 void lsBuildScrollWindow() {
 	int32 i;
 	dbObjectNode *node;
@@ -107,12 +85,10 @@ void lsBuildScrollWindow() {
 		for (int32 j = 0; j < LS_FLOORS_PER_LINE; j++) {
 			/* if no floor is available fill with collision colour */
 
-			if (LS_NO_FLOOR
-			        ((ls->p_CurrFloor[i * LS_FLOORS_PER_LINE + j].uch_FloorType))) {
-				lsSafeRectFill(j * 32, i * 32, j * 32 + 31, i * 32 + 31,
-				               LS_COLLIS_COLOR_2);
-			} else
-				lsBlitFloor((i * LS_FLOORS_PER_LINE + j), j * 32, i * 32);
+			if (LS_NO_FLOOR((ls->p_CurrFloor[i * LS_FLOORS_PER_LINE + j].uch_FloorType)))
+				lsSafeRectFill(j * 32, i * 32, j * 32 + 31, i * 32 + 31, LS_COLLIS_COLOR_2);
+			else
+				lsBlitFloor(i * LS_FLOORS_PER_LINE + j, j * 32, i * 32);
 		}
 	}
 
@@ -141,9 +117,10 @@ void lsBuildScrollWindow() {
 			lsTurnObject(lso, lso->uch_Visible, LS_COLLISION);
 
 		/* because of the dirty hack statues need to be refreshed specially */
-		if (lso->Type == Item_Statue)
+		if (lso->Type == Item_Statue) {
 			if (lso->uch_Visible != LS_OBJECT_VISIBLE)
 				lsRefreshStatue(lso);
+		}
 	}
 
 	/* now refresh all doors and special objects */
@@ -193,17 +170,16 @@ void lsBuildScrollWindow() {
 	/* calculate other colours (darken!) */
 	for (i = 65 * 3; i < 128 * 3; i++) {
 		palette[i] = palette[i - 64 * 3];   /* light */
-
 		palette[i - 64 * 3] /= 2;   /* dark */
 	}
 
-	gfxChangeColors(NULL, 5, GFX_BLEND_UP, palette);
+	gfxChangeColors(nullptr, 5, GFX_BLEND_UP, palette);
 
 	/* now show colors of the maxis */
 	gfxPrepareColl(137);
 	gfxGetPalette(137, palette);
 	gfxSetColorRange(128, 191);
-	gfxChangeColors(NULL, 0, GFX_BLEND_UP, palette);
+	gfxChangeColors(nullptr, 0, GFX_BLEND_UP, palette);
 
 	/* and just to be safe also set the menu colors */
 	tcSetPermanentColors();
@@ -244,9 +220,9 @@ void lsSetActivLiving(const char *Name, uint16 x, uint16 y) {
 	if (Name) {
 		strcpy(ls->uch_ActivLiving, Name);
 
-		if (x == (uint16) - 1)
+		if (x == (uint16) -1)
 			x = livGetXPos(Name);
-		if (y == (uint16) - 1)
+		if (y == (uint16) -1)
 			y = livGetYPos(Name);
 
 		lsSetVisibleWindow(x, y);
@@ -261,13 +237,13 @@ void lsSetObjectState(uint32 objID, byte bitNr, byte value) {
 	LSObjectNode *object = (LSObjectNode *) dbGetObject(objID);
 
 	/* for a time clock the status must not change */
-	if (object->Type != Item_Clock) {
-		if (value == 0)
-			object->ul_Status &= (0xffffffff - (1 << bitNr));
+	if (object->Type == Item_Clock)
+		return;
 
-		if (value == 1)
-			object->ul_Status |= (1 << bitNr);
-	}
+	if (value == 0)
+		object->ul_Status &= (0xffffffff - (1 << bitNr));
+	else if (value == 1)
+		object->ul_Status |= (1 << bitNr);
 }
 
 static int16 lsSortByXCoord(dbObjectNode *n1, dbObjectNode *n2) {
@@ -291,39 +267,39 @@ static int16 lsSortByYCoord(dbObjectNode *n1, dbObjectNode *n2) {
 }
 
 static void lsSortObjectList(NewObjectList<dbObjectNode> **l) {
-	LSObjectNode *lso1, *lso2;
-	byte lastNode = 0;
+	if ((*l)->isEmpty())
+		return;
+	
+	bool lastNode = false;
+	dbSortObjectList(l, lsSortByYCoord);
 
-	if (!(*l)->isEmpty()) {
-		dbSortObjectList(l, lsSortByYCoord);
+	for (dbObjectNode *node = (*l)->getListHead(); !lastNode && node->_succ->_succ;) {
+		dbObjectNode *node1 = node;
 
-		for (dbObjectNode *node = (*l)->getListHead(); !lastNode && node->_succ->_succ;) {
-			dbObjectNode *node1 = node;
+		LSObjectNode* lso1, * lso2;
+		do {
+			node1 = (dbObjectNode *)node1->_succ;
+			lso1 = (LSObjectNode *)node;
+			lso2 = (LSObjectNode *)node1;
+		} while (lso1->us_DestY == lso2->us_DestY && node1->_succ->_succ);
 
-			do {
-				node1 = (dbObjectNode *)node1->_succ;
-				lso1 = (LSObjectNode *)node;
-				lso2 = (LSObjectNode *)node1;
-			} while ((lso1->us_DestY == lso2->us_DestY) && node1->_succ->_succ);
+		dbObjectNode* next = node1;
 
-			dbObjectNode* next = node1;
+		/* wenn Abbruch wegen NODE_SUCC(NODE_SUCC(.. erflogte, darf
+		 * nicht der NODE_PRED(node1) genomen werden!
+		 * nach dem Sortieren ist außerdem Schluß!
+		 */
 
-			/* wenn Abbruch wegen NODE_SUCC(NODE_SUCC(.. erflogte, darf
-			 * nicht der NODE_PRED(node1) genomen werden!
-			 * nach dem Sortieren ist außerdem Schluß!
-			 */
+		if (lso1->us_DestY != lso2->us_DestY)
+			node1 = (dbObjectNode*)node1->_pred;
+		else
+			lastNode = true;
 
-			if (lso1->us_DestY != lso2->us_DestY)
-				node1 = (dbObjectNode*)node1->_pred;
-			else
-				lastNode = 1;
-
-			if (node != node1) {
-				dbSortPartOfList(*l, node, node1, lsSortByXCoord);
-				node = next;
-			} else
-				node = (dbObjectNode*)node->_succ;
-		}
+		if (node != node1) {
+			dbSortPartOfList(*l, node, node1, lsSortByXCoord);
+			node = next;
+		} else
+			node = (dbObjectNode*)node->_succ;
 	}
 }
 
@@ -346,21 +322,19 @@ uint32 lsAddLootBag(uint16 x, uint16 y, byte bagNr) {
 		lso->us_DestX = x;
 		lso->us_DestY = y;
 
-		BobSet(lso->us_OffsetFact, x, y, LS_LOOTBAG_X_OFFSET,
-		       LS_LOOTBAG_Y_OFFSET);
+		BobSet(lso->us_OffsetFact, x, y, LS_LOOTBAG_X_OFFSET, LS_LOOTBAG_Y_OFFSET);
 		BobVis(lso->us_OffsetFact);
 
 		hasLootBagSet(ls->ul_AreaID, (uint32)(9700 + bagNr));
 	}
 
-	return ((uint32)(9700 + bagNr));
+	return (uint32)(9700 + bagNr);
 }
 
 void lsRemLootBag(uint32 bagId) {
 	LSObjectNode *lso = (LSObjectNode *)dbGetObject(bagId);
 
 	lso->uch_Visible = LS_OBJECT_INVISIBLE;
-
 	BobInVis(lso->us_OffsetFact);
 
 	hasLootBagUnSet(ls->ul_AreaID, bagId);
@@ -372,10 +346,8 @@ void lsRefreshAllLootBags() {
 	for (uint32 i = 1; i < 9; i++) {
 		LSObjectNode *lso = (LSObjectNode *)dbGetObject(9700 + i);
 
-		if ((lso->uch_Visible == LS_OBJECT_VISIBLE)
-		        && (hasLootBag(ls->ul_AreaID, (uint32)(9700 + i)))) {
-			BobSet(lso->us_OffsetFact, lso->us_DestX, lso->us_DestY,
-			       LS_LOOTBAG_X_OFFSET, LS_LOOTBAG_Y_OFFSET);
+		if (lso->uch_Visible == LS_OBJECT_VISIBLE && hasLootBag(ls->ul_AreaID, (uint32)(9700 + i))) {
+			BobSet(lso->us_OffsetFact, lso->us_DestX, lso->us_DestY, LS_LOOTBAG_X_OFFSET, LS_LOOTBAG_Y_OFFSET);
 			BobVis(lso->us_OffsetFact);
 		}
 	}
@@ -387,15 +359,15 @@ void lsGuyInsideSpot(uint16 *us_XPos, uint16 *us_YPos, uint32 *areaId) {
 	for (SpotNode* s = spots->getListHead(); s->_succ; s = (SpotNode *) s->_succ) {
 		if (s->uch_Status & LS_SPOT_ON) {
 			for (int32 i = 0; i < 4; i++) {
-				if ((us_XPos[i] != (uint16) -1) && (us_YPos[i] != (uint16) -1)) {
+				if (us_XPos[i] != (uint16) -1 && us_YPos[i] != (uint16) -1) {
 					if (areaId[i] == s->ul_AreaId) {
 						if (s->p_CurrPos) {
 							int32 x = s->p_CurrPos->us_XPos;    /* linke, obere */
 							int32 y = s->p_CurrPos->us_YPos;    /* Ecke des Spot! */
 							int32 size = s->us_Size - 4;
 
-							if ((us_XPos[i] < x + size - 2) && (us_XPos[i] > x + 2)) {
-								if ((us_YPos[i] < y + size - 2) && (us_YPos[i] > y + 2))
+							if (us_XPos[i] < x + size - 2 && us_XPos[i] > x + 2) {
+								if (us_YPos[i] < y + size - 2 && us_YPos[i] > y + 2)
 									Search.SpotTouchCount[i]++;
 							}
 						}
@@ -409,8 +381,8 @@ void lsGuyInsideSpot(uint16 *us_XPos, uint16 *us_YPos, uint32 *areaId) {
 void lsWalkThroughWindow(LSObjectNode *lso, uint16 us_LivXPos, uint16 us_LivYPos, uint16 *us_XPos, uint16 *us_YPos) {
 	int16 deltaX, deltaY;
 
-	(*us_XPos) = us_LivXPos;
-	(*us_YPos) = us_LivYPos;
+	*us_XPos = us_LivXPos;
+	*us_YPos = us_LivYPos;
 
 	if (us_LivXPos < lso->us_DestX)
 		deltaX = 25;
@@ -423,9 +395,9 @@ void lsWalkThroughWindow(LSObjectNode *lso, uint16 us_LivXPos, uint16 us_LivYPos
 		deltaY = -25;
 
 	if (lso->ul_Status & (1 << Const_tcHORIZ_VERT_BIT))
-		(*us_XPos) += deltaX;   /* vertical */
+		*us_XPos += deltaX;   /* vertical */
 	else
-		(*us_YPos) += deltaY;   /* horizontal */
+		*us_YPos += deltaY;   /* horizontal */
 }
 
 void lsPatchObjects() {
@@ -489,8 +461,8 @@ void lsCalcExactSize(LSObjectNode *lso, uint16 *x0, uint16 *y0, uint16 *x1, uint
 	ItemNode *item = (ItemNode *)dbGetObject(lso->Type);
 	byte vertical = 0;
 
-	(*x0) = lso->us_DestX;
-	(*y0) = lso->us_DestY;
+	*x0 = lso->us_DestX;
+	*y0 = lso->us_DestY;
 
 	/* no idea why OPEN_CLOSE_BIT & HORIZ_VERT_BIT are swapped
 	   for painting and image, but they are */
@@ -500,17 +472,17 @@ void lsCalcExactSize(LSObjectNode *lso, uint16 *x0, uint16 *y0, uint16 *x1, uint
 		vertical = lso->ul_Status & 1;
 
 	if (vertical) {     /* vertical */
-		(*x0) += item->VExactXOffset;
-		(*y0) += item->VExactYOffset;
+		*x0 += item->VExactXOffset;
+		*y0 += item->VExactYOffset;
 
-		(*x1) = (*x0) + item->VExactWidth;
-		(*y1) = (*y0) + item->VExactHeight;
+		*x1 = (*x0) + item->VExactWidth;
+		*y1 = (*y0) + item->VExactHeight;
 	} else {
-		(*x0) += item->HExactXOffset;
-		(*y0) += item->HExactYOffset;
+		*x0 += item->HExactXOffset;
+		*y0 += item->HExactYOffset;
 
-		(*x1) = (*x0) + item->HExactWidth;
-		(*y1) = (*y0) + item->HExactHeight;
+		*x1 = (*x0) + item->HExactWidth;
+		*y1 = (*y0) + item->HExactHeight;
 	}
 }
 
@@ -525,44 +497,40 @@ void lsInitDoorRefresh(uint32 ObjId) {
 			found = true;
 	}
 
-	if (!found) {
-		uint16 width = lso->uch_Size;
-		uint16 height = lso->uch_Size;
+	if (found)
+		return;
 
-		uint16 destX = ls->us_DoorXOffset;
-		uint16 destY = ls->us_DoorYOffset;
+	uint16 width = lso->uch_Size;
+	uint16 height = lso->uch_Size;
 
-		{
-			Rect srcR, dstR;
+	uint16 destX = ls->us_DoorXOffset;
+	uint16 destY = ls->us_DoorYOffset;
 
-			srcR.x = lso->us_DestX;
-			srcR.y = lso->us_DestY;
-			srcR.w = width;
-			srcR.h = height;
+	Rect srcR, dstR;
+	srcR.x = lso->us_DestX;
+	srcR.y = lso->us_DestY;
+	srcR.w = width;
+	srcR.h = height;
 
-			dstR.x = destX;
-			dstR.y = destY;
-			dstR.w = width;
-			dstR.h = height;
+	dstR.x = destX;
+	dstR.y = destY;
+	dstR.w = width;
+	dstR.h = height;
 
-			MemBlit(&LSRPInMem, &srcR, &LS_DOOR_REFRESH_MEM_RP, &dstR,
-			        GFX_ROP_BLIT);
+	MemBlit(&LSRPInMem, &srcR, &LS_DOOR_REFRESH_MEM_RP, &dstR, GFX_ROP_BLIT);
+
+	drn = ls->p_DoorRefreshList->createNode(nullptr);
+	drn->lso = lso;
+	drn->us_XOffset = ls->us_DoorXOffset;
+	drn->us_YOffset = ls->us_DoorYOffset;
+
+	if (ls->us_DoorXOffset + width >= 320) {
+		if (ls->us_DoorYOffset <= 128) { /* prevent overflow */
+			ls->us_DoorXOffset = 0;
+			ls->us_DoorYOffset += height;
 		}
-
-		drn = ls->p_DoorRefreshList->createNode(nullptr);
-
-		drn->lso = lso;
-		drn->us_XOffset = ls->us_DoorXOffset;
-		drn->us_YOffset = ls->us_DoorYOffset;
-
-		if ((ls->us_DoorXOffset + width) >= 320) {
-			if (ls->us_DoorYOffset <= 128) { /* prevent overflow */
-				ls->us_DoorXOffset = 0;
-				ls->us_DoorYOffset += height;
-			}
-		} else
-			ls->us_DoorXOffset += width;
-	}
+	} else
+		ls->us_DoorXOffset += width;
 }
 
 void lsDoDoorRefresh(LSObjectNode *lso) {
@@ -577,8 +545,7 @@ void lsDoDoorRefresh(LSObjectNode *lso) {
 	uint16 width = lso->uch_Size;
 	uint16 height = lso->uch_Size;
 
-	gfxLSPut(&LS_DOOR_REFRESH_MEM_RP, drn->us_XOffset, drn->us_YOffset,
-	         lso->us_DestX, lso->us_DestY, width, height);
+	gfxLSPut(&LS_DOOR_REFRESH_MEM_RP, drn->us_XOffset, drn->us_YOffset, lso->us_DestX, lso->us_DestY, width, height);
 }
 
 } // End of namespace Clue
