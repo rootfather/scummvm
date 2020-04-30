@@ -29,6 +29,7 @@
 #include "clue/error/error.h"
 #include "clue/base/base.h"
 #include "clue/text.h"
+#include "clue/cdrom/cdrom.h"
 
 namespace Clue {
 
@@ -49,11 +50,13 @@ ClueEngine::ClueEngine(OSystem *syst, const ADGameDescription *gameDesc) : Engin
 	const char* path = ConfMan.get("path").c_str();
 	dskSetRootPath(path);
 	_txtMgr = new TextMgr(g_clue);
+	_cdMgr = new CDManager(g_clue);
 }
 
 ClueEngine::~ClueEngine() {
 	g_clue = nullptr;
 	delete _txtMgr;
+	delete _cdMgr;
 	delete rnd;
 }
 

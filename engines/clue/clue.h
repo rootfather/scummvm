@@ -36,6 +36,7 @@ enum ClueGameFeatures {
 };
 
 class TextMgr;
+class CDManager;
 
 class ClueEngine : public Engine {
 private:
@@ -64,16 +65,15 @@ public:
 	const ADGameDescription *_gameDescription;
 
 	TextMgr* _txtMgr;
+	CDManager *_cdMgr;
 
 private:
 	Common::RandomSource* rnd;
 
-private:
 	byte startupMenu();
 	bool tcInit();
 	void setFullEnviroment();
 	void closeData();
-
 };
 
 extern ClueEngine *g_clue;

@@ -49,10 +49,8 @@ void tcDone() {
 		gfxDone();
 
 		if (g_clue->getFeatures() & ADGF_CD) {
-			if (CDRomInstalled) {
-				CDROM_StopAudioTrack();
-				CDROM_UnInstall();
-			}
+			g_clue->_cdMgr->stop();
+			g_clue->_cdMgr->unInstall();
 		}
 
 		if (StdBuffer1)
@@ -238,7 +236,7 @@ void ClueEngine::showIntro() {
 		char pathName[DSK_PATH_MAX];
 
 		if (g_clue->getFeatures() & ADGF_CD)
-			CDROM_StopAudioTrack();
+			g_clue->_cdMgr->stop();
 
 		if (!dskBuildPathName(DISK_CHECK_FILE, INTRO_DIRECTORY, names[anims], pathName))
 			continue;
@@ -330,11 +328,11 @@ void ClueEngine::showIntro() {
 						if (CDFrames[s * 6] == anims && CDFrames[s * 6 + 1] == t) {
 							sndFading(16);
 
-							CDROM_StopAudioTrack();
+							g_clue->_cdMgr->stop();
 							if (CDFrames[s * 6 + 2] == 0)
-								CDROM_PlayAudioTrack(CDFrames[s * 6 + 3]);
+								g_clue->_cdMgr->playTrack(CDFrames[s * 6 + 3]);
 							else
-								CDROM_PlayAudioSequence(CDFrames[s * 6 + 3], CDFrames[s * 6 + 4], CDFrames[s * 6 + 5]);
+								g_clue->_cdMgr->playSequence(CDFrames[s * 6 + 3], CDFrames[s * 6 + 4], CDFrames[s * 6 + 5]);
 						}
 					}
 				}
@@ -355,7 +353,7 @@ endit2:
 	gfxClearArea(nullptr);
 
 	if (g_clue->getFeatures() & ADGF_CD) {
-		CDROM_StopAudioTrack();
+		g_clue->_cdMgr->stop();
 		sndFading(0);
 	}
 
@@ -375,7 +373,7 @@ bool ClueEngine::tcInit() {
 	}
 	 
 	if (g_clue->getFeatures() & ADGF_CD) {
-		CDRomInstalled = CDROM_Install();
+		_cdMgr->install();
 	}
 
 	gfxInit();
