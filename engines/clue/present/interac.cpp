@@ -108,7 +108,7 @@ static char SearchActiv(int16 delta, byte activ, uint32 possibility, byte max) {
 
 		if (possibility & (1 << activ))
 			return (char) activ;
-	} while ((activ > 0) && (activ < max));
+	} while (activ > 0 && activ < max);
 
 	return -1;
 }
@@ -118,11 +118,11 @@ static char SearchMouseActiv(uint32 possibility, byte max) {
 	uint16 x, y;
 	gfxGetMouseXY(m_gc, &x, &y);
 
-	if ((y > TXT_1ST_MENU_LINE_Y - 10) && (y < TXT_2ND_MENU_LINE_Y + 10)) {
+	if (y > TXT_1ST_MENU_LINE_Y - 10 && y < TXT_2ND_MENU_LINE_Y + 10) {
 		max -= 1;
 
 		int activ;
-		for (activ = 0; (x >= MenuCoords[activ]) && (activ < max / 2 + 1); activ++)
+		for (activ = 0; x >= MenuCoords[activ] && activ < max / 2 + 1; activ++)
 			;
 
 		activ = (activ - 1) * 2;
@@ -305,7 +305,7 @@ void DrawBubble(NewList<NewNode> *bubble, uint8 firstLine, uint8 activ, _GC *gc,
 		gfxShow(145, GFX_OVERLAY | GFX_NO_REFRESH, 0, X_OFFSET + 135, 5);
 	}
 
-	if ((max > (firstLine + NRBLINES))) {
+	if (max > firstLine + NRBLINES) {
 		gfxSetGC(gc);
 		gfxShow(146, GFX_OVERLAY | GFX_NO_REFRESH, 0, X_OFFSET + 135, 40);
 	}
@@ -325,21 +325,9 @@ void DrawBubble(NewList<NewNode> *bubble, uint8 firstLine, uint8 activ, _GC *gc,
 		} else {
 			line = line + 1;
 
-			if (activ == i)
-				gfxSetPens(gc, BG_ACTIVE_COLOR, GFX_SAME_PEN,
-				           GFX_SAME_PEN);
-			else
-				gfxSetPens(gc, BG_INACTIVE_COLOR, GFX_SAME_PEN,
-				           GFX_SAME_PEN);
-
+			gfxSetPens(gc, (activ == i) ? BG_ACTIVE_COLOR : BG_INACTIVE_COLOR, GFX_SAME_PEN, GFX_SAME_PEN);
 			gfxPrintExact(gc, line, X_OFFSET + 1, j + 1);
-
-			if (activ == i)
-				gfxSetPens(gc, VG_ACTIVE_COLOR, GFX_SAME_PEN,
-				           GFX_SAME_PEN);
-			else
-				gfxSetPens(gc, VG_INACTIVE_COLOR, GFX_SAME_PEN,
-				           GFX_SAME_PEN);
+			gfxSetPens(gc, (activ == i) ? VG_ACTIVE_COLOR : VG_INACTIVE_COLOR, GFX_SAME_PEN, GFX_SAME_PEN);
 
 			gfxPrintExact(gc, line, X_OFFSET, j);
 		}
@@ -365,14 +353,11 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 	if (func)
 		func(activ);
 
-	if (ActivPersonPictID == (uint16) - 1)
-		gfxShow((uint16) CurrentBubbleType, GFX_NO_REFRESH | GFX_OVERLAY, 0,
-		        -1, -1);
+	if (ActivPersonPictID == (uint16) -1)
+		gfxShow((uint16) CurrentBubbleType, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);
 	else {
-		gfxShow((uint16) ActivPersonPictID,
-		        GFX_NO_REFRESH | GFX_OVERLAY | GFX_BLEND_UP, 0, -1, -1);
-		gfxShow((uint16) CurrentBubbleType, GFX_NO_REFRESH | GFX_OVERLAY, 0,
-		        -1, -1);
+		gfxShow((uint16) ActivPersonPictID, GFX_NO_REFRESH | GFX_OVERLAY | GFX_BLEND_UP, 0, -1, -1);
+		gfxShow((uint16) CurrentBubbleType, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);
 
 		if (CurrentBubbleType == SPEAK_BUBBLE)
 			gfxShow(9, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);
@@ -387,9 +372,8 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 
 	gfxScreenThaw(u_gc, 0, 0, 320, 67);
 
-	if (g_clue->getFeatures() & ADGF_CD) {
+	if (g_clue->getFeatures() & ADGF_CD)
 		PlayFromCDROM();
-	}
 
 	if (waitTime) {
 		inpSetWaitTicks(waitTime);
@@ -398,8 +382,7 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 		if (action & INP_LBUTTONP)
 			activ = 1;
 
-		if ((action & INP_ESC) || (action & INP_RBUTTONP)
-		        || (action & INP_TIME))
+		if ((action & INP_ESC) || (action & INP_RBUTTONP) || (action & INP_TIME))
 			activ = GET_OUT;
 
 		inpSetWaitTicks(0);
@@ -408,9 +391,7 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 	} else {
 		bool endLoop = false;
 		while (!endLoop) {
-			uint32 action =
-			    inpWaitFor(INP_UP | INP_DOWN | INP_LBUTTONP | INP_RBUTTONP
-			               | INP_LEFT | INP_RIGHT);
+			uint32 action = inpWaitFor(INP_UP | INP_DOWN | INP_LBUTTONP | INP_RBUTTONP | INP_LEFT | INP_RIGHT);
 
 			ExtBubbleActionInfo = action;
 
@@ -428,10 +409,9 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 
 					gfxGetMouseXY(u_gc, &x, &y);
 
-					if ((x >= X_OFFSET)
-					        && (x <= X_OFFSET + INT_BUBBLE_WIDTH)) {
-						if ((y < 4) && (firstVis > 0)) {    /* Scroll up */
-							while ((y < 4) && (firstVis > 0)) {
+					if (x >= X_OFFSET && x <= X_OFFSET + INT_BUBBLE_WIDTH) {
+						if (y < 4 && firstVis > 0) {    /* Scroll up */
+							while (y < 4 && firstVis > 0) {
 								firstVis -= 1;
 								activ = firstVis;
 
@@ -442,14 +422,14 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 
 								inpDelay(20);
 
-								gfxGetMouseXY(u_gc, NULL, &y);
+								gfxGetMouseXY(u_gc, nullptr, &y);
 							}
-						} else if ((y > 48) && (y <= 58) && (firstVis < (max - 5))) {   /* Scroll down */
-							while ((y > 48) && (y <= 58) && (firstVis < (max - 5))) {
+						} else if (y > 48 && y <= 58 && firstVis < max - 5) {   /* Scroll down */
+							while (y > 48 && y <= 58 && firstVis < max - 5) {
 								firstVis += 1;
 								activ = firstVis + 4;
 
-								if (activ > (max - 1))
+								if (activ > max - 1)
 									activ = max - 1;
 
 								DrawBubble(bubble, firstVis, activ, u_gc, max);
@@ -459,15 +439,15 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 
 								inpDelay(20);
 
-								gfxGetMouseXY(u_gc, NULL, &y);
+								gfxGetMouseXY(u_gc, nullptr, &y);
 							}
-						} else if ((y >= 4) && (y <= 48)) {
+						} else if (y >= 4 && y <= 48) {
 							byte newactiv = firstVis + (y - 4) / 9;
 
 							if (newactiv != activ) {
 								activ = newactiv;
 
-								if (activ > (max - 1))
+								if (activ > max - 1)
 									activ = max - 1;
 
 								if (activ < firstVis)
@@ -484,11 +464,11 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 						}
 					}
 				} else {
-					if ((action & INP_UP)) {
+					if (action & INP_UP) {
 						if (activ > 0) {
 							int cl = abs(firstVis - activ) + 1;
 
-							while ((activ > 0) && cl) {
+							while (activ > 0 && cl) {
 								activ--;
 								cl--;
 								
@@ -506,7 +486,7 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 						}
 					}
 
-					if ((action & INP_DOWN)) {
+					if (action & INP_DOWN) {
 						if (activ < max - 1) {
 							int cl = NRBLINES - abs(firstVis - activ);
 

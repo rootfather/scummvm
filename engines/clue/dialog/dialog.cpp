@@ -20,6 +20,7 @@
 
 #include "clue/dialog/talkappl.h"
 #include "clue/clue.h"
+#include "clue/cdrom/cdrom.h"
 
 namespace Clue {
 

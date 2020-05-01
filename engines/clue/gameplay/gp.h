@@ -66,20 +66,23 @@ namespace Clue {
 
 /* Zugriffsdefines */
 
-#define SetMinute(zeit)         (film->akt_Minute=(uint32)(zeit))
-#define SetLocation(loc)    {film->alter_Ort = film->akt_Ort; film->akt_Ort=(uint32)(loc);}
-#define SetDay(tag)             (film->akt_Tag=(uint32)(tag))
-#define SetTime(time)       (film->akt_Minute=(uint32)(time))
+#define SetMinute(zeit)         (_film->akt_Minute=(uint32)(zeit))
+#define SetLocation(loc)    {_film->alter_Ort = _film->akt_Ort; _film->akt_Ort=(uint32)(loc);}
+#define SetDay(tag)             (_film->akt_Tag=(uint32)(tag))
+#define SetTime(time)       (_film->akt_Minute=(uint32)(time))
 
-#define GetDay                  (film->akt_Tag)
-#define GetMinute               (film->akt_Minute)
-#define GetLocation             (film->akt_Ort)
-#define GetOldLocation          (film->alter_Ort)
+#define GetDay                  (_film->akt_Tag)
+#define GetMinute               (_film->akt_Minute)
+#define GetLocation             (_film->akt_Ort)
+#define GetOldLocation          (_film->alter_Ort)
 
 #define GetFromDay(x)            ((x) >> 16)
 #define GetToDay(x)             (((x) << 16) >> 16)
 
-struct Film {
+class Film {
+public:
+	Film();
+	
 	uint32 AmountOfScenes;
 
 	struct Scene *act_scene;
@@ -122,7 +125,7 @@ struct Scene {
 	uint32 Dauer;           /* Dauer dieser Szene in Sekunden       */
 	uint16 Anzahl;      /* wie oft sie geschehen kann           */
 	uint16 Geschehen;       /* wie oft sie SCHON geschehen ist */
-	byte Probability;       /* mit der sie eintritt         0-255   */
+	uint8 Probability;       /* mit der sie eintritt         0-255   */
 
 	uint32 LocationNr;      /* Ort, den diese Szene darstellt       */
 	/* == -1 falls Szene = StorySzene       */
@@ -153,10 +156,9 @@ extern void SetCurrentScene(Scene *scene);
 
 extern Common::String GetCurrLocName();
 
-char *BuildDate(uint32 days, char *date);
+Common::String BuildDate(uint32 days);
 Common::String BuildTime(uint32 min);
-
-void FormatDigit(uint32 digit, char *s);
+Common::String FormatDigit(uint32 digit);
 
 extern Scene *GetCurrentScene();
 extern Scene *GetLocScene(uint32 locNr);
@@ -167,7 +169,7 @@ extern void AddVTime(uint32 Zeit);
 extern void LinkScenes();   /* Init und Done in jeder Scene Struktur setzen */
 
 extern SceneArgs _sceneArgs;
-extern Film *film;
+extern Film *_film;
 extern uint32 GamePlayMode;
 extern byte RefreshMode;
 

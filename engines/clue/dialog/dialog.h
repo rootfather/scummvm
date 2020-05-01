@@ -21,7 +21,6 @@
 #ifndef MODULE_DIALOG
 #define MODULE_DIALOG
 
-#include "clue/cdrom/cdrom.h"
 #include "clue/text.h"
 
 namespace Clue {

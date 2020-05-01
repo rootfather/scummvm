@@ -32,7 +32,6 @@
 #define MODULE_CDROM
 
 #include "clue/clue.h"
-#include "clue/theclou.h"
 
 namespace Clue {
 class CDManager {

@@ -89,7 +89,7 @@ uint32 Go(NewList<NewTCEventNode> *succ) {
 
 		for (NewTCEventNode *node = succ->getListHead(); node->_succ; node = (NewTCEventNode *) node->_succ) {
 			Scene *sc = GetScene(node->_eventNr);
-			NewTCEventNode *location = film->loc_names->getNthNode(sc->LocationNr);
+			NewTCEventNode *location = _film->loc_names->getNthNode(sc->LocationNr);
 
 			node->_name = location->_name;
 			prob++;
@@ -266,7 +266,7 @@ void Look(uint32 locNr) {
 
 		switch (choice) {
 		case 0: {
-			NewList<NewNode> *bubble = g_clue->_txtMgr->goKey(HOUSEDESC_TXT, film->loc_names->getNthNode(locNr)->_name.c_str());
+			NewList<NewNode> *bubble = g_clue->_txtMgr->goKey(HOUSEDESC_TXT, _film->loc_names->getNthNode(locNr)->_name.c_str());
 
 			SetBubbleType(THINK_BUBBLE);
 			choice1 = Bubble(bubble, 0, nullptr, 0);

@@ -44,17 +44,35 @@ Scene *GetStoryScene(Scene *scene);
 uint32 GamePlayMode = 0;
 byte RefreshMode = 0;
 
-Film *film = NULL;
+Film *_film = nullptr;
 SceneArgs _sceneArgs;
 
+Film::Film() {
+	AmountOfScenes = 0;
 
+	act_scene = nullptr;
+	gameplay = nullptr;
+	loc_names = nullptr;
+
+	StartScene = 0;
+	StartZeit = 0;
+	StartOrt = 0;
+
+	akt_Tag = 0;
+	akt_Minute = 0;
+	akt_Ort = 0;
+	alter_Ort = 0;
+
+	EnabledChoices = 0;
+	StoryIsRunning = 0;
+}
+	
 void InitStory(const char *story_filename) {
-	if (film)
-		CloseStory();
+	CloseStory();
 
-	film = (Film *) TCAllocMem(sizeof(*film), 0);
+	_film = new Film;
+	_film->EnabledChoices = 0xffffffffL;
 
-	film->EnabledChoices = 0xffffffffL;
 	PrepareStory(story_filename);
 	InitLocations();
 	LinkScenes();
@@ -62,39 +80,38 @@ void InitStory(const char *story_filename) {
 }
 
 void CloseStory() {
-	if (!film)
+	if (!_film)
 		return;
 
-	if (film->loc_names) {
-		film->loc_names->removeList();
-		delete film->loc_names;
-		film->loc_names = nullptr;
+	if (_film->loc_names) {
+		_film->loc_names->removeList();
+		delete _film->loc_names;
+		_film->loc_names = nullptr;
 	}
 
-	for (uint32 i = 0; i < film->AmountOfScenes; i++) {
-		if (film->gameplay[i].bed)
-			FreeConditions(&film->gameplay[i]);
-		if (film->gameplay[i].std_succ) {
-			delete film->gameplay[i].std_succ;
-			film->gameplay[i].std_succ = nullptr;
+	for (uint32 i = 0; i < _film->AmountOfScenes; i++) {
+		if (_film->gameplay[i].bed)
+			FreeConditions(&_film->gameplay[i]);
+		if (_film->gameplay[i].std_succ) {
+			delete _film->gameplay[i].std_succ;
+			_film->gameplay[i].std_succ = nullptr;
 		}
 	}
 
-	if (film->gameplay)
-		TCFreeMem(film->gameplay,
-		          sizeof(Scene) * film->AmountOfScenes);
+	if (_film->gameplay)
+		TCFreeMem(_film->gameplay,
+		          sizeof(Scene) * _film->AmountOfScenes);
 
-	TCFreeMem(film, sizeof(*film));
-
-	film = nullptr;
+	delete _film;
+	_film = nullptr;
 }
 
 void SetEnabledChoices(uint32 ChoiceMask) {
-	film->EnabledChoices = ChoiceMask;
+	_film->EnabledChoices = ChoiceMask;
 }
 
 void RefreshCurrScene() {
-	NewNode *node = film->loc_names->getNthNode(GetLocation);
+	NewNode *node = _film->loc_names->getNthNode(GetLocation);
 
 	tcRefreshLocationInTitle(GetLocation);
 	PlayAnim(node->_name.c_str(), 30000,
@@ -109,15 +126,15 @@ void InitLocations() {
 
 	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, LOCATIONS_TXT, pathname);
 	l->readList(pathname);
-	film->loc_names = l;
+	_film->loc_names = l;
 }
 
 void PatchStory() {
 	if (GamePlayMode & GP_DEMO)
 		return;
 
-	GetScene(26214400)->bed->Ort = 3;  /* 4th Burglary, Hotelzimmer */
-	GetScene(26738688)->bed->Ort = 7;  /* Arrest, Polizei!          */
+	GetScene(26214400)->bed->Ort = 3;  /* 4th Burglary, Hotel room */
+	GetScene(26738688)->bed->Ort = 7;  /* Arrest, Police!          */
 
 	GetScene(SCENE_KASERNE_OUTSIDE)->Moeglichkeiten = 15;
 	GetScene(SCENE_KASERNE_INSIDE)->Moeglichkeiten = 265;
@@ -130,12 +147,10 @@ void PatchStory() {
 
 	GetScene(SCENE_STATION)->Moeglichkeiten |= WAIT;
 
-	if (g_clue->getFeatures() & GF_PROFIDISK) {
+	if (g_clue->getFeatures() & GF_PROFIDISK)
 		GetScene(SCENE_PROFI_26)->LocationNr = 75;
-	}
 
 	/* change possibilites in story_9 too! */
-
 	/* für die Kaserne hier einen Successor eingetragen! */
 	GetLocScene(65)->std_succ = new NewList<NewTCEventNode>;
 	NewTCEventNode *node = GetLocScene(65)->std_succ->createNode(nullptr);
@@ -145,13 +160,14 @@ void PatchStory() {
 	node = GetLocScene(66)->std_succ->createNode(nullptr);
 	node->_eventNr = SCENE_KASERNE_INSIDE;   /* wurscht... */
 
-	film->StartScene = SCENE_STATION;
+	_film->StartScene = SCENE_STATION;
 }
 
 uint32 PlayStory() {
-	Scene *curr, *next = NULL;
-	Scene *story_scene = 0;
-	uint8 interr_allowed = 1, first = 1;
+	Scene *curr, *next = nullptr;
+	Scene *story_scene = nullptr;
+	bool interr_allowed = true;
+	bool first = true;
 
 	if (GamePlayMode & GP_STORY_OFF) {
 		if (GamePlayMode & GP_DEMO)
@@ -161,14 +177,13 @@ uint32 PlayStory() {
 			curr = GetScene(SCENE_HOTEL_ROOM);
 		}
 	} else
-		curr = GetScene(film->StartScene);
+		curr = GetScene(_film->StartScene);
 
 	SetCurrentScene(curr);
-	film->alter_Ort = curr->LocationNr;
+	_film->alter_Ort = curr->LocationNr;
 	SetLocation(-2);
 
-	while ((curr->EventNr != SCENE_THE_END)
-	        && (curr->EventNr != SCENE_NEW_GAME)) {
+	while (curr->EventNr != SCENE_THE_END && curr->EventNr != SCENE_NEW_GAME) {
 		if (!CheckConditions(curr))
 			ErrorMsg(Internal_Error, ERROR_MODULE_GAMEPLAY, 2);
 
@@ -189,8 +204,8 @@ uint32 PlayStory() {
 		/* Achtung: dieses Flag nur nach der 1.Szene setzen -> "first" */
 
 		if (first) {
-			film->StoryIsRunning = GP_STORY_TOWN;
-			first = 0;
+			_film->StoryIsRunning = GP_STORY_TOWN;
+			first = false;
 		}
 
 		/* die neue Szene initialisieren ! ( Bühnenbild aufbauen ) */
@@ -207,20 +222,21 @@ uint32 PlayStory() {
 		/* if (GamePlayMode & GP_DEMO)
 		   DemoDialog(); */
 
-		story_scene = 0;
+		story_scene = nullptr;
 
 		if (interr_allowed && (!(GamePlayMode & GP_STORY_OFF))) {
 #ifdef DEEP_DEBUG
 			printf("STEP_A1\n");
 #endif
-			if ((story_scene = GetStoryScene(curr)))
-				interr_allowed = 0;
-		} else {
-#ifdef DEEP_DEBUG
-			printf("STEP_A2\n");
-#endif
-			story_scene = 0;
+			story_scene = GetStoryScene(curr);
+			if (story_scene)
+				interr_allowed = false;
 		}
+#ifdef DEEP_DEBUG
+		else {
+			printf("STEP_A2\n");
+		}
+#endif
 
 		if (!story_scene) {
 			_sceneArgs._overwritten = false;
@@ -229,7 +245,7 @@ uint32 PlayStory() {
 			printf("STEP_B\n");
 #endif
 			if (curr->Done) {
-				_sceneArgs._options = curr->Moeglichkeiten & film->EnabledChoices;
+				_sceneArgs._options = curr->Moeglichkeiten & _film->EnabledChoices;
 
 #ifdef DEEP_DEBUG
 				printf("SCENE_DONE\n");
@@ -242,7 +258,7 @@ uint32 PlayStory() {
 			AddVTime(curr->Dauer);
 
 			/* jetzt kann wieder unterbrochen werden ! */
-			interr_allowed = 1;
+			interr_allowed = true;
 
 			/* der Spieler ist fertig mit dieser Szene - aber wie geht es weiter ? */
 			if (_sceneArgs._returnValue)
@@ -255,7 +271,7 @@ uint32 PlayStory() {
 		SetCurrentScene(curr = next);
 	}               /* While Schleife */
 
-	film->StoryIsRunning = GP_STORY_BEFORE;
+	_film->StoryIsRunning = GP_STORY_BEFORE;
 
 	StopAnim();
 
@@ -263,29 +279,30 @@ uint32 PlayStory() {
 }
 
 Scene *GetStoryScene(Scene *curr) {
-	for (uint32 i = 0; i < film->AmountOfScenes; i++) {
-		if (film->gameplay[i].LocationNr == (uint32) - 1) {
-			Scene *sc = &film->gameplay[i];
+	for (uint32 i = 0; i < _film->AmountOfScenes; i++) {
+		if (_film->gameplay[i].LocationNr == (uint32) - 1) {
+			Scene *sc = &_film->gameplay[i];
 
 			if (sc != curr) {
-				uint32 j = g_clue->calcRandomNr(0, 255);
+				uint8 j = g_clue->calcRandomNr(0, 255);
 
-				if (j <= (uint32)(sc->Probability))
+				if (j <= sc->Probability) {
 					if (CheckConditions(sc))
-						return (sc);
+						return sc;
+				}
 			}
 		}
 	}
 
-	return (0);
+	return nullptr;
 }
 
 Scene *GetScene(uint32 EventNr) {
 	Scene *sc = NULL;
 
-	for (uint32 i = 0; i < film->AmountOfScenes; i++)
-		if (EventNr == film->gameplay[i].EventNr)
-			sc = &(film->gameplay[i]);
+	for (uint32 i = 0; i < _film->AmountOfScenes; i++)
+		if (EventNr == _film->gameplay[i].EventNr)
+			sc = &(_film->gameplay[i]);
 
 	return sc;
 }
@@ -380,35 +397,34 @@ void PrepareStory(const char *filename) {
 	dskRead_U32LE(file, &SH.StartOrt);
 	dskRead_U32LE(file, &SH.StartSzene);
 
-	film->AmountOfScenes = SH.AmountOfScenes;
+	_film->AmountOfScenes = SH.AmountOfScenes;
 
-	film->StartZeit = SH.StartZeit;
+	_film->StartZeit = SH.StartZeit;
 
-	film->akt_Minute = 543; /* 09:03 */
-	film->akt_Tag = film->StartZeit;
-	film->akt_Ort = film->StartOrt = SH.StartOrt;
-	film->StartScene = SH.StartSzene;
+	_film->akt_Minute = 543; /* 09:03 */
+	_film->akt_Tag = _film->StartZeit;
+	_film->akt_Ort = _film->StartOrt = SH.StartOrt;
+	_film->StartScene = SH.StartSzene;
 
-	if (film->AmountOfScenes) {
-		if (!
-		        (film->gameplay =
-		             ((Scene *)TCAllocMem(sizeof(Scene) * (film->AmountOfScenes), 0))))
+	if (_film->AmountOfScenes) {
+		_film->gameplay = (Scene*)TCAllocMem(sizeof(Scene) * (_film->AmountOfScenes), 0);
+		if (!_film->gameplay)
 			ErrorMsg(No_Mem, ERROR_MODULE_GAMEPLAY, 6);
 	} else
 		ErrorMsg(Disk_Defect, ERROR_MODULE_GAMEPLAY, 7);
 
-	for (uint32 i = 0; i < film->AmountOfScenes; i++) {
+	for (uint32 i = 0; i < _film->AmountOfScenes; i++) {
 		NewScene NS;
 		LoadSceneforStory(&NS, file);
 
-		Scene *scene = &(film->gameplay[i]);
+		Scene *scene = &(_film->gameplay[i]);
 
 		scene->EventNr = NS.EventNr;
 
 		if (NS.NewOrt == (uint32) - 1 || NS.AnzahlderEvents || NS.AnzahlderN_Events) /* Storyszene ? */
 			InitConditions(scene, &NS); /* ja ! -> Bedingungen eintragen */
 		else
-			film->gameplay[i].bed = NULL;   /* Spielablaufszene : keine Bedingungen ! */
+			_film->gameplay[i].bed = NULL;   /* Spielablaufszene : keine Bedingungen ! */
 
 		/* Scene Struktur füllen : */
 		scene->Done = StdDone;
@@ -434,7 +450,7 @@ void PrepareStory(const char *filename) {
 			if (NS.nachfolger)
 				TCFreeMem(NS.nachfolger, sizeof(uint32) * NS.AnzahlderNachfolger);
 		} else
-			scene->std_succ = NULL;
+			scene->std_succ = nullptr;
 	}
 
 	/* von den Events muß nichts geladen werden ! */
@@ -457,7 +473,7 @@ void InitConditions(Scene *scene, NewScene *ns) {
 		if (ns->events)
 			TCFreeMem(ns->events, sizeof(uint32) * (ns->AnzahlderEvents));
 	} else
-		bed->events = NULL;
+		bed->events = nullptr;
 
 	if (ns->AnzahlderN_Events) {
 		bed->n_events = new NewList<NewTCEventNode>;
@@ -470,7 +486,7 @@ void InitConditions(Scene *scene, NewScene *ns) {
 		if (ns->n_events)
 			TCFreeMem(ns->n_events, sizeof(uint32) * (ns->AnzahlderN_Events));
 	} else
-		bed->n_events = NULL;
+		bed->n_events = nullptr;
 
 	scene->bed = bed;
 }
@@ -564,7 +580,7 @@ void LoadSceneforStory(NewScene *dest, Common::Stream *file) {
 		for (uint32 i = 0; i < dest->AnzahlderNachfolger; i++)
 			dskRead_U32LE(file, &event_nrs[i]);
 	} else
-		event_nrs = NULL;
+		event_nrs = nullptr;
 
 	dest->nachfolger = event_nrs;
 }
@@ -585,49 +601,48 @@ void AddVTime(uint32 add) {
 }
 
 void SetCurrentScene(Scene *scene) {
-	film->act_scene = scene;
+	_film->act_scene = scene;
 }
 
 Scene *GetCurrentScene() {
-	return (film ? film->act_scene : NULL);
+	return _film ? _film->act_scene : nullptr;
 }
 
 Scene *GetLocScene(uint32 locNr) {
 
-	for (uint32 i = 0; i < film->AmountOfScenes; i++) {
-		Scene *sc = &film->gameplay[i];
+	for (uint32 i = 0; i < _film->AmountOfScenes; i++) {
+		Scene *sc = &_film->gameplay[i];
 		if (sc->LocationNr == locNr)
-			return (sc);
+			return sc;
 	}
 	ErrorMsg(Internal_Error, ERROR_MODULE_GAMEPLAY, 12);
-	return NULL;
+	return nullptr;
 }
 
-void FormatDigit(uint32 digit, char *s) {
+Common::String FormatDigit(uint32 digit) {
+	Common::String s;
 	if (digit < 10)
-		sprintf(s, "0%u", digit);
+		s = Common::String::format("0%u", digit);
 	else
-		sprintf(s, "%u", digit);
+		s = Common::String::format("%u", digit);
+
+	return s;
 }
 
 Common::String BuildTime(uint32 min) {
 	uint32 h = (min / 60) % 24;
-	char s[TXT_KEY_LENGTH];
-
 	min %= 60;
-	FormatDigit(h, s);
-	Common::String time = Common::String::format("%s:", s);
-	FormatDigit(min, s);
-	time += s;
+
+	Common::String time = FormatDigit(h) + ':' + FormatDigit(min);
 
 	return time;
 }
 
-char *BuildDate(uint32 days, char *date) {
+Common::String BuildDate(uint32 days) {
 	const uint8 days_per_month[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
-	uint32 p_year, i;
-	for (i = 0, p_year = 0; i < 12; i++)
+	uint32 p_year = 0;
+	for (uint32 i = 0; i < 12; i++)
 		p_year += days_per_month[i];
 
 	uint32 year = days / p_year;   /* which daywelches Jahr ? */
@@ -635,7 +650,7 @@ char *BuildDate(uint32 days, char *date) {
 
 	uint32 month = 0;
 
-	for (i = 0, p_year = 0; i < 12; i++) {
+	for (uint32 i = 0, p_year = 0; i < 12; i++) {
 		p_year += days_per_month[i];
 
 		if (days < p_year) {
@@ -646,22 +661,14 @@ char *BuildDate(uint32 days, char *date) {
 
 	uint32 day = days - (p_year - days_per_month[month]);
 
-	char s[TXT_KEY_LENGTH];
-	FormatDigit(day + 1, s);
-	strcpy(date, s);
-	strcat(date, ".");
-	FormatDigit(month + 1, s);
-	strcat(date, s);
-	strcat(date, ".");
-	FormatDigit(year, s);
-	strcat(date, s);
+	Common::String date = FormatDigit(day + 1) + '.' + FormatDigit(month + 1) + '.' + FormatDigit(year);
 
-	return (date);
+	return date;
 }
 
 Common::String GetCurrLocName() {
 	uint32 index = GetCurrentScene()->LocationNr;
-	return film->loc_names->getNthNode(index)->_name;
+	return _film->loc_names->getNthNode(index)->_name;
 }
 
 #if 0

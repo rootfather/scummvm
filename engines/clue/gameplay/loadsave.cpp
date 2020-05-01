@@ -30,7 +30,7 @@ void tcSaveTheClou() {
 	ShowMenuBackground();
 	Common::String line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "SaveGame");
 
-	player->CurrScene = film->act_scene->EventNr;
+	player->CurrScene = _film->act_scene->EventNr;
 	player->CurrDay = GetDay;
 	player->CurrMinute = GetMinute;
 	player->CurrLocation = GetLocation;
@@ -49,16 +49,15 @@ void tcSaveTheClou() {
 	if (activ != GET_OUT) {
 		char location[TXT_KEY_LENGTH];
 		strcpy(location, GetCurrLocName().c_str());
-		char date[TXT_KEY_LENGTH];
-		BuildDate(GetDay, date);
+		Common::String date = BuildDate(GetDay);
 
 		tcCutName(location, (byte) ' ', 15);
 
 		strcat(location, ", ");
-		strcat(location, date);
+		strcat(location, date.c_str());
 
-		sprintf(date, "(%d)", activ + 1);
-		strcat(location, date);
+		date = Common::String::format("(%d)", activ + 1);
+		strcat(location, date.c_str());
 
 		/* Games.list abspeichern */
 
@@ -166,7 +165,7 @@ bool tcLoadTheClou() {
 
 	inpTurnFunctionKey(false);
 	inpTurnESC(true);
-	uint32 activ = (uint32) Menu(games, 15, 0, NULL, 0);
+	uint32 activ = (uint32) Menu(games, 15, 0, nullptr, 0);
 	inpTurnFunctionKey(true);
 
 	if ((activ != GET_OUT) 
@@ -187,9 +186,9 @@ bool tcLoadTheClou() {
 
 		PlayerNode *player = (PlayerNode *)dbGetObject(Player_Player_1);
 		if (player) {  /* MOD 04-02 */
-			player->CurrScene = film->act_scene->EventNr;
+			player->CurrScene = _film->act_scene->EventNr;
 
-			_sceneArgs._returnValue = film->act_scene->EventNr;
+			_sceneArgs._returnValue = _film->act_scene->EventNr;
 		}
 
 		return false;
@@ -223,18 +222,18 @@ bool tcSaveChangesInScenes(const char *fileName) {
 	bool back = false;
 	Common::Stream *file = dskOpen(fileName, 1);
 	if (file) {
-		dskSetLine_U32(file, film->EnabledChoices);
+		dskSetLine_U32(file, _film->EnabledChoices);
 
-		for (uint32 i = 0; i < film->AmountOfScenes; i++) {
-			dskSetLine_U32(file, film->gameplay[i].EventNr);
-			dskSetLine_U16(file, film->gameplay[i].Geschehen);
+		for (uint32 i = 0; i < _film->AmountOfScenes; i++) {
+			dskSetLine_U32(file, _film->gameplay[i].EventNr);
+			dskSetLine_U16(file, _film->gameplay[i].Geschehen);
 		}
 
 		dskClose(file);
 		back = true;
 	}
 
-	return (back);
+	return back;
 }
 
 bool tcLoadChangesInScenes(const char *fileName) {
@@ -245,7 +244,7 @@ bool tcLoadChangesInScenes(const char *fileName) {
 		dskGetLine_U32(file, &choice);
 		SetEnabledChoices(choice);
 
-		for (uint32 i = 0; i < film->AmountOfScenes; i++) {
+		for (uint32 i = 0; i < _film->AmountOfScenes; i++) {
 			uint32 eventNr;
 			uint16 count;
 			dskGetLine_U32(file, &eventNr);

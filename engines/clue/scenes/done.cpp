@@ -34,7 +34,7 @@ void DoneTaxi() {
 		uint32 locNr = loc->LocationNr;
 
 		char name[TXT_KEY_LENGTH];
-		sprintf(name, "*%s", film->loc_names->getNthNode(locNr)->_name.c_str());
+		sprintf(name, "*%s", _film->loc_names->getNthNode(locNr)->_name.c_str());
 
 		dbObjectNode *newNode = locs->createNode(name);
 		newNode->_nr = locNr + 1;    /* because of ChoiceOk */
@@ -295,12 +295,12 @@ void DoneGarage() {
 		inpTurnFunctionKey(false);  /* or call save functions in case of space */
 		inpTurnESC(false);
 
-		activ = Menu(menu, _sceneArgs._options, (byte)(activ), NULL, 0);
+		activ = Menu(menu, _sceneArgs._options, activ, nullptr, 0);
 
 		inpTurnESC(true);
 		inpTurnFunctionKey(true);
 
-		uint32 choice = (uint32) 1 << (activ);
+		uint32 choice = (uint32) 1 << activ;
 
 		if (choice == BUSINESS_TALK) {
 			uint32 carID;

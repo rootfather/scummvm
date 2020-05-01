@@ -21,6 +21,7 @@
 #include "clue/base/base.h"
 #include "clue/clue.h"
 #include "clue/sound/hsc.h"
+#include "clue/cdrom/cdrom.h"
 
 
 namespace Clue {
@@ -477,7 +478,7 @@ void tcSetPermanentColors() {
 	palette[254 * 3 + 2] = 0;
 
 	gfxSetColorRange(248, 254);
-	gfxChangeColors(NULL, 0, GFX_BLEND_UP, palette);
+	gfxChangeColors(nullptr, 0, GFX_BLEND_UP, palette);
 }
 
 void ClueEngine::setFullEnviroment() {
@@ -713,7 +714,7 @@ byte ClueEngine::startupMenu() {
 		g_clue->_txtMgr->reset(OBJECTS_TXT);
 
 		if (tcLoadTheClou()) {
-			film->StartScene = _sceneArgs._returnValue;
+			_film->StartScene = _sceneArgs._returnValue;
 			ret = 1;
 		}
 		break;
