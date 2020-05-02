@@ -29,8 +29,6 @@
 #include "clue/theclou.h"
 #include "clue/clue.h"
 
-#include "clue/list/list.h"
-
 namespace Clue {
 
 #define   tcDerivation(min,max)          (g_clue->calcRandomNr(min,max))

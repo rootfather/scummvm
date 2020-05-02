@@ -65,44 +65,46 @@ namespace Clue {
 #define GP_SHOW_ROOMS             (1<<13)
 
 /* Zugriffsdefines */
-
-#define SetMinute(zeit)         (_film->akt_Minute=(uint32)(zeit))
-#define SetLocation(loc)    {_film->alter_Ort = _film->akt_Ort; _film->akt_Ort=(uint32)(loc);}
-#define SetDay(tag)             (_film->akt_Tag=(uint32)(tag))
-#define SetTime(time)       (_film->akt_Minute=(uint32)(time))
-
-#define GetDay                  (_film->akt_Tag)
-#define GetMinute               (_film->akt_Minute)
-#define GetLocation             (_film->akt_Ort)
-#define GetOldLocation          (_film->alter_Ort)
-
 #define GetFromDay(x)            ((x) >> 16)
 #define GetToDay(x)             (((x) << 16) >> 16)
 
 class Film {
 public:
 	Film();
-	
+
 	uint32 AmountOfScenes;
 
-	struct Scene *act_scene;
-	struct Scene *gameplay;
+	struct Scene *_currScene;
+	struct Scene *_gameplay;
 
-	NewList<NewTCEventNode> *loc_names;        /* Liste aller Orte im Spiel */
+	NewList<NewTCEventNode>* _locationNames;        /* Liste aller Orte im Spiel */
 	/* OrtNr = Nr der Node in der */
 	/* Liste */
-	uint32 StartScene;
-	uint32 StartZeit;       /* =Tag seit dem Jahr 0 */
-	uint32 StartOrt;
+	uint32 _startScene;
+	uint32 _startTime;       /* =Tag seit dem Jahr 0 */
 
-	uint32 akt_Tag;
-	uint32 akt_Minute;
-	uint32 akt_Ort;
-	uint32 alter_Ort;
+private:
+	uint32 _currHour;
+	uint32 _currMinute;
+	uint32 _currLocation;
+	uint32 _oldLocation;
 
-	uint32 EnabledChoices;
+public:
+	uint32 _enabledChoices;
 
-	byte StoryIsRunning;
+	byte _storyIsRunning;
+
+	void setMinute(uint32 zeit)  { _currMinute = zeit; }
+	void setLocation(uint32 loc) { _oldLocation = _currLocation; _currLocation = loc; }
+	void setCurrLocation(uint32 loc) { _currLocation = loc; }
+	void setOldLocation(uint32 loc) { _oldLocation = loc; }
+	void setDay(uint32 tag)      { _currHour = tag; }
+	void setTime(uint32 time)    { _currMinute = time; }
+
+	uint32 getDay()              { return _currHour; }
+	uint32 getMinute()           { return _currMinute; }
+	uint32 getLocation()         { return _currLocation; }
+	uint32 getOldLocation()      { return _oldLocation; }
 };
 
 struct SceneArgs {

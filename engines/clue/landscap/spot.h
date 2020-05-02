@@ -22,7 +22,6 @@
 #define MODULE_SPOT
 
 #include "clue/theclou.h"
-#include "clue/list/list.h"
 #include "clue/text.h"
 #include "clue/gfx/gfx.h"
 #include "clue/memory/memory.h"

@@ -714,7 +714,7 @@ byte ClueEngine::startupMenu() {
 		g_clue->_txtMgr->reset(OBJECTS_TXT);
 
 		if (tcLoadTheClou()) {
-			_film->StartScene = _sceneArgs._returnValue;
+			_film->_startScene = _sceneArgs._returnValue;
 			ret = 1;
 		}
 		break;

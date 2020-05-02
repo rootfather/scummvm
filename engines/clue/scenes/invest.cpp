@@ -45,7 +45,7 @@ static uint32 tcShowPatrol(NewList<NewNode> *bubble_l, Common::String c_time, Co
 void Investigate(const char *location) {
 	uint32 minutes = 0, choice = 0, first = 0;
 
-	uint32 buiID = GetObjNrOfBuilding(GetLocation);
+	uint32 buiID = GetObjNrOfBuilding(_film->getLocation());
 	BuildingNode *bui = (BuildingNode *)dbGetObject(buiID);
 
 	if (g_clue->getFeatures() & GF_PROFIDISK) {
@@ -96,9 +96,9 @@ void Investigate(const char *location) {
 	/* bis zur 1. Meldung Zeit vergehen lassen! */
 	NewNode *nextMsg;
 	for (nextMsg = nullptr; nextMsg == nullptr;) {
-		Common::String c_time = BuildTime(GetMinute);
+		Common::String c_time = BuildTime(_film->getMinute());
 
-		if (!(GetMinute % 60))
+		if (!(_film->getMinute() % 60))
 			ShowTime(0);
 
 		for (NewNode *n = origin->getListHead(); n->_succ; n = n->_succ) {
@@ -109,7 +109,7 @@ void Investigate(const char *location) {
 		if (!nextMsg)
 			AddVTime(1);
 
-		if ((GetMinute % patrolCount) == 0)
+		if (_film->getMinute() % patrolCount == 0)
 			choice = tcShowPatrol(bubble_l, c_time, patr, first++, bui, raise);
 
 		if (g_clue->calcRandomNr(0, 6) == 1)
@@ -121,19 +121,19 @@ void Investigate(const char *location) {
 		choice = 0;
 
 		/* Anzeigen jeder vollen Stunde */
-		if ((GetMinute % 60) == 0)
+		if ((_film->getMinute() % 60) == 0)
 			ShowTime(0);
 
-		Common::String c_time = BuildTime(GetMinute);
+		Common::String c_time = BuildTime(_film->getMinute());
 
 		/* je nach Bewachungsgrad Meldung : "Patrolie" einsetzen ! */
-		if ((GetMinute % patrolCount) == 0)
+		if ((_film->getMinute() % patrolCount) == 0)
 			choice = tcShowPatrol(bubble_l, c_time, patr, first++, bui, raise);
 
 		/* Überprüfen ob zur aktuellen Zeit (time) etwas geschieht : */
 		if (!choice) {
 			if (strncmp(nextMsg->_name.c_str(), c_time.c_str(), 5) == 0) {
-				if ((GetMinute % 60) != 0)
+				if ((_film->getMinute() % 60) != 0)
 					ShowTime(0);
 
 				bubble_l->createNode(nextMsg->_name);
@@ -186,7 +186,7 @@ void Investigate(const char *location) {
 	/* Abschlußbericht zeigen ! */
 
 	ShowMenuBackground();
-	tcRefreshLocationInTitle(GetLocation);
+	tcRefreshLocationInTitle(_film->getLocation());
 
 	inpSetWaitTicks(0);
 	ShowTime(0);

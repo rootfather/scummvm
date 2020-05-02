@@ -89,7 +89,7 @@ uint32 Go(NewList<NewTCEventNode> *succ) {
 
 		for (NewTCEventNode *node = succ->getListHead(); node->_succ; node = (NewTCEventNode *) node->_succ) {
 			Scene *sc = GetScene(node->_eventNr);
-			NewTCEventNode *location = _film->loc_names->getNthNode(sc->_locationNr);
+			NewTCEventNode *location = _film->_locationNames->getNthNode(sc->_locationNr);
 
 			node->_name = location->_name;
 			prob++;
@@ -266,7 +266,7 @@ void Look(uint32 locNr) {
 
 		switch (choice) {
 		case 0: {
-			NewList<NewNode> *bubble = g_clue->_txtMgr->goKey(HOUSEDESC_TXT, _film->loc_names->getNthNode(locNr)->_name.c_str());
+			NewList<NewNode> *bubble = g_clue->_txtMgr->goKey(HOUSEDESC_TXT, _film->_locationNames->getNthNode(locNr)->_name.c_str());
 
 			SetBubbleType(THINK_BUBBLE);
 			choice1 = Bubble(bubble, 0, nullptr, 0);
@@ -356,7 +356,7 @@ uint32 tcTelefon() {
 }
 
 void tcWait() {
-	uint32 locNr = GetObjNrOfLocation(GetLocation);
+	uint32 locNr = GetObjNrOfLocation(_film->getLocation());
 
 	inpTurnESC(false);
 
@@ -405,7 +405,7 @@ void tcWait() {
 
 	inpSetWaitTicks(0);
 	ShowMenuBackground();
-	tcRefreshLocationInTitle(GetLocation);
+	tcRefreshLocationInTitle(_film->getLocation());
 
 	inpTurnESC(true);
 	ShowTime(0);

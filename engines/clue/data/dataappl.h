@@ -20,7 +20,6 @@
 #define MODULE_DATAAPPL
 
 #include "clue/theclou.h"
-#include "clue/list/list.h"
 #include "clue/text.h"
 #include "clue/data/relation.h"
 #include "clue/data/database.h"
@@ -123,7 +122,7 @@ extern void tcInsertGuard(NewObjectList<dbObjectNode> *list, NewObjectList<dbObj
 #define   tcGetCarSpeed(car)            (car->Speed)
 #define   tcGetCarPS(car)               (car->PS)
 
-#define   tcRGetCarAge(car)             (MAX((GetDay /365) - (car->YearOfConstruction), 1u))
+#define   tcRGetCarAge(car)             (MAX((_film->getDay() / 365) - (car->YearOfConstruction), 1u))
 #define   tcRGetCarValue(car)           (car->Value)
 
 #define   tcGetCarPrice(car)            (Round(MAX(((car->Value) * (car->State)) / 255, 100u), 1))

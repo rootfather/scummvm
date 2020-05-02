@@ -29,7 +29,6 @@ MODULE_OBJS = \
 	landscap/raster.o \
 	landscap/scroll.o \
 	landscap/spot.o \
-	list/list.o \
 	living/bob.o \
 	living/living.o \
 	memory/memory.o \

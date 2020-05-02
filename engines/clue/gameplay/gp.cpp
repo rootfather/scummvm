@@ -50,28 +50,27 @@ SceneArgs _sceneArgs;
 Film::Film() {
 	AmountOfScenes = 0;
 
-	act_scene = nullptr;
-	gameplay = nullptr;
-	loc_names = nullptr;
+	_currScene = nullptr;
+	_gameplay = nullptr;
+	_locationNames = nullptr;
 
-	StartScene = 0;
-	StartZeit = 0;
-	StartOrt = 0;
+	_startScene = 0;
+	_startTime = 0;
 
-	akt_Tag = 0;
-	akt_Minute = 0;
-	akt_Ort = 0;
-	alter_Ort = 0;
+	_currHour = 0;
+	_currMinute = 0;
+	_currLocation = 0;
+	_oldLocation = 0;
 
-	EnabledChoices = 0;
-	StoryIsRunning = 0;
+	_enabledChoices = 0;
+	_storyIsRunning = GP_STORY_BEFORE;
 }
 	
 void InitStory(const char *story_filename) {
 	CloseStory();
 
 	_film = new Film;
-	_film->EnabledChoices = 0xffffffffL;
+	_film->_enabledChoices = 0xffffffffL;
 
 	PrepareStory(story_filename);
 	InitLocations();
@@ -83,39 +82,37 @@ void CloseStory() {
 	if (!_film)
 		return;
 
-	if (_film->loc_names) {
-		_film->loc_names->removeList();
-		delete _film->loc_names;
-		_film->loc_names = nullptr;
+	if (_film->_locationNames) {
+		_film->_locationNames->removeList();
+		delete _film->_locationNames;
+		_film->_locationNames = nullptr;
 	}
 
 	for (uint32 i = 0; i < _film->AmountOfScenes; i++) {
-		if (_film->gameplay[i]._cond)
-			FreeConditions(&_film->gameplay[i]);
-		if (_film->gameplay[i].std_succ) {
-			delete _film->gameplay[i].std_succ;
-			_film->gameplay[i].std_succ = nullptr;
+		if (_film->_gameplay[i]._cond)
+			FreeConditions(&_film->_gameplay[i]);
+		if (_film->_gameplay[i].std_succ) {
+			delete _film->_gameplay[i].std_succ;
+			_film->_gameplay[i].std_succ = nullptr;
 		}
 	}
 
-	if (_film->gameplay)
-		TCFreeMem(_film->gameplay,
-		          sizeof(Scene) * _film->AmountOfScenes);
+	if (_film->_gameplay)
+		TCFreeMem(_film->_gameplay, sizeof(Scene) * _film->AmountOfScenes);
 
 	delete _film;
 	_film = nullptr;
 }
 
 void SetEnabledChoices(uint32 ChoiceMask) {
-	_film->EnabledChoices = ChoiceMask;
+	_film->_enabledChoices = ChoiceMask;
 }
 
 void RefreshCurrScene() {
-	NewNode *node = _film->loc_names->getNthNode(GetLocation);
+	NewNode *node = _film->_locationNames->getNthNode(_film->getLocation());
 
-	tcRefreshLocationInTitle(GetLocation);
-	PlayAnim(node->_name.c_str(), 30000,
-	         GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
+	tcRefreshLocationInTitle(_film->getLocation());
+	PlayAnim(node->_name.c_str(), 30000, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
 
 	RefreshMenu();
 }
@@ -126,7 +123,7 @@ void InitLocations() {
 
 	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, LOCATIONS_TXT, pathname);
 	l->readList(pathname);
-	_film->loc_names = l;
+	_film->_locationNames = l;
 }
 
 void PatchStory() {
@@ -161,7 +158,7 @@ void PatchStory() {
 	node = GetLocScene(66)->std_succ->createNode(nullptr);
 	node->_eventNr = SCENE_KASERNE_INSIDE;   /* wurscht... */
 
-	_film->StartScene = SCENE_STATION;
+	_film->_startScene = SCENE_STATION;
 }
 
 uint32 PlayStory() {
@@ -178,11 +175,11 @@ uint32 PlayStory() {
 			curr = GetScene(SCENE_HOTEL_ROOM);
 		}
 	} else
-		curr = GetScene(_film->StartScene);
+		curr = GetScene(_film->_startScene);
 
 	SetCurrentScene(curr);
-	_film->alter_Ort = curr->_locationNr;
-	SetLocation(-2);
+	_film->setOldLocation(curr->_locationNr);
+	_film->setLocation((uint32) -2);
 
 	while (curr->_eventNr != SCENE_THE_END && curr->_eventNr != SCENE_NEW_GAME) {
 		if (!CheckConditions(curr))
@@ -205,7 +202,7 @@ uint32 PlayStory() {
 		/* Achtung: dieses Flag nur nach der 1.Szene setzen -> "first" */
 
 		if (first) {
-			_film->StoryIsRunning = GP_STORY_TOWN;
+			_film->_storyIsRunning = GP_STORY_TOWN;
 			first = false;
 		}
 
@@ -246,7 +243,7 @@ uint32 PlayStory() {
 			printf("STEP_B\n");
 #endif
 			if (curr->Done) {
-				_sceneArgs._options = curr->_options & _film->EnabledChoices;
+				_sceneArgs._options = curr->_options & _film->_enabledChoices;
 
 #ifdef DEEP_DEBUG
 				printf("SCENE_DONE\n");
@@ -272,7 +269,7 @@ uint32 PlayStory() {
 		SetCurrentScene(curr = next);
 	}               /* While Schleife */
 
-	_film->StoryIsRunning = GP_STORY_BEFORE;
+	_film->_storyIsRunning = GP_STORY_BEFORE;
 
 	StopAnim();
 
@@ -281,8 +278,8 @@ uint32 PlayStory() {
 
 Scene *GetStoryScene(Scene *curr) {
 	for (uint32 i = 0; i < _film->AmountOfScenes; i++) {
-		if (_film->gameplay[i]._locationNr == (uint32) -1) {
-			Scene *sc = &_film->gameplay[i];
+		if (_film->_gameplay[i]._locationNr == (uint32) -1) {
+			Scene *sc = &_film->_gameplay[i];
 
 			if (sc != curr) {
 				uint8 j = g_clue->calcRandomNr(0, 255);
@@ -302,8 +299,8 @@ Scene *GetScene(uint32 EventNr) {
 	Scene *sc = nullptr;
 
 	for (uint32 i = 0; i < _film->AmountOfScenes; i++)
-		if (EventNr == _film->gameplay[i]._eventNr)
-			sc = &_film->gameplay[i];
+		if (EventNr == _film->_gameplay[i]._eventNr)
+			sc = &_film->_gameplay[i];
 
 	return sc;
 }
@@ -342,7 +339,7 @@ int32 CheckConditions(Scene *scene) {
 		return 1;
 
 	if (bed->Ort != (uint32) -1)       /* spielt der Ort eine Rolle ? */
-		if (GetLocation != bed->Ort)
+		if (_film->getLocation() != bed->Ort)
 			return 0;    /* spielt eine Rolle und ist nicht erfüllt */
 
 	/*
@@ -397,16 +394,16 @@ void PrepareStory(const char *filename) {
 
 	_film->AmountOfScenes = SH.AmountOfScenes;
 
-	_film->StartZeit = SH.StartZeit;
+	_film->_startTime = SH.StartZeit;
 
-	_film->akt_Minute = 543; /* 09:03 */
-	_film->akt_Tag = _film->StartZeit;
-	_film->akt_Ort = _film->StartOrt = SH.StartOrt;
-	_film->StartScene = SH.StartSzene;
+	_film->setTime(543); /* 09:03 */
+	_film->setDay(_film->_startTime);
+	_film->setCurrLocation(SH.StartOrt);
+	_film->_startScene = SH.StartSzene;
 
 	if (_film->AmountOfScenes) {
-		_film->gameplay = (Scene*)TCAllocMem(sizeof(Scene) * (_film->AmountOfScenes), 0);
-		if (!_film->gameplay)
+		_film->_gameplay = (Scene*)TCAllocMem(sizeof(Scene) * (_film->AmountOfScenes), 0);
+		if (!_film->_gameplay)
 			ErrorMsg(No_Mem, ERROR_MODULE_GAMEPLAY, 6);
 	} else
 		ErrorMsg(Disk_Defect, ERROR_MODULE_GAMEPLAY, 7);
@@ -415,14 +412,14 @@ void PrepareStory(const char *filename) {
 		NewScene NS;
 		LoadSceneforStory(&NS, file);
 
-		Scene *scene = &(_film->gameplay[i]);
+		Scene *scene = &(_film->_gameplay[i]);
 
 		scene->_eventNr = NS.EventNr;
 
 		if (NS.NewOrt == (uint32) - 1 || NS.AnzahlderEvents || NS.AnzahlderN_Events) /* Storyszene ? */
 			InitConditions(scene, &NS); /* ja ! -> Bedingungen eintragen */
 		else
-			_film->gameplay[i]._cond = nullptr;   /* Spielablaufszene : keine Bedingungen ! */
+			_film->_gameplay[i]._cond = nullptr;   /* Spielablaufszene : keine Bedingungen ! */
 		
 		/* Scene Struktur füllen : */
 		scene->Done = StdDone;
@@ -585,31 +582,31 @@ void LoadSceneforStory(NewScene *dest, Common::Stream *file) {
 
 void AddVTime(uint32 add) {
 
-	uint32 time = GetMinute + add;
+	uint32 time = _film->getMinute() + add;
 
 	if (time >= MINUTES_PER_DAY) {
-		uint32 tag = GetDay + time / MINUTES_PER_DAY;
+		uint32 tag = _film->getDay() + time / MINUTES_PER_DAY;
 
-		SetDay(tag);
+		_film->setDay(tag);
 		time = time % MINUTES_PER_DAY;
 	}
 
-	SetTime(time);
+	_film->setTime(time);
 	tcTheAlmighty(time);
 }
 
 void SetCurrentScene(Scene *scene) {
-	_film->act_scene = scene;
+	_film->_currScene = scene;
 }
 
 Scene *GetCurrentScene() {
-	return _film ? _film->act_scene : nullptr;
+	return _film ? _film->_currScene : nullptr;
 }
 
 Scene *GetLocScene(uint32 locNr) {
 
 	for (uint32 i = 0; i < _film->AmountOfScenes; i++) {
-		Scene *sc = &_film->gameplay[i];
+		Scene *sc = &_film->_gameplay[i];
 		if (sc->_locationNr == locNr)
 			return sc;
 	}
@@ -667,7 +664,7 @@ Common::String BuildDate(uint32 days) {
 
 Common::String GetCurrLocName() {
 	uint32 index = GetCurrentScene()->_locationNr;
-	return _film->loc_names->getNthNode(index)->_name;
+	return _film->_locationNames->getNthNode(index)->_name;
 }
 
 #if 0

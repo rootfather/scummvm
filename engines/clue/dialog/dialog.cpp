@@ -149,7 +149,7 @@ void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode) {
 	else
 		textID = TALK_0_TXT;
 
-	if (!(g_clue->_txtMgr->keyExists(textID, key))) {
+	if (!g_clue->_txtMgr->keyExists(textID, key)) {
 		const char *Standard = "STANDARD";
 		strcpy(key, Standard);
 		strcat(key, Extension[known]);
@@ -278,7 +278,7 @@ byte Say(uint32 TextID, byte activ, uint16 person, const char *text) {
 uint32 Talk() {
 	inpTurnESC(false);
 
-	uint32 locNr = GetObjNrOfLocation(GetLocation);
+	uint32 locNr = GetObjNrOfLocation(_film->getLocation());
 
 	if (locNr) {
 		hasAll(locNr, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Person);

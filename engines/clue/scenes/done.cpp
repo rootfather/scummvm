@@ -34,7 +34,7 @@ void DoneTaxi() {
 		uint32 locNr = loc->LocationNr;
 
 		char name[TXT_KEY_LENGTH];
-		sprintf(name, "*%s", _film->loc_names->getNthNode(locNr)->_name.c_str());
+		sprintf(name, "*%s", _film->_locationNames->getNthNode(locNr)->_name.c_str());
 
 		dbObjectNode *newNode = locs->createNode(name);
 		newNode->_nr = locNr + 1;    /* because of ChoiceOk */
@@ -54,7 +54,7 @@ void DoneTaxi() {
 	} else {
 		Say(BUSINESS_TXT, 0, MATT_PICTID, "LOVELY_TAXI");
 
-		_sceneArgs._returnValue = GetLocScene(GetOldLocation)->_eventNr;
+		_sceneArgs._returnValue = GetLocScene(_film->getOldLocation())->_eventNr;
 	}
 
 	_sceneArgs._overwritten = true;
@@ -73,7 +73,7 @@ void DoneInsideHouse() {
 
 	ShowMenuBackground();
 
-	uint32 buildingID = GetObjNrOfBuilding(GetLocation + 1);
+	uint32 buildingID = GetObjNrOfBuilding(_film->getLocation() + 1);
 	consistsOfAll(buildingID, OLF_NORMAL, Object_LSArea);
 
 	/* jetzt alle Stockwerke laden */
@@ -97,7 +97,7 @@ void DoneInsideHouse() {
 	lsShowRaster(areaID, perc);
 	gfxShow(154, GFX_FADE_OUT | GFX_BLEND_UP, 5, -1, -1);
 
-	tcRefreshLocationInTitle(GetLocation);
+	tcRefreshLocationInTitle(_film->getLocation());
 
 	byte activ = 0;
 	while (!_sceneArgs._returnValue) {
@@ -114,7 +114,7 @@ void DoneInsideHouse() {
 			case LOOK:
 				tcInsideOfHouse(buildingID, areaID, perc);
 				ShowMenuBackground();
-				tcRefreshLocationInTitle(GetLocation);
+				tcRefreshLocationInTitle(_film->getLocation());
 				AddVTime(19);
 				ShowTime(0);
 				break;
@@ -126,7 +126,7 @@ void DoneInsideHouse() {
 
 					lsShowRaster(areaID, perc);
 				}
-				tcRefreshLocationInTitle(GetLocation);
+				tcRefreshLocationInTitle(_film->getLocation());
 				break;
 			default:
 				_sceneArgs._returnValue = StdHandle(choice);

@@ -61,7 +61,7 @@ uint32 ShowTheClouRequester(int32 error_class) {
 		case 0:     /* continue playing */
 			player->CurrScene = 0;
 			ShowMenuBackground();
-			tcRefreshLocationInTitle(GetLocation);
+			tcRefreshLocationInTitle(_film->getLocation());
 			break;
 		case 1:
 			player->CurrScene = SCENE_THE_END;
@@ -71,7 +71,7 @@ uint32 ShowTheClouRequester(int32 error_class) {
 			tcSaveTheClou();
 			player->CurrScene = 0;
 			ShowMenuBackground();
-			tcRefreshLocationInTitle(GetLocation);
+			tcRefreshLocationInTitle(_film->getLocation());
 			break;
 		case 3:     /* load */
 			tcLoadTheClou();

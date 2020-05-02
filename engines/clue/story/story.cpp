@@ -287,7 +287,7 @@ void tcDoneMeetBriggs() {
 		gfxShow(170, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);
 		Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "BRIGGS_MR_WHISKY");
 
-		tcAsTimeGoesBy(GetMinute + 793);
+		tcAsTimeGoesBy(_film->getMinute() + 793);
 
 		StopAnim();
 		gfxChangeColors(l_gc, 8, GFX_FADE_OUT, 0);
@@ -314,7 +314,7 @@ void tcDoneMeetBriggs() {
 
 			hasSetP(Person_Matt_Stuvysunt, Loot_Abbots_ring, tcVALUE_OF_RING_OF_PATER);
 
-			AddVTime(1440 + 525 - GetMinute);
+			AddVTime(1440 + 525 - _film->getMinute());
 
 			_sceneArgs._returnValue = SCENE_HOLLAND_STR;
 		}
@@ -375,7 +375,7 @@ void tcInitPrison() {
 	/* da sonst diverse Szenen in die Gefängnisszene      */
 	/* hineinplatzen können */
 
-	SetLocation(64);        /* auf ins Gefängnis */
+	_film->setLocation(64);        /* auf ins Gefängnis */
 }
 
 void tcDonePrison() {
@@ -384,7 +384,7 @@ void tcDonePrison() {
  * tcLastBurglary
  * direkt angesprungen
  */
-	SetDay(719792);        /* 13.01.1972? */
+	_film->setDay(719792);        /* 13.01.1972? */
 
 	sndPlaySound("end.bk", 0);  /* dont change it! (-> story_9) */
 	tcMattGoesTo(7);
@@ -497,7 +497,7 @@ void tcDone1stBurglary() {
 
 	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* so that Burglary 2 doesn't happen */
 
-	_sceneArgs._returnValue = GetLocScene(GetLocation)->_eventNr;
+	_sceneArgs._returnValue = GetLocScene(_film->getLocation())->_eventNr;
 }
 
 void tcDoneGludoAsSailor() {
@@ -523,7 +523,7 @@ void tcDoneGludoAsSailor() {
 }
 
 void tcDoneCallFromBriggs() {
-	tcAsTimeGoesBy(GetMinute + 130);
+	tcAsTimeGoesBy(_film->getMinute() + 130);
 
 	tcSomebodyIsCalling();
 
@@ -569,7 +569,7 @@ void tcDone2ndBurglary() {
 
 	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So that burglary 2 doesn't happen */
 
-	_sceneArgs._returnValue = GetLocScene(GetLocation)->_eventNr;
+	_sceneArgs._returnValue = GetLocScene(_film->getLocation())->_eventNr;
 }
 
 /* wird von DoneHotel aufgerufen */
@@ -636,7 +636,7 @@ void tcDone3rdBurglary() {
 
 	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* so that burglary 2 doesn't happen */
 
-	_sceneArgs._returnValue = GetLocScene(GetLocation)->_eventNr;
+	_sceneArgs._returnValue = GetLocScene(_film->getLocation())->_eventNr;
 }
 
 void tcCheckForDowning() {
@@ -762,13 +762,13 @@ void tcDone5thBurglary() {
 	}
 
 	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So that burglary 2 doesn't happen */
-	_sceneArgs._returnValue = GetLocScene(GetLocation)->_eventNr;
+	_sceneArgs._returnValue = GetLocScene(_film->getLocation())->_eventNr;
 }
 
 void tcDoneDealerIsAfraid() {
 	uint32 persID;
 
-	switch (GetLocation) {
+	switch (_film->getLocation()) {
 	case 52:
 		persID = Person_Helen_Parker;
 		_sceneArgs._returnValue = SCENE_WATLING;
@@ -911,7 +911,7 @@ void tcDoneGludoBurnsOffice() {
 }
 
 void tcDoneBeautifullMorning() {
-	tcAsTimeGoesBy(GetMinute + 187);
+	tcAsTimeGoesBy(_film->getMinute() + 187);
 
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "MORNING_MATT_0");
 
@@ -1069,7 +1069,7 @@ void tcDone6thBurglary() {
 	}
 
 	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So that burglary 2 doesn't happen */
-	_sceneArgs._returnValue = GetLocScene(GetLocation)->_eventNr;
+	_sceneArgs._returnValue = GetLocScene(_film->getLocation())->_eventNr;
 }
 
 void tcPoliceInfoTower() {
@@ -1110,7 +1110,7 @@ void tcSabienDinner() {
 	tcMattGoesTo(62);
 
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_4_OLD_1");
-	tcAsTimeGoesBy(GetMinute + 160);
+	tcAsTimeGoesBy(_film->getMinute() + 160);
 
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_4_OLD_2");
 
@@ -1140,7 +1140,7 @@ void tcDone7thBurglary() {
 	livesInSet(London_London_1, Person_Mohammed_Abdula);
 
 	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So that burglary 2 doesn't happen */
-	_sceneArgs._returnValue = GetLocScene(GetLocation)->_eventNr;
+	_sceneArgs._returnValue = GetLocScene(_film->getLocation())->_eventNr;
 }
 
 void tcDoneBirthday() {
@@ -1228,7 +1228,7 @@ void tcDone8thBurglary() {
 	AddTaxiLocation(25);    /* villa */
 
 	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So that burglary 2 doesn't happen */
-	_sceneArgs._returnValue = GetLocScene(GetLocation)->_eventNr;
+	_sceneArgs._returnValue = GetLocScene(_film->getLocation())->_eventNr;
 }
 
 void tcDoneAgent() {
@@ -1253,7 +1253,7 @@ void tcDoneAgent() {
 void tcDone9thBurglary() {
 	EnvironmentNode *Env = (EnvironmentNode *)dbGetObject(Environment_TheClou);
 
-	SetMinute(540);
+	_film->setMinute(540);
 
 	if (has(Person_Matt_Stuvysunt, Loot_Trunk)) {
 		Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_15_OLD_0");
@@ -1298,7 +1298,7 @@ void tcDone9thBurglary() {
 	SetEnabledChoices(GO | WAIT);
 
 	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* so that burglary 2 doesn't happen */
-	_sceneArgs._returnValue = GetLocScene(GetLocation)->_eventNr;
+	_sceneArgs._returnValue = GetLocScene(_film->getLocation())->_eventNr;
 }
 
 void tcDoneGoAndFetchJaguar() {
@@ -1383,7 +1383,7 @@ void tcDoneConfessingSabien() {
 
 		_sceneArgs._returnValue = SCENE_SOUTHHAMPTON;
 
-		SetLocation(-1);    /* damit sicher eingeblendet wird! */
+		_film->setLocation((uint32) -1);    /* damit sicher eingeblendet wird! */
 	}
 }
 
@@ -1408,7 +1408,7 @@ static void tcDoneFirstTimeLonelyInSouth() {
 	PersonNode *Herb = (PersonNode *)dbGetObject(Person_Herbert_Briggs);
 
 	tcAsDaysGoBy(713518, 30);
-	uint32 startTime = GetDay * 1440 + GetMinute;
+	uint32 startTime = _film->getDay() * 1440 + _film->getMinute();
 
 	byte activ = 0;
 	bool endLoop = false;
@@ -1424,13 +1424,13 @@ static void tcDoneFirstTimeLonelyInSouth() {
 
 		switch (activ) {
 		case 1:
-			tcAsTimeGoesBy(GetMinute + actionTime);
+			tcAsTimeGoesBy(_film->getMinute() + actionTime);
 			break;      /* spazieren */
 		case 2:
-			tcAsTimeGoesBy(GetMinute + actionTime);
+			tcAsTimeGoesBy(_film->getMinute() + actionTime);
 			break;      /* warten  */
 		case 3:
-			tcAsTimeGoesBy(GetMinute + actionTime);
+			tcAsTimeGoesBy(_film->getMinute() + actionTime);
 			break;      /* fischen */
 		case 5:
 			Information();
@@ -1440,13 +1440,13 @@ static void tcDoneFirstTimeLonelyInSouth() {
 			break;
 		}
 
-		if (((GetDay * 1440 + GetMinute) > (startTime + 420)) && (!(Env->SouthhamptonHappened & 1))) {  /* nach 7 Stunden */
+		if (_film->getDay() * 1440 + _film->getMinute() > startTime + 420 && !(Env->SouthhamptonHappened & 1)) {  /* nach 7 Stunden */
 			Env->SouthhamptonHappened |= 1;
 
 			Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_21_OLD");  /* Kummer */
 		}
 
-		if (((GetDay * 1440 + GetMinute) > (startTime + 1020)) && (!(Env->SouthhamptonHappened & 2))) { /* nach 17 Stunden */
+		if (_film->getDay() * 1440 + _film->getMinute() > startTime + 1020 && !(Env->SouthhamptonHappened & 2)) { /* nach 17 Stunden */
 			Env->SouthhamptonHappened |= 2;
 
 			SetBubbleType(THINK_BUBBLE);
@@ -1457,7 +1457,7 @@ static void tcDoneFirstTimeLonelyInSouth() {
 				Say(STORY_1_TXT, 0, MATT_PICTID, "ST_22O_MATT");
 		}
 
-		if (((GetDay * 1440 + GetMinute) > (startTime + 1500)) && (!(Env->SouthhamptonHappened & 4))) { /* nach 25 Stunden */
+		if (_film->getDay() * 1440 + _film->getMinute() > startTime + 1500 && !(Env->SouthhamptonHappened & 4)) { /* nach 25 Stunden */
 			Env->SouthhamptonHappened |= 4;
 
 			if (Env->MattIsInLove)
@@ -1466,7 +1466,7 @@ static void tcDoneFirstTimeLonelyInSouth() {
 				Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_23O_MATT");
 		}
 
-		if (((GetDay * 1440 + GetMinute) > (startTime + 2100)) && (!(Env->SouthhamptonHappened & 8))) {
+		if (_film->getDay() * 1440 + _film->getMinute() > startTime + 2100 && !(Env->SouthhamptonHappened & 8)) {
 			Env->SouthhamptonHappened |= 8;
 
 			Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_24_OLD_0");    /* The Return */
@@ -1542,13 +1542,13 @@ void tcDoneSouthhampton() {
 				break;
 
 			case 1:
-				tcAsTimeGoesBy(GetMinute + actionTime);
+				tcAsTimeGoesBy(_film->getMinute() + actionTime);
 				break;      /* spazieren */
 			case 2:
-				tcAsTimeGoesBy(GetMinute + actionTime);
+				tcAsTimeGoesBy(_film->getMinute() + actionTime);
 				break;      /* warten  */
 			case 3:
-				tcAsTimeGoesBy(GetMinute + actionTime);
+				tcAsTimeGoesBy(_film->getMinute() + actionTime);
 				break;      /* fischen */
 			case 4:
 				sndPlaySound("hotel.bk", 0);
@@ -1707,7 +1707,7 @@ void tcDoneMafia() {
 	sndPlaySound("street1.bk", 0);
 
 	gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
-	tcAsTimeGoesBy(GetMinute + 420);
+	tcAsTimeGoesBy(_film->getMinute() + 420);
 
 	tcMattGoesTo(25);       /* Villa */
 
@@ -1770,7 +1770,7 @@ void tcDoneKaserne() {
 			case 0:
 				StopAnim();
 				gfxChangeColors(l_gc, 3, GFX_FADE_OUT, nullptr);
-				SetLocation(65);
+				_film->setLocation(65);
 				_sceneArgs._options = 265;
 				DoneInsideHouse();
 				tcMattGoesTo(66);

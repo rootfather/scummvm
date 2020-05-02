@@ -30,32 +30,32 @@ namespace Clue {
 void tcAsTimeGoesBy(uint32 untilMinute) {
 	untilMinute %= 1440;
 
-	while (GetMinute != untilMinute) {
+	while (_film->getMinute() != untilMinute) {
 		inpDelay(GP_TICKS_PER_MINUTE);
 
 		AddVTime(1);
 
-		if (!(GetMinute % 60))
+		if (!(_film->getMinute() % 60))
 			ShowTime(0);
 	}
 }
 
 void tcAsDaysGoBy(uint32 day, uint32 stepSize) {
-	while (GetDay < day) {
+	while (_film->getDay() < day) {
 		inpDelay(GP_TICKS_PER_DAY);
 
 		uint32 add = g_clue->calcRandomNr(stepSize - stepSize / 30, stepSize + stepSize / 30);
 
-		SetDay(GetDay + add);
+		_film->setDay(_film->getDay() + add);
 
-		tcRefreshLocationInTitle(GetLocation);
+		tcRefreshLocationInTitle(_film->getLocation());
 	}
 }
 
 void tcMattGoesTo(uint32 locNr) {
-	NewTCEventNode *node = _film->loc_names->getNthNode(locNr);
+	NewTCEventNode *node = _film->_locationNames->getNthNode(locNr);
 
-	SetLocation(locNr);
+	_film->setLocation(locNr);
 	tcRefreshLocationInTitle(locNr);
 	ShowTime(0);
 
@@ -162,8 +162,8 @@ uint32 tcBurglary(uint32 buildingID) {
 void tcRefreshLocationInTitle(uint32 locNr) {
 	gfxSetPens(m_gc, 3, GFX_SAME_PEN, GFX_SAME_PEN);
 
-	Common::String date = BuildDate(GetDay);
-	NewTCEventNode *node = _film->loc_names->getNthNode(locNr);
+	Common::String date = BuildDate(_film->getDay());
+	NewTCEventNode *node = _film->_locationNames->getNthNode(locNr);
 
 	Common::String line = node->_name + " " + date;
 	ShowMenuBackground();
@@ -172,14 +172,14 @@ void tcRefreshLocationInTitle(uint32 locNr) {
 
 void StdInit() {
 	struct Scene *sc = GetCurrentScene();
-	bool sameLocation = (sc->_locationNr == GetLocation);
+	bool sameLocation = (sc->_locationNr == _film->getLocation());
 
 	if (sc->_locationNr != (uint32) -1 && !sameLocation)
-		SetLocation(sc->_locationNr);
+		_film->setLocation(sc->_locationNr);
 
 	tcRefreshLocationInTitle(sc->_locationNr);
 
-	NewTCEventNode *node = _film->loc_names->getNthNode(sc->_locationNr);
+	NewTCEventNode *node = _film->_locationNames->getNthNode(sc->_locationNr);
 
 	if (RefreshMode || !sameLocation)
 		PlayAnim(node->_name.c_str(), (int16) 30000, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
@@ -316,7 +316,7 @@ void tcPlayStreetSound() {
 }
 
 void ShowTime(uint32 delay) {
-	Common::String time = BuildTime(GetMinute);
+	Common::String time = BuildTime(_film->getMinute());
 
 	gfxShow(25, GFX_NO_REFRESH | GFX_OVERLAY, delay, -1, -1);
 
@@ -339,12 +339,12 @@ uint32 StdHandle(uint32 choice) {
 		if (succ_eventnr) {
 			uint32 locNr = GetScene(succ_eventnr)->_locationNr;
 
-			if (locNr != (uint32) - 1) {
+			if (locNr != (uint32) -1) {
 				uint32 objNr = GetObjNrOfLocation(locNr);
 
 				if (objNr) {
 					LocationNode *loc = (LocationNode *)dbGetObject(objNr);
-					if ((GetMinute < loc->OpenFromMinute) || (GetMinute > loc->OpenToMinute)) {
+					if (_film->getMinute() < loc->OpenFromMinute || _film->getMinute() > loc->OpenToMinute) {
 						ShowMenuBackground();
 
 						Common::String line =  g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "No_Entry");
@@ -353,7 +353,7 @@ uint32 StdHandle(uint32 choice) {
 						inpWaitFor(INP_LBUTTONP);
 
 						ShowMenuBackground();
-						tcRefreshLocationInTitle(GetLocation);
+						tcRefreshLocationInTitle(_film->getLocation());
 
 						succ_eventnr = 0;
 					} else
@@ -373,7 +373,7 @@ uint32 StdHandle(uint32 choice) {
 		ShowTime(0);
 		break;
 	case INVESTIGATE:
-		Investigate(_film->loc_names->getNthNode(GetCurrentScene()->_locationNr)->_name.c_str());
+		Investigate(_film->_locationNames->getNthNode(GetCurrentScene()->_locationNr)->_name.c_str());
 		ShowTime(0);
 		break;
 	case MAKE_CALL:
@@ -393,7 +393,7 @@ uint32 StdHandle(uint32 choice) {
 		if (!(GamePlayMode & GP_DEMO)) {
 			StopAnim();
 
-			_film->StoryIsRunning = GP_STORY_PLAN;
+			_film->_storyIsRunning = GP_STORY_PLAN;
 
 			hasAll(Person_Matt_Stuvysunt, OLF_NORMAL, Object_Building);
 
@@ -429,14 +429,14 @@ uint32 StdHandle(uint32 choice) {
 						gfxShow(173,
 						        GFX_ONE_STEP | GFX_NO_REFRESH | GFX_BLEND_UP, 3,
 						        -1, -1);
-						tcRefreshLocationInTitle(GetLocation);
+						tcRefreshLocationInTitle(_film->getLocation());
 
 						succ_eventnr = 0;
 					}
 				}
 			}
 
-			_film->StoryIsRunning = GP_STORY_TOWN;
+			_film->_storyIsRunning = GP_STORY_TOWN;
 		}
 		ShowTime(0);
 		break;
@@ -463,7 +463,7 @@ void StdDone() {
 	while (!_sceneArgs._returnValue) {
 		if (tcPersonIsHere())
 			if (!(_sceneArgs._options & BUSINESS_TALK))
-				_sceneArgs._options |= (BUSINESS_TALK & _film->EnabledChoices);
+				_sceneArgs._options |= (BUSINESS_TALK & _film->_enabledChoices);
 
 		if (g_clue->getFeatures() & GF_PROFIDISK) {
 			if (GetCurrentScene()->_eventNr == SCENE_PROFI_26) {
@@ -662,7 +662,7 @@ void SetFunc(struct Scene *sc, void (*init)(), void (*done)()) {
 }
 
 bool tcPersonIsHere() {
-	uint32 locNr = GetObjNrOfLocation(GetLocation);
+	uint32 locNr = GetObjNrOfLocation(_film->getLocation());
 
 	if (!locNr)
 		return false;
@@ -697,7 +697,7 @@ void tcPersonGreetsMatt() {
 		if (g_clue->calcRandomNr(0, 4) == 1)  /* alle 4 mal */
 			upper += 2;     /* wahrscheinlichkeit wird kleiner ! */
 
-		uint32 locNr = GetObjNrOfLocation(GetLocation);
+		uint32 locNr = GetObjNrOfLocation(_film->getLocation());
 
 		if (locNr) {
 			hasAll(locNr, 0, Object_Person);

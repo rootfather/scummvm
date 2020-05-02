@@ -30,10 +30,10 @@ void tcSaveTheClou() {
 	ShowMenuBackground();
 	Common::String line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "SaveGame");
 
-	player->CurrScene = _film->act_scene->_eventNr;
-	player->CurrDay = GetDay;
-	player->CurrMinute = GetMinute;
-	player->CurrLocation = GetLocation;
+	player->CurrScene = _film->_currScene->_eventNr;
+	player->CurrDay = _film->getDay();
+	player->CurrMinute = _film->getMinute();
+	player->CurrLocation = _film->getLocation();
 
 	char pathname[DSK_PATH_MAX];
 	dskBuildPathName(DISK_CHECK_FILE, DATADISK, GAMES_LIST_TXT, pathname);
@@ -49,7 +49,7 @@ void tcSaveTheClou() {
 	if (activ != GET_OUT) {
 		char location[TXT_KEY_LENGTH];
 		strcpy(location, GetCurrLocName().c_str());
-		Common::String date = BuildDate(GetDay);
+		Common::String date = BuildDate(_film->getDay());
 
 		tcCutName(location, (byte) ' ', 15);
 
@@ -179,15 +179,15 @@ bool tcLoadTheClou() {
 		inpWaitFor(INP_LBUTTONP);
 
 		ShowMenuBackground();
-		SetLocation(-1);
+		_film->setLocation((uint32)-1);
 
 		games->removeList();
 		origin->removeList();
 
 		PlayerNode *player = (PlayerNode *)dbGetObject(Player_Player_1);
 		if (player) {  /* MOD 04-02 */
-			player->CurrScene = _film->act_scene->_eventNr;
-			_sceneArgs._returnValue = _film->act_scene->_eventNr;
+			player->CurrScene = _film->_currScene->_eventNr;
+			_sceneArgs._returnValue = _film->_currScene->_eventNr;
 		}
 
 		return false;
@@ -209,9 +209,9 @@ void tcRefreshAfterLoad(bool loaded) {
 			player->CurrScene = 0;
 		ErrorMsg(Disk_Defect, ERROR_MODULE_LOADSAVE, 2);
 	} else if (player) {
-		SetDay(player->CurrDay);
-		SetTime(player->CurrMinute);
-		SetLocation(-1);    /* auf alle Fälle ein Refresh! */
+		_film->setDay(player->CurrDay);
+		_film->setTime(player->CurrMinute);
+		_film->setLocation((uint32)-1);    /* auf alle Fälle ein Refresh! */
 
 		_sceneArgs._returnValue = GetLocScene(player->CurrLocation)->_eventNr;
 	}
@@ -221,11 +221,11 @@ bool tcSaveChangesInScenes(const char *fileName) {
 	bool back = false;
 	Common::Stream *file = dskOpen(fileName, 1);
 	if (file) {
-		dskSetLine_U32(file, _film->EnabledChoices);
+		dskSetLine_U32(file, _film->_enabledChoices);
 
 		for (uint32 i = 0; i < _film->AmountOfScenes; i++) {
-			dskSetLine_U32(file, _film->gameplay[i]._eventNr);
-			dskSetLine_U16(file, _film->gameplay[i]._occurrence);
+			dskSetLine_U32(file, _film->_gameplay[i]._eventNr);
+			dskSetLine_U16(file, _film->_gameplay[i]._occurrence);
 		}
 
 		dskClose(file);

@@ -32,7 +32,6 @@
 #define CLUE_TEXT_H
 
 /* includes */
-#include "clue/list/list.h"
 #include "common/util.h"
 #include "common/str.h"
 

@@ -23,7 +23,7 @@
 namespace Clue {
 
 void tcDealerDlg() {
-	uint32 locNr = GetObjNrOfLocation(GetLocation);
+	uint32 locNr = GetObjNrOfLocation(_film->getLocation());
 	PersonNode *dealer = nullptr;
 	byte dealerNr, choice = 0;
 
