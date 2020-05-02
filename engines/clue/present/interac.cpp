@@ -101,10 +101,7 @@ static void DrawMenu(NewList<NewNode>* menu, byte nr, int32 mode) {
 
 static char SearchActiv(int16 delta, byte activ, uint32 possibility, byte max) {
 	do {
-		activ += delta;
-
-		if (activ > max)
-			activ = max;
+		activ = MIN<uint8>(activ + delta, max);
 
 		if (possibility & (1 << activ))
 			return (char) activ;
@@ -162,7 +159,7 @@ byte Menu(NewList<NewNode> *menu, uint32 possibility, byte activ, void (*func)(b
 		byte max = 0;
 
 		for (NewNode *n = menu->getListHead(); n->_succ; n = n->_succ, max++) {
-			if ((max % 2) == 0) {
+			if (max % 2 == 0) {
 				MenuCoords[max / 2] = x - 8;
 
 				uint16 l1 = gfxTextWidth(m_gc, n->_name);
@@ -210,7 +207,7 @@ byte Menu(NewList<NewNode> *menu, uint32 possibility, byte activ, void (*func)(b
 				refreshMenu = menu;
 				refreshPoss = possibility;
 				refreshActiv = activ;
-				return ((byte)-1);
+				return (byte)-1;
 			}
 
 			if ((action & INP_ESC) || (action & INP_RBUTTONP))
@@ -221,7 +218,7 @@ byte Menu(NewList<NewNode> *menu, uint32 possibility, byte activ, void (*func)(b
 
 			if (action & INP_MOUSE) {   /* MOD : 14.12.93 hg */
 				char nextActiv = SearchMouseActiv(possibility, max);
-				if (nextActiv != ((char)-1)) {
+				if (nextActiv != (char)-1) {
 					if (nextActiv != activ) {
 						DrawMenu(menu, activ, INACTIV_POSS);
 						activ = nextActiv;
@@ -404,7 +401,7 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 				if ((action & INP_LBUTTONP))
 					endLoop = true;
 
-				if ((action & INP_MOUSE)) {
+				if (action & INP_MOUSE) {
 					uint16 x, y;
 
 					gfxGetMouseXY(u_gc, &x, &y);
@@ -426,11 +423,9 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 							}
 						} else if (y > 48 && y <= 58 && firstVis < max - 5) {   /* Scroll down */
 							while (y > 48 && y <= 58 && firstVis < max - 5) {
-								firstVis += 1;
-								activ = firstVis + 4;
-
-								if (activ > max - 1)
-									activ = max - 1;
+								++firstVis;
+								
+								activ = MIN(firstVis + 4, max - 1);
 
 								DrawBubble(bubble, firstVis, activ, u_gc, max);
 
@@ -445,16 +440,7 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 							byte newactiv = firstVis + (y - 4) / 9;
 
 							if (newactiv != activ) {
-								activ = newactiv;
-
-								if (activ > max - 1)
-									activ = max - 1;
-
-								if (activ < firstVis)
-									activ = firstVis;
-
-								if (activ > firstVis + 4)
-									activ = firstVis + 4;
+								activ = CLIP(newactiv, firstVis, MIN<byte>(firstVis + 4, (byte) (max - 1)));
 
 								DrawBubble(bubble, firstVis, activ, u_gc, max);
 

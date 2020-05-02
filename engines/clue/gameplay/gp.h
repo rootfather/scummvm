@@ -112,24 +112,22 @@ struct SceneArgs {
 };
 
 struct Scene {
-	uint32 EventNr;
+	uint32 _eventNr;
 
 	void (*Init)();
 	void (*Done)();
 
-	struct Bedingungen *bed;    /* damit das Ereignis eintritt */
+	struct Bedingungen *_cond;    /* conditions to trigger the event      */
 
-	NewList<NewTCEventNode> *std_succ;     /* Standardnachfolger TCEventNode */
+	NewList<NewTCEventNode> *std_succ;     /* Standard successor TCEventNode */
 
-	uint32 Moeglichkeiten;      /* siehe defines oben                   */
-	uint32 Dauer;           /* Dauer dieser Szene in Sekunden       */
-	uint16 Anzahl;      /* wie oft sie geschehen kann           */
-	uint16 Geschehen;       /* wie oft sie SCHON geschehen ist */
-	uint8 Probability;       /* mit der sie eintritt         0-255   */
+	uint32 _options;			/* See defines above                    */
+	uint32 _duration;			/* Duration of the scene in seconds     */
+	uint16 _quantity;			/* How often it may happen              */
+	uint16 _occurrence;			/* How many times it already happened   */
+	uint8 _probability;			/* in the range 0 -255                  */
 
-	uint32 LocationNr;      /* Ort, den diese Szene darstellt       */
-	/* == -1 falls Szene = StorySzene       */
-	/* ansonsten Nr des Ortes               */
+	uint32 _locationNr;			/* Location of the scene == -1 if Scene = StoryScene otherwise, location number */
 };
 
 struct Bedingungen {

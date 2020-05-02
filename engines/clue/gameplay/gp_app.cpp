@@ -172,14 +172,14 @@ void tcRefreshLocationInTitle(uint32 locNr) {
 
 void StdInit() {
 	struct Scene *sc = GetCurrentScene();
-	bool sameLocation = sc->LocationNr == GetLocation;
+	bool sameLocation = (sc->_locationNr == GetLocation);
 
-	if ((sc->LocationNr != (uint32) -1) && !sameLocation)
-		SetLocation(sc->LocationNr);
+	if (sc->_locationNr != (uint32) -1 && !sameLocation)
+		SetLocation(sc->_locationNr);
 
-	tcRefreshLocationInTitle(sc->LocationNr);
+	tcRefreshLocationInTitle(sc->_locationNr);
 
-	NewTCEventNode *node = _film->loc_names->getNthNode(sc->LocationNr);
+	NewTCEventNode *node = _film->loc_names->getNthNode(sc->_locationNr);
 
 	if (RefreshMode || !sameLocation)
 		PlayAnim(node->_name.c_str(), (int16) 30000, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
@@ -191,7 +191,7 @@ void StdInit() {
 
 void tcPlaySound() {
 	if (!(GamePlayMode & GP_MUSIC_OFF)) {
-		switch (GetCurrentScene()->EventNr) {
+		switch (GetCurrentScene()->_eventNr) {
 		case SCENE_PARKER:
 			sndPlaySound("parker.bk", 0);
 			break;
@@ -260,7 +260,7 @@ void tcPlaySound() {
 void tcPlayStreetSound() {
 	if (!(GamePlayMode & GP_MUSIC_OFF)) {
 		if (g_clue->getFeatures() & GF_PROFIDISK) {
-			switch (GetCurrentScene()->EventNr) {
+			switch (GetCurrentScene()->_eventNr) {
 			case SCENE_PROFI_21:
 				sndPlaySound("snd21.bk", 0);
 				return;
@@ -337,7 +337,7 @@ uint32 StdHandle(uint32 choice) {
 		succ_eventnr = Go(scene->std_succ);
 
 		if (succ_eventnr) {
-			uint32 locNr = GetScene(succ_eventnr)->LocationNr;
+			uint32 locNr = GetScene(succ_eventnr)->_locationNr;
 
 			if (locNr != (uint32) - 1) {
 				uint32 objNr = GetObjNrOfLocation(locNr);
@@ -368,12 +368,12 @@ uint32 StdHandle(uint32 choice) {
 		ShowTime(0);
 		break;
 	case LOOK:
-		Look(GetCurrentScene()->LocationNr);
+		Look(GetCurrentScene()->_locationNr);
 		AddVTime(1);
 		ShowTime(0);
 		break;
 	case INVESTIGATE:
-		Investigate(_film->loc_names->getNthNode(GetCurrentScene()->LocationNr)->_name.c_str());
+		Investigate(_film->loc_names->getNthNode(GetCurrentScene()->_locationNr)->_name.c_str());
 		ShowTime(0);
 		break;
 	case MAKE_CALL:
@@ -387,7 +387,7 @@ uint32 StdHandle(uint32 choice) {
 			sndPlayFX();
 		}
 
-		succ_eventnr = GetLocScene(8)->EventNr; /* taxi */
+		succ_eventnr = GetLocScene(8)->_eventNr; /* taxi */
 		break;
 	case PLAN:
 		if (!(GamePlayMode & GP_DEMO)) {
@@ -466,7 +466,7 @@ void StdDone() {
 				_sceneArgs._options |= (BUSINESS_TALK & _film->EnabledChoices);
 
 		if (g_clue->getFeatures() & GF_PROFIDISK) {
-			if (GetCurrentScene()->EventNr == SCENE_PROFI_26) {
+			if (GetCurrentScene()->_eventNr == SCENE_PROFI_26) {
 				EnvironmentNode *env = (EnvironmentNode *)dbGetObject(Environment_TheClou);
 
 				if (env->PostzugDone)

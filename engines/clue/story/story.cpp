@@ -340,7 +340,7 @@ void tcDoneFreeTicket() {
 	Say(STORY_0_TXT, 0, 7, "AEHHH");
 	Say(STORY_0_TXT, 0, dan->PictID, "FREE_TICKET");
 
-	_sceneArgs._returnValue = GetLocScene(8)->EventNr;
+	_sceneArgs._returnValue = GetLocScene(8)->_eventNr;
 }
 #if 0
 static void tcDoneAfterMeetingBriggs() {
@@ -463,18 +463,16 @@ void tcDone1stBurglary() {
 	AddTaxiLocation(22);    /* highgate */
 	AddTaxiLocation(16);    /* anti */
 
-	if (g_clue->getFeatures() & GF_PROFIDISK) {
+	if (g_clue->getFeatures() & GF_PROFIDISK)
 		AddTaxiLocation(75);    /* train */
-	}
 
 	hasSet(Person_Marc_Smith, Car_Morris_Minor_1950);
 	hasSet(Person_Marc_Smith, Car_Fiat_Topolino_1942);
 	hasSet(Person_Marc_Smith, Car_Jeep_1945);
 	hasSet(Person_Marc_Smith, Car_Pontiac_Streamliner_1946);
 
-	if (g_clue->getFeatures() & GF_PROFIDISK) {
+	if (g_clue->getFeatures() & GF_PROFIDISK)
 		hasSet(Person_Marc_Smith, Car_Ford_Model_T__1926);
-	}
 
 	hasSet(Person_Mary_Bolton, Tool_Lockpick);
 	hasSet(Person_Mary_Bolton, Tool_Drilling_machine);
@@ -497,9 +495,9 @@ void tcDone1stBurglary() {
 
 	Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "LOBHUDEL");
 
-	GetScene(SCENE_FAHNDUNG)->Geschehen = 0;    /* damit nicht gleich Burglary 2 geschieht */
+	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* so that Burglary 2 doesn't happen */
 
-	_sceneArgs._returnValue = GetLocScene(GetLocation)->EventNr;
+	_sceneArgs._returnValue = GetLocScene(GetLocation)->_eventNr;
 }
 
 void tcDoneGludoAsSailor() {
@@ -546,9 +544,8 @@ void tcDoneCallFromBriggs() {
 void tcDone2ndBurglary() {
 	AddTaxiLocation(14);    /* jewels */
 
-	if (g_clue->getFeatures() & GF_PROFIDISK) {
+	if (g_clue->getFeatures() & GF_PROFIDISK)
 		AddTaxiLocation(72);    /* abbey */
-	}
 
 	Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "FAHNDUNG");
 
@@ -570,9 +567,9 @@ void tcDone2ndBurglary() {
 	livesInSet(London_London_1, Person_Tony_Allen);
 
 
-	GetScene(SCENE_FAHNDUNG)->Geschehen = 0;    /* damit nicht gleich Burglary 2 geschieht */
+	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So that burglary 2 doesn't happen */
 
-	_sceneArgs._returnValue = GetLocScene(GetLocation)->EventNr;
+	_sceneArgs._returnValue = GetLocScene(GetLocation)->_eventNr;
 }
 
 /* wird von DoneHotel aufgerufen */
@@ -637,9 +634,9 @@ void tcDone3rdBurglary() {
 
 	gfxShow(150, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1);
 
-	GetScene(SCENE_FAHNDUNG)->Geschehen = 0;    /* damit nicht gleich Burglary 2 geschieht */
+	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* so that burglary 2 doesn't happen */
 
-	_sceneArgs._returnValue = GetLocScene(GetLocation)->EventNr;
+	_sceneArgs._returnValue = GetLocScene(GetLocation)->_eventNr;
 }
 
 void tcCheckForDowning() {
@@ -706,8 +703,8 @@ void tcDone4thBurglary() {
 
 	gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
 
-	GetScene(SCENE_FAHNDUNG)->Geschehen = 0;    /* damit nicht gleich Burglary 2 geschieht */
-	_sceneArgs._returnValue = GetLocScene(7)->EventNr;    /* Polizei */
+	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So thqt burglary 2 doesn't happen */
+	_sceneArgs._returnValue = GetLocScene(7)->_eventNr;    /* Police */
 }
 
 void tcDoneMattIsArrested() {
@@ -764,8 +761,8 @@ void tcDone5thBurglary() {
 		livesInSet(London_London_1, Person_Pere_Ubu);
 	}
 
-	GetScene(SCENE_FAHNDUNG)->Geschehen = 0;    /* damit nicht gleich Burglary 2 geschieht */
-	_sceneArgs._returnValue = GetLocScene(GetLocation)->EventNr;
+	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So that burglary 2 doesn't happen */
+	_sceneArgs._returnValue = GetLocScene(GetLocation)->_eventNr;
 }
 
 void tcDoneDealerIsAfraid() {
@@ -1071,8 +1068,8 @@ void tcDone6thBurglary() {
 		livesInSet(London_London_1, Person_Rod_Masterson);
 	}
 
-	GetScene(SCENE_FAHNDUNG)->Geschehen = 0;    /* damit nicht gleich Burglary 2 geschieht */
-	_sceneArgs._returnValue = GetLocScene(GetLocation)->EventNr;
+	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So that burglary 2 doesn't happen */
+	_sceneArgs._returnValue = GetLocScene(GetLocation)->_eventNr;
 }
 
 void tcPoliceInfoTower() {
@@ -1142,8 +1139,8 @@ void tcDone7thBurglary() {
 
 	livesInSet(London_London_1, Person_Mohammed_Abdula);
 
-	GetScene(SCENE_FAHNDUNG)->Geschehen = 0;    /* damit nicht gleich Burglary 2 geschieht */
-	_sceneArgs._returnValue = GetLocScene(GetLocation)->EventNr;
+	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So that burglary 2 doesn't happen */
+	_sceneArgs._returnValue = GetLocScene(GetLocation)->_eventNr;
 }
 
 void tcDoneBirthday() {
@@ -1230,8 +1227,8 @@ void tcDoneMeetingAgain() {
 void tcDone8thBurglary() {
 	AddTaxiLocation(25);    /* villa */
 
-	GetScene(SCENE_FAHNDUNG)->Geschehen = 0;    /* damit nicht gleich Burglary 2 geschieht */
-	_sceneArgs._returnValue = GetLocScene(GetLocation)->EventNr;
+	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So that burglary 2 doesn't happen */
+	_sceneArgs._returnValue = GetLocScene(GetLocation)->_eventNr;
 }
 
 void tcDoneAgent() {
@@ -1300,8 +1297,8 @@ void tcDone9thBurglary() {
 	/* nur mehr Möglichkeiten: gehen */
 	SetEnabledChoices(GO | WAIT);
 
-	GetScene(SCENE_FAHNDUNG)->Geschehen = 0;    /* damit nicht gleich Burglary 2 geschieht */
-	_sceneArgs._returnValue = GetLocScene(GetLocation)->EventNr;
+	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* so that burglary 2 doesn't happen */
+	_sceneArgs._returnValue = GetLocScene(GetLocation)->_eventNr;
 }
 
 void tcDoneGoAndFetchJaguar() {

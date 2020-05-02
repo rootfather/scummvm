@@ -90,7 +90,7 @@ void CloseStory() {
 	}
 
 	for (uint32 i = 0; i < _film->AmountOfScenes; i++) {
-		if (_film->gameplay[i].bed)
+		if (_film->gameplay[i]._cond)
 			FreeConditions(&_film->gameplay[i]);
 		if (_film->gameplay[i].std_succ) {
 			delete _film->gameplay[i].std_succ;
@@ -133,22 +133,23 @@ void PatchStory() {
 	if (GamePlayMode & GP_DEMO)
 		return;
 
-	GetScene(26214400)->bed->Ort = 3;  /* 4th Burglary, Hotel room */
-	GetScene(26738688)->bed->Ort = 7;  /* Arrest, Police!          */
+	GetScene(SCENE_4TH_BURG)->_cond->Ort = 3;  /* 4th Burglary, Hotel room */
+	GetScene(SCENE_ARRESTED_MATT)->_cond->Ort = 7;  /* Arrest, Police!          */
 
-	GetScene(SCENE_KASERNE_OUTSIDE)->Moeglichkeiten = 15;
-	GetScene(SCENE_KASERNE_INSIDE)->Moeglichkeiten = 265;
+	// TODO : set _options properly using the defined values
+	GetScene(SCENE_KASERNE_OUTSIDE)->_options = 15;
+	GetScene(SCENE_KASERNE_INSIDE)->_options = 265;
 
-	GetScene(SCENE_KASERNE_OUTSIDE)->LocationNr = 66;
-	GetScene(SCENE_KASERNE_INSIDE)->LocationNr = 65;
+	GetScene(SCENE_KASERNE_OUTSIDE)->_locationNr = 66;
+	GetScene(SCENE_KASERNE_INSIDE)->_locationNr = 65;
 
-	GetScene(SCENE_KASERNE_OUTSIDE)->Dauer = 17;
-	GetScene(SCENE_KASERNE_INSIDE)->Dauer = 57;
+	GetScene(SCENE_KASERNE_OUTSIDE)->_duration = 17;
+	GetScene(SCENE_KASERNE_INSIDE)->_duration = 57;
 
-	GetScene(SCENE_STATION)->Moeglichkeiten |= WAIT;
+	GetScene(SCENE_STATION)->_options |= WAIT;
 
 	if (g_clue->getFeatures() & GF_PROFIDISK)
-		GetScene(SCENE_PROFI_26)->LocationNr = 75;
+		GetScene(SCENE_PROFI_26)->_locationNr = 75;
 
 	/* change possibilites in story_9 too! */
 	/* für die Kaserne hier einen Successor eingetragen! */
@@ -180,10 +181,10 @@ uint32 PlayStory() {
 		curr = GetScene(_film->StartScene);
 
 	SetCurrentScene(curr);
-	_film->alter_Ort = curr->LocationNr;
+	_film->alter_Ort = curr->_locationNr;
 	SetLocation(-2);
 
-	while (curr->EventNr != SCENE_THE_END && curr->EventNr != SCENE_NEW_GAME) {
+	while (curr->_eventNr != SCENE_THE_END && curr->_eventNr != SCENE_NEW_GAME) {
 		if (!CheckConditions(curr))
 			ErrorMsg(Internal_Error, ERROR_MODULE_GAMEPLAY, 2);
 
@@ -245,7 +246,7 @@ uint32 PlayStory() {
 			printf("STEP_B\n");
 #endif
 			if (curr->Done) {
-				_sceneArgs._options = curr->Moeglichkeiten & _film->EnabledChoices;
+				_sceneArgs._options = curr->_options & _film->EnabledChoices;
 
 #ifdef DEEP_DEBUG
 				printf("SCENE_DONE\n");
@@ -254,8 +255,8 @@ uint32 PlayStory() {
 			} else
 				ErrorMsg(Internal_Error, ERROR_MODULE_GAMEPLAY, 3);
 
-			EventDidHappen(curr->EventNr);
-			AddVTime(curr->Dauer);
+			EventDidHappen(curr->_eventNr);
+			AddVTime(curr->_duration);
 
 			/* jetzt kann wieder unterbrochen werden ! */
 			interr_allowed = true;
@@ -275,18 +276,18 @@ uint32 PlayStory() {
 
 	StopAnim();
 
-	return curr->EventNr;
+	return curr->_eventNr;
 }
 
 Scene *GetStoryScene(Scene *curr) {
 	for (uint32 i = 0; i < _film->AmountOfScenes; i++) {
-		if (_film->gameplay[i].LocationNr == (uint32) - 1) {
+		if (_film->gameplay[i]._locationNr == (uint32) -1) {
 			Scene *sc = &_film->gameplay[i];
 
 			if (sc != curr) {
 				uint8 j = g_clue->calcRandomNr(0, 255);
 
-				if (j <= sc->Probability) {
+				if (j <= sc->_probability) {
 					if (CheckConditions(sc))
 						return sc;
 				}
@@ -298,11 +299,11 @@ Scene *GetStoryScene(Scene *curr) {
 }
 
 Scene *GetScene(uint32 EventNr) {
-	Scene *sc = NULL;
+	Scene *sc = nullptr;
 
 	for (uint32 i = 0; i < _film->AmountOfScenes; i++)
-		if (EventNr == _film->gameplay[i].EventNr)
-			sc = &(_film->gameplay[i]);
+		if (EventNr == _film->gameplay[i]._eventNr)
+			sc = &_film->gameplay[i];
 
 	return sc;
 }
@@ -311,41 +312,38 @@ int32 GetEventCount(uint32 EventNr) {
 	Scene *sc = GetScene(EventNr);
 
 	if (sc)
-		return ((int32)(sc->Geschehen));
+		return (int32)sc->_occurrence;
 
 	return 0;
 }
 
 void EventDidHappen(uint32 EventNr) {
-	uint32 max = CAN_ALWAYS_HAPPEN;
+	uint16 max = CAN_ALWAYS_HAPPEN;
 	Scene *sc = GetScene(EventNr);
 
-	if (sc) {
-		if (sc->Geschehen < max)
-			sc->Geschehen += 1;
-	}
+	if (sc && sc->_occurrence < max)
+		++sc->_occurrence;
 }
 
 int32 CheckConditions(Scene *scene) {
 	/* wenn Std Szene, dann muß nichts überprüft werden ! */
 
-	if (scene->LocationNr != (uint32) - 1)
-		return (1);
+	if (scene->_locationNr != (uint32) -1)
+		return 1;
 
 	/* es handelt sich um keine Std Szene -> Überprüfen ! */
 	/* überprüfen, ob Szene nicht schon zu oft geschehen ist ! */
-	if ((scene->Anzahl != ((uint16)(CAN_ALWAYS_HAPPEN))) &&
-	        (scene->Geschehen) >= (scene->Anzahl))
-		return (0);
+	if (scene->_quantity != (uint16)CAN_ALWAYS_HAPPEN && scene->_occurrence >= scene->_quantity)
+		return 0;
 
 	/* Jetzt die einzelnen Bedingungen überprüfen */
-	Bedingungen *bed = scene->bed;
+	Bedingungen *bed = scene->_cond;
 	if (!bed)
-		return (1);
+		return 1;
 
-	if (bed->Ort != (uint32) - 1)       /* spielt der Ort eine Rolle ? */
-		if (GetLocation != (bed->Ort))
-			return (0);    /* spielt eine Rolle und ist nicht erfüllt */
+	if (bed->Ort != (uint32) -1)       /* spielt der Ort eine Rolle ? */
+		if (GetLocation != bed->Ort)
+			return 0;    /* spielt eine Rolle und ist nicht erfüllt */
 
 	/*
 	 * Überprüfen, ob ein Event eingetreten ist,
@@ -355,7 +353,7 @@ int32 CheckConditions(Scene *scene) {
 	if (bed->n_events) {
 		for (NewTCEventNode *node = bed->n_events->getListHead(); node->_succ; node = (NewTCEventNode *)node->_succ) {
 			if (GetEventCount(node->_eventNr))
-				return (0);
+				return 0;
 		}
 	}
 
@@ -419,22 +417,22 @@ void PrepareStory(const char *filename) {
 
 		Scene *scene = &(_film->gameplay[i]);
 
-		scene->EventNr = NS.EventNr;
+		scene->_eventNr = NS.EventNr;
 
 		if (NS.NewOrt == (uint32) - 1 || NS.AnzahlderEvents || NS.AnzahlderN_Events) /* Storyszene ? */
 			InitConditions(scene, &NS); /* ja ! -> Bedingungen eintragen */
 		else
-			_film->gameplay[i].bed = NULL;   /* Spielablaufszene : keine Bedingungen ! */
-
+			_film->gameplay[i]._cond = nullptr;   /* Spielablaufszene : keine Bedingungen ! */
+		
 		/* Scene Struktur füllen : */
 		scene->Done = StdDone;
 		scene->Init = StdInit;
-		scene->Moeglichkeiten = NS.Moeglichkeiten;
-		scene->Dauer = NS.Dauer;
-		scene->Anzahl = NS.Anzahl;
-		scene->Geschehen = (uint16)(NS.Geschehen);
-		scene->Probability = NS.Possibility;
-		scene->LocationNr = NS.NewOrt;
+		scene->_options = NS.Moeglichkeiten;
+		scene->_duration = NS.Dauer;
+		scene->_quantity = NS.Anzahl;
+		scene->_occurrence = NS.Geschehen;
+		scene->_probability = NS.Possibility;
+		scene->_locationNr = NS.NewOrt;
 
 		/* Nachfolgerliste aufbauen !  */
 		/* Achtung! auch Patch ändern! */
@@ -488,26 +486,26 @@ void InitConditions(Scene *scene, NewScene *ns) {
 	} else
 		bed->n_events = nullptr;
 
-	scene->bed = bed;
+	scene->_cond = bed;
 }
 
 void FreeConditions(Scene *scene) {
-	if (scene->bed) {
-		if (scene->bed->events) {
-			scene->bed->events->removeList();
-			delete scene->bed->events;
-			scene->bed->events = nullptr;
+	if (scene->_cond) {
+		if (scene->_cond->events) {
+			scene->_cond->events->removeList();
+			delete scene->_cond->events;
+			scene->_cond->events = nullptr;
 		}
 
-		if (scene->bed->n_events) {
-			scene->bed->n_events->removeList();
-			delete scene->bed->n_events;
-			scene->bed->n_events = nullptr;
+		if (scene->_cond->n_events) {
+			scene->_cond->n_events->removeList();
+			delete scene->_cond->n_events;
+			scene->_cond->n_events = nullptr;
 		}
 
-		TCFreeMem(scene->bed, sizeof(Bedingungen));
+		TCFreeMem(scene->_cond, sizeof(Bedingungen));
 
-		scene->bed = nullptr;
+		scene->_cond = nullptr;
 	}
 }
 
@@ -612,7 +610,7 @@ Scene *GetLocScene(uint32 locNr) {
 
 	for (uint32 i = 0; i < _film->AmountOfScenes; i++) {
 		Scene *sc = &_film->gameplay[i];
-		if (sc->LocationNr == locNr)
+		if (sc->_locationNr == locNr)
 			return sc;
 	}
 	ErrorMsg(Internal_Error, ERROR_MODULE_GAMEPLAY, 12);
@@ -650,7 +648,8 @@ Common::String BuildDate(uint32 days) {
 
 	uint32 month = 0;
 
-	for (uint32 i = 0, p_year = 0; i < 12; i++) {
+	p_year = 0;
+	for (uint32 i = 0; i < 12; i++) {
 		p_year += days_per_month[i];
 
 		if (days < p_year) {
@@ -667,7 +666,7 @@ Common::String BuildDate(uint32 days) {
 }
 
 Common::String GetCurrLocName() {
-	uint32 index = GetCurrentScene()->LocationNr;
+	uint32 index = GetCurrentScene()->_locationNr;
 	return _film->loc_names->getNthNode(index)->_name;
 }
 

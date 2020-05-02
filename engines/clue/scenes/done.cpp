@@ -50,11 +50,11 @@ void DoneTaxi() {
 		i = j;
 
 		uint32 locNr = locs->getNthNode(i)->_nr - 1;
-		_sceneArgs._returnValue = GetLocScene(locNr)->EventNr;
+		_sceneArgs._returnValue = GetLocScene(locNr)->_eventNr;
 	} else {
 		Say(BUSINESS_TXT, 0, MATT_PICTID, "LOVELY_TAXI");
 
-		_sceneArgs._returnValue = GetLocScene(GetOldLocation)->EventNr;
+		_sceneArgs._returnValue = GetLocScene(GetOldLocation)->_eventNr;
 	}
 
 	_sceneArgs._overwritten = true;

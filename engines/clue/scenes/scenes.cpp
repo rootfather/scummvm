@@ -89,7 +89,7 @@ uint32 Go(NewList<NewTCEventNode> *succ) {
 
 		for (NewTCEventNode *node = succ->getListHead(); node->_succ; node = (NewTCEventNode *) node->_succ) {
 			Scene *sc = GetScene(node->_eventNr);
-			NewTCEventNode *location = _film->loc_names->getNthNode(sc->LocationNr);
+			NewTCEventNode *location = _film->loc_names->getNthNode(sc->_locationNr);
 
 			node->_name = location->_name;
 			prob++;
