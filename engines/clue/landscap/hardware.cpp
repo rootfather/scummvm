@@ -66,7 +66,8 @@ static void lsRefreshClosedDoors(uint16 us_X0, uint16 us_Y0,
 		if (lsIsInside(lso, us_X0, us_Y0, us_X1, us_Y1)) {
 			if (lsIsObjectADoor(lso)) {
 				if (lso->uch_Visible == LS_OBJECT_VISIBLE)
-					lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_DOOR);
+					warning("FIXME: Required call to lsShowOneObject in lsRefreshClosedDoor");
+					// lsShowOneObject(lso, LS_STD_COORDS, LS_STD_COORDS, LS_SHOW_DOOR);
 			}
 		}
 	}

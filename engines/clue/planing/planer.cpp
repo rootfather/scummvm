@@ -438,10 +438,7 @@ static void plActionOpenClose(uint16 what) {
 								plWork(CurrentPerson);
 
 							plSync(PLANING_ANIMATE_NO, GetMaxTimer(plSys),
-							       opensGet(((LSObjectNode *) dbGetObject(choice1))->
-							                Type,
-							                Tool_Hand) * PLANING_CORRECT_TIME,
-							       1);
+							       opensGet(((LSObjectNode *) dbGetObject(choice1))->Type, Tool_Hand) * PLANING_CORRECT_TIME, 1);
 
 							lsSetObjectState(choice1, Const_tcOPEN_CLOSE_BIT, what == ACTION_OPEN ? 1 : 0);
 							plCorrectOpened((LSObjectNode *)dbGetObject(choice1), what == ACTION_OPEN);

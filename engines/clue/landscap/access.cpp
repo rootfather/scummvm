@@ -196,13 +196,14 @@ uint16 lsGetFloorIndex(uint16 x, uint16 y) {
 	return (uint16)(line * fpl + row);
 }
 
-static void lsExtendGetList(NewObjectList<dbObjectNode> * list, uint32 nr, uint32 type, dbObjectNode * data) {
+static void lsExtendGetList(NewObjectList<dbObjectNode> * list, uint32 nr, uint32 type, dbObjectNode *data) {
 	dbAddObjectNode(list, type, OLF_INCLUDE_NAME | OLF_INSERT_STAR);
 	dbObjectNode* newNode = list->getListTail();
 
 	newNode->_nr = nr;
 	newNode->_type = type;
 	warning("HACK - lsExtendGetList");
+	newNode->_fakePtr = data->_fakePtr;
 	return;
 	dbObjectMapper(newNode, data);
 }

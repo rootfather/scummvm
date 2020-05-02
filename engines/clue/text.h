@@ -93,8 +93,8 @@ public:
 
 	bool _fakePtr;
 
-	dbObjectNode() { _nr = _type = _realNr = 0; } // CHECKME : Is it possible to get rid of it?
-	dbObjectNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : NewNode(name), _nr(nr), _type(type), _realNr(realNr), _fakePtr(true) {}
+	dbObjectNode() : _fakePtr(false) { _nr = _type = _realNr = 0; } // CHECKME : Is it possible to get rid of it?
+	dbObjectNode(uint32 nr, uint32 type, Common::String name, uint32 realNr) : NewNode(name), _nr(nr), _type(type), _realNr(realNr), _fakePtr(false) {}
 };
 
 class IODataNode : public NewNode {
