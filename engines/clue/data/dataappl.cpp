@@ -502,11 +502,10 @@ uint32 tcGuyUsesToolInPlayer(uint32 persId, BuildingNode *b, uint32 toolId, uint
 	return time;
 }
 
-uint32 tcGuyUsesTool(uint32 persId, BuildingNode *b, uint32 toolId, uint32 itemId)
+uint32 tcGuyUsesTool(uint32 persId, BuildingNode *b, uint32 toolId, uint32 itemId) {
 /*
  * diese Funktion darf keine Zufälligkeit enthalten -> Sync!!
  */
-{
 	uint32 origin, time;
 	PersonNode *p = (PersonNode *)dbGetObject(persId);
 

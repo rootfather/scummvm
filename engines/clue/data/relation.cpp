@@ -29,7 +29,7 @@ static struct relationDef *FindRelation(RELATION id) {
 			return rd;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 RELATION AddRelation(RELATION id) {

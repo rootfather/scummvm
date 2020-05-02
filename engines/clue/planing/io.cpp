@@ -37,8 +37,6 @@ void plSaveTools(Common::Stream *fh) {
 }
 
 NewList<NewNode> *plLoadTools(Common::Stream *fh) {
-	error("plLoadTools");
-#if 0
 	NewList<NewNode> *l = g_clue->_txtMgr->goKey(PLAN_TXT, "SYSTEM_TOOLS_MISSING_1");
 	bool foundAll = true;
 	byte canGet = 2, toolsNr = 0;
@@ -59,8 +57,8 @@ NewList<NewNode> *plLoadTools(Common::Stream *fh) {
 						// The new node doesn't, but needs extra testing.
 						// dbAddObjectNode(l, id, OLF_INCLUDE_NAME);
 						warning("CHECKME - Code modified in LoadSystem");
-						dbObject *obj = dbGetObjectReal(dbGetObject(id));
-						l->createNode(obj->link.Name);
+						dbObjectNode *obj = dbGetObject(id);
+						l->createNode(obj->_name);
 					}
 
 					foundAll = false;
@@ -92,8 +90,6 @@ NewList<NewNode> *plLoadTools(Common::Stream *fh) {
 	}
 
 	return l;
-#endif
-	return nullptr;
 }
 
 byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
