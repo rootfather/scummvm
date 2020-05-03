@@ -44,18 +44,6 @@ struct StoryHeader {
 	uint32 StartSzene;
 };
 
-struct NewStory {
-	byte StoryName[20];
-
-	struct StoryHeader *sh;
-
-	struct List *scenes;    /* Liste von SceneNodes */
-	struct List *events;
-
-	uint32 StartZeit;
-	uint32 StartOrt;
-};
-
 struct NewScene {
 	uint32 EventNr;
 	uint8 SceneName[20];
@@ -85,23 +73,6 @@ struct NewScene {
 	uint32 NewOrt;          /* Ort der Scene */
 };
 
-#if 0
-struct SceneNode {
-	struct Node Link;
-	struct NewScene ns;
-};
-
-struct NewEvent {
-	uint32 EventNr;
-	byte EventName[20];
-};
-
-struct EventNode {
-	struct Node Link;
-	struct NewEvent ne;
-};
-#endif
-
 /* Prototypes */
 /* Story */
 extern void NewStory(byte *name, uint32 StartZeit, uint32 StartOrt);
@@ -123,9 +94,5 @@ extern void RemoveAllEvents();
 
 /* Specials */
 char *GetName(uint32 EventNr);
-
-#if 0
-extern struct NewStory *story;
-#endif
 
 } // End of namespace Clue
