@@ -72,7 +72,7 @@ class Film {
 public:
 	Film();
 
-	uint32 AmountOfScenes;
+	uint32 _amountOfScenes;
 
 	struct Scene *_currScene;
 	struct Scene *_gameplay;
@@ -116,10 +116,10 @@ struct SceneArgs {
 struct Scene {
 	uint32 _eventNr;
 
-	void (*Init)();
-	void (*Done)();
+	void (*initFct)();
+	void (*doneFct)();
 
-	struct Bedingungen *_cond;    /* conditions to trigger the event      */
+	struct Conditions *_cond;    /* conditions to trigger the event      */
 
 	NewList<NewTCEventNode> *std_succ;     /* Standard successor TCEventNode */
 
@@ -132,7 +132,7 @@ struct Scene {
 	uint32 _locationNr;			/* Location of the scene == -1 if Scene = StoryScene otherwise, location number */
 };
 
-struct Bedingungen {
+struct Conditions {
 	uint32 Ort;         /* der erfüllt sein muß */
 
 	NewList<NewTCEventNode> *events;       /* welche Events schon geschehen sein muessen */

@@ -552,13 +552,13 @@ void InitTaxiLocations() {
 }
 
 void LinkScenes() {
-	GetLocScene(8)->Done = DoneTaxi;
-	GetLocScene(51)->Done = DoneParking;
-	GetLocScene(50)->Done = DoneGarage;
-	GetLocScene(6)->Done = DoneTools;
-	GetLocScene(54)->Done = DoneDealer;
-	GetLocScene(53)->Done = DoneDealer;
-	GetLocScene(52)->Done = DoneDealer;
+	GetLocScene(8)->doneFct = DoneTaxi;
+	GetLocScene(51)->doneFct = DoneParking;
+	GetLocScene(50)->doneFct = DoneGarage;
+	GetLocScene(6)->doneFct = DoneTools;
+	GetLocScene(54)->doneFct = DoneDealer;
+	GetLocScene(53)->doneFct = DoneDealer;
+	GetLocScene(52)->doneFct = DoneDealer;
 
 	SetFunc(GetScene(SCENE_KASERNE_OUTSIDE), StdInit, tcDoneKaserne);
 	SetFunc(GetScene(SCENE_HOTEL_ROOM), StdInit, DoneHotelRoom);
@@ -657,8 +657,8 @@ void LinkScenes() {
 }
 
 void SetFunc(struct Scene *sc, void (*init)(), void (*done)()) {
-	sc->Init = init;
-	sc->Done = done;
+	sc->initFct = init;
+	sc->doneFct = done;
 }
 
 bool tcPersonIsHere() {

@@ -24,24 +24,21 @@
 
 namespace Clue {
 
-#define SCENE_NODE              100
-#define EVENT_NODE              101
-#define MAX_SCENES_AMOUNT   (1<<14) /* 14 + 18 = 32 Bits !!! */
-#define MAX_EVENTS_AMOUNT   (1<<18) /* wichtig da story das benötigt ! */
+class StoryHeader {
+public:
+	byte _storyName[20];
 
+	uint32 _eventCount;      /* Zaehler mit der höchsten EventNr */
+	uint32 _sceneCount;
 
-struct StoryHeader {
-	byte StoryName[20];
+	uint32 _amountOfScenes;
+	uint32 _amountOfEvents;
 
-	uint32 EventCount;      /* Zaehler mit der höchsten EventNr */
-	uint32 SceneCount;
+	uint32 _startTime;
+	uint32 _startLocation;
+	uint32 _startScene;
 
-	uint32 AmountOfScenes;
-	uint32 AmountOfEvents;
-
-	uint32 StartZeit;
-	uint32 StartOrt;
-	uint32 StartSzene;
+	void load(Common::Stream* file);
 };
 
 struct NewScene {

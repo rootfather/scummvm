@@ -36,7 +36,7 @@ void LoadSceneforStory(NewScene *dest, Common::Stream *file);
 void InitConditions(Scene *scene, NewScene *ns);
 void FreeConditions(Scene *scene);
 int32 GetEventCount(uint32 EventNr);
-int32 CheckConditions(Scene *scene);
+bool CheckConditions(Scene *scene);
 void EventDidHappen(uint32 EventNr);
 
 Scene *GetStoryScene(Scene *scene);
@@ -48,7 +48,7 @@ Film *_film = nullptr;
 SceneArgs _sceneArgs;
 
 Film::Film() {
-	AmountOfScenes = 0;
+	_amountOfScenes = 0;
 
 	_currScene = nullptr;
 	_gameplay = nullptr;
@@ -65,7 +65,20 @@ Film::Film() {
 	_enabledChoices = 0;
 	_storyIsRunning = GP_STORY_BEFORE;
 }
-	
+
+void StoryHeader::load(Common::Stream* file) {
+	dskRead(file, _storyName, sizeof(_storyName));
+	dskRead_U32LE(file, &_eventCount);
+	dskRead_U32LE(file, &_sceneCount);
+
+	dskRead_U32LE(file, &_amountOfScenes);
+	dskRead_U32LE(file, &_amountOfEvents);
+
+	dskRead_U32LE(file, &_startTime);
+	dskRead_U32LE(file, &_startLocation);
+	dskRead_U32LE(file, &_startScene);
+}
+
 void InitStory(const char *story_filename) {
 	CloseStory();
 
@@ -88,7 +101,7 @@ void CloseStory() {
 		_film->_locationNames = nullptr;
 	}
 
-	for (uint32 i = 0; i < _film->AmountOfScenes; i++) {
+	for (uint32 i = 0; i < _film->_amountOfScenes; i++) {
 		if (_film->_gameplay[i]._cond)
 			FreeConditions(&_film->_gameplay[i]);
 		if (_film->_gameplay[i].std_succ) {
@@ -98,7 +111,7 @@ void CloseStory() {
 	}
 
 	if (_film->_gameplay)
-		TCFreeMem(_film->_gameplay, sizeof(Scene) * _film->AmountOfScenes);
+		TCFreeMem(_film->_gameplay, sizeof(Scene) * _film->_amountOfScenes);
 
 	delete _film;
 	_film = nullptr;
@@ -211,8 +224,8 @@ uint32 PlayStory() {
 		printf("----------------------------------------\n");
 		printf("SCENE_INIT %u\n", curr->EventNr);
 #endif
-		if (curr->Init)
-			curr->Init();
+		if (curr->initFct)
+			curr->initFct();
 
 		/* gibt es irgendein Ereignis das jetzt geschehen kann, und */
 		/* den Standardablauf unterbricht ? */
@@ -242,13 +255,13 @@ uint32 PlayStory() {
 #ifdef DEEP_DEBUG
 			printf("STEP_B\n");
 #endif
-			if (curr->Done) {
+			if (curr->doneFct) {
 				_sceneArgs._options = curr->_options & _film->_enabledChoices;
 
 #ifdef DEEP_DEBUG
 				printf("SCENE_DONE\n");
 #endif
-				curr->Done();   /* Funktionalität */
+				curr->doneFct();   /* Funktionalität */
 			} else
 				ErrorMsg(Internal_Error, ERROR_MODULE_GAMEPLAY, 3);
 
@@ -277,17 +290,15 @@ uint32 PlayStory() {
 }
 
 Scene *GetStoryScene(Scene *curr) {
-	for (uint32 i = 0; i < _film->AmountOfScenes; i++) {
+	for (uint32 i = 0; i < _film->_amountOfScenes; i++) {
 		if (_film->_gameplay[i]._locationNr == (uint32) -1) {
 			Scene *sc = &_film->_gameplay[i];
 
 			if (sc != curr) {
 				uint8 j = g_clue->calcRandomNr(0, 255);
 
-				if (j <= sc->_probability) {
-					if (CheckConditions(sc))
-						return sc;
-				}
+				if (j <= sc->_probability && CheckConditions(sc))
+					return sc;
 			}
 		}
 	}
@@ -298,9 +309,10 @@ Scene *GetStoryScene(Scene *curr) {
 Scene *GetScene(uint32 EventNr) {
 	Scene *sc = nullptr;
 
-	for (uint32 i = 0; i < _film->AmountOfScenes; i++)
+	for (uint32 i = 0; i < _film->_amountOfScenes; i++) {
 		if (EventNr == _film->_gameplay[i]._eventNr)
 			sc = &_film->_gameplay[i];
+	}
 
 	return sc;
 }
@@ -322,35 +334,36 @@ void EventDidHappen(uint32 EventNr) {
 		++sc->_occurrence;
 }
 
-int32 CheckConditions(Scene *scene) {
+bool CheckConditions(Scene *scene) {
 	/* wenn Std Szene, dann muß nichts überprüft werden ! */
 
 	if (scene->_locationNr != (uint32) -1)
-		return 1;
+		return true;
 
 	/* es handelt sich um keine Std Szene -> Überprüfen ! */
 	/* überprüfen, ob Szene nicht schon zu oft geschehen ist ! */
 	if (scene->_quantity != (uint16)CAN_ALWAYS_HAPPEN && scene->_occurrence >= scene->_quantity)
-		return 0;
+		return false;
 
 	/* Jetzt die einzelnen Bedingungen überprüfen */
-	Bedingungen *bed = scene->_cond;
-	if (!bed)
-		return 1;
+	Conditions *cond = scene->_cond;
+	if (!cond)
+		return true;
 
-	if (bed->Ort != (uint32) -1)       /* spielt der Ort eine Rolle ? */
-		if (_film->getLocation() != bed->Ort)
-			return 0;    /* spielt eine Rolle und ist nicht erfüllt */
+	if (cond->Ort != (uint32)-1) {      /* spielt der Ort eine Rolle ? */
+		if (_film->getLocation() != cond->Ort)
+			return false;    /* spielt eine Rolle und ist nicht erfüllt */
+	}
 
 	/*
 	 * Überprüfen, ob ein Event eingetreten ist,
 	 * das nicht geschehen darf !
 	 */
 
-	if (bed->n_events) {
-		for (NewTCEventNode *node = bed->n_events->getListHead(); node->_succ; node = (NewTCEventNode *)node->_succ) {
+	if (cond->n_events) {
+		for (NewTCEventNode *node = cond->n_events->getListHead(); node->_succ; node = (NewTCEventNode *)node->_succ) {
 			if (GetEventCount(node->_eventNr))
-				return 0;
+				return false;
 		}
 	}
 
@@ -359,14 +372,14 @@ int32 CheckConditions(Scene *scene) {
 	 *
 	 */
 
-	if (bed->events) {
-		for (NewTCEventNode *node = bed->events->getListHead(); node->_succ; node = (NewTCEventNode *)node->_succ) {
+	if (cond->events) {
+		for (NewTCEventNode *node = cond->events->getListHead(); node->_succ; node = (NewTCEventNode *)node->_succ) {
 			if (!GetEventCount(node->_eventNr))
-				return 0;
+				return false;
 		}
 	}
 
-	return (1);
+	return true;
 }
 
 void PrepareStory(const char *filename) {
@@ -380,35 +393,27 @@ void PrepareStory(const char *filename) {
 	/* StoryHeader laden ! */
 	Common::Stream *file = dskOpen(pathname, 0);
 
-	StoryHeader SH;
-	dskRead(file, SH.StoryName, sizeof(SH.StoryName));
-	dskRead_U32LE(file, &SH.EventCount);
-	dskRead_U32LE(file, &SH.SceneCount);
+	StoryHeader *storyHeader = new StoryHeader;
+	storyHeader->load(file);
 
-	dskRead_U32LE(file, &SH.AmountOfScenes);
-	dskRead_U32LE(file, &SH.AmountOfEvents);
-
-	dskRead_U32LE(file, &SH.StartZeit);
-	dskRead_U32LE(file, &SH.StartOrt);
-	dskRead_U32LE(file, &SH.StartSzene);
-
-	_film->AmountOfScenes = SH.AmountOfScenes;
-
-	_film->_startTime = SH.StartZeit;
-
+	_film->_amountOfScenes = storyHeader->_amountOfScenes;
+	_film->_startTime = storyHeader->_startTime;
 	_film->setTime(543); /* 09:03 */
 	_film->setDay(_film->_startTime);
-	_film->setCurrLocation(SH.StartOrt);
-	_film->_startScene = SH.StartSzene;
+	_film->setCurrLocation(storyHeader->_startLocation);
+	_film->_startScene = storyHeader->_startScene;
 
-	if (_film->AmountOfScenes) {
-		_film->_gameplay = (Scene*)TCAllocMem(sizeof(Scene) * (_film->AmountOfScenes), 0);
+	delete storyHeader;
+	storyHeader = nullptr;
+	
+	if (_film->_amountOfScenes) {
+		_film->_gameplay = (Scene*)TCAllocMem(sizeof(Scene) * (_film->_amountOfScenes), 0);
 		if (!_film->_gameplay)
 			ErrorMsg(No_Mem, ERROR_MODULE_GAMEPLAY, 6);
 	} else
 		ErrorMsg(Disk_Defect, ERROR_MODULE_GAMEPLAY, 7);
 
-	for (uint32 i = 0; i < _film->AmountOfScenes; i++) {
+	for (uint32 i = 0; i < _film->_amountOfScenes; i++) {
 		NewScene NS;
 		LoadSceneforStory(&NS, file);
 
@@ -422,8 +427,8 @@ void PrepareStory(const char *filename) {
 			_film->_gameplay[i]._cond = nullptr;   /* Spielablaufszene : keine Bedingungen ! */
 		
 		/* Scene Struktur füllen : */
-		scene->Done = StdDone;
-		scene->Init = StdInit;
+		scene->doneFct = StdDone;
+		scene->initFct = StdInit;
 		scene->_options = NS.Moeglichkeiten;
 		scene->_duration = NS.Dauer;
 		scene->_quantity = NS.Anzahl;
@@ -453,7 +458,7 @@ void PrepareStory(const char *filename) {
 }
 
 void InitConditions(Scene *scene, NewScene *ns) {
-	Bedingungen *bed = (Bedingungen *) TCAllocMem(sizeof(*bed), 0);
+	Conditions *bed = (Conditions *) TCAllocMem(sizeof(*bed), 0);
 
 	bed->Ort = ns->Ort;
 
@@ -500,7 +505,7 @@ void FreeConditions(Scene *scene) {
 			scene->_cond->n_events = nullptr;
 		}
 
-		TCFreeMem(scene->_cond, sizeof(Bedingungen));
+		TCFreeMem(scene->_cond, sizeof(Conditions));
 
 		scene->_cond = nullptr;
 	}
@@ -605,7 +610,7 @@ Scene *GetCurrentScene() {
 
 Scene *GetLocScene(uint32 locNr) {
 
-	for (uint32 i = 0; i < _film->AmountOfScenes; i++) {
+	for (uint32 i = 0; i < _film->_amountOfScenes; i++) {
 		Scene *sc = &_film->_gameplay[i];
 		if (sc->_locationNr == locNr)
 			return sc;
@@ -666,12 +671,5 @@ Common::String GetCurrLocName() {
 	uint32 index = GetCurrentScene()->_locationNr;
 	return _film->_locationNames->getNthNode(index)->_name;
 }
-
-#if 0
-static uint32 GetAmountOfScenes() {
-	/* for extern modules */
-	return (film ? film->AmountOfScenes : 0);
-}
-#endif
 
 } // End of namespace Clue

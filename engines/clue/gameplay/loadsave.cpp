@@ -223,7 +223,7 @@ bool tcSaveChangesInScenes(const char *fileName) {
 	if (file) {
 		dskSetLine_U32(file, _film->_enabledChoices);
 
-		for (uint32 i = 0; i < _film->AmountOfScenes; i++) {
+		for (uint32 i = 0; i < _film->_amountOfScenes; i++) {
 			dskSetLine_U32(file, _film->_gameplay[i]._eventNr);
 			dskSetLine_U16(file, _film->_gameplay[i]._occurrence);
 		}
@@ -243,7 +243,7 @@ bool tcLoadChangesInScenes(const char *fileName) {
 		dskGetLine_U32(file, &choice);
 		SetEnabledChoices(choice);
 
-		for (uint32 i = 0; i < _film->AmountOfScenes; i++) {
+		for (uint32 i = 0; i < _film->_amountOfScenes; i++) {
 			uint32 eventNr;
 			uint16 count;
 			dskGetLine_U32(file, &eventNr);
