@@ -178,25 +178,6 @@ int32 tcGetCarTraderOffer(CarNode *car) {
 	return offer;
 }
 
-#if 0
-// TODO: Check and remove if unused
-uint32 tcGetItemID(uint32 itemType) {
-	for (short objHashValue = 0; objHashValue < OBJ_HASH_SIZE; objHashValue++) {
-		for (dbObject* obj = (dbObject*)LIST_HEAD(objHash[objHashValue]);
-		        NODE_SUCC(obj); obj = (dbObject *) NODE_SUCC(obj)) {
-			if (obj->type == Object_Item) {
-				Item item = (Item)((void*)(obj + 1));
-
-				if (item->Type == itemType)
-					return (obj->nr);
-			}
-		}
-	}
-
-	return 0;
-}
-#endif
-
 uint32 GetObjNrOfLocation(uint32 LocNr) {
 	for (uint8 objHashValue = 0; objHashValue < OBJ_HASH_SIZE; objHashValue++) {
 		for (dbObjectNode *obj = objHash[objHashValue]->getListHead(); obj->_succ; obj = (dbObjectNode *) obj->_succ) {

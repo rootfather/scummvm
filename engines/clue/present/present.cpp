@@ -59,7 +59,7 @@ void DrawPresent(NewList<PresentationInfoNode> *present, uint8 firstLine, _GC *g
 			}
 			break;
 
-		case PRESENT_AS_BAR:
+		case PRESENT_AS_BAR: {
 			gfxSetPens(gc, 250, 250, 251);
 			gfxRectFill(gc, 205, j, 315, j + 7);
 			gfxSetPens(gc, 251, 251, 251);
@@ -71,6 +71,9 @@ void DrawPresent(NewList<PresentationInfoNode> *present, uint8 firstLine, _GC *g
 			Common::String s = Common::String::format("%u %%", (p->_extendedNr * 100) / p->_maxNr);
 
 			gfxPrint(gc, s, j, GFX_PRINT_CENTER);
+			}
+			break;
+		default:
 			break;
 		}
 
