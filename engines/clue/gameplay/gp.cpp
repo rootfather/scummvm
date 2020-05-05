@@ -104,9 +104,9 @@ void CloseStory() {
 	for (uint32 i = 0; i < _film->_amountOfScenes; i++) {
 		if (_film->_gameplay[i]._cond)
 			FreeConditions(&_film->_gameplay[i]);
-		if (_film->_gameplay[i].std_succ) {
-			delete _film->_gameplay[i].std_succ;
-			_film->_gameplay[i].std_succ = nullptr;
+		if (_film->_gameplay[i]._nextEvents) {
+			delete _film->_gameplay[i]._nextEvents;
+			_film->_gameplay[i]._nextEvents = nullptr;
 		}
 	}
 
@@ -143,8 +143,8 @@ void PatchStory() {
 	if (GamePlayMode & GP_DEMO)
 		return;
 
-	GetScene(SCENE_4TH_BURG)->_cond->Ort = 3;  /* 4th Burglary, Hotel room */
-	GetScene(SCENE_ARRESTED_MATT)->_cond->Ort = 7;  /* Arrest, Police!          */
+	GetScene(SCENE_4TH_BURG)->_cond->_location = 3;  /* 4th Burglary, Hotel room */
+	GetScene(SCENE_ARRESTED_MATT)->_cond->_location = 7;  /* Arrest, Police!          */
 
 	// TODO : set _options properly using the defined values
 	GetScene(SCENE_KASERNE_OUTSIDE)->_options = 15;
@@ -163,12 +163,12 @@ void PatchStory() {
 
 	/* change possibilites in story_9 too! */
 	/* für die Kaserne hier einen Successor eingetragen! */
-	GetLocScene(65)->std_succ = new NewList<NewTCEventNode>;
-	NewTCEventNode *node = GetLocScene(65)->std_succ->createNode(nullptr);
+	GetLocScene(65)->_nextEvents = new NewList<NewTCEventNode>;
+	NewTCEventNode *node = GetLocScene(65)->_nextEvents->createNode(nullptr);
 	node->_eventNr = SCENE_KASERNE_OUTSIDE;  /* wurscht... */
 
-	GetLocScene(66)->std_succ = new NewList<NewTCEventNode>;
-	node = GetLocScene(66)->std_succ->createNode(nullptr);
+	GetLocScene(66)->_nextEvents = new NewList<NewTCEventNode>;
+	node = GetLocScene(66)->_nextEvents->createNode(nullptr);
 	node->_eventNr = SCENE_KASERNE_INSIDE;   /* wurscht... */
 
 	_film->_startScene = SCENE_STATION;
@@ -350,8 +350,8 @@ bool CheckConditions(Scene *scene) {
 	if (!cond)
 		return true;
 
-	if (cond->Ort != (uint32)-1) {      /* spielt der Ort eine Rolle ? */
-		if (_film->getLocation() != cond->Ort)
+	if (cond->_location != (uint32)-1) {      /* spielt der Ort eine Rolle ? */
+		if (_film->getLocation() != cond->_location)
 			return false;    /* spielt eine Rolle und ist nicht erfüllt */
 	}
 
@@ -360,8 +360,8 @@ bool CheckConditions(Scene *scene) {
 	 * das nicht geschehen darf !
 	 */
 
-	if (cond->n_events) {
-		for (NewTCEventNode *node = cond->n_events->getListHead(); node->_succ; node = (NewTCEventNode *)node->_succ) {
+	if (cond->_blockerEvents) {
+		for (NewTCEventNode *node = cond->_blockerEvents->getListHead(); node->_succ; node = (NewTCEventNode *)node->_succ) {
 			if (GetEventCount(node->_eventNr))
 				return false;
 		}
@@ -372,8 +372,8 @@ bool CheckConditions(Scene *scene) {
 	 *
 	 */
 
-	if (cond->events) {
-		for (NewTCEventNode *node = cond->events->getListHead(); node->_succ; node = (NewTCEventNode *)node->_succ) {
+	if (cond->_triggerEvents) {
+		for (NewTCEventNode *node = cond->_triggerEvents->getListHead(); node->_succ; node = (NewTCEventNode *)node->_succ) {
 			if (!GetEventCount(node->_eventNr))
 				return false;
 		}
@@ -440,17 +440,17 @@ void PrepareStory(const char *filename) {
 		/* Achtung! auch Patch ändern! */
 
 		if (NS.AnzahlderNachfolger) {
-			scene->std_succ = new NewList<NewTCEventNode>;
+			scene->_nextEvents = new NewList<NewTCEventNode>;
 
 			for (uint32 j = 0; j < NS.AnzahlderNachfolger; j++) {
-				NewTCEventNode *node = scene->std_succ->createNode(nullptr);
+				NewTCEventNode *node = scene->_nextEvents->createNode(nullptr);
 				node->_eventNr = NS.nachfolger[j];
 			}
 
 			if (NS.nachfolger)
 				TCFreeMem(NS.nachfolger, sizeof(uint32) * NS.AnzahlderNachfolger);
 		} else
-			scene->std_succ = nullptr;
+			scene->_nextEvents = nullptr;
 	}
 
 	/* von den Events muß nichts geladen werden ! */
@@ -460,49 +460,49 @@ void PrepareStory(const char *filename) {
 void InitConditions(Scene *scene, NewScene *ns) {
 	Conditions *bed = (Conditions *) TCAllocMem(sizeof(*bed), 0);
 
-	bed->Ort = ns->Ort;
+	bed->_location = ns->_location;
 
 	if (ns->AnzahlderEvents) {
-		bed->events = new NewList<NewTCEventNode>;
+		bed->_triggerEvents = new NewList<NewTCEventNode>;
 
 		for (uint32 i = 0; i < ns->AnzahlderEvents; i++) {
-			NewTCEventNode *node = bed->events->createNode(nullptr);
+			NewTCEventNode *node = bed->_triggerEvents->createNode(nullptr);
 			node->_eventNr = ns->events[i];
 		}
 
 		if (ns->events)
 			TCFreeMem(ns->events, sizeof(uint32) * (ns->AnzahlderEvents));
 	} else
-		bed->events = nullptr;
+		bed->_triggerEvents = nullptr;
 
 	if (ns->AnzahlderN_Events) {
-		bed->n_events = new NewList<NewTCEventNode>;
+		bed->_blockerEvents = new NewList<NewTCEventNode>;
 
 		for (uint32 i = 0; i < ns->AnzahlderN_Events; i++) {
-			NewTCEventNode *node = bed->n_events->createNode(nullptr);
+			NewTCEventNode *node = bed->_blockerEvents->createNode(nullptr);
 			node->_eventNr = ns->n_events[i];
 		}
 
 		if (ns->n_events)
 			TCFreeMem(ns->n_events, sizeof(uint32) * (ns->AnzahlderN_Events));
 	} else
-		bed->n_events = nullptr;
+		bed->_blockerEvents = nullptr;
 
 	scene->_cond = bed;
 }
 
 void FreeConditions(Scene *scene) {
 	if (scene->_cond) {
-		if (scene->_cond->events) {
-			scene->_cond->events->removeList();
-			delete scene->_cond->events;
-			scene->_cond->events = nullptr;
+		if (scene->_cond->_triggerEvents) {
+			scene->_cond->_triggerEvents->removeList();
+			delete scene->_cond->_triggerEvents;
+			scene->_cond->_triggerEvents = nullptr;
 		}
 
-		if (scene->_cond->n_events) {
-			scene->_cond->n_events->removeList();
-			delete scene->_cond->n_events;
-			scene->_cond->n_events = nullptr;
+		if (scene->_cond->_blockerEvents) {
+			scene->_cond->_blockerEvents->removeList();
+			delete scene->_cond->_blockerEvents;
+			scene->_cond->_blockerEvents = nullptr;
 		}
 
 		TCFreeMem(scene->_cond, sizeof(Conditions));
@@ -519,7 +519,7 @@ void LoadSceneforStory(NewScene *dest, Common::Stream *file) {
 	dskRead_S32LE(file, &dest->Tag);
 	dskRead_S32LE(file, &dest->MinZeitPunkt);
 	dskRead_S32LE(file, &dest->MaxZeitPunkt);
-	dskRead_U32LE(file, &dest->Ort);
+	dskRead_U32LE(file, &dest->_location);
 
 	dskRead_U32LE(file, &dest->AnzahlderEvents);
 	dskRead_U32LE(file, &dest->AnzahlderN_Events);

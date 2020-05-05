@@ -334,7 +334,7 @@ uint32 StdHandle(uint32 choice) {
 
 	switch (choice) {
 	case GO:
-		succ_eventnr = Go(scene->std_succ);
+		succ_eventnr = Go(scene->_nextEvents);
 
 		if (succ_eventnr) {
 			uint32 locNr = GetScene(succ_eventnr)->_locationNr;

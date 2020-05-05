@@ -121,7 +121,7 @@ struct Scene {
 
 	struct Conditions *_cond;    /* conditions to trigger the event      */
 
-	NewList<NewTCEventNode> *std_succ;     /* Standard successor TCEventNode */
+	NewList<NewTCEventNode> * _nextEvents;     /* Standard successor TCEventNode */
 
 	uint32 _options;			/* See defines above                    */
 	uint32 _duration;			/* Duration of the scene in seconds     */
@@ -133,10 +133,10 @@ struct Scene {
 };
 
 struct Conditions {
-	uint32 Ort;         /* der erfüllt sein muß */
+	uint32 _location;			/* mandatory condition */
 
-	NewList<NewTCEventNode> *events;       /* welche Events schon geschehen sein muessen */
-	NewList<NewTCEventNode> *n_events;     /* Events, die nicht geschehen sein dürfen */
+	NewList<NewTCEventNode> *_triggerEvents;	/* those events must have already happened */
+	NewList<NewTCEventNode> *_blockerEvents;	/* those events shouldn't have happened */
 };
 
 /* global functions */

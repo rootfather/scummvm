@@ -48,7 +48,7 @@ struct NewScene {
 	int32 Tag;          /* der Tag an dem sie eintritt */
 	int32 MinZeitPunkt;     /* zeitlicher Bereich in dem    */
 	int32 MaxZeitPunkt;     /* sie eintritt                         */
-	uint32 Ort;         /* der erfüllt sein muß                 */
+	uint32 _location;         /* der erfüllt sein muß                 */
 
 	uint32 AnzahlderEvents;
 	uint32 AnzahlderN_Events;

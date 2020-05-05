@@ -120,7 +120,7 @@ void DoneInsideHouse() {
 				break;
 			case GO:
 				if (!(areaID = tcGoInsideOfHouse(buildingID)))
-					_sceneArgs._returnValue = GetCurrentScene()->std_succ->getListHead()->_eventNr;
+					_sceneArgs._returnValue = GetCurrentScene()->_nextEvents->getListHead()->_eventNr;
 				else {
 					lsSetRelations(areaID);
 
