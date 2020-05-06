@@ -104,7 +104,7 @@ static uint16 plYMoveSync(uint32 id, uint16 ypos, byte animate, byte direction, 
 				           -1 * LS_STD_SCROLL_SPEED);
 
 			if ((animate & PLANING_ANIMATE_FOCUS) && (id == CurrentPerson))
-				lsScrollLandScape((byte) - 1);
+				lsScrollLandScape((byte) -1);
 
 			ypos = (uint16)(ypos - LS_STD_SCROLL_SPEED);
 			break;
@@ -115,7 +115,7 @@ static uint16 plYMoveSync(uint32 id, uint16 ypos, byte animate, byte direction, 
 				           1 * LS_STD_SCROLL_SPEED);
 
 			if ((animate & PLANING_ANIMATE_FOCUS) && (id == CurrentPerson))
-				lsScrollLandScape((byte) - 1);
+				lsScrollLandScape((byte) -1);
 
 			ypos = (uint16)(ypos + LS_STD_SCROLL_SPEED);
 			break;
@@ -140,7 +140,7 @@ static uint16 plYMoveSync(uint32 id, uint16 ypos, byte animate, byte direction, 
 				           1 * LS_STD_SCROLL_SPEED);
 
 			if ((animate & PLANING_ANIMATE_FOCUS) && (id == CurrentPerson))
-				lsScrollLandScape((byte) - 1);
+				lsScrollLandScape((byte) -1);
 
 			ypos = (uint16)(ypos + LS_STD_SCROLL_SPEED);
 			break;
@@ -151,7 +151,7 @@ static uint16 plYMoveSync(uint32 id, uint16 ypos, byte animate, byte direction, 
 				           -1 * LS_STD_SCROLL_SPEED);
 
 			if ((animate & PLANING_ANIMATE_FOCUS) && (id == CurrentPerson))
-				lsScrollLandScape((byte) - 1);
+				lsScrollLandScape((byte) -1);
 
 			ypos = (uint16)(ypos - LS_STD_SCROLL_SPEED);
 			break;

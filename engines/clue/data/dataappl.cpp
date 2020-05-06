@@ -492,7 +492,7 @@ uint32 tcGuyUsesTool(uint32 persId, BuildingNode *b, uint32 toolId, uint32 itemI
 
 	origin = time = breakGet(itemId, toolId);
 
-	if (time != (uint32) - 1) {
+	if (time != (uint32) -1) {
 		switch (toolId) {   /* Zeit varieren */
 		case Tool_Electric_hammer:
 		case Tool_Hammer:

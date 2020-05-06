@@ -103,9 +103,9 @@ void lsInitActivArea(uint32 areaID, uint16 x, uint16 y, char *livingName) {
 	ls->us_WindowXSize = area->us_Width;
 	ls->us_WindowYSize = area->us_Height;
 
-	if (x == (uint16) - 1)
+	if (x == (uint16) -1)
 		x = area->us_StartX0;
-	if (y == (uint16) - 1)
+	if (y == (uint16) -1)
 		y = area->us_StartY0;
 
 	lsSetVisibleWindow(x, y);

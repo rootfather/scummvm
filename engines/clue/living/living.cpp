@@ -112,8 +112,8 @@ void livSetPlayMode(uint32 playMode) {
 
 	if (sc->ul_SprPlayMode & LIV_PM_REVERSE) {
 		sc->uch_FirstFrame = sc->uch_FrameCount - 1;
-		sc->uch_LastFrame = (byte) - 1;
-		sc->ch_PlayDirection = (byte) - 1;
+		sc->uch_LastFrame = (byte) -1;
+		sc->ch_PlayDirection = (byte) -1;
 	}
 }
 

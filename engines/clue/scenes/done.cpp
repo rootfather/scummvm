@@ -40,7 +40,7 @@ void DoneTaxi() {
 		newNode->_nr = locNr + 1;    /* because of ChoiceOk */
 	}
 
-	i = MIN((uint32)i, locs->getNrOfNodes() - 1);
+	i = MIN((uint32)i, locs->getNrOfNodes() -1);
 
 	Common::String exp = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "NO_CHOICE");
 	locs->expandObjectList(exp);

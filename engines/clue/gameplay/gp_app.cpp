@@ -461,17 +461,14 @@ void StdDone() {
 	_sceneArgs._returnValue = 0;
 
 	while (!_sceneArgs._returnValue) {
-		if (tcPersonIsHere())
-			if (!(_sceneArgs._options & GP_CHOICE_BUSINESS_TALK))
-				_sceneArgs._options |= (GP_CHOICE_BUSINESS_TALK & _film->_enabledChoices);
+		if (tcPersonIsHere() && !(_sceneArgs._options & GP_CHOICE_BUSINESS_TALK))
+			_sceneArgs._options |= (GP_CHOICE_BUSINESS_TALK & _film->getEnabledChoices());
 
-		if (g_clue->getFeatures() & GF_PROFIDISK) {
-			if (GetCurrentScene()->_eventNr == SCENE_PROFI_26) {
-				EnvironmentNode *env = (EnvironmentNode *)dbGetObject(Environment_TheClou);
+		if ((g_clue->getFeatures() & GF_PROFIDISK) && GetCurrentScene()->_eventNr == SCENE_PROFI_26) {
+			EnvironmentNode *env = (EnvironmentNode *)dbGetObject(Environment_TheClou);
 
-				if (env->PostzugDone)
-					_sceneArgs._options &= ~GP_CHOICE_INVESTIGATE;
-			}
+			if (env->PostzugDone)
+				_sceneArgs._options &= ~GP_CHOICE_INVESTIGATE;
 		}
 
 		if (_sceneArgs._options) {
@@ -481,7 +478,7 @@ void StdDone() {
 			byte activ = 0;
 			activ = Menu(menu, _sceneArgs._options, activ, nullptr, 0);
 
-			if (activ == (byte) - 1) {
+			if (activ == (byte) -1) {
 				ShowTheClouRequester(No_Error);
 				_sceneArgs._returnValue = ((PlayerNode *) dbGetObject(Player_Player_1))->CurrScene;
 			} else if (activ != (byte)TXT_MENU_TIMEOUT) {

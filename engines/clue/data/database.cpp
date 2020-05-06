@@ -526,7 +526,7 @@ bool dbLoadAllObjects(const char *fileName) {
 			dskRead_U32LE(fh, &objType);
 			dskRead_U32LE(fh, &objSize);
 
-			if ((objNr != (uint32) - 1) && (objType != (uint32) - 1)) {
+			if (objNr != (uint32) -1 && objType != (uint32) -1) {
 				NewList<NewNode> *list = nullptr;
 				Common::String name = Common::String("");
 

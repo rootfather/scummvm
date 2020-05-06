@@ -162,7 +162,7 @@ static void plActionGo() {
 					plSync(PLANING_ANIMATE_STD, GetMaxTimer(plSys), 1, 1);
 					plMove(CurrentPerson, direction);
 
-					lsScrollLandScape((byte) - 1);
+					lsScrollLandScape((byte) -1);
 					livDoAnims((AnimCounter++) % 2, true);
 
 					plDisplayTimer(0, false);
@@ -1215,7 +1215,7 @@ static void plLook() {
 
 	plMessage("PERSON_NOTES", PLANING_MSG_REFRESH);
 	plSync(PLANING_ANIMATE_NO, timer, maxTimer, 0);
-	lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) - 1, (uint16) - 1);
+	lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) -1, (uint16) -1);
 
 	while (activ != PLANING_LOOK_RETURN) {
 		plDisplayTimer(timer / PLANING_CORRECT_TIME, false);

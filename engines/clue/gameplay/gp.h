@@ -82,9 +82,9 @@ private:
 	uint32 _currMinute;
 	uint32 _currLocation;
 	uint32 _oldLocation;
+	uint32 _enabledChoices;
 
 public:
-	uint32 _enabledChoices;
 
 	byte _storyIsRunning;
 
@@ -99,6 +99,9 @@ public:
 	uint32 getMinute()           { return _currMinute; }
 	uint32 getLocation()         { return _currLocation; }
 	uint32 getOldLocation()      { return _oldLocation; }
+
+	void setEnabledChoices(uint32 ChoiceMask);
+	uint32 getEnabledChoices() { return _enabledChoices; }
 };
 
 struct SceneArgs {
@@ -139,8 +142,6 @@ extern void CloseStory();
 
 extern uint32 PlayStory();
 extern void PatchStory();
-
-extern void SetEnabledChoices(uint32 ChoiceMask);
 
 extern void StdDone();
 extern void StdInit();

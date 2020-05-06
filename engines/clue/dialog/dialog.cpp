@@ -169,7 +169,7 @@ void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode) {
 
 		SetPictID(MATT_PICTID);
 		choice = Bubble(questions, 0, nullptr, 0);
-		quit = max = questions->getNrOfNodes() - 1;
+		quit = max = questions->getNrOfNodes() -1;
 
 		uint8 i;
 		for (i = 0, stdcount = 0; i < 32; i++) {  /* Std Fragen zählen */

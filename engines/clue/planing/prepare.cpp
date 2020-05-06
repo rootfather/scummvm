@@ -157,7 +157,7 @@ void plPrepareGfx(uint32 objId, byte landscapMode, byte prepareMode) {
 			}
 		}
 
-		lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) - 1, (uint16) - 1);
+		lsSetActivLiving(Planing_Name[CurrentPerson], (uint16) -1, (uint16) -1);
 	}
 }
 

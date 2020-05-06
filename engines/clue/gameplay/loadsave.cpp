@@ -221,7 +221,7 @@ bool tcSaveChangesInScenes(const char *fileName) {
 	bool back = false;
 	Common::Stream *file = dskOpen(fileName, 1);
 	if (file) {
-		dskSetLine_U32(file, _film->_enabledChoices);
+		dskSetLine_U32(file, _film->getEnabledChoices());
 
 		for (uint32 i = 0; i < _film->_amountOfScenes; i++) {
 			dskSetLine_U32(file, _film->_gameplay[i]._eventNr);
@@ -241,7 +241,7 @@ bool tcLoadChangesInScenes(const char *fileName) {
 	if (file) {
 		uint32 choice;
 		dskGetLine_U32(file, &choice);
-		SetEnabledChoices(choice);
+		_film->setEnabledChoices(choice);
 
 		for (uint32 i = 0; i < _film->_amountOfScenes; i++) {
 			uint32 eventNr;

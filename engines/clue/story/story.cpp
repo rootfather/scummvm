@@ -1295,7 +1295,7 @@ void tcDone9thBurglary() {
 		AddTaxiLocation(61);    /* lisson */
 
 	/* nur mehr Möglichkeiten: gehen */
-	SetEnabledChoices(GP_CHOICE_GO | GP_CHOICE_WAIT);
+	_film->setEnabledChoices(GP_CHOICE_GO | GP_CHOICE_WAIT);
 
 	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* so that burglary 2 doesn't happen */
 	_sceneArgs._returnValue = GetLocScene(_film->getLocation())->_eventNr;
@@ -1508,7 +1508,7 @@ void tcDoneSouthhampton() {
 	_sceneArgs._overwritten = true;
 	_sceneArgs._returnValue = 0;  /* MUß SEIN! */
 
-	SetEnabledChoices(GP_ALL_CHOICES);
+	_film->setEnabledChoices(GP_ALL_CHOICES);
 
 	AddVTime(g_clue->calcRandomNr(560, 830));
 	ShowTime(0);
@@ -1760,7 +1760,7 @@ void tcDoneKaserne() {
 		inpTurnESC(true);
 
 		/* change possibilites in PatchStory too! */
-		if (activ == (byte) - 1) {
+		if (activ == (byte) -1) {
 			ShowTheClouRequester(No_Error);
 			successor = ((PlayerNode *) dbGetObject(Player_Player_1))->CurrScene;
 

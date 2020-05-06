@@ -29,7 +29,7 @@ byte lsScrollLandScape(byte direction) {
 	struct LandScape *l = ls;
 	byte collis = 0, back = 0, speed = ls->uch_ScrollSpeed;
 
-	if (direction != (byte) - 1)
+	if (direction != (byte) -1)
 		collis = lsInitScrollLandScape(direction, LS_SCROLL_PREPARE);
 
 	if (!collis) {

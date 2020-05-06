@@ -83,7 +83,7 @@ void initStory(const char *story_filename) {
 	CloseStory();
 
 	_film = new Film;
-	_film->_enabledChoices = 0xffffffffL;
+	_film->setEnabledChoices(GP_ALL_CHOICES);
 
 	PrepareStory(story_filename);
 	InitLocations();
@@ -117,8 +117,8 @@ void CloseStory() {
 	_film = nullptr;
 }
 
-void SetEnabledChoices(uint32 ChoiceMask) {
-	_film->_enabledChoices = ChoiceMask;
+void Film::setEnabledChoices(uint32 ChoiceMask) {
+	_enabledChoices = ChoiceMask;
 }
 
 void RefreshCurrScene() {
@@ -256,7 +256,7 @@ uint32 PlayStory() {
 			printf("STEP_B\n");
 #endif
 			if (curr->doneFct) {
-				_sceneArgs._options = curr->_options & _film->_enabledChoices;
+				_sceneArgs._options = (curr->_options & _film->getEnabledChoices());
 
 #ifdef DEEP_DEBUG
 				printf("SCENE_DONE\n");
@@ -421,7 +421,7 @@ void PrepareStory(const char *filename) {
 
 		scene->_eventNr = NS.EventNr;
 
-		if (NS.NewOrt == (uint32) - 1 || NS.AnzahlderEvents || NS.AnzahlderN_Events) /* Storyszene ? */
+		if (NS.NewOrt == (uint32) -1 || NS.AnzahlderEvents || NS.AnzahlderN_Events) /* Storyszene ? */
 			InitConditions(scene, &NS); /* ja ! -> Bedingungen eintragen */
 		else
 			_film->_gameplay[i]._cond = nullptr;   /* Spielablaufszene : keine Bedingungen ! */
