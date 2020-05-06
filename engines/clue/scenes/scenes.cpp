@@ -88,7 +88,7 @@ uint32 Go(NewList<NewTCEventNode> *succ) {
 		PrintStatus(line);
 
 		for (NewTCEventNode *node = succ->getListHead(); node->_succ; node = (NewTCEventNode *) node->_succ) {
-			Scene *sc = GetScene(node->_eventNr);
+			Scene *sc = getScene(node->_eventNr);
 			NewTCEventNode *location = _film->_locationNames->getNthNode(sc->_locationNr);
 
 			node->_name = location->_name;
@@ -374,7 +374,7 @@ void tcWait() {
 	while ((!endLoop) && (minutes < 960)) {
 		minutes += 60;
 
-		AddVTime(60);
+		addVTime(60);
 		ShowTime(0);
 
 		if (locNr) {

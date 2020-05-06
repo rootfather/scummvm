@@ -314,7 +314,7 @@ void tcDoneMeetBriggs() {
 
 			hasSetP(Person_Matt_Stuvysunt, Loot_Abbots_ring, tcVALUE_OF_RING_OF_PATER);
 
-			AddVTime(1440 + 525 - _film->getMinute());
+			addVTime(1440 + 525 - _film->getMinute());
 
 			_sceneArgs._returnValue = SCENE_HOLLAND_STR;
 		}
@@ -340,7 +340,7 @@ void tcDoneFreeTicket() {
 	Say(STORY_0_TXT, 0, 7, "AEHHH");
 	Say(STORY_0_TXT, 0, dan->PictID, "FREE_TICKET");
 
-	_sceneArgs._returnValue = GetLocScene(8)->_eventNr;
+	_sceneArgs._returnValue = getLocScene(8)->_eventNr;
 }
 #if 0
 static void tcDoneAfterMeetingBriggs() {
@@ -495,9 +495,9 @@ void tcDone1stBurglary() {
 
 	Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "LOBHUDEL");
 
-	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* so that Burglary 2 doesn't happen */
+	getScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* so that Burglary 2 doesn't happen */
 
-	_sceneArgs._returnValue = GetLocScene(_film->getLocation())->_eventNr;
+	_sceneArgs._returnValue = getLocScene(_film->getLocation())->_eventNr;
 }
 
 void tcDoneGludoAsSailor() {
@@ -567,9 +567,9 @@ void tcDone2ndBurglary() {
 	livesInSet(London_London_1, Person_Tony_Allen);
 
 
-	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So that burglary 2 doesn't happen */
+	getScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So that burglary 2 doesn't happen */
 
-	_sceneArgs._returnValue = GetLocScene(_film->getLocation())->_eventNr;
+	_sceneArgs._returnValue = getLocScene(_film->getLocation())->_eventNr;
 }
 
 /* wird von DoneHotel aufgerufen */
@@ -634,9 +634,9 @@ void tcDone3rdBurglary() {
 
 	gfxShow(150, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1);
 
-	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* so that burglary 2 doesn't happen */
+	getScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* so that burglary 2 doesn't happen */
 
-	_sceneArgs._returnValue = GetLocScene(_film->getLocation())->_eventNr;
+	_sceneArgs._returnValue = getLocScene(_film->getLocation())->_eventNr;
 }
 
 void tcCheckForDowning() {
@@ -703,8 +703,8 @@ void tcDone4thBurglary() {
 
 	gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
 
-	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So thqt burglary 2 doesn't happen */
-	_sceneArgs._returnValue = GetLocScene(7)->_eventNr;    /* Police */
+	getScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So thqt burglary 2 doesn't happen */
+	_sceneArgs._returnValue = getLocScene(7)->_eventNr;    /* Police */
 }
 
 void tcDoneMattIsArrested() {
@@ -712,7 +712,7 @@ void tcDoneMattIsArrested() {
 
 	gfxShow(169, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1); /* prison */
 
-	AddVTime(1439);
+	addVTime(1439);
 
 	Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "IN_PRISON_OLD_0");
 	gfxShow(161, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1); /* polizei */
@@ -761,8 +761,8 @@ void tcDone5thBurglary() {
 		livesInSet(London_London_1, Person_Pere_Ubu);
 	}
 
-	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So that burglary 2 doesn't happen */
-	_sceneArgs._returnValue = GetLocScene(_film->getLocation())->_eventNr;
+	getScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So that burglary 2 doesn't happen */
+	_sceneArgs._returnValue = getLocScene(_film->getLocation())->_eventNr;
 }
 
 void tcDoneDealerIsAfraid() {
@@ -1068,8 +1068,8 @@ void tcDone6thBurglary() {
 		livesInSet(London_London_1, Person_Rod_Masterson);
 	}
 
-	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So that burglary 2 doesn't happen */
-	_sceneArgs._returnValue = GetLocScene(_film->getLocation())->_eventNr;
+	getScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So that burglary 2 doesn't happen */
+	_sceneArgs._returnValue = getLocScene(_film->getLocation())->_eventNr;
 }
 
 void tcPoliceInfoTower() {
@@ -1139,8 +1139,8 @@ void tcDone7thBurglary() {
 
 	livesInSet(London_London_1, Person_Mohammed_Abdula);
 
-	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So that burglary 2 doesn't happen */
-	_sceneArgs._returnValue = GetLocScene(_film->getLocation())->_eventNr;
+	getScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So that burglary 2 doesn't happen */
+	_sceneArgs._returnValue = getLocScene(_film->getLocation())->_eventNr;
 }
 
 void tcDoneBirthday() {
@@ -1227,8 +1227,8 @@ void tcDoneMeetingAgain() {
 void tcDone8thBurglary() {
 	AddTaxiLocation(25);    /* villa */
 
-	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So that burglary 2 doesn't happen */
-	_sceneArgs._returnValue = GetLocScene(_film->getLocation())->_eventNr;
+	getScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So that burglary 2 doesn't happen */
+	_sceneArgs._returnValue = getLocScene(_film->getLocation())->_eventNr;
 }
 
 void tcDoneAgent() {
@@ -1297,8 +1297,8 @@ void tcDone9thBurglary() {
 	/* nur mehr Möglichkeiten: gehen */
 	_film->setEnabledChoices(GP_CHOICE_GO | GP_CHOICE_WAIT);
 
-	GetScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* so that burglary 2 doesn't happen */
-	_sceneArgs._returnValue = GetLocScene(_film->getLocation())->_eventNr;
+	getScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* so that burglary 2 doesn't happen */
+	_sceneArgs._returnValue = getLocScene(_film->getLocation())->_eventNr;
 }
 
 void tcDoneGoAndFetchJaguar() {
@@ -1377,7 +1377,7 @@ void tcDoneConfessingSabien() {
 		_sceneArgs._returnValue = SCENE_NEW_GAME;
 	} else {            /* bleibt nicht bei Sabien! */
 
-		AddVTime(2713);     /* hier nicht ausblenden? */
+		addVTime(2713);     /* hier nicht ausblenden? */
 
 		gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
 
@@ -1510,7 +1510,7 @@ void tcDoneSouthhampton() {
 
 	_film->setEnabledChoices(GP_ALL_CHOICES);
 
-	AddVTime(g_clue->calcRandomNr(560, 830));
+	addVTime(g_clue->calcRandomNr(560, 830));
 	ShowTime(0);
 
 	if (Env->FirstTimeInSouth) {
@@ -1554,7 +1554,7 @@ void tcDoneSouthhampton() {
 				sndPlaySound("hotel.bk", 0);
 				tcInitTowerBurglary();  /* just to be sure */
 				plPlaner(Building_Tower_of_London);
-				RefreshCurrScene();
+				refreshCurrScene();
 				break;
 			case 5:
 				Information();
@@ -1565,7 +1565,7 @@ void tcDoneSouthhampton() {
 				if (tcDoTowerBurglary())
 					_sceneArgs._returnValue = SCENE_KASERNE_OUTSIDE;
 				else
-					RefreshCurrScene();
+					refreshCurrScene();
 				break;
 			/* Vorsicht bei Erweiterung -> Speichern weiter oben */
 			default:
@@ -1577,7 +1577,7 @@ void tcDoneSouthhampton() {
 	}
 
 	if (!activ) {
-		AddVTime(g_clue->calcRandomNr(560, 830));
+		addVTime(g_clue->calcRandomNr(560, 830));
 		_sceneArgs._returnValue = SCENE_TOWER_OUT;
 	}
 
@@ -1759,7 +1759,7 @@ void tcDoneKaserne() {
 		activ = Menu(menu, 15, activ, nullptr, 0);
 		inpTurnESC(true);
 
-		/* change possibilites in PatchStory too! */
+		/* change possibilites in patchStory too! */
 		if (activ == (byte) -1) {
 			ShowTheClouRequester(No_Error);
 			successor = ((PlayerNode *) dbGetObject(Player_Player_1))->CurrScene;

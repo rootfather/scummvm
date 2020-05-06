@@ -162,7 +162,7 @@ void InitBuildingPresent(uint32 nr, NewList<PresentationInfoNode>* presentationD
 	Common::String data = dbGetObjectName(nr);
 	AddPresentTextLine(presentationData, data, 0, texts, 0);
 
-	data = BuildTime(tcGetBuildPoliceT(obj));
+	data = buildTime(tcGetBuildPoliceT(obj));
 	AddPresentTextLine(presentationData, data, 0, texts, 1);
 	AddPresentLine(presentationData, PRESENT_AS_NUMBER, tcGetBuildValues(obj), 255, texts, 2);
 

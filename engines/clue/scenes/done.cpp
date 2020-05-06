@@ -50,11 +50,11 @@ void DoneTaxi() {
 		i = j;
 
 		uint32 locNr = locs->getNthNode(i)->_nr - 1;
-		_sceneArgs._returnValue = GetLocScene(locNr)->_eventNr;
+		_sceneArgs._returnValue = getLocScene(locNr)->_eventNr;
 	} else {
 		Say(BUSINESS_TXT, 0, MATT_PICTID, "LOVELY_TAXI");
 
-		_sceneArgs._returnValue = GetLocScene(_film->getOldLocation())->_eventNr;
+		_sceneArgs._returnValue = getLocScene(_film->getOldLocation())->_eventNr;
 	}
 
 	_sceneArgs._overwritten = true;
@@ -115,13 +115,13 @@ void DoneInsideHouse() {
 				tcInsideOfHouse(buildingID, areaID, perc);
 				ShowMenuBackground();
 				tcRefreshLocationInTitle(_film->getLocation());
-				AddVTime(19);
+				addVTime(19);
 				ShowTime(0);
 				break;
 			case GP_CHOICE_GO:
 				areaID = tcGoInsideOfHouse(buildingID);
 				if (!areaID)
-					_sceneArgs._returnValue = GetCurrentScene()->_nextEvents->getListHead()->_eventNr;
+					_sceneArgs._returnValue = getCurrentScene()->_nextEvents->getListHead()->_eventNr;
 				else {
 					lsSetRelations(areaID);
 
@@ -169,7 +169,7 @@ void DoneTools() {
 
 		if (choice == GP_CHOICE_BUSINESS_TALK) {
 			tcToolsShop();
-			AddVTime(9);
+			addVTime(9);
 			ShowTime(0);
 		} else
 			_sceneArgs._returnValue = StdHandle(choice);
@@ -250,14 +250,14 @@ void DoneParking() {
 				switch (choice) {
 				case 0:
 					tcBuyCar();
-					AddVTime(9);
+					addVTime(9);
 					choice = 2;
 					break;
 				case 1: {
 					uint32 carID = tcChooseCar(27);
 					if (carID) {
 						tcSellCar(carID);
-						AddVTime(11);
+						addVTime(11);
 					} else {
 						Say(BUSINESS_TXT, 0, marc->PictID, "SELL_HERE");
 						choice = 2;
@@ -307,7 +307,7 @@ void DoneGarage() {
 			uint32 carID = tcChooseCar(26);
 			if (carID) {
 				tcCarInGarage(carID);
-				AddVTime(9);
+				addVTime(9);
 				ShowTime(0);
 			} else {
 				Say(BUSINESS_TXT, 0, marc->PictID, "REPAIR_HERE");
@@ -367,7 +367,7 @@ void DoneHotelRoom() {
 	if (g_clue->getFeatures() & GF_PROFIDISK)
 		tcCheckForDowning();
 
-	StdDone();
+	stdDone();
 }
 
 } // End of namespace Clue

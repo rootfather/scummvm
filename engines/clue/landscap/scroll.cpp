@@ -133,7 +133,7 @@ byte lsIsCollision(int32 x, int32 y, byte direction) {
 	byte collis = 0;
 	byte color[14], collisDir = 0;
 
-	if (GamePlayMode & GP_MODE_DISABLE_COLLISION)
+	if (_gamePlayMode & GP_MODE_DISABLE_COLLISION)
 		return 0;
 
 	/* checks borders! */

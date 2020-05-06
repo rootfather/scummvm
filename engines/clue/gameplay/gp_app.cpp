@@ -33,7 +33,7 @@ void tcAsTimeGoesBy(uint32 untilMinute) {
 	while (_film->getMinute() != untilMinute) {
 		inpDelay(GP_TICKS_PER_MINUTE);
 
-		AddVTime(1);
+		addVTime(1);
 
 		if (!(_film->getMinute() % 60))
 			ShowTime(0);
@@ -136,7 +136,7 @@ uint32 tcBurglary(uint32 buildingID) {
 
 	switch (ret) {
 	case 0:
-		RefreshCurrScene();
+		refreshCurrScene();
 
 		tcPlaySound();
 
@@ -162,7 +162,7 @@ uint32 tcBurglary(uint32 buildingID) {
 void tcRefreshLocationInTitle(uint32 locNr) {
 	gfxSetPens(m_gc, 3, GFX_SAME_PEN, GFX_SAME_PEN);
 
-	Common::String date = BuildDate(_film->getDay());
+	Common::String date = buildDate(_film->getDay());
 	NewTCEventNode *node = _film->_locationNames->getNthNode(locNr);
 
 	Common::String line = node->_name + " " + date;
@@ -170,8 +170,8 @@ void tcRefreshLocationInTitle(uint32 locNr) {
 	PrintStatus(line);
 }
 
-void StdInit() {
-	struct Scene *sc = GetCurrentScene();
+void stdInit() {
+	struct Scene *sc = getCurrentScene();
 	bool sameLocation = (sc->_locationNr == _film->getLocation());
 
 	if (sc->_locationNr != (uint32) -1 && !sameLocation)
@@ -181,7 +181,7 @@ void StdInit() {
 
 	NewTCEventNode *node = _film->_locationNames->getNthNode(sc->_locationNr);
 
-	if (RefreshMode || !sameLocation)
+	if (_refreshMode || !sameLocation)
 		PlayAnim(node->_name.c_str(), (int16) 30000, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
 
 	ShowTime(0);        /* Zeit sollte nach der Anim gezeigt werden, sonst Probleme mit Diskversion */
@@ -190,8 +190,8 @@ void StdInit() {
 }
 
 void tcPlaySound() {
-	if (!(GamePlayMode & GP_MODE_MUSIC_OFF)) {
-		switch (GetCurrentScene()->_eventNr) {
+	if (!(_gamePlayMode & GP_MODE_MUSIC_OFF)) {
+		switch (getCurrentScene()->_eventNr) {
 		case SCENE_PARKER:
 			sndPlaySound("parker.bk", 0);
 			break;
@@ -258,9 +258,9 @@ void tcPlaySound() {
 }
 
 void tcPlayStreetSound() {
-	if (!(GamePlayMode & GP_MODE_MUSIC_OFF)) {
+	if (!(_gamePlayMode & GP_MODE_MUSIC_OFF)) {
 		if (g_clue->getFeatures() & GF_PROFIDISK) {
-			switch (GetCurrentScene()->_eventNr) {
+			switch (getCurrentScene()->_eventNr) {
 			case SCENE_PROFI_21:
 				sndPlaySound("snd21.bk", 0);
 				return;
@@ -316,7 +316,7 @@ void tcPlayStreetSound() {
 }
 
 void ShowTime(uint32 delay) {
-	Common::String time = BuildTime(_film->getMinute());
+	Common::String time = buildTime(_film->getMinute());
 
 	gfxShow(25, GFX_NO_REFRESH | GFX_OVERLAY, delay, -1, -1);
 
@@ -330,14 +330,14 @@ void ShowTime(uint32 delay) {
 
 uint32 StdHandle(uint32 choice) {
 	uint32 succ_eventnr = 0;
-	struct Scene *scene = GetCurrentScene();
+	struct Scene *scene = getCurrentScene();
 
 	switch (choice) {
 	case GP_CHOICE_GO:
 		succ_eventnr = Go(scene->_nextEvents);
 
 		if (succ_eventnr) {
-			uint32 locNr = GetScene(succ_eventnr)->_locationNr;
+			uint32 locNr = getScene(succ_eventnr)->_locationNr;
 
 			if (locNr != (uint32) -1) {
 				uint32 objNr = GetObjNrOfLocation(locNr);
@@ -364,20 +364,20 @@ uint32 StdHandle(uint32 choice) {
 		break;
 	case GP_CHOICE_BUSINESS_TALK:
 		succ_eventnr = Talk();
-		AddVTime(7);
+		addVTime(7);
 		ShowTime(0);
 		break;
 	case GP_CHOICE_LOOK:
-		Look(GetCurrentScene()->_locationNr);
-		AddVTime(1);
+		Look(getCurrentScene()->_locationNr);
+		addVTime(1);
 		ShowTime(0);
 		break;
 	case GP_CHOICE_INVESTIGATE:
-		Investigate(_film->_locationNames->getNthNode(GetCurrentScene()->_locationNr)->_name.c_str());
+		Investigate(_film->_locationNames->getNthNode(getCurrentScene()->_locationNr)->_name.c_str());
 		ShowTime(0);
 		break;
 	case GP_CHOICE_MAKE_CALL:
-		AddVTime(4);
+		addVTime(4);
 		succ_eventnr = tcTelefon();
 		ShowTime(0);
 		break;
@@ -387,10 +387,10 @@ uint32 StdHandle(uint32 choice) {
 			sndPlayFX();
 		}
 
-		succ_eventnr = GetLocScene(8)->_eventNr; /* taxi */
+		succ_eventnr = getLocScene(8)->_eventNr; /* taxi */
 		break;
 	case GP_CHOICE_PLAN:
-		if (!(GamePlayMode & GP_MODE_DEMO)) {
+		if (!(_gamePlayMode & GP_MODE_DEMO)) {
 			StopAnim();
 
 			_film->_storyIsRunning = GP_STORY_PLAN;
@@ -413,15 +413,15 @@ uint32 StdHandle(uint32 choice) {
 
 					gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
 
-					if (GamePlayMode & GP_MODE_NO_MUSIC_IN_PLANING)
+					if (_gamePlayMode & GP_MODE_NO_MUSIC_IN_PLANING)
 						sndStopSound(0);
 
 					if ((building = tcOrganisation())) {
-						AddVTime(27153);    /* etwas über 15 Tage ! */
+						addVTime(27153);    /* etwas über 15 Tage ! */
 
 						succ_eventnr = tcBurglary(building);
 					} else {
-						AddVTime(443);  /* etwas über 7 Stunden */
+						addVTime(443);  /* etwas über 7 Stunden */
 
 						CurrentBackground = BGD_LONDON;
 						ShowMenuBackground();
@@ -441,7 +441,7 @@ uint32 StdHandle(uint32 choice) {
 		ShowTime(0);
 		break;
 	case GP_CHOICE_INFO:
-		AddVTime(1);
+		addVTime(1);
 		Information();
 		ShowTime(0);
 		break;
@@ -455,7 +455,7 @@ uint32 StdHandle(uint32 choice) {
 	return succ_eventnr;
 }
 
-void StdDone() {
+void stdDone() {
 	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "Mainmenu");
 
 	_sceneArgs._returnValue = 0;
@@ -464,7 +464,7 @@ void StdDone() {
 		if (tcPersonIsHere() && !(_sceneArgs._options & GP_CHOICE_BUSINESS_TALK))
 			_sceneArgs._options |= (GP_CHOICE_BUSINESS_TALK & _film->getEnabledChoices());
 
-		if ((g_clue->getFeatures() & GF_PROFIDISK) && GetCurrentScene()->_eventNr == SCENE_PROFI_26) {
+		if ((g_clue->getFeatures() & GF_PROFIDISK) && getCurrentScene()->_eventNr == SCENE_PROFI_26) {
 			EnvironmentNode *env = (EnvironmentNode *)dbGetObject(Environment_TheClou);
 
 			if (env->PostzugDone)
@@ -504,14 +504,14 @@ void InitTaxiLocations() {
 	RemRelation(Relation_taxi); /* alle Relationen löschen! */
 	AddRelation(Relation_taxi);
 
-	if (GamePlayMode & GP_MODE_DISABLE_STORY) {
+	if (_gamePlayMode & GP_MODE_DISABLE_STORY) {
 		AddTaxiLocation(1); /* cars */
 		AddTaxiLocation(12);    /* aunt */
 		AddTaxiLocation(14);    /* jewels */
 		AddTaxiLocation(27);    /* kenw */
 		AddTaxiLocation(45);    /* bank */
 
-		if (!(GamePlayMode & GP_MODE_DEMO)) {
+		if (!(_gamePlayMode & GP_MODE_DEMO)) {
 			AddTaxiLocation(0); /* holland */
 			AddTaxiLocation(2); /* watling */
 			AddTaxiLocation(10);    /* trafik */
@@ -549,107 +549,107 @@ void InitTaxiLocations() {
 }
 
 void LinkScenes() {
-	GetLocScene(8)->doneFct = DoneTaxi;
-	GetLocScene(51)->doneFct = DoneParking;
-	GetLocScene(50)->doneFct = DoneGarage;
-	GetLocScene(6)->doneFct = DoneTools;
-	GetLocScene(54)->doneFct = DoneDealer;
-	GetLocScene(53)->doneFct = DoneDealer;
-	GetLocScene(52)->doneFct = DoneDealer;
+	getLocScene(8)->doneFct = DoneTaxi;
+	getLocScene(51)->doneFct = DoneParking;
+	getLocScene(50)->doneFct = DoneGarage;
+	getLocScene(6)->doneFct = DoneTools;
+	getLocScene(54)->doneFct = DoneDealer;
+	getLocScene(53)->doneFct = DoneDealer;
+	getLocScene(52)->doneFct = DoneDealer;
 
-	SetFunc(GetScene(SCENE_KASERNE_OUTSIDE), StdInit, tcDoneKaserne);
-	SetFunc(GetScene(SCENE_HOTEL_ROOM), StdInit, DoneHotelRoom);
-	SetFunc(GetScene(SCENE_CREDITS), nullptr, tcDoneCredits);
-	SetFunc(GetScene(SCENE_FREIFAHRT), nullptr, tcDoneFreeTicket);
-	SetFunc(GetScene(SCENE_ARRIVAL), nullptr, tcDoneArrival);
-	SetFunc(GetScene(SCENE_HOTEL_1ST_TIME), nullptr, tcDoneHotelReception);
-	SetFunc(GetScene(SCENE_DANNER), nullptr, tcDoneDanner);
-	SetFunc(GetScene(SCENE_GLUDO_MONEY), nullptr, tcDoneGludoMoney);
-	SetFunc(GetScene(SCENE_MAMI_CALLS), nullptr, tcDoneMamiCalls);
-	SetFunc(GetScene(SCENE_FST_MEET_BRIGGS), nullptr, tcDoneMeetBriggs);
-	SetFunc(GetScene(SCENE_FAHNDUNG), tcInitFahndung, tcDoneFahndung);
-	SetFunc(GetScene(SCENE_GLUDO_SAILOR), nullptr, tcDoneGludoAsSailor);
-	SetFunc(GetScene(SCENE_CALL_BRIGGS), nullptr, tcDoneCallFromBriggs);
-	SetFunc(GetScene(SCENE_1ST_BURG), nullptr, tcDone1stBurglary);
-	SetFunc(GetScene(SCENE_2ND_BURG), nullptr, tcDone2ndBurglary);
-	SetFunc(GetScene(SCENE_3RD_BURG), nullptr, tcDone3rdBurglary);
-	SetFunc(GetScene(SCENE_4TH_BURG), nullptr, tcDone4thBurglary);
-	SetFunc(GetScene(SCENE_5TH_BURG), nullptr, tcDone5thBurglary);
-	SetFunc(GetScene(SCENE_6TH_BURG), nullptr, tcDone6thBurglary);
-	SetFunc(GetScene(SCENE_7TH_BURG), nullptr, tcDone7thBurglary);
-	SetFunc(GetScene(SCENE_8TH_BURG), nullptr, tcDone8thBurglary);
-	SetFunc(GetScene(SCENE_9TH_BURG), nullptr, tcDone9thBurglary);
-	SetFunc(GetScene(SCENE_ARRESTED_MATT), nullptr, tcDoneMattIsArrested);
+	SetFunc(getScene(SCENE_KASERNE_OUTSIDE), stdInit, tcDoneKaserne);
+	SetFunc(getScene(SCENE_HOTEL_ROOM), stdInit, DoneHotelRoom);
+	SetFunc(getScene(SCENE_CREDITS), nullptr, tcDoneCredits);
+	SetFunc(getScene(SCENE_FREIFAHRT), nullptr, tcDoneFreeTicket);
+	SetFunc(getScene(SCENE_ARRIVAL), nullptr, tcDoneArrival);
+	SetFunc(getScene(SCENE_HOTEL_1ST_TIME), nullptr, tcDoneHotelReception);
+	SetFunc(getScene(SCENE_DANNER), nullptr, tcDoneDanner);
+	SetFunc(getScene(SCENE_GLUDO_MONEY), nullptr, tcDoneGludoMoney);
+	SetFunc(getScene(SCENE_MAMI_CALLS), nullptr, tcDoneMamiCalls);
+	SetFunc(getScene(SCENE_FST_MEET_BRIGGS), nullptr, tcDoneMeetBriggs);
+	SetFunc(getScene(SCENE_FAHNDUNG), tcInitFahndung, tcDoneFahndung);
+	SetFunc(getScene(SCENE_GLUDO_SAILOR), nullptr, tcDoneGludoAsSailor);
+	SetFunc(getScene(SCENE_CALL_BRIGGS), nullptr, tcDoneCallFromBriggs);
+	SetFunc(getScene(SCENE_1ST_BURG), nullptr, tcDone1stBurglary);
+	SetFunc(getScene(SCENE_2ND_BURG), nullptr, tcDone2ndBurglary);
+	SetFunc(getScene(SCENE_3RD_BURG), nullptr, tcDone3rdBurglary);
+	SetFunc(getScene(SCENE_4TH_BURG), nullptr, tcDone4thBurglary);
+	SetFunc(getScene(SCENE_5TH_BURG), nullptr, tcDone5thBurglary);
+	SetFunc(getScene(SCENE_6TH_BURG), nullptr, tcDone6thBurglary);
+	SetFunc(getScene(SCENE_7TH_BURG), nullptr, tcDone7thBurglary);
+	SetFunc(getScene(SCENE_8TH_BURG), nullptr, tcDone8thBurglary);
+	SetFunc(getScene(SCENE_9TH_BURG), nullptr, tcDone9thBurglary);
+	SetFunc(getScene(SCENE_ARRESTED_MATT), nullptr, tcDoneMattIsArrested);
 
-	SetFunc(GetScene(SCENE_POOLY_AFRAID), nullptr, tcDoneDealerIsAfraid);
-	SetFunc(GetScene(SCENE_MALOYA_AFRAID), nullptr, tcDoneDealerIsAfraid);
-	SetFunc(GetScene(SCENE_PARKER_AFRAID), nullptr, tcDoneDealerIsAfraid);
-	SetFunc(GetScene(SCENE_RAID), nullptr, tcDoneRaidInWalrus);
-	SetFunc(GetScene(SCENE_DART), nullptr, tcDoneDartJager);
-	SetFunc(GetScene(SCENE_CALL_FROM_POOLY), nullptr, tcDoneCallFromPooly);
+	SetFunc(getScene(SCENE_POOLY_AFRAID), nullptr, tcDoneDealerIsAfraid);
+	SetFunc(getScene(SCENE_MALOYA_AFRAID), nullptr, tcDoneDealerIsAfraid);
+	SetFunc(getScene(SCENE_PARKER_AFRAID), nullptr, tcDoneDealerIsAfraid);
+	SetFunc(getScene(SCENE_RAID), nullptr, tcDoneRaidInWalrus);
+	SetFunc(getScene(SCENE_DART), nullptr, tcDoneDartJager);
+	SetFunc(getScene(SCENE_CALL_FROM_POOLY), nullptr, tcDoneCallFromPooly);
 
-	SetFunc(GetScene(SCENE_GLUDO_BURNS), nullptr, tcDoneGludoBurnsOffice);
-	SetFunc(GetScene(SCENE_MORNING), nullptr, tcDoneBeautifullMorning);
-	SetFunc(GetScene(SCENE_VISITING), nullptr, tcDoneVisitingSabien);
-	SetFunc(GetScene(SCENE_A_DREAM), nullptr, tcDoneADream);
-	SetFunc(GetScene(SCENE_ROSENBLATT), nullptr, tcMeetingRosenblatt);
-	SetFunc(GetScene(SCENE_BRIGGS_ANGRY), nullptr, tcBriggsAngry);
-	SetFunc(GetScene(SCENE_SABIEN_WALRUS), nullptr, tcSabienInWalrus);
-	SetFunc(GetScene(SCENE_SABIEN_DINNER), nullptr, tcSabienDinner);
-	SetFunc(GetScene(SCENE_TOMBOLA), nullptr, tcWalrusTombola);
-	SetFunc(GetScene(SCENE_PRESENT_HOTEL), nullptr, tcPresentInHotel);
-	SetFunc(GetScene(SCENE_INFO_TOWER), nullptr, tcPoliceInfoTower);
-	SetFunc(GetScene(SCENE_RAINY_EVENING), nullptr, tcRainyEvening);
-	SetFunc(GetScene(SCENE_MEETING_AGAIN), nullptr, tcDoneMeetingAgain);
+	SetFunc(getScene(SCENE_GLUDO_BURNS), nullptr, tcDoneGludoBurnsOffice);
+	SetFunc(getScene(SCENE_MORNING), nullptr, tcDoneBeautifullMorning);
+	SetFunc(getScene(SCENE_VISITING), nullptr, tcDoneVisitingSabien);
+	SetFunc(getScene(SCENE_A_DREAM), nullptr, tcDoneADream);
+	SetFunc(getScene(SCENE_ROSENBLATT), nullptr, tcMeetingRosenblatt);
+	SetFunc(getScene(SCENE_BRIGGS_ANGRY), nullptr, tcBriggsAngry);
+	SetFunc(getScene(SCENE_SABIEN_WALRUS), nullptr, tcSabienInWalrus);
+	SetFunc(getScene(SCENE_SABIEN_DINNER), nullptr, tcSabienDinner);
+	SetFunc(getScene(SCENE_TOMBOLA), nullptr, tcWalrusTombola);
+	SetFunc(getScene(SCENE_PRESENT_HOTEL), nullptr, tcPresentInHotel);
+	SetFunc(getScene(SCENE_INFO_TOWER), nullptr, tcPoliceInfoTower);
+	SetFunc(getScene(SCENE_RAINY_EVENING), nullptr, tcRainyEvening);
+	SetFunc(getScene(SCENE_MEETING_AGAIN), nullptr, tcDoneMeetingAgain);
 
-	SetFunc(GetScene(SCENE_SABIEN_CALL), nullptr, tcDoneSabienCall);
-	SetFunc(GetScene(SCENE_BIRTHDAY), nullptr, tcDoneBirthday);
-	SetFunc(GetScene(SCENE_WALK_WITH), nullptr, tcWalkWithSabien);
-	SetFunc(GetScene(SCENE_AGENT), nullptr, tcDoneAgent);
-	SetFunc(GetScene(SCENE_JAGUAR), nullptr, tcDoneGoAndFetchJaguar);
-	SetFunc(GetScene(SCENE_THINK_OF), nullptr, tcDoneThinkOfSabien);
-	SetFunc(GetScene(SCENE_TERROR), nullptr, tcDoneTerror);
-	SetFunc(GetScene(SCENE_CONFESSING), nullptr, tcDoneConfessingSabien);
+	SetFunc(getScene(SCENE_SABIEN_CALL), nullptr, tcDoneSabienCall);
+	SetFunc(getScene(SCENE_BIRTHDAY), nullptr, tcDoneBirthday);
+	SetFunc(getScene(SCENE_WALK_WITH), nullptr, tcWalkWithSabien);
+	SetFunc(getScene(SCENE_AGENT), nullptr, tcDoneAgent);
+	SetFunc(getScene(SCENE_JAGUAR), nullptr, tcDoneGoAndFetchJaguar);
+	SetFunc(getScene(SCENE_THINK_OF), nullptr, tcDoneThinkOfSabien);
+	SetFunc(getScene(SCENE_TERROR), nullptr, tcDoneTerror);
+	SetFunc(getScene(SCENE_CONFESSING), nullptr, tcDoneConfessingSabien);
 
-	SetFunc(GetScene(SCENE_PRISON), tcInitPrison, tcDonePrison);
+	SetFunc(getScene(SCENE_PRISON), tcInitPrison, tcDonePrison);
 
-	SetFunc(GetScene(SCENE_SOUTH_WITHOUT), nullptr, tcDoneSouthhamptonWithoutSabien);
-	SetFunc(GetScene(SCENE_SOUTH_UNKNOWN), nullptr, tcDoneSouthhamptonSabienUnknown);
-	SetFunc(GetScene(SCENE_SOUTHHAMPTON), StdInit, tcDoneSouthhampton);
+	SetFunc(getScene(SCENE_SOUTH_WITHOUT), nullptr, tcDoneSouthhamptonWithoutSabien);
+	SetFunc(getScene(SCENE_SOUTH_UNKNOWN), nullptr, tcDoneSouthhamptonSabienUnknown);
+	SetFunc(getScene(SCENE_SOUTHHAMPTON), stdInit, tcDoneSouthhampton);
 
-	SetFunc(GetScene(SCENE_MISSED_DATE_0), nullptr, tcDoneMissedDate);
-	SetFunc(GetScene(SCENE_MISSED_DATE_1), nullptr, tcDoneMissedDate);
+	SetFunc(getScene(SCENE_MISSED_DATE_0), nullptr, tcDoneMissedDate);
+	SetFunc(getScene(SCENE_MISSED_DATE_1), nullptr, tcDoneMissedDate);
 
-	SetFunc(GetScene(SCENE_VILLA_INSIDE), StdInit, DoneInsideHouse);
-	SetFunc(GetScene(SCENE_KENWO_INSIDE), StdInit, DoneInsideHouse);
+	SetFunc(getScene(SCENE_VILLA_INSIDE), stdInit, DoneInsideHouse);
+	SetFunc(getScene(SCENE_KENWO_INSIDE), stdInit, DoneInsideHouse);
 
-	SetFunc(GetScene(SCENE_TANTE_INSIDE), StdInit, DoneInsideHouse);
-	SetFunc(GetScene(SCENE_JUWEL_INSIDE), StdInit, DoneInsideHouse);
-	SetFunc(GetScene(SCENE_ANTIQ_INSIDE), StdInit, DoneInsideHouse);
-	SetFunc(GetScene(SCENE_TRANS_INSIDE), StdInit, DoneInsideHouse);
-	SetFunc(GetScene(SCENE_SENIO_INSIDE), StdInit, DoneInsideHouse);
-	SetFunc(GetScene(SCENE_KENWO_INSIDE), StdInit, DoneInsideHouse);
-	SetFunc(GetScene(SCENE_HAMHO_INSIDE), StdInit, DoneInsideHouse);
-	SetFunc(GetScene(SCENE_OSTER_INSIDE), StdInit, DoneInsideHouse);
-	SetFunc(GetScene(SCENE_CHISW_INSIDE), StdInit, DoneInsideHouse);
-	SetFunc(GetScene(SCENE_SOTHE_INSIDE), StdInit, DoneInsideHouse);
-	SetFunc(GetScene(SCENE_BRITI_INSIDE), StdInit, DoneInsideHouse);
-	SetFunc(GetScene(SCENE_NATUR_INSIDE), StdInit, DoneInsideHouse);
-	SetFunc(GetScene(SCENE_NATIO_INSIDE), StdInit, DoneInsideHouse);
-	SetFunc(GetScene(SCENE_VICTO_INSIDE), StdInit, DoneInsideHouse);
-	SetFunc(GetScene(SCENE_BANKO_INSIDE), StdInit, DoneInsideHouse);
-	SetFunc(GetScene(SCENE_TOWER_INSIDE), StdInit, DoneInsideHouse);
-	SetFunc(GetScene(SCENE_KASERNE_INSIDE), StdInit, DoneInsideHouse);
+	SetFunc(getScene(SCENE_TANTE_INSIDE), stdInit, DoneInsideHouse);
+	SetFunc(getScene(SCENE_JUWEL_INSIDE), stdInit, DoneInsideHouse);
+	SetFunc(getScene(SCENE_ANTIQ_INSIDE), stdInit, DoneInsideHouse);
+	SetFunc(getScene(SCENE_TRANS_INSIDE), stdInit, DoneInsideHouse);
+	SetFunc(getScene(SCENE_SENIO_INSIDE), stdInit, DoneInsideHouse);
+	SetFunc(getScene(SCENE_KENWO_INSIDE), stdInit, DoneInsideHouse);
+	SetFunc(getScene(SCENE_HAMHO_INSIDE), stdInit, DoneInsideHouse);
+	SetFunc(getScene(SCENE_OSTER_INSIDE), stdInit, DoneInsideHouse);
+	SetFunc(getScene(SCENE_CHISW_INSIDE), stdInit, DoneInsideHouse);
+	SetFunc(getScene(SCENE_SOTHE_INSIDE), stdInit, DoneInsideHouse);
+	SetFunc(getScene(SCENE_BRITI_INSIDE), stdInit, DoneInsideHouse);
+	SetFunc(getScene(SCENE_NATUR_INSIDE), stdInit, DoneInsideHouse);
+	SetFunc(getScene(SCENE_NATIO_INSIDE), stdInit, DoneInsideHouse);
+	SetFunc(getScene(SCENE_VICTO_INSIDE), stdInit, DoneInsideHouse);
+	SetFunc(getScene(SCENE_BANKO_INSIDE), stdInit, DoneInsideHouse);
+	SetFunc(getScene(SCENE_TOWER_INSIDE), stdInit, DoneInsideHouse);
+	SetFunc(getScene(SCENE_KASERNE_INSIDE), stdInit, DoneInsideHouse);
 
 	if (g_clue->getFeatures() & GF_PROFIDISK) {
-		SetFunc(GetScene(SCENE_PROFI_21_INSIDE), StdInit, DoneInsideHouse);
-		SetFunc(GetScene(SCENE_PROFI_22_INSIDE), StdInit, DoneInsideHouse);
-		SetFunc(GetScene(SCENE_PROFI_23_INSIDE), StdInit, DoneInsideHouse);
-		SetFunc(GetScene(SCENE_PROFI_24_INSIDE), StdInit, DoneInsideHouse);
-		SetFunc(GetScene(SCENE_PROFI_25_INSIDE), StdInit, DoneInsideHouse);
-		/* SetFunc( GetScene(SCENE_PROFI_26_INSIDE),StdInit, DoneInsideHouse); */
-		SetFunc(GetScene(SCENE_PROFI_27_INSIDE), StdInit, DoneInsideHouse);
-		SetFunc(GetScene(SCENE_PROFI_28_INSIDE), StdInit, DoneInsideHouse);
+		SetFunc(getScene(SCENE_PROFI_21_INSIDE), stdInit, DoneInsideHouse);
+		SetFunc(getScene(SCENE_PROFI_22_INSIDE), stdInit, DoneInsideHouse);
+		SetFunc(getScene(SCENE_PROFI_23_INSIDE), stdInit, DoneInsideHouse);
+		SetFunc(getScene(SCENE_PROFI_24_INSIDE), stdInit, DoneInsideHouse);
+		SetFunc(getScene(SCENE_PROFI_25_INSIDE), stdInit, DoneInsideHouse);
+		/* SetFunc( getScene(SCENE_PROFI_26_INSIDE),stdInit, DoneInsideHouse); */
+		SetFunc(getScene(SCENE_PROFI_27_INSIDE), stdInit, DoneInsideHouse);
+		SetFunc(getScene(SCENE_PROFI_28_INSIDE), stdInit, DoneInsideHouse);
 	}
 }
 

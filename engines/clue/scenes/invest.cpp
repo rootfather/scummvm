@@ -58,7 +58,7 @@ void Investigate(const char *location) {
 		}
 	}
 
-	if (!(GamePlayMode & GP_MODE_MUSIC_OFF))
+	if (!(_gamePlayMode & GP_MODE_MUSIC_OFF))
 		sndPlaySound("invest.bk", 0);
 
 	inpTurnESC(false);
@@ -96,7 +96,7 @@ void Investigate(const char *location) {
 	/* bis zur 1. Meldung Zeit vergehen lassen! */
 	NewNode *nextMsg;
 	for (nextMsg = nullptr; nextMsg == nullptr;) {
-		Common::String c_time = BuildTime(_film->getMinute());
+		Common::String c_time = buildTime(_film->getMinute());
 
 		if (!(_film->getMinute() % 60))
 			ShowTime(0);
@@ -107,7 +107,7 @@ void Investigate(const char *location) {
 		}
 
 		if (!nextMsg)
-			AddVTime(1);
+			addVTime(1);
 
 		if (_film->getMinute() % patrolCount == 0)
 			choice = tcShowPatrol(bubble_l, c_time, patr, first++, bui, raise);
@@ -124,7 +124,7 @@ void Investigate(const char *location) {
 		if ((_film->getMinute() % 60) == 0)
 			ShowTime(0);
 
-		Common::String c_time = BuildTime(_film->getMinute());
+		Common::String c_time = buildTime(_film->getMinute());
 
 		/* je nach Bewachungsgrad Meldung : "Patrolie" einsetzen ! */
 		if ((_film->getMinute() % patrolCount) == 0)
@@ -158,7 +158,7 @@ void Investigate(const char *location) {
 		if (g_clue->calcRandomNr(0, 6) == 1)
 			tcAddBuildStrike(bui, 1);
 
-		AddVTime(1);
+		addVTime(1);
 		minutes++;
 
 		if (!choice)
@@ -191,10 +191,10 @@ void Investigate(const char *location) {
 	inpSetWaitTicks(0);
 	ShowTime(0);
 
-	if (!(GamePlayMode & GP_MODE_MUSIC_OFF))
+	if (!(_gamePlayMode & GP_MODE_MUSIC_OFF))
 		tcPlayStreetSound();
 
-	if (GamePlayMode & GP_MODE_DEMO) {
+	if (_gamePlayMode & GP_MODE_DEMO) {
 		uint8 palette[GFX_PALETTE_SIZE];
 
 		SuspendAnim();

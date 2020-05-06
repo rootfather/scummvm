@@ -253,7 +253,7 @@ void plPrepareSys(uint32 currPer, uint32 objId, byte sysMode) {
 			plBuildHandler(node);
 	}
 
-	if ((sysMode & PLANING_GUARDS_LOAD) && PersonsNr > BurglarsNr && !(GamePlayMode & GP_MODE_LEVEL_DESIGN)) {
+	if ((sysMode & PLANING_GUARDS_LOAD) && PersonsNr > BurglarsNr && !(_gamePlayMode & GP_MODE_LEVEL_DESIGN)) {
 		Common::Stream *fh = nullptr;
 
 		startsWithAll(objId, OLF_NORMAL, Object_LSArea);

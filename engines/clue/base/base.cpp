@@ -379,7 +379,7 @@ bool ClueEngine::tcInit() {
 
 	sndInit();
 
-	if (!(GamePlayMode & GP_MODE_NO_SAMPLES))
+	if (!(_gamePlayMode & GP_MODE_NO_SAMPLES))
 		sndInitFX();
 
 	inpOpenAllInputDevs();
@@ -742,28 +742,28 @@ static void parseOptions(int argc, char *argv[]) {
 
 			case 't':
 				if (OptionSet(s + 2, 'd'))
-					GamePlayMode |= GP_MODE_DEMO | GP_MODE_DISABLE_STORY;
+					_gamePlayMode |= GP_MODE_DEMO | GP_MODE_DISABLE_STORY;
 
 				if (OptionSet(s + 2, 's'))
-					GamePlayMode |= GP_MODE_DISABLE_STORY;
+					_gamePlayMode |= GP_MODE_DISABLE_STORY;
 
 				if (OptionSet(s + 2, 'f'))
-					GamePlayMode |= GP_MODE_FULL_ENV;
+					_gamePlayMode |= GP_MODE_FULL_ENV;
 
 				if (OptionSet(s + 2, 'l'))
-					GamePlayMode |= GP_MODE_LEVEL_DESIGN;
+					_gamePlayMode |= GP_MODE_LEVEL_DESIGN;
 
 				if (OptionSet(s + 2, 'g'))
-					GamePlayMode |= GP_MODE_GUARD_DESIGN;
+					_gamePlayMode |= GP_MODE_GUARD_DESIGN;
 
 				if (OptionSet(s + 2, 'x'))
-					GamePlayMode |= GP_MODE_NO_SAMPLES;
+					_gamePlayMode |= GP_MODE_NO_SAMPLES;
 
 				if (OptionSet(s + 2, 'c'))
-					GamePlayMode |= GP_MODE_DISABLE_COLLISION;
+					_gamePlayMode |= GP_MODE_DISABLE_COLLISION;
 
 				if (OptionSet(s + 2, 'r'))
-					GamePlayMode |= GP_MODE_SHOW_ROOMS;
+					_gamePlayMode |= GP_MODE_SHOW_ROOMS;
 				break;
 			}
 		}

@@ -48,8 +48,8 @@ void tcSaveTheClou() {
 
 	if (activ != GET_OUT) {
 		char location[TXT_KEY_LENGTH];
-		strcpy(location, GetCurrLocName().c_str());
-		Common::String date = BuildDate(_film->getDay());
+		strcpy(location, getCurrLocName().c_str());
+		Common::String date = buildDate(_film->getDay());
 
 		tcCutName(location, (byte) ' ', 15);
 
@@ -213,7 +213,7 @@ void tcRefreshAfterLoad(bool loaded) {
 		_film->setTime(player->CurrMinute);
 		_film->setLocation((uint32)-1);    /* auf alle Fälle ein Refresh! */
 
-		_sceneArgs._returnValue = GetLocScene(player->CurrLocation)->_eventNr;
+		_sceneArgs._returnValue = getLocScene(player->CurrLocation)->_eventNr;
 	}
 }
 
@@ -249,7 +249,7 @@ bool tcLoadChangesInScenes(const char *fileName) {
 			dskGetLine_U32(file, &eventNr);
 			dskGetLine_U16(file, &count);
 
-			struct Scene *sc = GetScene(eventNr);
+			struct Scene *sc = getScene(eventNr);
 			if (sc)
 				sc->_occurrence = count;
 			else

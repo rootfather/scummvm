@@ -61,7 +61,7 @@ void tcDealerDlg() {
 
 			if (ObjectList->isEmpty()) {
 				Say(BUSINESS_TXT, 0, dealer->PictID, "NO_LOOT");
-				AddVTime(17);
+				addVTime(17);
 			} else
 				tcDealerOffer(dealer, dealerNr);
 			break;
@@ -71,7 +71,7 @@ void tcDealerDlg() {
 		}
 	}
 
-	AddVTime(11);
+	addVTime(11);
 	ShowTime(2);
 }
 

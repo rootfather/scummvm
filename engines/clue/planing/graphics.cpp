@@ -59,7 +59,7 @@ void plDisplayTimer(uint32 time, bool doSpotsImmediatly) {
 	if (!time)
 		time = CurrentTimer(plSys) / PLANING_CORRECT_TIME;
 
-	if (GamePlayMode & GP_MODE_GUARD_DESIGN) {
+	if (_gamePlayMode & GP_MODE_GUARD_DESIGN) {
 		Common::String info = Common::String::format("x:%d, y:%d   %s %.2d:%.2d:%.2d %s",
 		        livGetXPos(Planing_Name[CurrentPerson]), livGetYPos(Planing_Name[CurrentPerson]), txtTimer.c_str(),
 		        (uint32)(time / 3600), (uint32)((time / 60) % 60), (uint32)(time % 60), txtSeconds.c_str());

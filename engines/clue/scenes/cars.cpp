@@ -96,7 +96,7 @@ void tcBuyCar() {
 				if (Present(bubble->getNthNode((uint32) choice)->_nr, "Car", InitCarPresent)) {
 					choice1 = Say(BUSINESS_TXT, 0, MATT_PICTID, "AUTOKAUF");
 
-					AddVTime(7);
+					addVTime(7);
 
 					if (choice1 == 1) {
 						uint32 price = tcGetCarPrice(matts_car);
@@ -211,7 +211,7 @@ void tcColorCar(CarNode *car) {
 		colors->removeList();
 	}
 
-	AddVTime(137);
+	addVTime(137);
 }
 
 void tcSellCar(uint32 ObjectID) {
@@ -237,7 +237,7 @@ void tcSellCar(uint32 ObjectID) {
 	}
 
 	gfxShow(27, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1);
-	AddVTime(97);
+	addVTime(97);
 }
 
 void tcRepairCar(CarNode *car, const char *repairWhat) {
@@ -280,7 +280,7 @@ void tcRepairCar(CarNode *car, const char *repairWhat) {
 	while (!(choice & INP_LBUTTONP) && enough && (!ready)) {
 		uint16 line = 0;
 
-		AddVTime(3);
+		addVTime(3);
 
 		AddPresentTextLine(presentationData, nullptr, 0, list, line++);
 

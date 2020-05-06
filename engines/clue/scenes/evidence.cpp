@@ -45,7 +45,7 @@ static bool tcCarFound(CarNode *car, uint32 time) {
 			int32 i = 0;
 
 			while ((i++) < hours) {
-				AddVTime(60);
+				addVTime(60);
 				inpDelay(35);
 				ShowTime(2);
 			}
@@ -219,7 +219,7 @@ bool tcStartEvidence() {
 		if (shown) {
 			ShowTime(0);
 			inpDelay(35);
-			AddVTime(g_clue->calcRandomNr(1, 11));
+			addVTime(g_clue->calcRandomNr(1, 11));
 
 			shown = false;
 		}
@@ -401,7 +401,7 @@ bool tcPersonWanted(uint32 persId) {
 
 	uint32 i = 0;
 	while ((i++) < hours) {
-		AddVTime(60);
+		addVTime(60);
 		inpDelay(35);
 		ShowTime(2);
 	}

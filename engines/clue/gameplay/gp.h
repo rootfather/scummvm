@@ -138,35 +138,35 @@ struct Conditions {
 
 /* global functions */
 void initStory(const char *story_filename);
-extern void CloseStory();
+extern void closeStory();
 
-extern uint32 PlayStory();
-extern void PatchStory();
+extern uint32 playStory();
+extern void patchStory();
 
-extern void StdDone();
-extern void StdInit();
+extern void stdDone();
+extern void stdInit();
 
-extern void RefreshCurrScene();
-extern void SetCurrentScene(Scene *scene);
+extern void refreshCurrScene();
+extern void setCurrentScene(Scene *scene);
 
-extern Common::String GetCurrLocName();
+extern Common::String getCurrLocName();
 
-Common::String BuildDate(uint32 days);
-Common::String BuildTime(uint32 min);
-Common::String FormatDigit(uint32 digit);
+Common::String buildDate(uint32 days);
+Common::String buildTime(uint32 min);
+Common::String formatDigit(uint32 digit);
 
-extern Scene *GetCurrentScene();
-extern Scene *GetLocScene(uint32 locNr);
-extern Scene *GetScene(uint32 EventNr);
+extern Scene *getCurrentScene();
+extern Scene *getLocScene(uint32 locNr);
+extern Scene *getScene(uint32 EventNr);
 
-extern void AddVTime(uint32 Zeit);
+extern void addVTime(uint32 time);
 
-extern void LinkScenes();   /* Init und Done in jeder Scene Struktur setzen */
+extern void linkScenes();   /* set init and done in each scene */
 
 extern SceneArgs _sceneArgs;
 extern Film *_film;
-extern uint32 GamePlayMode;
-extern byte RefreshMode;
+extern uint32 _gamePlayMode;
+extern byte _refreshMode;
 
 } // End of namespace Clue
 
