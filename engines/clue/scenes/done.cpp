@@ -111,15 +111,16 @@ void DoneInsideHouse() {
 			uint32 choice = (uint32) 1 << activ;
 
 			switch (choice) {
-			case LOOK:
+			case GP_CHOICE_LOOK:
 				tcInsideOfHouse(buildingID, areaID, perc);
 				ShowMenuBackground();
 				tcRefreshLocationInTitle(_film->getLocation());
 				AddVTime(19);
 				ShowTime(0);
 				break;
-			case GO:
-				if (!(areaID = tcGoInsideOfHouse(buildingID)))
+			case GP_CHOICE_GO:
+				areaID = tcGoInsideOfHouse(buildingID);
+				if (!areaID)
 					_sceneArgs._returnValue = GetCurrentScene()->_nextEvents->getListHead()->_eventNr;
 				else {
 					lsSetRelations(areaID);
@@ -166,7 +167,7 @@ void DoneTools() {
 
 		uint32 choice = (uint32) 1 << (activ);
 
-		if (choice == BUSINESS_TALK) {
+		if (choice == GP_CHOICE_BUSINESS_TALK) {
 			tcToolsShop();
 			AddVTime(9);
 			ShowTime(0);
@@ -207,7 +208,7 @@ void DoneDealer() {
 
 		uint32 choice = (uint32) 1 << (activ);
 
-		if (choice == BUSINESS_TALK)
+		if (choice == GP_CHOICE_BUSINESS_TALK)
 			tcDealerDlg();
 		else
 			_sceneArgs._returnValue = StdHandle(choice);
@@ -235,12 +236,12 @@ void DoneParking() {
 		inpTurnFunctionKey(false);  /* or call save functions in case of space */
 		inpTurnESC(false);
 
-		activ = Menu(menu, _sceneArgs._options, (byte)(activ), 0, 0);
+		activ = Menu(menu, _sceneArgs._options, (byte)activ, nullptr, 0);
 
 		inpTurnESC(true);
 		inpTurnFunctionKey(true);
 
-		if ((1 << activ) == BUSINESS_TALK) {
+		if ((1 << activ) == GP_CHOICE_BUSINESS_TALK) {
 			byte choice = 0;
 
 			while (choice != 2) {
@@ -253,8 +254,8 @@ void DoneParking() {
 					choice = 2;
 					break;
 				case 1: {
-					uint32 carID;
-					if ((carID = tcChooseCar(27))) {
+					uint32 carID = tcChooseCar(27);
+					if (carID) {
 						tcSellCar(carID);
 						AddVTime(11);
 					} else {
@@ -302,16 +303,16 @@ void DoneGarage() {
 
 		uint32 choice = (uint32) 1 << activ;
 
-		if (choice == BUSINESS_TALK) {
-			uint32 carID;
-			if ((carID = tcChooseCar(26))) {
+		if (choice == GP_CHOICE_BUSINESS_TALK) {
+			uint32 carID = tcChooseCar(26);
+			if (carID) {
 				tcCarInGarage(carID);
 				AddVTime(9);
 				ShowTime(0);
 			} else {
 				Say(BUSINESS_TXT, 0, marc->PictID, "REPAIR_HERE");
 				inpTurnESC(false);
-				_sceneArgs._returnValue = StdHandle(GO);
+				_sceneArgs._returnValue = StdHandle(GP_CHOICE_GO);
 				inpTurnESC(true);
 			}
 		} else {
@@ -339,7 +340,7 @@ void tcDoneFahndung() {
 		tcDonePrison();
 		_sceneArgs._returnValue = SCENE_NEW_GAME;
 	} else {
-		switch (((PlayerNode *)(dbGetObject(Player_Player_1)))->NrOfBurglaries) {
+		switch (((PlayerNode *)dbGetObject(Player_Player_1))->NrOfBurglaries) {
 		case 3:
 			_sceneArgs._returnValue = SCENE_STATION;
 			break;
@@ -352,7 +353,7 @@ void tcDoneFahndung() {
 	if (tcIsDeadlock())
 		_sceneArgs._returnValue = SCENE_NEW_GAME;
 
-	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
+	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, nullptr);
 }
 
 /*
@@ -363,9 +364,8 @@ void tcDoneFahndung() {
 void DoneHotelRoom() {
 	tcCheckForBones();
 
-	if (g_clue->getFeatures() & GF_PROFIDISK) {
+	if (g_clue->getFeatures() & GF_PROFIDISK)
 		tcCheckForDowning();
-	}
 
 	StdDone();
 }

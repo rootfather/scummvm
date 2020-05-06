@@ -190,7 +190,7 @@ void StdInit() {
 }
 
 void tcPlaySound() {
-	if (!(GamePlayMode & GP_MUSIC_OFF)) {
+	if (!(GamePlayMode & GP_MODE_MUSIC_OFF)) {
 		switch (GetCurrentScene()->_eventNr) {
 		case SCENE_PARKER:
 			sndPlaySound("parker.bk", 0);
@@ -258,7 +258,7 @@ void tcPlaySound() {
 }
 
 void tcPlayStreetSound() {
-	if (!(GamePlayMode & GP_MUSIC_OFF)) {
+	if (!(GamePlayMode & GP_MODE_MUSIC_OFF)) {
 		if (g_clue->getFeatures() & GF_PROFIDISK) {
 			switch (GetCurrentScene()->_eventNr) {
 			case SCENE_PROFI_21:
@@ -333,7 +333,7 @@ uint32 StdHandle(uint32 choice) {
 	struct Scene *scene = GetCurrentScene();
 
 	switch (choice) {
-	case GO:
+	case GP_CHOICE_GO:
 		succ_eventnr = Go(scene->_nextEvents);
 
 		if (succ_eventnr) {
@@ -362,26 +362,26 @@ uint32 StdHandle(uint32 choice) {
 			}
 		}
 		break;
-	case BUSINESS_TALK:
+	case GP_CHOICE_BUSINESS_TALK:
 		succ_eventnr = Talk();
 		AddVTime(7);
 		ShowTime(0);
 		break;
-	case LOOK:
+	case GP_CHOICE_LOOK:
 		Look(GetCurrentScene()->_locationNr);
 		AddVTime(1);
 		ShowTime(0);
 		break;
-	case INVESTIGATE:
+	case GP_CHOICE_INVESTIGATE:
 		Investigate(_film->_locationNames->getNthNode(GetCurrentScene()->_locationNr)->_name.c_str());
 		ShowTime(0);
 		break;
-	case MAKE_CALL:
+	case GP_CHOICE_MAKE_CALL:
 		AddVTime(4);
 		succ_eventnr = tcTelefon();
 		ShowTime(0);
 		break;
-	case CALL_TAXI:
+	case GP_CHOICE_CALL_TAXI:
 		if (g_clue->calcRandomNr(0, 10) == 1) {
 			sndPrepareFX("taxi.voc");
 			sndPlayFX();
@@ -389,8 +389,8 @@ uint32 StdHandle(uint32 choice) {
 
 		succ_eventnr = GetLocScene(8)->_eventNr; /* taxi */
 		break;
-	case PLAN:
-		if (!(GamePlayMode & GP_DEMO)) {
+	case GP_CHOICE_PLAN:
+		if (!(GamePlayMode & GP_MODE_DEMO)) {
 			StopAnim();
 
 			_film->_storyIsRunning = GP_STORY_PLAN;
@@ -413,7 +413,7 @@ uint32 StdHandle(uint32 choice) {
 
 					gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
 
-					if (GamePlayMode & GP_NO_MUSIC_IN_PLANING)
+					if (GamePlayMode & GP_MODE_NO_MUSIC_IN_PLANING)
 						sndStopSound(0);
 
 					if ((building = tcOrganisation())) {
@@ -440,12 +440,12 @@ uint32 StdHandle(uint32 choice) {
 		}
 		ShowTime(0);
 		break;
-	case INFO:
+	case GP_CHOICE_INFO:
 		AddVTime(1);
 		Information();
 		ShowTime(0);
 		break;
-	case WAIT:
+	case GP_CHOICE_WAIT:
 		tcWait();
 		break;
 	default:
@@ -462,15 +462,15 @@ void StdDone() {
 
 	while (!_sceneArgs._returnValue) {
 		if (tcPersonIsHere())
-			if (!(_sceneArgs._options & BUSINESS_TALK))
-				_sceneArgs._options |= (BUSINESS_TALK & _film->_enabledChoices);
+			if (!(_sceneArgs._options & GP_CHOICE_BUSINESS_TALK))
+				_sceneArgs._options |= (GP_CHOICE_BUSINESS_TALK & _film->_enabledChoices);
 
 		if (g_clue->getFeatures() & GF_PROFIDISK) {
 			if (GetCurrentScene()->_eventNr == SCENE_PROFI_26) {
 				EnvironmentNode *env = (EnvironmentNode *)dbGetObject(Environment_TheClou);
 
 				if (env->PostzugDone)
-					_sceneArgs._options &= ~INVESTIGATE;
+					_sceneArgs._options &= ~GP_CHOICE_INVESTIGATE;
 			}
 		}
 
@@ -507,14 +507,14 @@ void InitTaxiLocations() {
 	RemRelation(Relation_taxi); /* alle Relationen löschen! */
 	AddRelation(Relation_taxi);
 
-	if (GamePlayMode & GP_STORY_OFF) {
+	if (GamePlayMode & GP_MODE_DISABLE_STORY) {
 		AddTaxiLocation(1); /* cars */
 		AddTaxiLocation(12);    /* aunt */
 		AddTaxiLocation(14);    /* jewels */
 		AddTaxiLocation(27);    /* kenw */
 		AddTaxiLocation(45);    /* bank */
 
-		if (!(GamePlayMode & GP_DEMO)) {
+		if (!(GamePlayMode & GP_MODE_DEMO)) {
 			AddTaxiLocation(0); /* holland */
 			AddTaxiLocation(2); /* watling */
 			AddTaxiLocation(10);    /* trafik */

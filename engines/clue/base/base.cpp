@@ -369,19 +369,17 @@ bool ClueEngine::tcInit() {
 
 	StdBuffer1 = TCAllocMem(STD_BUFFER1_SIZE, true);
 
-	if (!StdBuffer1) {
+	if (!StdBuffer1)
 		return false;
-	}
 	 
-	if (g_clue->getFeatures() & ADGF_CD) {
+	if (g_clue->getFeatures() & ADGF_CD)
 		_cdMgr->install();
-	}
 
 	gfxInit();
 
 	sndInit();
 
-	if (!(GamePlayMode & GP_NO_SAMPLES))
+	if (!(GamePlayMode & GP_MODE_NO_SAMPLES))
 		sndInitFX();
 
 	inpOpenAllInputDevs();
@@ -416,9 +414,8 @@ static void InitData() {
 	char BuildData[DSK_PATH_MAX];
 	char MainRel  [DSK_PATH_MAX];
 	char BuildRel [DSK_PATH_MAX];
-	bool result;
 
-	result = false;
+	bool result = false;
 
 	dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, MAIN_DATA_NAME GAME_DATA_EXT, MainData);
 	dskBuildPathName(DISK_CHECK_FILE, DATA_DIRECTORY, BUILD_DATA_NAME GAME_DATA_EXT, BuildData);
@@ -745,28 +742,28 @@ static void parseOptions(int argc, char *argv[]) {
 
 			case 't':
 				if (OptionSet(s + 2, 'd'))
-					GamePlayMode |= GP_DEMO | GP_STORY_OFF;
+					GamePlayMode |= GP_MODE_DEMO | GP_MODE_DISABLE_STORY;
 
 				if (OptionSet(s + 2, 's'))
-					GamePlayMode |= GP_STORY_OFF;
+					GamePlayMode |= GP_MODE_DISABLE_STORY;
 
 				if (OptionSet(s + 2, 'f'))
-					GamePlayMode |= GP_FULL_ENV;
+					GamePlayMode |= GP_MODE_FULL_ENV;
 
 				if (OptionSet(s + 2, 'l'))
-					GamePlayMode |= GP_LEVEL_DESIGN;
+					GamePlayMode |= GP_MODE_LEVEL_DESIGN;
 
 				if (OptionSet(s + 2, 'g'))
-					GamePlayMode |= GP_GUARD_DESIGN;
+					GamePlayMode |= GP_MODE_GUARD_DESIGN;
 
 				if (OptionSet(s + 2, 'x'))
-					GamePlayMode |= GP_NO_SAMPLES;
+					GamePlayMode |= GP_MODE_NO_SAMPLES;
 
 				if (OptionSet(s + 2, 'c'))
-					GamePlayMode |= GP_COLLISION_CHECKING_OFF;
+					GamePlayMode |= GP_MODE_DISABLE_COLLISION;
 
 				if (OptionSet(s + 2, 'r'))
-					GamePlayMode |= GP_SHOW_ROOMS;
+					GamePlayMode |= GP_MODE_SHOW_ROOMS;
 				break;
 			}
 		}

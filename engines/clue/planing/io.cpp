@@ -95,7 +95,7 @@ NewList<NewNode> *plLoadTools(Common::Stream *fh) {
 byte plOpen(uint32 objId, byte mode, Common::Stream **fh) {
 	static const int Planing_Open[3] = { 0, 1, 0 };
 
-	if (GamePlayMode & GP_GUARD_DESIGN) {
+	if (GamePlayMode & GP_MODE_GUARD_DESIGN) {
 		if (grdInit(fh, Planing_Open[mode], objId, lsGetActivAreaID()))
 			return PLANING_OPEN_OK;
 	} else {
@@ -195,7 +195,7 @@ void plSave(uint32 objId) {
 	Common::Stream *fh = NULL;
 
 	if (plOpen(objId, PLANING_OPEN_WRITE_PLAN, &fh) == PLANING_OPEN_OK) {
-		if (GamePlayMode & GP_GUARD_DESIGN) {
+		if (GamePlayMode & GP_MODE_GUARD_DESIGN) {
 			grdDo(fh, plSys, PersonsList, BurglarsNr, PersonsNr, GUARDS_DO_SAVE);
 		} else {
 			SaveSystem(fh, plSys);
@@ -239,7 +239,7 @@ void plLoad(uint32 objId) {
 		ret = plOpen(objId, PLANING_OPEN_READ_PLAN, &fh);
 
 	if (ret == PLANING_OPEN_OK) {
-		if (GamePlayMode & GP_GUARD_DESIGN)
+		if (GamePlayMode & GP_MODE_GUARD_DESIGN)
 			grdDo(fh, plSys, PersonsList, BurglarsNr, PersonsNr,
 			      GUARDS_DO_LOAD);
 		else {

@@ -79,7 +79,7 @@ void StoryHeader::load(Common::Stream* file) {
 	dskRead_U32LE(file, &_startScene);
 }
 
-void InitStory(const char *story_filename) {
+void initStory(const char *story_filename) {
 	CloseStory();
 
 	_film = new Film;
@@ -140,7 +140,7 @@ void InitLocations() {
 }
 
 void PatchStory() {
-	if (GamePlayMode & GP_DEMO)
+	if (GamePlayMode & GP_MODE_DEMO)
 		return;
 
 	GetScene(SCENE_4TH_BURG)->_cond->_location = 3;  /* 4th Burglary, Hotel room */
@@ -156,7 +156,7 @@ void PatchStory() {
 	GetScene(SCENE_KASERNE_OUTSIDE)->_duration = 17;
 	GetScene(SCENE_KASERNE_INSIDE)->_duration = 57;
 
-	GetScene(SCENE_STATION)->_options |= WAIT;
+	GetScene(SCENE_STATION)->_options |= GP_CHOICE_WAIT;
 
 	if (g_clue->getFeatures() & GF_PROFIDISK)
 		GetScene(SCENE_PROFI_26)->_locationNr = 75;
@@ -180,8 +180,8 @@ uint32 PlayStory() {
 	bool interr_allowed = true;
 	bool first = true;
 
-	if (GamePlayMode & GP_STORY_OFF) {
-		if (GamePlayMode & GP_DEMO)
+	if (GamePlayMode & GP_MODE_DISABLE_STORY) {
+		if (GamePlayMode & GP_MODE_DEMO)
 			curr = GetScene(SCENE_CARS_VANS);
 		else {
 			tcAddPlayerMoney(5000);
@@ -235,7 +235,7 @@ uint32 PlayStory() {
 
 		story_scene = nullptr;
 
-		if (interr_allowed && (!(GamePlayMode & GP_STORY_OFF))) {
+		if (interr_allowed && (!(GamePlayMode & GP_MODE_DISABLE_STORY))) {
 #ifdef DEEP_DEBUG
 			printf("STEP_A1\n");
 #endif

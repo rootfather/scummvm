@@ -423,7 +423,7 @@ static void plActionOpenClose(uint16 what) {
 		if (ChoiceOk(choice1, GET_OUT, actionList)) {
 			choice1 = actionList->getNthNode(choice1)->_nr;
 
-			if (GamePlayMode & GP_LEVEL_DESIGN)
+			if (GamePlayMode & GP_MODE_LEVEL_DESIGN)
 				plLevelDesigner((LSObjectNode*)dbGetObject(choice1));
 			else if ((CurrentPerson >= BurglarsNr) || !CHECK_STATE(lsGetObjectState(choice1), Const_tcIN_PROGRESS_BIT)) {
 				if ((CurrentPerson >= BurglarsNr) || plIgnoreLock(choice1) || CHECK_STATE(lsGetObjectState(choice1), Const_tcLOCK_UNLOCK_BIT)) {
@@ -1026,10 +1026,10 @@ static void plAction() {
 			         BIT(PLANING_ACTION_WAIT) + BIT(PLANING_ACTION_RETURN);
 
 
-			if ((GamePlayMode & GP_GUARD_DESIGN) ? (PersonsNr > 1) : (BurglarsNr > 1))
+			if ((GamePlayMode & GP_MODE_GUARD_DESIGN) ? (PersonsNr > 1) : (BurglarsNr > 1))
 				bitset += BIT(PLANING_ACTION_RADIO);
 
-			if (!(Planing_BldId == Building_Starford_Kaserne) || (GamePlayMode & GP_GUARD_DESIGN))
+			if (!(Planing_BldId == Building_Starford_Kaserne) || (GamePlayMode & GP_MODE_GUARD_DESIGN))
 				bitset += BIT(PLANING_PERSON_CHANGE);
 		} else {
 			bitset = BIT(PLANING_PERSON_WALK) + BIT(PLANING_ACTION_USE) +
@@ -1063,7 +1063,7 @@ static void plAction() {
 		case PLANING_PERSON_CHANGE:
 			plMessage("CHANGE_PERSON_1", PLANING_MSG_REFRESH);
 
-			if (GamePlayMode & GP_GUARD_DESIGN) {
+			if (GamePlayMode & GP_MODE_GUARD_DESIGN) {
 				if (PersonsNr > 2)
 					choice1 = (uint32) Bubble((NewList<NewNode>*)PersonsList, CurrentPerson, nullptr, 0);
 				else
@@ -1355,7 +1355,7 @@ void plPlaner(uint32 objId) {
 	AnimCounter = 0;
 	PlanChanged = false;
 
-	if ((Planing_BldId == Building_Starford_Kaserne) && !(GamePlayMode & GP_LEVEL_DESIGN)) {
+	if ((Planing_BldId == Building_Starford_Kaserne) && !(GamePlayMode & GP_MODE_LEVEL_DESIGN)) {
 		/* in the case of the Starford Barracks the plan must be loaded */
 		plLoad(Planing_BldId);
 
@@ -1396,7 +1396,7 @@ void plPlaner(uint32 objId) {
 			break;
 
 		case PLANING_SAVE:
-			if (!(GamePlayMode & GP_GUARD_DESIGN) && !plAllInCar(objId))
+			if (!(GamePlayMode & GP_MODE_GUARD_DESIGN) && !plAllInCar(objId))
 				plSay("PLAN_NOT_FINISHED", 0);
 
 			plSave(objId);

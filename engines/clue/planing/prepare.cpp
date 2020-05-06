@@ -131,7 +131,6 @@ void plPrepareSprite(uint32 livNr, uint32 areaId) {
 		livAnimate(Planing_Name[livNr], ANM_STAND, 0, 0);
 	else {
 		livAnimate(Planing_Name[livNr], ANM_MOVE_DOWN, 0, 0);
-
 		Planing_GuardRoomList[livNr - BurglarsNr] = lsGetRoomsOfArea(areaId);
 	}
 }
@@ -154,8 +153,7 @@ void plPrepareGfx(uint32 objId, byte landscapMode, byte prepareMode) {
 				plPrepareSprite(i, lsGetActivAreaID());
 			else {
 				((PoliceNode *) dbGetObject(PersonsList->getNthNode(i)->_nr))->LivingID = i;
-				plPrepareSprite(i,
-				                isGuardedbyGet(objId, PersonsList->getNthNode(i)->_nr));
+				plPrepareSprite(i, isGuardedbyGet(objId, PersonsList->getNthNode(i)->_nr));
 			}
 		}
 
@@ -181,8 +179,7 @@ void plPrepareRel() {
 	for (dbObjectNode *n = areas->getListHead(); n->_succ; n = (dbObjectNode *)n->_succ) {
 		LSAreaNode *area = (LSAreaNode *)n;
 
-		if (!CloneRelation
-		        (area->ul_ObjectBaseNr + REL_HAS_LOOT_OFFSET, hasLoot_Clone_RelId))
+		if (!CloneRelation(area->ul_ObjectBaseNr + REL_HAS_LOOT_OFFSET, hasLoot_Clone_RelId))
 			ErrorMsg(No_Mem, ERROR_MODULE_PLANING, 0);
 	}
 
@@ -202,8 +199,7 @@ void plPrepareNames() {
 		if (dbIsObject(PersonsList->getNthNode(i)->_nr, Object_Person))
 			sprintf(Planing_Name[i], "Person_%d", i + 1);
 		else
-			sprintf(Planing_Name[i], "Police_%d",
-			        i + 1 + (PLANING_NR_PERSONS - BurglarsNr));
+			sprintf(Planing_Name[i], "Police_%d", i + 1 + (PLANING_NR_PERSONS - BurglarsNr));
 	}
 }
 
@@ -217,14 +213,10 @@ void plPrepareSys(uint32 currPer, uint32 objId, byte sysMode) {
 		delete PersonsList;
 		delete BurglarsList;
 
-		joined_byAll(Person_Matt_Stuvysunt,
-		             OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
-		             Object_Person);
+		joined_byAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Person);
 		PersonsList = ObjectListPrivate;
 
-		joined_byAll(Person_Matt_Stuvysunt,
-		             OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR,
-		             Object_Person);
+		joined_byAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST | OLF_INCLUDE_NAME | OLF_INSERT_STAR, Object_Person);
 		BurglarsList = ObjectListPrivate;
 
 		dbSortObjectList(&PersonsList, dbStdCompareObjects);
@@ -261,15 +253,13 @@ void plPrepareSys(uint32 currPer, uint32 objId, byte sysMode) {
 			plBuildHandler(node);
 	}
 
-	if ((sysMode & PLANING_GUARDS_LOAD) && (PersonsNr > BurglarsNr)
-	        && !(GamePlayMode & GP_LEVEL_DESIGN)) {
-		Common::Stream *fh = NULL;
+	if ((sysMode & PLANING_GUARDS_LOAD) && PersonsNr > BurglarsNr && !(GamePlayMode & GP_MODE_LEVEL_DESIGN)) {
+		Common::Stream *fh = nullptr;
 
 		startsWithAll(objId, OLF_NORMAL, Object_LSArea);
 
 		if (grdInit(&fh, 0, Planing_BldId, ObjectList->getNthNode(0)->_nr))
-			grdDo(fh, plSys, PersonsList, BurglarsNr, PersonsNr,
-			      GUARDS_DO_LOAD);
+			grdDo(fh, plSys, PersonsList, BurglarsNr, PersonsNr, GUARDS_DO_LOAD);
 
 		grdDone(fh);
 	}

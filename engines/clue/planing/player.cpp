@@ -1146,7 +1146,7 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 					case PLANING_PLAYER_PERSON_CHANGE:
 						plMessage("CHANGE_PERSON_2", PLANING_MSG_REFRESH);
 
-						if (GamePlayMode & GP_GUARD_DESIGN) {
+						if (GamePlayMode & GP_MODE_GUARD_DESIGN) {
 							if (PersonsNr > 2)
 								choice1 = (uint32) Bubble((NewList<NewNode>*)PersonsList, CurrentPerson, nullptr, 0);
 							else

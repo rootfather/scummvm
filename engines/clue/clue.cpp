@@ -67,7 +67,7 @@ uint32 ClueEngine::calcRandomNr(uint32 lowLimit, uint32 highLimit) {
 Common::Error ClueEngine::run() {
 
 	if (getFeatures() & ADGF_DEMO)
-		GamePlayMode |= GP_DEMO | GP_STORY_OFF;
+		GamePlayMode |= GP_MODE_DEMO | GP_MODE_DISABLE_STORY;
 
 	if (tcInit()) {
 		uint32 sceneId = SCENE_NEW_GAME;
@@ -92,16 +92,16 @@ Common::Error ClueEngine::run() {
 		while (sceneId == SCENE_NEW_GAME) {
 			byte ret = 0;
 
-			if (!(GamePlayMode & GP_DEMO))
-				InitStory(STORY_DAT);
+			if (!(GamePlayMode & GP_MODE_DEMO))
+				initStory(STORY_DAT);
 			else
-				InitStory(STORY_DAT_DEMO);
+				initStory(STORY_DAT_DEMO);
 
 			while (!ret)
 				ret = startupMenu();
 
 			if (ret != 2) {
-				if (GamePlayMode & GP_FULL_ENV)
+				if (GamePlayMode & GP_MODE_FULL_ENV)
 					setFullEnviroment();
 
 				sceneId = PlayStory();

@@ -58,7 +58,7 @@ void Investigate(const char *location) {
 		}
 	}
 
-	if (!(GamePlayMode & GP_MUSIC_OFF))
+	if (!(GamePlayMode & GP_MODE_MUSIC_OFF))
 		sndPlaySound("invest.bk", 0);
 
 	inpTurnESC(false);
@@ -191,10 +191,10 @@ void Investigate(const char *location) {
 	inpSetWaitTicks(0);
 	ShowTime(0);
 
-	if (!(GamePlayMode & GP_MUSIC_OFF))
+	if (!(GamePlayMode & GP_MODE_MUSIC_OFF))
 		tcPlayStreetSound();
 
-	if (GamePlayMode & GP_DEMO) {
+	if (GamePlayMode & GP_MODE_DEMO) {
 		uint8 palette[GFX_PALETTE_SIZE];
 
 		SuspendAnim();

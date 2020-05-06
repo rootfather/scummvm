@@ -21,25 +21,23 @@
 #ifndef MODULE_GAMEPLAY
 #define MODULE_GAMEPLAY
 
-
-#include "clue/base/base.h"
 #include "clue/story/story.h"
 #include "clue/text.h"
 
 namespace Clue {
 
-#define GO                      (1)
-#define WAIT                    (1<<1)
-#define BUSINESS_TALK           (1<<2)
-#define LOOK                    (1<<3)
-#define INVESTIGATE             (1<<4)
-#define PLAN                    (1<<5)
-#define CALL_TAXI               (1<<6)
-#define MAKE_CALL               (1<<7)
-#define INFO                    (1<<8)
-#define SLEEP                   (1<<9)
+#define GP_CHOICE_GO            (1)
+#define GP_CHOICE_WAIT          (1<<1)
+#define GP_CHOICE_BUSINESS_TALK (1<<2)
+#define GP_CHOICE_LOOK          (1<<3)
+#define GP_CHOICE_INVESTIGATE   (1<<4)
+#define GP_CHOICE_PLAN          (1<<5)
+#define GP_CHOICE_CALL_TAXI     (1<<6)
+#define GP_CHOICE_MAKE_CALL     (1<<7)
+#define GP_CHOICE_INFO          (1<<8)
+#define GP_CHOICE_SLEEP         (1<<9) // Unused
 
-#define GP_ALL_CHOICES_ENABLED  UINT_MAX
+#define GP_ALL_CHOICES          GP_CHOICE_GO + GP_CHOICE_WAIT + GP_CHOICE_BUSINESS_TALK + GP_CHOICE_LOOK + GP_CHOICE_INVESTIGATE + GP_CHOICE_PLAN + GP_CHOICE_CALL_TAXI + GP_CHOICE_MAKE_CALL + GP_CHOICE_INFO + GP_CHOICE_SLEEP
 
 /* Szene kann UNENDLICH oft geschehen */
 #define CAN_ALWAYS_HAPPEN       USHRT_MAX
@@ -50,23 +48,19 @@ namespace Clue {
 #define GP_STORY_TOWN               1
 #define GP_STORY_PLAN               2
 
-#define GP_STORY_OFF              (1)
-#define GP_DEBUG_ON               (1<< 1)
-#define GP_DEMO                   (1<< 2)
-#define GP_LEVEL_DESIGN           (1<< 3)
-#define GP_GUARD_DESIGN           (1<< 4)
-#define GP_COORDINATES            (1<< 5)
-#define GP_DEBUG_PLAYER           (1<< 6)
-#define GP_FULL_ENV               (1<< 7)
-#define GP_MUSIC_OFF              (1<< 8)
-#define GP_NO_MUSIC_IN_PLANING    (1<<10)
-#define GP_NO_SAMPLES             (1<<11)
-#define GP_COLLISION_CHECKING_OFF (1<<12)
-#define GP_SHOW_ROOMS             (1<<13)
-
-/* Zugriffsdefines */
-#define GetFromDay(x)            ((x) >> 16)
-#define GetToDay(x)             (((x) << 16) >> 16)
+#define GP_MODE_DISABLE_STORY        (1)
+// #define GP_DEBUG_ON               (1<< 1) // Unused
+#define GP_MODE_DEMO                 (1<< 2)
+#define GP_MODE_LEVEL_DESIGN         (1<< 3) // CHECKME : Should we keep that? If no : deadcode to be remove. If yes: to be set in the console
+#define GP_MODE_GUARD_DESIGN         (1<< 4) // CHECKME : Should we keep that? If no : deadcode to be remove. If yes: to be set in the console
+// #define GP_COORDINATES            (1<< 5) // Unused
+// #define GP_DEBUG_PLAYER           (1<< 6) // Unused
+#define GP_MODE_FULL_ENV             (1<< 7) // CHECKME: never set (to be confirmed), hiding dead code
+#define GP_MODE_MUSIC_OFF            (1<< 8) // TODO: set this mode based on ScummVM's config
+#define GP_MODE_NO_MUSIC_IN_PLANING  (1<<10) // CHECKME: never set (to be confirmed), hiding dead code
+#define GP_MODE_NO_SAMPLES           (1<<11) // CHECKME: never set, leads to useless check
+#define GP_MODE_DISABLE_COLLISION    (1<<12) // TODO: allow to set this mode in the console
+// #define GP_SHOW_ROOMS             (1<<13) // Unused
 
 class Film {
 public:
@@ -140,7 +134,7 @@ struct Conditions {
 };
 
 /* global functions */
-void InitStory(const char *story_filename);
+void initStory(const char *story_filename);
 extern void CloseStory();
 
 extern uint32 PlayStory();

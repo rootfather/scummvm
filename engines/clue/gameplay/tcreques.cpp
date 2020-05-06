@@ -50,7 +50,7 @@ uint32 ShowTheClouRequester(int32 error_class) {
 
 		inpTurnFunctionKey(false);
 
-		if (GamePlayMode & GP_DEMO)
+		if (GamePlayMode & GP_MODE_DEMO)
 			choices = Menu(menu, 3, 0, nullptr, 0);
 		else
 			choices = Menu(menu, 15, 0, NULL, 0);
