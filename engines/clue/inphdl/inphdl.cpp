@@ -8,6 +8,7 @@
  ****************************************************************************/
 
 #include "clue/base/base.h"
+#include "clue/sound/newsound.h"
 
 #include "common/system.h"
 #include "common/events.h"

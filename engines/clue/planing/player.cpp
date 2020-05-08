@@ -19,6 +19,7 @@
  ****************************************************************************/
 
 #include "clue/base/base.h"
+#include "clue/sound/newsound.h"
 #include "clue/clue.h"
 
 namespace Clue {

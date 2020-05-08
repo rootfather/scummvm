@@ -19,6 +19,7 @@
  ****************************************************************************/
 
 #include "clue/gameplay/gp_app.h"
+#include "clue/sound/newsound.h"
 #include "clue/clue.h"
 
 namespace Clue {

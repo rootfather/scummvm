@@ -22,7 +22,6 @@
 #define MODULE_GAMEPLAY_APP
 
 #include "clue/gameplay/gp.h"
-#include "clue/sound/newsound.h"
 
 namespace Clue {
 

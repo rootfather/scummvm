@@ -19,6 +19,7 @@
  ****************************************************************************/
 
 #include "clue/dialog/talkappl.h"
+#include "clue/sound/newsound.h"
 #include "clue/clue.h"
 #include "clue/cdrom/cdrom.h"
 

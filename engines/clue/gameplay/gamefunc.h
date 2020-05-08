@@ -41,7 +41,8 @@ public:
 	void load(Common::Stream* file);
 };
 
-struct NewScene {
+class NewScene {
+public:
 	uint32 EventNr;
 	uint8 SceneName[20];
 
@@ -68,6 +69,8 @@ struct NewScene {
 	uint32 Sample;          /* Nummer des Samples */
 	uint32 Anim;            /* Nummer der Animation */
 	uint32 NewOrt;          /* Ort der Scene */
+
+	NewScene();
 };
 
 /* Prototypes */
@@ -79,8 +82,8 @@ extern void WriteStory(byte *filename);
 extern void ReadStory(byte *filename);
 
 /* Scenes */
-extern void AddScene(struct NewScene *ns);
-extern void ChangeScene(byte *name, struct NewScene *ns);
+extern void AddScene(NewScene *ns);
+extern void ChangeScene(byte *name, NewScene *ns);
 extern void RemoveScene(byte *name);
 extern void RemoveAllScenes();
 

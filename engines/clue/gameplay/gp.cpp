@@ -47,6 +47,29 @@ byte _refreshMode = 0;
 Film *_film = nullptr;
 SceneArgs _sceneArgs;
 
+NewScene::NewScene() {
+	EventNr = 0;
+	SceneName[0] = '\0';
+	Tag = 0;
+	MinZeitPunkt = 0;
+	MaxZeitPunkt = 0;
+	_location = 0;
+	AnzahlderEvents = 0;
+	AnzahlderN_Events = 0;
+	events = nullptr;
+	n_events = nullptr;
+	AnzahlderNachfolger = 0;
+	nachfolger = nullptr;
+	Moeglichkeiten = 0;
+	Dauer = 0;
+	Anzahl = 0;
+	Geschehen = 0;
+	Possibility = 0;
+	Sample = 0;
+	Anim = 0;
+	NewOrt = 0;
+}
+
 Film::Film() {
 	_amountOfScenes = 0;
 
@@ -406,6 +429,7 @@ void PrepareStory(const char *filename) {
 	delete storyHeader;
 	storyHeader = nullptr;
 	
+	NewScene* NS = nullptr;
 	if (_film->_amountOfScenes) {
 		_film->_gameplay = (Scene*)TCAllocMem(sizeof(Scene) * (_film->_amountOfScenes), 0);
 		if (!_film->_gameplay)
@@ -414,47 +438,48 @@ void PrepareStory(const char *filename) {
 		ErrorMsg(Disk_Defect, ERROR_MODULE_GAMEPLAY, 7);
 
 	for (uint32 i = 0; i < _film->_amountOfScenes; i++) {
-		NewScene NS;
-		LoadSceneforStory(&NS, file);
+		NS = new NewScene;
+		LoadSceneforStory(NS, file);
 
 		Scene *scene = &(_film->_gameplay[i]);
 
-		scene->_eventNr = NS.EventNr;
+		scene->_eventNr = NS->EventNr;
 
-		if (NS.NewOrt == (uint32) -1 || NS.AnzahlderEvents || NS.AnzahlderN_Events) /* Storyszene ? */
-			InitConditions(scene, &NS); /* ja ! -> Bedingungen eintragen */
+		if (NS->NewOrt == (uint32) -1 || NS->AnzahlderEvents || NS->AnzahlderN_Events) /* Storyszene ? */
+			InitConditions(scene, NS); /* ja ! -> Bedingungen eintragen */
 		else
 			_film->_gameplay[i]._cond = nullptr;   /* Spielablaufszene : keine Bedingungen ! */
 		
 		/* Scene Struktur füllen : */
 		scene->doneFct = stdDone;
 		scene->initFct = stdInit;
-		scene->_options = NS.Moeglichkeiten;
-		scene->_duration = NS.Dauer;
-		scene->_quantity = NS.Anzahl;
-		scene->_occurrence = NS.Geschehen;
-		scene->_probability = NS.Possibility;
-		scene->_locationNr = NS.NewOrt;
+		scene->_options = NS->Moeglichkeiten;
+		scene->_duration = NS->Dauer;
+		scene->_quantity = NS->Anzahl;
+		scene->_occurrence = NS->Geschehen;
+		scene->_probability = NS->Possibility;
+		scene->_locationNr = NS->NewOrt;
 
 		/* Nachfolgerliste aufbauen !  */
 		/* Achtung! auch Patch ändern! */
 
-		if (NS.AnzahlderNachfolger) {
+		if (NS->AnzahlderNachfolger) {
 			scene->_nextEvents = new NewList<NewTCEventNode>;
 
-			for (uint32 j = 0; j < NS.AnzahlderNachfolger; j++) {
+			for (uint32 j = 0; j < NS->AnzahlderNachfolger; j++) {
 				NewTCEventNode *node = scene->_nextEvents->createNode(nullptr);
-				node->_eventNr = NS.nachfolger[j];
+				node->_eventNr = NS->nachfolger[j];
 			}
 
-			if (NS.nachfolger)
-				TCFreeMem(NS.nachfolger, sizeof(uint32) * NS.AnzahlderNachfolger);
+			delete[] NS->nachfolger;
+			NS->nachfolger = nullptr;
 		} else
 			scene->_nextEvents = nullptr;
 	}
 
 	/* von den Events muß nichts geladen werden ! */
 	dskClose(file);
+	delete NS;
 }
 
 void InitConditions(Scene *scene, NewScene *ns) {
@@ -470,8 +495,8 @@ void InitConditions(Scene *scene, NewScene *ns) {
 			node->_eventNr = ns->events[i];
 		}
 
-		if (ns->events)
-			TCFreeMem(ns->events, sizeof(uint32) * (ns->AnzahlderEvents));
+		delete[] ns->events;
+		ns->events = nullptr;
 	} else
 		bed->_triggerEvents = nullptr;
 
@@ -483,8 +508,8 @@ void InitConditions(Scene *scene, NewScene *ns) {
 			node->_eventNr = ns->n_events[i];
 		}
 
-		if (ns->n_events)
-			TCFreeMem(ns->n_events, sizeof(uint32) * (ns->AnzahlderN_Events));
+		delete[] ns->n_events;
+		ns->n_events = nullptr;
 	} else
 		bed->_blockerEvents = nullptr;
 
@@ -545,42 +570,30 @@ void LoadSceneforStory(NewScene *dest, Common::Stream *file) {
 	dskRead_U32LE(file, &dest->NewOrt);
 
 	/* allocate mem for events and read them */
-	uint32 *event_nrs;
+	uint32 *event_nrs = nullptr;
 	if (dest->AnzahlderEvents) {
-		event_nrs = (uint32 *) TCAllocMem(sizeof(uint32) * (dest->AnzahlderEvents), 0);
-		if (!event_nrs)
-			ErrorMsg(No_Mem, ERROR_MODULE_GAMEPLAY, 8);
-
-		for (uint32 i = 0; i < dest->AnzahlderEvents; i++)
+		event_nrs = new uint32[dest->AnzahlderEvents];
+		for (uint32 i = 0; i < dest->AnzahlderEvents; ++i)
 			dskRead_U32LE(file, &event_nrs[i]);
-	} else
-		event_nrs = NULL;
-
+	}
 	dest->events = event_nrs;
 
+	event_nrs = nullptr;
 	/* allocate mem for n_events and read them */
 	if (dest->AnzahlderN_Events) {
-		event_nrs = (uint32 *) TCAllocMem(sizeof(uint32) * (dest->AnzahlderN_Events), 0);
-		if (!event_nrs)
-			ErrorMsg(No_Mem, ERROR_MODULE_GAMEPLAY, 9);
-
-		for (uint32 i = 0; i < dest->AnzahlderN_Events; i++)
+		event_nrs = new uint32[dest->AnzahlderN_Events];
+		for (uint32 i = 0; i < dest->AnzahlderN_Events; ++i)
 			dskRead_U32LE(file, &event_nrs[i]);
-	} else
-		event_nrs = NULL;
-
+	}
 	dest->n_events = event_nrs;
 
+	event_nrs = nullptr;
 	/* allocate mem for successors and read them */
 	if (dest->AnzahlderNachfolger) {
-		event_nrs = (uint32 *) TCAllocMem(sizeof(uint32) * (dest->AnzahlderNachfolger), 0);
-		if (!event_nrs)
-			ErrorMsg(No_Mem, ERROR_MODULE_GAMEPLAY, 10);
-
-		for (uint32 i = 0; i < dest->AnzahlderNachfolger; i++)
+		event_nrs = new uint32[dest->AnzahlderNachfolger];
+		for (uint32 i = 0; i < dest->AnzahlderNachfolger; ++i)
 			dskRead_U32LE(file, &event_nrs[i]);
-	} else
-		event_nrs = nullptr;
+	}
 
 	dest->nachfolger = event_nrs;
 }

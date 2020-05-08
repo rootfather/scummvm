@@ -22,7 +22,7 @@
 #include "clue/clue.h"
 #include "clue/sound/hsc.h"
 #include "clue/cdrom/cdrom.h"
-
+#include "clue/sound/newsound.h"
 
 namespace Clue {
 

@@ -19,6 +19,7 @@
  ****************************************************************************/
 
 #include "clue/story/story.h"
+#include "clue/sound/newsound.h"
 #include "clue/clue.h"
 
 namespace Clue {
@@ -1771,7 +1772,7 @@ void tcDoneKaserne() {
 				StopAnim();
 				gfxChangeColors(l_gc, 3, GFX_FADE_OUT, nullptr);
 				_film->setLocation(65);
-				_sceneArgs._options = 265;
+				_sceneArgs._options = 265; // TODO: Set the variable properly, using GP_CHOICE values
 				DoneInsideHouse();
 				tcMattGoesTo(66);
 				break;
