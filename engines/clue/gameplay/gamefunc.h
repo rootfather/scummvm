@@ -28,7 +28,7 @@ class StoryHeader {
 public:
 	byte _storyName[20];
 
-	uint32 _eventCount;      /* Zaehler mit der höchsten EventNr */
+	uint32 _eventCount;      /* Total number of events */
 	uint32 _sceneCount;
 
 	uint32 _amountOfScenes;
@@ -43,56 +43,35 @@ public:
 
 class NewScene {
 public:
-	uint32 EventNr;
-	uint8 SceneName[20];
+	uint32 _eventNr;
+	uint8 _sceneName[20];
 
-	int32 Tag;          /* der Tag an dem sie eintritt */
-	int32 MinZeitPunkt;     /* zeitlicher Bereich in dem    */
-	int32 MaxZeitPunkt;     /* sie eintritt                         */
-	uint32 _location;         /* der erfüllt sein muß                 */
+	int32 _day;			/* the day of occurrence */
+	int32 _minTime;		/* Time range in which it occurs */
+	int32 _maxTime;		/*                               */
+	uint32 _location;	/* mandatory condition */
 
-	uint32 AnzahlderEvents;
-	uint32 AnzahlderN_Events;
+	uint32 _eventCounter;
+	uint32 _blockerEventsCounter;
 
-	uint32 *events;     /* Nr. der Events, die erfüllt sein müssen */
-	uint32 *n_events;       /* Nr. der Events, die nicht erfüllt sein müssen */
+	uint32 *_events;		/* Nr. der Events, die erfüllt sein müssen */
+	uint32 *_blockerEvents;	/* Nr. der Events, die nicht erfüllt sein müssen */
 
-	uint32 AnzahlderNachfolger;
-	uint32 *nachfolger;     /* Nr. der NachfolgerEvents */
+	uint32 _nextEventCounter;
+	uint32 *_nextEvents;	/* Nr. der NachfolgerEvents */
 
-	uint32 Moeglichkeiten;      /* siehe defines oben                   */
-	uint32 Dauer;           /* Dauer dieser Szene in Minuten     */
-	uint16 Anzahl;          /* wie oft sie geschehen kann                */
-	uint16 Geschehen;       /* wie oft sie SCHON geschehen ist */
-	uint8 Possibility;      /* mit der sie eintritt 0-255   */
+	uint32 _options;		/* Based on GP_CHOICEs definition */
+	uint32 _duration;		/* Duration of the scene in minutes */
+	uint16 _quantity;		/* maximum number of occurrences */
+	uint16 _occurrence;		/* number of past occurrences */
+	uint8 _probability;		/* occurrence probability 0-255 */
 
-	uint32 Sample;          /* Nummer des Samples */
-	uint32 Anim;            /* Nummer der Animation */
-	uint32 NewOrt;          /* Ort der Scene */
+	uint32 _sample;			/* Number of Samples (unused)*/
+	uint32 _anim;			/* Number of animations (unused) */
+	uint32 _locationNr;		/* Location of the scene */
 
 	NewScene();
+	~NewScene();
 };
-
-/* Prototypes */
-/* Story */
-extern void NewStory(byte *name, uint32 StartZeit, uint32 StartOrt);
-extern void ChangeStory(uint32 StartZeit, uint32 StartOrt);
-extern void RemoveStory();
-extern void WriteStory(byte *filename);
-extern void ReadStory(byte *filename);
-
-/* Scenes */
-extern void AddScene(NewScene *ns);
-extern void ChangeScene(byte *name, NewScene *ns);
-extern void RemoveScene(byte *name);
-extern void RemoveAllScenes();
-
-/* Events */
-extern void AddEvent(struct NewEvent *ev);
-extern void RemoveEvent(byte *name);
-extern void RemoveAllEvents();
-
-/* Specials */
-char *GetName(uint32 EventNr);
 
 } // End of namespace Clue
