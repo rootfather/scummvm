@@ -24,7 +24,6 @@
 
 namespace Clue {
 
-void InitLocations();
 void FreeLocations();
 
 void InitSceneInfo();
@@ -110,7 +109,7 @@ void initStory(const char *story_filename) {
 	_film->setEnabledChoices(GP_ALL_CHOICES);
 
 	PrepareStory(story_filename);
-	InitLocations();
+	_film->InitLocations();
 	LinkScenes();
 	patchStory();
 }
@@ -144,21 +143,23 @@ void Film::setEnabledChoices(uint32 ChoiceMask) {
 }
 
 void refreshCurrScene() {
-	NewNode *node = _film->_locationNames->getNthNode(_film->getLocation());
+	const uint32 curLoc = _film->getLocation();
+	NewNode *node = _film->_locationNames->getNthNode(curLoc);
 
-	tcRefreshLocationInTitle(_film->getLocation());
+	tcRefreshLocationInTitle(curLoc);
 	PlayAnim(node->_name.c_str(), 30000, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
 
 	RefreshMenu();
 }
 
-void InitLocations() {
+void Film::InitLocations() {
 	NewList<NewTCEventNode> *l = new NewList<NewTCEventNode>;
 	char pathname[DSK_PATH_MAX];
 
 	dskBuildPathName(DISK_CHECK_FILE, TEXT_DIRECTORY, LOCATIONS_TXT, pathname);
 	l->readList(pathname);
-	_film->_locationNames = l;
+
+	_locationNames = l;
 }
 
 void patchStory() {
@@ -314,15 +315,12 @@ uint32 playStory() {
 
 Scene *GetStoryScene(Scene *curr) {
 	for (uint32 i = 0; i < _film->_amountOfScenes; i++) {
-		if (_film->_gameplay[i]._locationNr == (uint32) -1) {
-			Scene *sc = &_film->_gameplay[i];
+		Scene* sc = &_film->_gameplay[i];
+		if (sc->_locationNr == (uint32) -1 && sc != curr) {
+			uint8 j = g_clue->calcRandomNr(0, 255);
 
-			if (sc != curr) {
-				uint8 j = g_clue->calcRandomNr(0, 255);
-
-				if (j <= sc->_probability && sc->CheckConditions())
-					return sc;
-			}
+			if (j <= sc->_probability && sc->CheckConditions())
+				return sc;
 		}
 	}
 

@@ -108,6 +108,7 @@ public:
 	uint32 getEnabledChoices() { return _enabledChoices; }
 
 	void setCurrentScene(Scene* scene);
+	void InitLocations();
 };
 
 struct SceneArgs {
