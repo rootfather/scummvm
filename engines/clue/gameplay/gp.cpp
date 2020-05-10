@@ -31,12 +31,7 @@ void InitSceneInfo();
 void FreeSceneInfo();
 
 void PrepareStory(const char *filename);
-void LoadSceneforStory(NewScene *dest, Common::Stream *file);
-
-void InitConditions(Scene *scene, NewScene *ns);
-void FreeConditions(Scene *scene);
 int32 GetEventCount(uint32 EventNr);
-bool CheckConditions(Scene *scene);
 void EventDidHappen(uint32 EventNr);
 
 Scene *GetStoryScene(Scene *scene);
@@ -132,16 +127,14 @@ void closeStory() {
 
 	for (uint32 i = 0; i < _film->_amountOfScenes; i++) {
 		if (_film->_gameplay[i]._cond)
-			FreeConditions(&_film->_gameplay[i]);
+			_film->_gameplay[i].FreeConditions();
 		if (_film->_gameplay[i]._nextEvents) {
 			delete _film->_gameplay[i]._nextEvents;
 			_film->_gameplay[i]._nextEvents = nullptr;
 		}
 	}
 
-	if (_film->_gameplay)
-		TCFreeMem(_film->_gameplay, sizeof(Scene) * _film->_amountOfScenes);
-
+	delete[] _film->_gameplay;
 	delete _film;
 	_film = nullptr;
 }
@@ -219,12 +212,12 @@ uint32 playStory() {
 	} else
 		curr = getScene(_film->_startScene);
 
-	setCurrentScene(curr);
+	_film->setCurrentScene(curr);
 	_film->setOldLocation(curr->_locationNr);
 	_film->setLocation((uint32) -2);
 
 	while (curr->_eventNr != SCENE_THE_END && curr->_eventNr != SCENE_NEW_GAME) {
-		if (!CheckConditions(curr))
+		if (!curr->CheckConditions())
 			ErrorMsg(Internal_Error, ERROR_MODULE_GAMEPLAY, 2);
 
 		/* Entscheidung für eine Szene getroffen ! */
@@ -308,7 +301,8 @@ uint32 playStory() {
 		} else
 			next = story_scene; /* Unterbrechung durch die Storyszene ! */
 
-		setCurrentScene(curr = next);
+		curr = next;
+		_film->setCurrentScene(curr);
 	}               /* While Schleife */
 
 	_film->_storyIsRunning = GP_STORY_BEFORE;
@@ -326,7 +320,7 @@ Scene *GetStoryScene(Scene *curr) {
 			if (sc != curr) {
 				uint8 j = g_clue->calcRandomNr(0, 255);
 
-				if (j <= sc->_probability && CheckConditions(sc))
+				if (j <= sc->_probability && sc->CheckConditions())
 					return sc;
 			}
 		}
@@ -363,19 +357,19 @@ void EventDidHappen(uint32 EventNr) {
 		++sc->_occurrence;
 }
 
-bool CheckConditions(Scene *scene) {
+bool Scene::CheckConditions() {
 	/* wenn Std Szene, dann muß nichts überprüft werden ! */
 
-	if (scene->_locationNr != (uint32) -1)
+	if (_locationNr != (uint32) -1)
 		return true;
 
 	/* es handelt sich um keine Std Szene -> Überprüfen ! */
 	/* überprüfen, ob Szene nicht schon zu oft geschehen ist ! */
-	if (scene->_quantity != (uint16)CAN_ALWAYS_HAPPEN && scene->_occurrence >= scene->_quantity)
+	if (_quantity != (uint16)CAN_ALWAYS_HAPPEN && _occurrence >= _quantity)
 		return false;
 
 	/* Jetzt die einzelnen Bedingungen überprüfen */
-	Conditions *cond = scene->_cond;
+	Conditions *cond = _cond;
 	if (!cond)
 		return true;
 
@@ -436,22 +430,20 @@ void PrepareStory(const char *filename) {
 	
 	NewScene* NS = nullptr;
 	if (_film->_amountOfScenes) {
-		_film->_gameplay = (Scene*)TCAllocMem(sizeof(Scene) * (_film->_amountOfScenes), 0);
-		if (!_film->_gameplay)
-			ErrorMsg(No_Mem, ERROR_MODULE_GAMEPLAY, 6);
+		_film->_gameplay = new Scene[_film->_amountOfScenes];
 	} else
 		ErrorMsg(Disk_Defect, ERROR_MODULE_GAMEPLAY, 7);
 
 	for (uint32 i = 0; i < _film->_amountOfScenes; i++) {
 		NS = new NewScene;
-		LoadSceneforStory(NS, file);
+		NS->LoadSceneforStory(file);
 
 		Scene *scene = &(_film->_gameplay[i]);
 
 		scene->_eventNr = NS->_eventNr;
 
 		if (NS->_locationNr == (uint32) -1 || NS->_eventCounter || NS->_blockerEventsCounter) /* Storyszene ? */
-			InitConditions(scene, NS); /* ja ! -> Bedingungen eintragen */
+			scene->InitConditions(NS); /* ja ! -> Bedingungen eintragen */
 		else
 			_film->_gameplay[i]._cond = nullptr;   /* Spielablaufszene : keine Bedingungen ! */
 		
@@ -487,120 +479,119 @@ void PrepareStory(const char *filename) {
 	delete NS;
 }
 
-void InitConditions(Scene *scene, NewScene *ns) {
-	Conditions *bed = (Conditions *) TCAllocMem(sizeof(*bed), 0);
+void Scene::InitConditions(NewScene *ns) {
+	Conditions* newCond = new Conditions;
 
-	bed->_location = ns->_location;
+	newCond->_location = ns->_location;
 
 	if (ns->_eventCounter) {
-		bed->_triggerEvents = new NewList<NewTCEventNode>;
+		newCond->_triggerEvents = new NewList<NewTCEventNode>;
 
 		for (uint32 i = 0; i < ns->_eventCounter; i++) {
-			NewTCEventNode *node = bed->_triggerEvents->createNode(nullptr);
+			NewTCEventNode *node = newCond->_triggerEvents->createNode(nullptr);
 			node->_eventNr = ns->_events[i];
 		}
 
 		delete[] ns->_events;
 		ns->_events = nullptr;
 	} else
-		bed->_triggerEvents = nullptr;
+		newCond->_triggerEvents = nullptr;
 
 	if (ns->_blockerEventsCounter) {
-		bed->_blockerEvents = new NewList<NewTCEventNode>;
+		newCond->_blockerEvents = new NewList<NewTCEventNode>;
 
 		for (uint32 i = 0; i < ns->_blockerEventsCounter; i++) {
-			NewTCEventNode *node = bed->_blockerEvents->createNode(nullptr);
+			NewTCEventNode *node = newCond->_blockerEvents->createNode(nullptr);
 			node->_eventNr = ns->_blockerEvents[i];
 		}
 
 		delete[] ns->_blockerEvents;
 		ns->_blockerEvents = nullptr;
 	} else
-		bed->_blockerEvents = nullptr;
+		newCond->_blockerEvents = nullptr;
 
-	scene->_cond = bed;
+	_cond = newCond;
 }
 
-void FreeConditions(Scene *scene) {
-	if (scene->_cond) {
-		if (scene->_cond->_triggerEvents) {
-			scene->_cond->_triggerEvents->removeList();
-			delete scene->_cond->_triggerEvents;
-			scene->_cond->_triggerEvents = nullptr;
+void Scene::FreeConditions() {
+	if (_cond) {
+		if (_cond->_triggerEvents) {
+			_cond->_triggerEvents->removeList();
+			delete _cond->_triggerEvents;
+			_cond->_triggerEvents = nullptr;
 		}
 
-		if (scene->_cond->_blockerEvents) {
-			scene->_cond->_blockerEvents->removeList();
-			delete scene->_cond->_blockerEvents;
-			scene->_cond->_blockerEvents = nullptr;
+		if (_cond->_blockerEvents) {
+			_cond->_blockerEvents->removeList();
+			delete _cond->_blockerEvents;
+			_cond->_blockerEvents = nullptr;
 		}
 
-		TCFreeMem(scene->_cond, sizeof(Conditions));
-
-		scene->_cond = nullptr;
+		delete _cond;
+		_cond = nullptr;
 	}
 }
 
-void LoadSceneforStory(NewScene *dest, Common::Stream *file) {
-	dskRead_U32LE(file, &dest->_eventNr);
+void NewScene::LoadSceneforStory(Common::Stream *file) {
+	dskRead_U32LE(file, &_eventNr);
 
-	dskRead(file, dest->_sceneName, sizeof(dest->_sceneName));
+	dskRead(file, _sceneName, sizeof(_sceneName));
 
-	dskRead_S32LE(file, &dest->_day);
-	dskRead_S32LE(file, &dest->_minTime);
-	dskRead_S32LE(file, &dest->_maxTime);
-	dskRead_U32LE(file, &dest->_location);
+	dskRead_S32LE(file, &_day);
+	dskRead_S32LE(file, &_minTime);
+	dskRead_S32LE(file, &_maxTime);
+	dskRead_U32LE(file, &_location);
 
-	dskRead_U32LE(file, &dest->_eventCounter);
-	dskRead_U32LE(file, &dest->_blockerEventsCounter);
+	dskRead_U32LE(file, &_eventCounter);
+	dskRead_U32LE(file, &_blockerEventsCounter);
 
 	uint32 dummy;
 	dskRead_U32LE(file, &dummy);
 	dskRead_U32LE(file, &dummy);
 
-	dskRead_U32LE(file, &dest->_nextEventCounter);
+	dskRead_U32LE(file, &_nextEventCounter);
 
 	dskRead_U32LE(file, &dummy);
 
-	dskRead_U32LE(file, &dest->_options);
-	dskRead_U32LE(file, &dest->_duration);
+	dskRead_U32LE(file, &_options);
+	dskRead_U32LE(file, &_duration);
 
-	dskRead_U16LE(file, &dest->_quantity);
-	dskRead_U16LE(file, &dest->_occurrence);
+	dskRead_U16LE(file, &_quantity);
+	dskRead_U16LE(file, &_occurrence);
 
-	dskRead_U8(file, &dest->_probability);
+	dskRead_U8(file, &_probability);
 
-	dskRead_U32LE(file, &dest->_sample);
-	dskRead_U32LE(file, &dest->_anim);
-	dskRead_U32LE(file, &dest->_locationNr);
+	dskRead_U32LE(file, &_sample);
+	dskRead_U32LE(file, &_anim);
+	dskRead_U32LE(file, &_locationNr);
 
 	/* allocate mem for events and read them */
 	uint32 *event_nrs = nullptr;
-	if (dest->_eventCounter) {
-		event_nrs = new uint32[dest->_eventCounter];
-		for (uint32 i = 0; i < dest->_eventCounter; ++i)
+	if (_eventCounter) {
+		event_nrs = new uint32[_eventCounter];
+		for (uint32 i = 0; i < _eventCounter; ++i)
 			dskRead_U32LE(file, &event_nrs[i]);
 	}
-	dest->_events = event_nrs;
+	_events = event_nrs;
 
 	event_nrs = nullptr;
 	/* allocate mem for _blockerEvents and read them */
-	if (dest->_blockerEventsCounter) {
-		event_nrs = new uint32[dest->_blockerEventsCounter];
-		for (uint32 i = 0; i < dest->_blockerEventsCounter; ++i)
+	if (_blockerEventsCounter) {
+		event_nrs = new uint32[_blockerEventsCounter];
+		for (uint32 i = 0; i < _blockerEventsCounter; ++i)
 			dskRead_U32LE(file, &event_nrs[i]);
 	}
-	dest->_blockerEvents = event_nrs;
+	_blockerEvents = event_nrs;
 
 	event_nrs = nullptr;
 	/* allocate mem for successors and read them */
-	if (dest->_nextEventCounter) {
-		event_nrs = new uint32[dest->_nextEventCounter];
-		for (uint32 i = 0; i < dest->_nextEventCounter; ++i)
+	if (_nextEventCounter) {
+		event_nrs = new uint32[_nextEventCounter];
+		for (uint32 i = 0; i < _nextEventCounter; ++i)
 			dskRead_U32LE(file, &event_nrs[i]);
 	}
 
-	dest->_nextEvents = event_nrs;
+	_nextEvents = event_nrs;
 }
 
 void addVTime(uint32 add) {
@@ -618,8 +609,8 @@ void addVTime(uint32 add) {
 	tcTheAlmighty(time);
 }
 
-void setCurrentScene(Scene *scene) {
-	_film->_currScene = scene;
+void Film::setCurrentScene(Scene *scene) {
+	_currScene = scene;
 }
 
 Scene *getCurrentScene() {

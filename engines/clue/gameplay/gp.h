@@ -25,7 +25,10 @@
 #include "clue/text.h"
 
 namespace Clue {
+class NewScene;
+class Scene;
 
+// Constants
 #define GP_CHOICE_GO            (1)
 #define GP_CHOICE_WAIT          (1<<1)
 #define GP_CHOICE_BUSINESS_TALK (1<<2)
@@ -62,14 +65,15 @@ namespace Clue {
 #define GP_MODE_DISABLE_COLLISION    (1<<12) // TODO: allow to set this mode in the console
 // #define GP_SHOW_ROOMS             (1<<13) // Unused
 
+// And finally the classes
 class Film {
 public:
 	Film();
 
 	uint32 _amountOfScenes;
 
-	struct Scene *_currScene;
-	struct Scene *_gameplay;
+	Scene *_currScene;
+	Scene *_gameplay;
 
 	NewList<NewTCEventNode>* _locationNames;        /* Liste aller Orte im Spiel */
 	/* OrtNr = Nr der Node in der */
@@ -102,6 +106,8 @@ public:
 
 	void setEnabledChoices(uint32 ChoiceMask);
 	uint32 getEnabledChoices() { return _enabledChoices; }
+
+	void setCurrentScene(Scene* scene);
 };
 
 struct SceneArgs {
@@ -110,15 +116,26 @@ struct SceneArgs {
 	bool _overwritten;       /* False...direct descendant, True......overwritten method */
 };
 
-struct Scene {
+class Conditions {
+public:
+	uint32 _location;			/* mandatory condition */
+
+	NewList<NewTCEventNode>* _triggerEvents;	/* those events must have already happened */
+	NewList<NewTCEventNode>* _blockerEvents;	/* those events shouldn't have happened */
+
+	Conditions() { _location = 0; _triggerEvents = _blockerEvents = nullptr; }
+};
+
+class Scene {
+public:
 	uint32 _eventNr;
 
 	void (*initFct)();
 	void (*doneFct)();
 
-	struct Conditions *_cond;    /* conditions to trigger the event      */
+	Conditions *_cond;    /* conditions to trigger the event      */
 
-	NewList<NewTCEventNode> * _nextEvents;     /* Standard successor TCEventNode */
+	NewList<NewTCEventNode> *_nextEvents;     /* Standard successor TCEventNode */
 
 	uint32 _options;			/* See defines above                    */
 	uint32 _duration;			/* Duration of the scene in seconds     */
@@ -127,13 +144,13 @@ struct Scene {
 	uint8 _probability;			/* in the range 0 -255                  */
 
 	uint32 _locationNr;			/* Location of the scene == -1 if Scene = StoryScene otherwise, location number */
-};
 
-struct Conditions {
-	uint32 _location;			/* mandatory condition */
+	Scene() { initFct = nullptr; doneFct = nullptr;  _cond = nullptr; _nextEvents = nullptr; _eventNr = _options = _duration = _quantity = _occurrence = _probability = _locationNr = 0; }
 
-	NewList<NewTCEventNode> *_triggerEvents;	/* those events must have already happened */
-	NewList<NewTCEventNode> *_blockerEvents;	/* those events shouldn't have happened */
+	bool CheckConditions();
+	void InitConditions(NewScene* ns);
+	void FreeConditions();
+	void SetFunc(void (*init)(), void (*done)());
 };
 
 /* global functions */
@@ -147,7 +164,6 @@ extern void stdDone();
 extern void stdInit();
 
 extern void refreshCurrScene();
-extern void setCurrentScene(Scene *scene);
 
 extern Common::String getCurrLocName();
 

@@ -72,6 +72,8 @@ public:
 
 	NewScene();
 	~NewScene();
+
+	void LoadSceneforStory(Common::Stream* file);
 };
 
 } // End of namespace Clue

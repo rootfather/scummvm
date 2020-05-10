@@ -25,7 +25,7 @@
 
 namespace Clue {
 
-struct Scene;
+class Scene;
 
 extern void TCGamePause(byte activ);
 
@@ -37,7 +37,6 @@ extern void tcPersonGreetsMatt();
 
 extern uint32 StdHandle(uint32 choice);
 
-extern void SetFunc(struct Scene *sc, void (*init)(), void (*done)());
 void PrintStatus(Common::String text);
 extern void InitTaxiLocations();
 extern void LinkScenes();

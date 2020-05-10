@@ -249,7 +249,7 @@ bool tcLoadChangesInScenes(const char *fileName) {
 			dskGetLine_U32(file, &eventNr);
 			dskGetLine_U16(file, &count);
 
-			struct Scene *sc = getScene(eventNr);
+			Scene *sc = getScene(eventNr);
 			if (sc)
 				sc->_occurrence = count;
 			else
