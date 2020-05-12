@@ -20,6 +20,11 @@
 
 #include "clue/base/base.h"
 #include "clue/clue.h"
+#include "clue/present/interac.h"
+#include "clue/data/dataappl.h"
+#include "clue/organisa/organisa.h"
+#include "clue/planing/player.h"
+
 
 namespace Clue {
 

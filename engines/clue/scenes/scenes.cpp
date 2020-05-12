@@ -20,6 +20,9 @@
 #include "clue/scenes/scenes.h"
 #include "clue/gameplay/gp.h"
 #include "clue/clue.h"
+#include "clue/present/interac.h"
+#include "clue/data/dataappl.h"
+
 
 namespace Clue {
 

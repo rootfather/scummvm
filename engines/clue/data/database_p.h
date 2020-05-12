@@ -22,7 +22,7 @@
 #define MODULE_DATABASE_PH
 
 /* includes */
-#include "clue/gameplay/gp.h"
+#include "clue/planing/player.h"
 
 namespace Clue {
 

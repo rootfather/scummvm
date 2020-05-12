@@ -18,6 +18,9 @@
   distribution.
  ****************************************************************************/
 
+#include "clue/data/dataappl.h"
+#include "clue/organisa/organisa.h"
+
 namespace Clue {
 
 #define   ORG_DISP_GUY_Y           60

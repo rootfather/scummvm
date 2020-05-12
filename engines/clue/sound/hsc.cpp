@@ -6,8 +6,9 @@
   publiclicensecontract.doc files which should be contained with this
   distribution.
  ****************************************************************************/
-#include "clue/base/base.h"
 #include "audio/fmopl.h"
+#include "clue/base/base.h"
+#include "clue/sound/fx.h"
 
 namespace Clue {
 

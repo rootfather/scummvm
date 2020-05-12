@@ -20,6 +20,10 @@
 
 #include "clue/base/base.h"
 #include "clue/data/database_p.h"
+#include "clue/present/interac.h"
+#include "clue/planing/planer.h"
+#include "clue/planing/player.h"
+
 
 namespace Clue {
 /* Loading & saving functions */

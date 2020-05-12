@@ -12,17 +12,27 @@
 
 namespace Clue {
 
-struct SndBuffer;
+class SndBuffer {
+public:
+	unsigned char* data;    /* data */
+	unsigned size;      /* size of data buffer */
 
-SndBuffer *sndCreateBuffer(unsigned size);
-void sndResetBuffer(SndBuffer *buffer);
+	unsigned insertPos;     /* insert at (insertPos % size) */
+	unsigned removePos;     /* remove from (removePos % size) */
+
+	SndBuffer() { data = nullptr; size = insertPos = removePos = 0; }
+	void sndResetBuffer();
 
 #if 0
-unsigned sndLenBuffer(SndBuffer *buffer);
-void sndFreeBuffer(SndBuffer *buffer);
-unsigned sndInsertBuffer(SndBuffer *buffer, const void *src, unsigned srcLen);
-unsigned sndRemoveBuffer(SndBuffer *buffer, void *dst, unsigned dstLen);
+	unsigned sndLenBuffer();
+	unsigned sndInsertBuffer(const void* src, unsigned srcLen);
+	unsigned sndRemoveBuffer(void* dst, unsigned dstLen);
 #endif
+};
+
+SndBuffer *sndCreateBuffer(unsigned size);
+void sndFreeBuffer(SndBuffer *buffer);
+
 } // End of namespace Clue
 
 #endif

@@ -20,16 +20,18 @@
  *
  */
 
-#include "clue/theclou.h"
 
 #include "common/config-manager.h"
 #include "common/debug-channels.h"
 
+#include "clue/theclou.h"
 #include "clue/clue.h"
 #include "clue/error/error.h"
 #include "clue/base/base.h"
 #include "clue/text.h"
 #include "clue/cdrom/cdrom.h"
+#include "clue/present/interac.h"
+#include "clue/data/dataappl.h"
 
 namespace Clue {
 

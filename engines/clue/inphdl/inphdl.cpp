@@ -7,12 +7,14 @@
   distribution.
  ****************************************************************************/
 
-#include "clue/base/base.h"
-#include "clue/sound/newsound.h"
 
 #include "common/system.h"
 #include "common/events.h"
 #include "graphics/cursorman.h"
+
+#include "clue/planing/player.h"
+#include "clue/base/base.h"
+#include "clue/sound/newsound.h"
 
 namespace Clue {
 

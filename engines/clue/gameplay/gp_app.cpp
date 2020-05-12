@@ -21,6 +21,12 @@
 #include "clue/gameplay/gp_app.h"
 #include "clue/sound/newsound.h"
 #include "clue/clue.h"
+#include "clue/present/interac.h"
+#include "clue/data/dataappl.h"
+#include "clue/organisa/organisa.h"
+#include "clue/planing/player.h"
+#include "clue/sound/fx.h"
+
 
 namespace Clue {
 

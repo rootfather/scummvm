@@ -17,6 +17,7 @@
   publiclicensecontract.doc files which should be contained with this
   distribution.
  ****************************************************************************/
+#include "clue/planing/player.h"
 
 namespace Clue {
 class LSDoorRefreshNode;

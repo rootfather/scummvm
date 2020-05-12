@@ -21,6 +21,9 @@
 #include "clue/scenes/scenes.h"
 #include "clue/sound/newsound.h"
 #include "clue/clue.h"
+#include "clue/present/interac.h"
+#include "clue/data/dataappl.h"
+
 
 namespace Clue {
 

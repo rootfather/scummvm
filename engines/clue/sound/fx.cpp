@@ -6,14 +6,15 @@
   publiclicensecontract.doc files which should be contained with this
   distribution.
  ****************************************************************************/
-#include "clue/base/base.h"
-#include "clue/clue.h"
-
 #include "common/stream.h"
 #include "audio/mixer.h"
 #include "audio/audiostream.h"
 #include "audio/decoders/raw.h"
 #include "audio/decoders/voc.h"
+
+#include "clue/base/base.h"
+#include "clue/clue.h"
+#include "clue/sound/fx.h"
 
 namespace Clue {
 
@@ -38,6 +39,11 @@ void InitAudio() {
 void RemoveAudio() {
 	g_clue->_mixer->stopAll();
 	FXBase.us_AudioOk = 0;
+
+	sndFreeBuffer(FXBase.pSfxBuffer);
+	sndFreeBuffer(FXBase.pMusicBuffer);
+
+	FXBase.pSfxBuffer = FXBase.pMusicBuffer = nullptr;
 }
 
 Audio::SoundHandle sfx;

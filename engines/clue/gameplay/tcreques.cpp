@@ -19,6 +19,9 @@
  ****************************************************************************/
 
 #include "clue/gameplay/gp_app.h"
+#include "clue/present/interac.h"
+#include "clue/planing/player.h"
+
 
 namespace Clue {
 

@@ -22,6 +22,8 @@
 #include "clue/sound/newsound.h"
 #include "clue/clue.h"
 #include "clue/cdrom/cdrom.h"
+#include "clue/present/interac.h"
+
 
 namespace Clue {
 

@@ -19,6 +19,10 @@
  ****************************************************************************/
 
 #include "clue/base/base.h"
+#include "clue/present/interac.h"
+#include "clue/data/dataappl.h"
+#include "clue/planing/player.h"
+
 
 namespace Clue {
 

@@ -21,6 +21,9 @@
 #include "clue/base/base.h"
 #include "clue/clue.h"
 #include "clue/present/interac_p.h"
+#include "clue/present/interac.h"
+#include "clue/data/dataappl.h"
+
 
 namespace Clue {
 

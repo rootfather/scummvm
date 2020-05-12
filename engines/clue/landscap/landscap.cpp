@@ -22,6 +22,7 @@
 #include "clue/landscap/landscap_p.h"
 #include "clue/clue.h"
 #include "clue/living/bob.h"
+#include "clue/data/dataappl.h"
 
 namespace Clue {
 

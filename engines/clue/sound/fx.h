@@ -12,10 +12,10 @@
 
 namespace Clue {
 
-#define SND_FREQUENCY               22050
-#define SND_MAX_VOLUME                          255
-#define SND_BUFFER_SIZE             65536
-#define SND_SAMPLES                             1024
+#define SND_FREQUENCY		22050
+#define SND_MAX_VOLUME		255
+#define SND_BUFFER_SIZE		65536
+#define SND_SAMPLES			1024
 
 struct FXBase {
 	uint16 us_AudioOk;

@@ -23,6 +23,7 @@
 
 #include "clue/data/database_p.h"
 #include "clue/clue.h"
+#include "clue/planing/player.h"
 
 namespace Clue {
 

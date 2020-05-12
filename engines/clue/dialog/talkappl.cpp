@@ -19,6 +19,8 @@
  ****************************************************************************/
 
 #include "clue/dialog/talkappl.h"
+#include "clue/present/interac.h"
+
 
 namespace Clue {
 

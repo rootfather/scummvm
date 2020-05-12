@@ -19,16 +19,17 @@
   distribution.
  ****************************************************************************/
 
-#include "clue/base/base.h"
-#include "clue/clue.h"
 
 #include "common/events.h"
 #include "common/system.h"
 #include "engines/util.h"
 #include "graphics/palette.h"
 
+#include "clue/base/base.h"
+#include "clue/clue.h"
 #include "clue/gfx/gfx.h"
 #include "clue/gfx/gfx_p.h"
+#include "clue/planing/player.h"
 
 namespace Clue {
 
