@@ -92,6 +92,26 @@ Film::Film() {
 	_storyIsRunning = GP_STORY_BEFORE;
 }
 
+Conditions::Conditions()
+{
+	_location = 0;
+	_triggerEvents = _blockerEvents = nullptr;
+}
+
+Conditions::~Conditions() {
+	if (_triggerEvents) {
+		_triggerEvents->removeList();
+		delete _triggerEvents;
+		_triggerEvents = nullptr;
+	}
+
+	if (_blockerEvents) {
+		_blockerEvents->removeList();
+		delete _blockerEvents;
+		_blockerEvents = nullptr;
+	}
+}
+
 void StoryHeader::load(Common::Stream* file) {
 	dskRead(file, _storyName, sizeof(_storyName));
 	dskRead_U32LE(file, &_eventCount);
@@ -103,6 +123,14 @@ void StoryHeader::load(Common::Stream* file) {
 	dskRead_U32LE(file, &_startTime);
 	dskRead_U32LE(file, &_startLocation);
 	dskRead_U32LE(file, &_startScene);
+}
+
+Scene::Scene() {
+	initFct = nullptr;
+	doneFct = nullptr;
+	_cond = nullptr;
+	_nextEvents = nullptr;
+	_eventNr = _options = _duration = _quantity = _occurrence = _probability = _locationNr = 0;
 }
 
 void initStory(const char *story_filename) {
@@ -124,16 +152,11 @@ void closeStory() {
 	if (_film->_locationNames) {
 		_film->_locationNames->removeList();
 		delete _film->_locationNames;
-		_film->_locationNames = nullptr;
 	}
 
 	for (uint32 i = 0; i < _film->_amountOfScenes; i++) {
-		if (_film->_gameplay[i]._cond)
-			_film->_gameplay[i].FreeConditions();
-		if (_film->_gameplay[i]._nextEvents) {
-			delete _film->_gameplay[i]._nextEvents;
-			_film->_gameplay[i]._nextEvents = nullptr;
-		}
+		delete _film->_gameplay[i]._cond;
+		delete _film->_gameplay[i]._nextEvents;
 	}
 
 	delete[] _film->_gameplay;
@@ -512,25 +535,6 @@ void Scene::InitConditions(NewScene *ns) {
 		newCond->_blockerEvents = nullptr;
 
 	_cond = newCond;
-}
-
-void Scene::FreeConditions() {
-	if (_cond) {
-		if (_cond->_triggerEvents) {
-			_cond->_triggerEvents->removeList();
-			delete _cond->_triggerEvents;
-			_cond->_triggerEvents = nullptr;
-		}
-
-		if (_cond->_blockerEvents) {
-			_cond->_blockerEvents->removeList();
-			delete _cond->_blockerEvents;
-			_cond->_blockerEvents = nullptr;
-		}
-
-		delete _cond;
-		_cond = nullptr;
-	}
 }
 
 void NewScene::LoadSceneforStory(Common::Stream *file) {

@@ -124,7 +124,8 @@ public:
 	NewList<NewTCEventNode>* _triggerEvents;	/* those events must have already happened */
 	NewList<NewTCEventNode>* _blockerEvents;	/* those events shouldn't have happened */
 
-	Conditions() { _location = 0; _triggerEvents = _blockerEvents = nullptr; }
+	Conditions();
+	~Conditions();
 };
 
 class Scene {
@@ -146,11 +147,10 @@ public:
 
 	uint32 _locationNr;			/* Location of the scene == -1 if Scene = StoryScene otherwise, location number */
 
-	Scene() { initFct = nullptr; doneFct = nullptr;  _cond = nullptr; _nextEvents = nullptr; _eventNr = _options = _duration = _quantity = _occurrence = _probability = _locationNr = 0; }
-
+	Scene();
+	
 	bool CheckConditions();
 	void InitConditions(NewScene* ns);
-	void FreeConditions();
 	void SetFunc(void (*init)(), void (*done)());
 };
 
