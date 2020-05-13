@@ -43,9 +43,9 @@ void tcDone() {
 		inprogress = true;
 
 		plDone();
-		sndDoneFX();        /* attention! */
-		sndDone();
-		RemoveAudio();
+		g_clue->_sndMgr->sndDoneFX();        /* attention! */
+		g_clue->_sndMgr->sndDone();
+		g_clue->_sndMgr->removeAudio();
 		dbDone();
 		CloseAnimHandler();
 
@@ -241,8 +241,8 @@ void ClueEngine::showIntro() {
 	for (int anims = 0; anims < 5; anims++) {
 		char pathName[DSK_PATH_MAX];
 
-		if (g_clue->getFeatures() & ADGF_CD)
-			g_clue->_cdMgr->stop();
+		if (getFeatures() & ADGF_CD)
+			_cdMgr->stop();
 
 		if (!dskBuildPathName(DISK_CHECK_FILE, INTRO_DIRECTORY, names[anims], pathName))
 			continue;
@@ -320,25 +320,24 @@ void ClueEngine::showIntro() {
 
 				for (int s = 0; s < MAX_INTRO_ANIM; s++) {
 					if (sync[s * 2] == anims && sync[s * 2 + 1] - 1 == t) {
-						sndPrepareFX(fname[s]);
-						sndPlayFX();
+						_sndMgr->sndPrepareFX(fname[s]);
+						_sndMgr->sndPlayFX();
 					}
 				}
 
-				if (anims == 1 && t == 62) {
-					sndPlaySound("title.bk", 0);
-				}
+				if (anims == 1 && t == 62)
+					_sndMgr->sndPlaySound("title.bk", 0);
 
-				if (g_clue->getFeatures() & ADGF_CD) {
+				if (getFeatures() & ADGF_CD) {
 					for (int s = 0; s < MAX_INTRO_TRACK; s++) {
 						if (CDFrames[s * 6] == anims && CDFrames[s * 6 + 1] == t) {
-							sndFading(16);
+							_sndMgr->sndFading(16);
 
-							g_clue->_cdMgr->stop();
+							_cdMgr->stop();
 							if (CDFrames[s * 6 + 2] == 0)
-								g_clue->_cdMgr->playTrack(CDFrames[s * 6 + 3]);
+								_cdMgr->playTrack(CDFrames[s * 6 + 3]);
 							else
-								g_clue->_cdMgr->playSequence(CDFrames[s * 6 + 3], CDFrames[s * 6 + 4], CDFrames[s * 6 + 5]);
+								_cdMgr->playSequence(CDFrames[s * 6 + 3], CDFrames[s * 6 + 4], CDFrames[s * 6 + 5]);
 						}
 					}
 				}
@@ -358,9 +357,9 @@ void ClueEngine::showIntro() {
 endit2:
 	gfxClearArea(nullptr);
 
-	if (g_clue->getFeatures() & ADGF_CD) {
-		g_clue->_cdMgr->stop();
-		sndFading(0);
+	if (getFeatures() & ADGF_CD) {
+		_cdMgr->stop();
+		_sndMgr->sndFading(0);
 	}
 
 	gfxDoneMemRastPort(&A);
@@ -370,22 +369,20 @@ endit2:
 }
 	
 bool ClueEngine::tcInit() {
-	InitAudio();
+	_sndMgr->initAudio();
 
 	StdBuffer1 = TCAllocMem(STD_BUFFER1_SIZE, true);
 
 	if (!StdBuffer1)
 		return false;
 	 
-	if (g_clue->getFeatures() & ADGF_CD)
+	if (getFeatures() & ADGF_CD)
 		_cdMgr->install();
 
 	gfxInit();
 
-	sndInit();
-
 	if (!(_gamePlayMode & GP_MODE_NO_SAMPLES))
-		sndInitFX();
+		_sndMgr->sndInitFX();
 
 	inpOpenAllInputDevs();
 	inpMousePtrOff();
@@ -400,7 +397,7 @@ bool ClueEngine::tcInit() {
 	/* Start game. */
 	inpMousePtrOn();
 
-	g_clue->_txtMgr->init();
+	_txtMgr->init();
 
 	InitAnimHandler();
 
@@ -634,7 +631,7 @@ void ClueEngine::setFullEnviroment() {
 	hasSet(Person_Matt_Stuvysunt, Building_Starford_Kaserne);
 	((BuildingNode *) dbGetObject(Building_Starford_Kaserne))->Exactlyness = 255;
 
-	if (g_clue->getFeatures() & GF_PROFIDISK) {
+	if (getFeatures() & GF_PROFIDISK) {
 		hasSet(Person_Matt_Stuvysunt, Car_Rover_75_1949);
 		hasSet(Person_Matt_Stuvysunt, Car_Rover_75_1950);
 		hasSet(Person_Matt_Stuvysunt, Car_Rover_75_1952);
@@ -675,24 +672,24 @@ void ClueEngine::setFullEnviroment() {
 }
 
 byte ClueEngine::startupMenu() {
-	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "STARTUP_MENU");
+	NewList<NewNode> *menu = _txtMgr->goKey(MENU_TXT, "STARTUP_MENU");
 	Common::String line;
 	byte ret = 0;
 
 	ShowMenuBackground();
 
-	if (g_clue->getFeatures() & GF_PROFIDISK) {
-		if (g_clue->getFeatures() & ADGF_CD) {
-			line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "BITTE_WARTEN_PC_CD_ROM_PROFI");
+	if (getFeatures() & GF_PROFIDISK) {
+		if (getFeatures() & ADGF_CD) {
+			line = _txtMgr->getFirstLine(THECLOU_TXT, "BITTE_WARTEN_PC_CD_ROM_PROFI");
 		} else {
-			line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "BITTE_WARTEN_PC_PROFI");
+			line = _txtMgr->getFirstLine(THECLOU_TXT, "BITTE_WARTEN_PC_PROFI");
 		}
 		PrintStatus(line);
 	} else {
-		if (g_clue->getFeatures() & ADGF_CD) {
-			line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "BITTE_WARTEM_PC_CD_ROM");
+		if (getFeatures() & ADGF_CD) {
+			line = _txtMgr->getFirstLine(THECLOU_TXT, "BITTE_WARTEM_PC_CD_ROM");
 		} else {
-			line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "BITTE_WARTEN_PC");
+			line = _txtMgr->getFirstLine(THECLOU_TXT, "BITTE_WARTEN_PC");
 		}
 		PrintStatus(line);
 	}
@@ -713,7 +710,7 @@ byte ClueEngine::startupMenu() {
 		break;
 
 	case 1:
-		g_clue->_txtMgr->reset(OBJECTS_TXT);
+		_txtMgr->reset(OBJECTS_TXT);
 
 		if (tcLoadTheClou()) {
 			_film->_startScene = _sceneArgs._returnValue;
