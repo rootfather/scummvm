@@ -108,7 +108,7 @@ public:
 	uint32 getEnabledChoices() { return _enabledChoices; }
 
 	void setCurrentScene(Scene* scene);
-	void InitLocations();
+	void initLocations();
 };
 
 struct SceneArgs {
@@ -149,9 +149,9 @@ public:
 
 	Scene();
 	
-	bool CheckConditions();
-	void InitConditions(NewScene* ns);
-	void SetFunc(void (*init)(), void (*done)());
+	bool checkConditions();
+	void initConditions(NewScene* ns);
+	void setFunctions(void (*init)(), void (*done)());
 };
 
 /* global functions */

@@ -140,7 +140,7 @@ void initStory(const char *story_filename) {
 	_film->setEnabledChoices(GP_ALL_CHOICES);
 
 	PrepareStory(story_filename);
-	_film->InitLocations();
+	_film->initLocations();
 	LinkScenes();
 	patchStory();
 }
@@ -178,7 +178,7 @@ void refreshCurrScene() {
 	RefreshMenu();
 }
 
-void Film::InitLocations() {
+void Film::initLocations() {
 	NewList<NewTCEventNode> *l = new NewList<NewTCEventNode>;
 	char pathname[DSK_PATH_MAX];
 
@@ -244,7 +244,7 @@ uint32 playStory() {
 	_film->setLocation((uint32) -2);
 
 	while (curr->_eventNr != SCENE_THE_END && curr->_eventNr != SCENE_NEW_GAME) {
-		if (!curr->CheckConditions())
+		if (!curr->checkConditions())
 			ErrorMsg(Internal_Error, ERROR_MODULE_GAMEPLAY, 2);
 
 		/* Entscheidung für eine Szene getroffen ! */
@@ -345,7 +345,7 @@ Scene *GetStoryScene(Scene *curr) {
 		if (sc->_locationNr == (uint32) -1 && sc != curr) {
 			uint8 j = g_clue->calcRandomNr(0, 255);
 
-			if (j <= sc->_probability && sc->CheckConditions())
+			if (j <= sc->_probability && sc->checkConditions())
 				return sc;
 		}
 	}
@@ -381,7 +381,7 @@ void EventDidHappen(uint32 EventNr) {
 		++sc->_occurrence;
 }
 
-bool Scene::CheckConditions() {
+bool Scene::checkConditions() {
 	/* wenn Std Szene, dann muß nichts überprüft werden ! */
 
 	if (_locationNr != (uint32) -1)
@@ -467,7 +467,7 @@ void PrepareStory(const char *filename) {
 		scene->_eventNr = NS->_eventNr;
 
 		if (NS->_locationNr == (uint32) -1 || NS->_eventCounter || NS->_blockerEventsCounter) /* Storyszene ? */
-			scene->InitConditions(NS); /* ja ! -> Bedingungen eintragen */
+			scene->initConditions(NS); /* ja ! -> Bedingungen eintragen */
 		else
 			_film->_gameplay[i]._cond = nullptr;   /* Spielablaufszene : keine Bedingungen ! */
 		
@@ -503,7 +503,7 @@ void PrepareStory(const char *filename) {
 	delete NS;
 }
 
-void Scene::InitConditions(NewScene *ns) {
+void Scene::initConditions(NewScene *ns) {
 	Conditions* newCond = new Conditions;
 
 	newCond->_location = ns->_location;

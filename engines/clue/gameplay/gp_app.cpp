@@ -564,103 +564,103 @@ void LinkScenes() {
 	getLocScene(53)->doneFct = DoneDealer;
 	getLocScene(52)->doneFct = DoneDealer;
 
-	getScene(SCENE_KASERNE_OUTSIDE)->SetFunc(stdInit, tcDoneKaserne);
-	getScene(SCENE_HOTEL_ROOM)->SetFunc(stdInit, DoneHotelRoom);
-	getScene(SCENE_CREDITS)->SetFunc(nullptr, tcDoneCredits);
-	getScene(SCENE_FREIFAHRT)->SetFunc(nullptr, tcDoneFreeTicket);
-	getScene(SCENE_ARRIVAL)->SetFunc(nullptr, tcDoneArrival);
-	getScene(SCENE_HOTEL_1ST_TIME)->SetFunc(nullptr, tcDoneHotelReception);
-	getScene(SCENE_DANNER)->SetFunc(nullptr, tcDoneDanner);
-	getScene(SCENE_GLUDO_MONEY)->SetFunc(nullptr, tcDoneGludoMoney);
-	getScene(SCENE_MAMI_CALLS)->SetFunc(nullptr, tcDoneMamiCalls);
-	getScene(SCENE_FST_MEET_BRIGGS)->SetFunc(nullptr, tcDoneMeetBriggs);
-	getScene(SCENE_FAHNDUNG)->SetFunc(tcInitFahndung, tcDoneFahndung);
-	getScene(SCENE_GLUDO_SAILOR)->SetFunc(nullptr, tcDoneGludoAsSailor);
-	getScene(SCENE_CALL_BRIGGS)->SetFunc(nullptr, tcDoneCallFromBriggs);
-	getScene(SCENE_1ST_BURG)->SetFunc(nullptr, tcDone1stBurglary);
-	getScene(SCENE_2ND_BURG)->SetFunc(nullptr, tcDone2ndBurglary);
-	getScene(SCENE_3RD_BURG)->SetFunc(nullptr, tcDone3rdBurglary);
-	getScene(SCENE_4TH_BURG)->SetFunc(nullptr, tcDone4thBurglary);
-	getScene(SCENE_5TH_BURG)->SetFunc(nullptr, tcDone5thBurglary);
-	getScene(SCENE_6TH_BURG)->SetFunc(nullptr, tcDone6thBurglary);
-	getScene(SCENE_7TH_BURG)->SetFunc(nullptr, tcDone7thBurglary);
-	getScene(SCENE_8TH_BURG)->SetFunc(nullptr, tcDone8thBurglary);
-	getScene(SCENE_9TH_BURG)->SetFunc(nullptr, tcDone9thBurglary);
-	getScene(SCENE_ARRESTED_MATT)->SetFunc(nullptr, tcDoneMattIsArrested);
+	getScene(SCENE_KASERNE_OUTSIDE)->setFunctions(stdInit, tcDoneKaserne);
+	getScene(SCENE_HOTEL_ROOM)->setFunctions(stdInit, DoneHotelRoom);
+	getScene(SCENE_CREDITS)->setFunctions(nullptr, tcDoneCredits);
+	getScene(SCENE_FREIFAHRT)->setFunctions(nullptr, tcDoneFreeTicket);
+	getScene(SCENE_ARRIVAL)->setFunctions(nullptr, tcDoneArrival);
+	getScene(SCENE_HOTEL_1ST_TIME)->setFunctions(nullptr, tcDoneHotelReception);
+	getScene(SCENE_DANNER)->setFunctions(nullptr, tcDoneDanner);
+	getScene(SCENE_GLUDO_MONEY)->setFunctions(nullptr, tcDoneGludoMoney);
+	getScene(SCENE_MAMI_CALLS)->setFunctions(nullptr, tcDoneMamiCalls);
+	getScene(SCENE_FST_MEET_BRIGGS)->setFunctions(nullptr, tcDoneMeetBriggs);
+	getScene(SCENE_FAHNDUNG)->setFunctions(tcInitFahndung, tcDoneFahndung);
+	getScene(SCENE_GLUDO_SAILOR)->setFunctions(nullptr, tcDoneGludoAsSailor);
+	getScene(SCENE_CALL_BRIGGS)->setFunctions(nullptr, tcDoneCallFromBriggs);
+	getScene(SCENE_1ST_BURG)->setFunctions(nullptr, tcDone1stBurglary);
+	getScene(SCENE_2ND_BURG)->setFunctions(nullptr, tcDone2ndBurglary);
+	getScene(SCENE_3RD_BURG)->setFunctions(nullptr, tcDone3rdBurglary);
+	getScene(SCENE_4TH_BURG)->setFunctions(nullptr, tcDone4thBurglary);
+	getScene(SCENE_5TH_BURG)->setFunctions(nullptr, tcDone5thBurglary);
+	getScene(SCENE_6TH_BURG)->setFunctions(nullptr, tcDone6thBurglary);
+	getScene(SCENE_7TH_BURG)->setFunctions(nullptr, tcDone7thBurglary);
+	getScene(SCENE_8TH_BURG)->setFunctions(nullptr, tcDone8thBurglary);
+	getScene(SCENE_9TH_BURG)->setFunctions(nullptr, tcDone9thBurglary);
+	getScene(SCENE_ARRESTED_MATT)->setFunctions(nullptr, tcDoneMattIsArrested);
 
-	getScene(SCENE_POOLY_AFRAID)->SetFunc(nullptr, tcDoneDealerIsAfraid);
-	getScene(SCENE_MALOYA_AFRAID)->SetFunc(nullptr, tcDoneDealerIsAfraid);
-	getScene(SCENE_PARKER_AFRAID)->SetFunc(nullptr, tcDoneDealerIsAfraid);
-	getScene(SCENE_RAID)->SetFunc(nullptr, tcDoneRaidInWalrus);
-	getScene(SCENE_DART)->SetFunc(nullptr, tcDoneDartJager);
-	getScene(SCENE_CALL_FROM_POOLY)->SetFunc(nullptr, tcDoneCallFromPooly);
+	getScene(SCENE_POOLY_AFRAID)->setFunctions(nullptr, tcDoneDealerIsAfraid);
+	getScene(SCENE_MALOYA_AFRAID)->setFunctions(nullptr, tcDoneDealerIsAfraid);
+	getScene(SCENE_PARKER_AFRAID)->setFunctions(nullptr, tcDoneDealerIsAfraid);
+	getScene(SCENE_RAID)->setFunctions(nullptr, tcDoneRaidInWalrus);
+	getScene(SCENE_DART)->setFunctions(nullptr, tcDoneDartJager);
+	getScene(SCENE_CALL_FROM_POOLY)->setFunctions(nullptr, tcDoneCallFromPooly);
 
-	getScene(SCENE_GLUDO_BURNS)->SetFunc(nullptr, tcDoneGludoBurnsOffice);
-	getScene(SCENE_MORNING)->SetFunc(nullptr, tcDoneBeautifullMorning);
-	getScene(SCENE_VISITING)->SetFunc(nullptr, tcDoneVisitingSabien);
-	getScene(SCENE_A_DREAM)->SetFunc(nullptr, tcDoneADream);
-	getScene(SCENE_ROSENBLATT)->SetFunc(nullptr, tcMeetingRosenblatt);
-	getScene(SCENE_BRIGGS_ANGRY)->SetFunc(nullptr, tcBriggsAngry);
-	getScene(SCENE_SABIEN_WALRUS)->SetFunc(nullptr, tcSabienInWalrus);
-	getScene(SCENE_SABIEN_DINNER)->SetFunc(nullptr, tcSabienDinner);
-	getScene(SCENE_TOMBOLA)->SetFunc(nullptr, tcWalrusTombola);
-	getScene(SCENE_PRESENT_HOTEL)->SetFunc(nullptr, tcPresentInHotel);
-	getScene(SCENE_INFO_TOWER)->SetFunc(nullptr, tcPoliceInfoTower);
-	getScene(SCENE_RAINY_EVENING)->SetFunc(nullptr, tcRainyEvening);
-	getScene(SCENE_MEETING_AGAIN)->SetFunc(nullptr, tcDoneMeetingAgain);
+	getScene(SCENE_GLUDO_BURNS)->setFunctions(nullptr, tcDoneGludoBurnsOffice);
+	getScene(SCENE_MORNING)->setFunctions(nullptr, tcDoneBeautifullMorning);
+	getScene(SCENE_VISITING)->setFunctions(nullptr, tcDoneVisitingSabien);
+	getScene(SCENE_A_DREAM)->setFunctions(nullptr, tcDoneADream);
+	getScene(SCENE_ROSENBLATT)->setFunctions(nullptr, tcMeetingRosenblatt);
+	getScene(SCENE_BRIGGS_ANGRY)->setFunctions(nullptr, tcBriggsAngry);
+	getScene(SCENE_SABIEN_WALRUS)->setFunctions(nullptr, tcSabienInWalrus);
+	getScene(SCENE_SABIEN_DINNER)->setFunctions(nullptr, tcSabienDinner);
+	getScene(SCENE_TOMBOLA)->setFunctions(nullptr, tcWalrusTombola);
+	getScene(SCENE_PRESENT_HOTEL)->setFunctions(nullptr, tcPresentInHotel);
+	getScene(SCENE_INFO_TOWER)->setFunctions(nullptr, tcPoliceInfoTower);
+	getScene(SCENE_RAINY_EVENING)->setFunctions(nullptr, tcRainyEvening);
+	getScene(SCENE_MEETING_AGAIN)->setFunctions(nullptr, tcDoneMeetingAgain);
 
-	getScene(SCENE_SABIEN_CALL)->SetFunc(nullptr, tcDoneSabienCall);
-	getScene(SCENE_BIRTHDAY)->SetFunc(nullptr, tcDoneBirthday);
-	getScene(SCENE_WALK_WITH)->SetFunc(nullptr, tcWalkWithSabien);
-	getScene(SCENE_AGENT)->SetFunc(nullptr, tcDoneAgent);
-	getScene(SCENE_JAGUAR)->SetFunc(nullptr, tcDoneGoAndFetchJaguar);
-	getScene(SCENE_THINK_OF)->SetFunc(nullptr, tcDoneThinkOfSabien);
-	getScene(SCENE_TERROR)->SetFunc(nullptr, tcDoneTerror);
-	getScene(SCENE_CONFESSING)->SetFunc(nullptr, tcDoneConfessingSabien);
+	getScene(SCENE_SABIEN_CALL)->setFunctions(nullptr, tcDoneSabienCall);
+	getScene(SCENE_BIRTHDAY)->setFunctions(nullptr, tcDoneBirthday);
+	getScene(SCENE_WALK_WITH)->setFunctions(nullptr, tcWalkWithSabien);
+	getScene(SCENE_AGENT)->setFunctions(nullptr, tcDoneAgent);
+	getScene(SCENE_JAGUAR)->setFunctions(nullptr, tcDoneGoAndFetchJaguar);
+	getScene(SCENE_THINK_OF)->setFunctions(nullptr, tcDoneThinkOfSabien);
+	getScene(SCENE_TERROR)->setFunctions(nullptr, tcDoneTerror);
+	getScene(SCENE_CONFESSING)->setFunctions(nullptr, tcDoneConfessingSabien);
 
-	getScene(SCENE_PRISON)->SetFunc(tcInitPrison, tcDonePrison);
+	getScene(SCENE_PRISON)->setFunctions(tcInitPrison, tcDonePrison);
 
-	getScene(SCENE_SOUTH_WITHOUT)->SetFunc(nullptr, tcDoneSouthhamptonWithoutSabien);
-	getScene(SCENE_SOUTH_UNKNOWN)->SetFunc(nullptr, tcDoneSouthhamptonSabienUnknown);
-	getScene(SCENE_SOUTHHAMPTON)->SetFunc(stdInit, tcDoneSouthhampton);
+	getScene(SCENE_SOUTH_WITHOUT)->setFunctions(nullptr, tcDoneSouthhamptonWithoutSabien);
+	getScene(SCENE_SOUTH_UNKNOWN)->setFunctions(nullptr, tcDoneSouthhamptonSabienUnknown);
+	getScene(SCENE_SOUTHHAMPTON)->setFunctions(stdInit, tcDoneSouthhampton);
 
-	getScene(SCENE_MISSED_DATE_0)->SetFunc(nullptr, tcDoneMissedDate);
-	getScene(SCENE_MISSED_DATE_1)->SetFunc(nullptr, tcDoneMissedDate);
+	getScene(SCENE_MISSED_DATE_0)->setFunctions(nullptr, tcDoneMissedDate);
+	getScene(SCENE_MISSED_DATE_1)->setFunctions(nullptr, tcDoneMissedDate);
 
-	getScene(SCENE_VILLA_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-	getScene(SCENE_KENWO_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
+	getScene(SCENE_VILLA_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+	getScene(SCENE_KENWO_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
 
-	getScene(SCENE_TANTE_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-	getScene(SCENE_JUWEL_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-	getScene(SCENE_ANTIQ_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-	getScene(SCENE_TRANS_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-	getScene(SCENE_SENIO_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-	getScene(SCENE_KENWO_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-	getScene(SCENE_HAMHO_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-	getScene(SCENE_OSTER_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-	getScene(SCENE_CHISW_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-	getScene(SCENE_SOTHE_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-	getScene(SCENE_BRITI_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-	getScene(SCENE_NATUR_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-	getScene(SCENE_NATIO_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-	getScene(SCENE_VICTO_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-	getScene(SCENE_BANKO_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-	getScene(SCENE_TOWER_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-	getScene(SCENE_KASERNE_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
+	getScene(SCENE_TANTE_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+	getScene(SCENE_JUWEL_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+	getScene(SCENE_ANTIQ_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+	getScene(SCENE_TRANS_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+	getScene(SCENE_SENIO_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+	getScene(SCENE_KENWO_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+	getScene(SCENE_HAMHO_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+	getScene(SCENE_OSTER_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+	getScene(SCENE_CHISW_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+	getScene(SCENE_SOTHE_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+	getScene(SCENE_BRITI_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+	getScene(SCENE_NATUR_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+	getScene(SCENE_NATIO_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+	getScene(SCENE_VICTO_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+	getScene(SCENE_BANKO_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+	getScene(SCENE_TOWER_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+	getScene(SCENE_KASERNE_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
 
 	if (g_clue->getFeatures() & GF_PROFIDISK) {
-		getScene(SCENE_PROFI_21_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-		getScene(SCENE_PROFI_22_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-		getScene(SCENE_PROFI_23_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-		getScene(SCENE_PROFI_24_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-		getScene(SCENE_PROFI_25_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-		/* getScene(SCENE_PROFI_26_INSIDE)->SetFunc(stdInit, DoneInsideHouse); */
-		getScene(SCENE_PROFI_27_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
-		getScene(SCENE_PROFI_28_INSIDE)->SetFunc(stdInit, DoneInsideHouse);
+		getScene(SCENE_PROFI_21_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+		getScene(SCENE_PROFI_22_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+		getScene(SCENE_PROFI_23_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+		getScene(SCENE_PROFI_24_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+		getScene(SCENE_PROFI_25_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+		/* getScene(SCENE_PROFI_26_INSIDE)->setFunctions(stdInit, DoneInsideHouse); */
+		getScene(SCENE_PROFI_27_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+		getScene(SCENE_PROFI_28_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
 	}
 }
 
-void Scene::SetFunc(void (*init)(), void (*done)()) {
+void Scene::setFunctions(void (*init)(), void (*done)()) {
 	initFct = init;
 	doneFct = done;
 }
