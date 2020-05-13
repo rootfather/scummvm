@@ -18,6 +18,7 @@
  ****************************************************************************/
 
 #include "clue/memory/memory.h"
+#include "clue/error/error.h"
 
 namespace Clue {
 

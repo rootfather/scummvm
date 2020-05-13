@@ -7,33 +7,39 @@
  ****************************************************************************/
 #include "clue/clue.h"
 #include "clue/disk/disk.h"
-#include "clue/sound/fx.h"
 #include "clue/sound/hsc.h"
+#include "clue/sound/newsound.h"
 
-#include "common/textconsole.h"
 #include "common/config-manager.h"
 #include "audio/mixer.h"
 
 namespace Clue {
-static bool fading = false;
+SndManager::SndManager(ClueEngine *vm) : _vm(vm) {
+	_audioOk = false;
 
-char currSoundName[DSK_PATH_MAX];
+	_sfxFile = nullptr;
+	_sfxBuffer = nullptr;
+	_musicBuffer = nullptr;
 
-void sndInit() {
-	currSoundName[0] = '\0';
+	_currSoundName[0] = '\0';
+
+	_fading = false;
+
+	_sfxChannelOn = false;
+	_musicChannelOn = true;
 
 	hscInit();
 }
 
-void sndDone() {
+void SndManager::sndDone() {
 	hscDone();
 }
 
-void sndPlaySound(const char *name, uint32 mode) {
-	if (strcmp(currSoundName, name) != 0) {
-		strcpy(currSoundName, name);
+void SndManager::sndPlaySound(const char *name, uint32 mode) {
+	if (strcmp(_currSoundName, name) != 0) {
+		strcpy(_currSoundName, name);
 
-		if (FXBase.us_AudioOk) {
+		if (_audioOk) {
 			char path[DSK_PATH_MAX];
 			dskBuildPathName(DISK_CHECK_FILE, SOUND_DIRECTORY, name, path);
 			hscLoad(path);
@@ -41,50 +47,39 @@ void sndPlaySound(const char *name, uint32 mode) {
 	}
 }
 
-char *sndGetCurrSoundName() {
-	return currSoundName;
+char *SndManager::sndGetCurrSoundName() {
+	return _currSoundName;
 }
 
 // 2014-07-17 LucyG : called from inpDoPseudoMultiTasking
-void sndDoFading()
-{
+void SndManager::sndDoFading() {
 	// 2018-09-25: volume can now be changed any time
 	int targetMusicVolume;
-	if (fading) {
+	if (_fading)
 		targetMusicVolume = ConfMan.getInt("music_volume") / 4;
-	}
-	else {
+	else
 		targetMusicVolume = ConfMan.getInt("music_volume");
-	}
 
-	int currMusicVolume = g_clue->_mixer->getVolumeForSoundType(Audio::Mixer::kMusicSoundType);
+	int currMusicVolume = _vm->_mixer->getVolumeForSoundType(Audio::Mixer::kMusicSoundType);
 
-	if (currMusicVolume < targetMusicVolume) {
+	if (currMusicVolume < targetMusicVolume)
 		currMusicVolume++;
-	}
-	else if (currMusicVolume > targetMusicVolume) {
+	else if (currMusicVolume > targetMusicVolume)
 		currMusicVolume--;
-	}
 
 	g_clue->_mixer->setVolumeForSoundType(Audio::Mixer::kMusicSoundType, currMusicVolume);
 }
 
-void sndFading(uint16 targetVol)
-{
-	if (FXBase.us_AudioOk) {
+void SndManager::sndFading(uint16 targetVol) {
+	if (_audioOk) {
 		/* 2014-07-17 LucyG : this is called from dialog.c (and intro.c)
 		   with targetVol = 16 before and 0 after voice playback */
-		if (!targetVol) {
-			fading = false;
-		}
-		else {
-			fading = true;
-		}
+		_fading = (targetVol != 0);
 	}
 }
 
-void sndStopSound(uint8 dummy) {
-	if (FXBase.us_AudioOk)
+void SndManager::sndStopSound(uint8 dummy) {
+	if (_audioOk)
 		hscReset();
 }
 

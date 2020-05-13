@@ -9,8 +9,6 @@
 #ifndef TC_HSC_H
 #define TC_HSC_H
 
-#include "clue/theclou.h"
-
 namespace Clue {
 
 void hscInit();

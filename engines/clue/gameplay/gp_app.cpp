@@ -149,13 +149,13 @@ uint32 tcBurglary(uint32 buildingID) {
 
 		return 0;       /* Plan hat nicht funktioniert! */
 	case FAHN_ESCAPED:
-		sndPlaySound("ok.bk", 0);
+		g_clue->_sndMgr->sndPlaySound("ok.bk", 0);
 
 		inpDelay(300);
 
 		return SCENE_FAHNDUNG;  /*Plan hat funktioniert & Flucht gelungen */
 	case FAHN_NOT_ESCAPED:
-		sndPlaySound("failed.bk", 0);
+		g_clue->_sndMgr->sndPlaySound("failed.bk", 0);
 
 		inpDelay(300);
 
@@ -200,61 +200,61 @@ void tcPlaySound() {
 	if (!(_gamePlayMode & GP_MODE_MUSIC_OFF)) {
 		switch (getCurrentScene()->_eventNr) {
 		case SCENE_PARKER:
-			sndPlaySound("parker.bk", 0);
+			g_clue->_sndMgr->sndPlaySound("parker.bk", 0);
 			break;
 		case SCENE_MALOYA:
-			sndPlaySound("maloya.bk", 0);
+			g_clue->_sndMgr->sndPlaySound("maloya.bk", 0);
 			break;
 		case SCENE_POOLY:
-			sndPlaySound("dealer.bk", 0);
+			g_clue->_sndMgr->sndPlaySound("dealer.bk", 0);
 			break;
 
 		case SCENE_WALRUS:
-			sndPlaySound("bar1.bk", 0);
+			g_clue->_sndMgr->sndPlaySound("bar1.bk", 0);
 			break;
 		case SCENE_FAT_MANS:
-			sndPlaySound("bar2.bk", 0);
+			g_clue->_sndMgr->sndPlaySound("bar2.bk", 0);
 			break;
 		case SCENE_HOTEL_ROOM:
-			sndPlaySound("hotel.bk", 0);
+			g_clue->_sndMgr->sndPlaySound("hotel.bk", 0);
 			break;
 		case SCENE_GARAGE:
-			sndPlaySound("cars.bk", 0);
+			g_clue->_sndMgr->sndPlaySound("cars.bk", 0);
 			break;
 		case SCENE_PARKING:
-			sndPlaySound("cars.bk", 0);
+			g_clue->_sndMgr->sndPlaySound("cars.bk", 0);
 			break;
 		case SCENE_CARS_OFFICE:
-			sndPlaySound("cars.bk", 0);
+			g_clue->_sndMgr->sndPlaySound("cars.bk", 0);
 			break;
 
 		case SCENE_POLICE:
 		case SCENE_GLUDO_SAILOR:
 		case SCENE_ARRESTED_MATT:
-			sndPlaySound("gludo.bk", 0);
+			g_clue->_sndMgr->sndPlaySound("gludo.bk", 0);
 			break;
 
 		case SCENE_TOOLS:
-			sndPlaySound("shop.bk", 0);
+			g_clue->_sndMgr->sndPlaySound("shop.bk", 0);
 			break;
 
 		case SCENE_AT_SABIEN:
-			sndPlaySound("sabien.bk", 0);
+			g_clue->_sndMgr->sndPlaySound("sabien.bk", 0);
 			break;
 
 		case SCENE_THE_END:
 		case SCENE_PRISON:
-			sndPlaySound("end.bk", 0);
+			g_clue->_sndMgr->sndPlaySound("end.bk", 0);
 			break;
 
 		case SCENE_SOUTH_WITHOUT:
 		case SCENE_SOUTH_UNKNOWN:
 		case SCENE_SOUTHHAMPTON:
-			sndPlaySound("south.bk", 0);
+			g_clue->_sndMgr->sndPlaySound("south.bk", 0);
 			break;
 
 		case SCENE_FAHNDUNG:
-			sndPlaySound("fahndung.bk", 0);
+			g_clue->_sndMgr->sndPlaySound("fahndung.bk", 0);
 			break;
 
 		default:
@@ -269,28 +269,28 @@ void tcPlayStreetSound() {
 		if (g_clue->getFeatures() & GF_PROFIDISK) {
 			switch (getCurrentScene()->_eventNr) {
 			case SCENE_PROFI_21:
-				sndPlaySound("snd21.bk", 0);
+				g_clue->_sndMgr->sndPlaySound("snd21.bk", 0);
 				return;
 			case SCENE_PROFI_22:
-				sndPlaySound("snd22.bk", 0);
+				g_clue->_sndMgr->sndPlaySound("snd22.bk", 0);
 				return;
 			case SCENE_PROFI_23:
-				sndPlaySound("snd23.bk", 0);
+				g_clue->_sndMgr->sndPlaySound("snd23.bk", 0);
 				return;
 			case SCENE_PROFI_24:
-				sndPlaySound("snd24.bk", 0);
+				g_clue->_sndMgr->sndPlaySound("snd24.bk", 0);
 				return;
 			case SCENE_PROFI_25:
-				sndPlaySound("snd25.bk", 0);
+				g_clue->_sndMgr->sndPlaySound("snd25.bk", 0);
 				return;
 			case SCENE_PROFI_26:
-				sndPlaySound("snd26.bk", 0);
+				g_clue->_sndMgr->sndPlaySound("snd26.bk", 0);
 				return;
 			case SCENE_PROFI_27:
-				sndPlaySound("snd27.bk", 0);
+				g_clue->_sndMgr->sndPlaySound("snd27.bk", 0);
 				return;
 			case SCENE_PROFI_28:
-				sndPlaySound("snd28.bk", 0);
+				g_clue->_sndMgr->sndPlaySound("snd28.bk", 0);
 				return;
 			default:
 				break;
@@ -300,7 +300,7 @@ void tcPlayStreetSound() {
 		static byte counter = 0;
 		bool noStreetMusic = false;
 
-		if (strcmp(sndGetCurrSoundName(), "street1.bk") && strcmp(sndGetCurrSoundName(), "street2.bk") && strcmp(sndGetCurrSoundName(), "street3.bk"))
+		if (strcmp(g_clue->_sndMgr->sndGetCurrSoundName(), "street1.bk") && strcmp(g_clue->_sndMgr->sndGetCurrSoundName(), "street2.bk") && strcmp(g_clue->_sndMgr->sndGetCurrSoundName(), "street3.bk"))
 			noStreetMusic = true;
 
 		if (!counter || noStreetMusic) {
@@ -308,13 +308,13 @@ void tcPlayStreetSound() {
 
 			switch (g_clue->calcRandomNr(0, 3)) {
 			case 0:
-				sndPlaySound("street1.bk", 0);
+				g_clue->_sndMgr->sndPlaySound("street1.bk", 0);
 				break;
 			case 1:
-				sndPlaySound("street2.bk", 0);
+				g_clue->_sndMgr->sndPlaySound("street2.bk", 0);
 				break;
 			default:
-				sndPlaySound("street3.bk", 0);
+				g_clue->_sndMgr->sndPlaySound("street3.bk", 0);
 				break;
 			}
 		} else
@@ -390,8 +390,8 @@ uint32 StdHandle(uint32 choice) {
 		break;
 	case GP_CHOICE_CALL_TAXI:
 		if (g_clue->calcRandomNr(0, 10) == 1) {
-			sndPrepareFX("taxi.voc");
-			sndPlayFX();
+			g_clue->_sndMgr->sndPrepareFX("taxi.voc");
+			g_clue->_sndMgr->sndPlayFX();
 		}
 
 		succ_eventnr = getLocScene(8)->_eventNr; /* taxi */
@@ -421,7 +421,7 @@ uint32 StdHandle(uint32 choice) {
 					gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
 
 					if (_gamePlayMode & GP_MODE_NO_MUSIC_IN_PLANING)
-						sndStopSound(0);
+						g_clue->_sndMgr->sndStopSound(0);
 
 					if ((building = tcOrganisation())) {
 						addVTime(27153);    /* etwas über 15 Tage ! */

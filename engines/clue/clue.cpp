@@ -32,6 +32,7 @@
 #include "clue/cdrom/cdrom.h"
 #include "clue/present/interac.h"
 #include "clue/data/dataappl.h"
+#include "clue/sound/newsound.h"
 
 namespace Clue {
 
@@ -51,14 +52,16 @@ ClueEngine::ClueEngine(OSystem *syst, const ADGameDescription *gameDesc) : Engin
 	rnd = new Common::RandomSource("clue");
 	const char* path = ConfMan.get("path").c_str();
 	dskSetRootPath(path);
-	_txtMgr = new TextMgr(g_clue);
-	_cdMgr = new CDManager(g_clue);
+	_txtMgr = new TextMgr(this);
+	_cdMgr = new CDManager(this);
+	_sndMgr = new SndManager(this);
 }
 
 ClueEngine::~ClueEngine() {
 	g_clue = nullptr;
 	delete _txtMgr;
 	delete _cdMgr;
+	delete _sndMgr;
 	delete rnd;
 }
 

@@ -24,6 +24,7 @@
 #include "clue/data/dataappl.h"
 #include "clue/organisa/organisa.h"
 #include "clue/sound/fx.h"
+#include "clue/sound/newsound.h"
 
 
 namespace Clue {
@@ -663,8 +664,8 @@ int32 tcCalcCarEscape(int32 timeLeft) {
 		i = MAX(i, 60);
 		j = MAX(j, 5);
 
-		sndPrepareFX("flucht.voc");
-		sndPlayFX();
+		g_clue->_sndMgr->sndPrepareFX("flucht.voc");
+		g_clue->_sndMgr->sndPlayFX();
 
 		int32 YardsInFront;
 		int32 xOldMatt = -1;

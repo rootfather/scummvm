@@ -15,71 +15,62 @@
 #include "clue/base/base.h"
 #include "clue/clue.h"
 #include "clue/sound/fx.h"
+#include "clue/sound/newsound.h"
 
 namespace Clue {
 
-struct FXBase FXBase;
-
-static bool SfxChannelOn = false;
-static bool MusicChannelOn = true;
-
-
-void InitAudio() {
-	FXBase.us_AudioOk = 1;
-	if (!g_clue->_mixer->isReady()) {
+void SndManager::initAudio() {
+	_audioOk = true;
+	if (!_vm->_mixer->isReady()) {
 		DebugMsg(ERR_WARNING, ERROR_MODULE_SOUND, "Mixer error");
-		FXBase.us_AudioOk = 0;
+		_audioOk = false;
 		return;
 	}
 
-	FXBase.pSfxBuffer = sndCreateBuffer(SND_BUFFER_SIZE);
-	FXBase.pMusicBuffer = sndCreateBuffer(SND_BUFFER_SIZE);
+	_sfxBuffer = new SndBuffer(SND_BUFFER_SIZE);
+	_musicBuffer = new SndBuffer(SND_BUFFER_SIZE);
 }
 
-void RemoveAudio() {
-	g_clue->_mixer->stopAll();
-	FXBase.us_AudioOk = 0;
+void SndManager::removeAudio() {
+	_vm->_mixer->stopAll();
+	_audioOk = false;
 
-	sndFreeBuffer(FXBase.pSfxBuffer);
-	sndFreeBuffer(FXBase.pMusicBuffer);
+	delete _sfxBuffer;
+	delete _musicBuffer;
 
-	FXBase.pSfxBuffer = FXBase.pMusicBuffer = nullptr;
+	_sfxBuffer = _musicBuffer = nullptr;
 }
 
-Audio::SoundHandle sfx;
-Audio::AudioStream *sfxFile;
-
-void sndInitFX() {
-	SfxChannelOn = false;
-	g_clue->_mixer->stopHandle(sfx);
-	sfxFile = NULL;
+void SndManager::sndInitFX() {
+	_sfxChannelOn = false;
+	_vm->_mixer->stopHandle(_sfx);
+	_sfxFile = nullptr;
 }
 
-void sndDoneFX() {
-	SfxChannelOn = false;
-	g_clue->_mixer->stopHandle(sfx);
-	sfxFile = NULL;
+void SndManager::sndDoneFX() {
+	_sfxChannelOn = false;
+	_vm->_mixer->stopHandle(_sfx);
+	_sfxFile = nullptr;
 }
 
-void sndPrepareFX(const char *name) {
+void SndManager::sndPrepareFX(const char *name) {
 	sndDoneFX();
 
-	if (FXBase.us_AudioOk) {
+	if (_audioOk) {
 		// TODO: Use proper Dsk functions
 		char fileName[DSK_PATH_MAX];
 
 		dskBuildPathName(DISK_CHECK_FILE, SAMPLES_DIRECTORY, name, fileName);
 		Common::Stream *file = dskOpen(fileName, 0);
 		Common::SeekableReadStream *stream = dynamic_cast<Common::SeekableReadStream *>(file);
-		sfxFile = Audio::makeVOCStream(stream, Audio::FLAG_UNSIGNED, DisposeAfterUse::YES);
+		_sfxFile = Audio::makeVOCStream(stream, Audio::FLAG_UNSIGNED, DisposeAfterUse::YES);
 	}
 }
 
-void sndPlayFX() {
-	SfxChannelOn = true;
-	if (sfxFile) {
-		g_clue->_mixer->playStream(Audio::Mixer::kSFXSoundType, &sfx, sfxFile);
-	}
+void SndManager::sndPlayFX() {
+	_sfxChannelOn = true;
+	if (_sfxFile)
+		_vm->_mixer->playStream(Audio::Mixer::kSFXSoundType, &_sfx, _sfxFile);
 }
 
 } // End of namespace Clue

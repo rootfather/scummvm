@@ -79,7 +79,7 @@ static void inpDoPseudoMultiTasking() {
 	if (timePassed >= INP_TICKS_TO_MS(1)) {
 		timePrev = timeNow;
 
-		sndDoFading(); // 2014-07-17 LucyG
+		g_clue->_sndMgr->sndDoFading(); // 2014-07-17 LucyG
 
 		animator();
 	}

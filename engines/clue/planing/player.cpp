@@ -275,7 +275,7 @@ static void plPlayerAction() {
 	plDisplayTimer(PD.realTime, false);
 
 	if (PD.sndState && (PD.timer > (PD.maxTimer * 20) / 100) && (PD.bldId != Building_Starford_Kaserne)) {
-		sndPlaySound(PLANING_MUSIC_PLAYER_END_STD, 0);
+		g_clue->_sndMgr->sndPlaySound(PLANING_MUSIC_PLAYER_END_STD, 0);
 		PD.sndState = 0;
 	}
 #ifndef PLAN_IS_PERFECT
@@ -326,14 +326,14 @@ static void plPlayerAction() {
 			Search.TimeOfAlarm = PD.realTime;
 
 			if (Search.EscapeBits & FAHN_ALARM) {
-				sndPrepareFX("sirene.voc");
-				sndPlayFX();
+				g_clue->_sndMgr->sndPrepareFX("sirene.voc");
+				g_clue->_sndMgr->sndPlayFX();
 			}
 		}
 
 		if ((Search.EscapeBits & FAHN_ALARM) && ((PD.realTime - Search.TimeOfAlarm) % 120) == 119) {
-			sndPrepareFX("sirene.voc");
-			sndPlayFX();
+			g_clue->_sndMgr->sndPrepareFX("sirene.voc");
+			g_clue->_sndMgr->sndPlayFX();
 		}
 
 		if (PD.realTime >= Search.TimeOfAlarm + PD.bldObj->PoliceTime) {
@@ -342,8 +342,8 @@ static void plPlayerAction() {
 			for (int i = 0; i < PLANING_NR_PERSONS; i++)
 				PD.handlerEnded[i] = 1;
 
-			sndPrepareFX("marthorn.voc");
-			sndPlayFX();
+			g_clue->_sndMgr->sndPrepareFX("marthorn.voc");
+			g_clue->_sndMgr->sndPlayFX();
 		}
 	}
 #endif
@@ -874,8 +874,8 @@ static void plPlayerAction() {
 								}
 
 								if (((LSObjectNode *)dbGetObject(curAct->ItemId))->Type == Item_WC && g_clue->calcRandomNr(0, 3) == 1) {
-									sndPrepareFX("wc.voc");
-									sndPlayFX();
+									g_clue->_sndMgr->sndPrepareFX("wc.voc");
+									g_clue->_sndMgr->sndPlayFX();
 								}
 
 								lsSetObjectState(curAct->ItemId, Const_tcOPEN_CLOSE_BIT, 1);
@@ -1113,9 +1113,9 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 				Search.EscapeBits = 0;
 
 				if (PD.bldId == Building_Starford_Kaserne)
-					sndPlaySound(PLANING_MUSIC_PLAYER_BEGIN_KASERNE, 0);
+					g_clue->_sndMgr->sndPlaySound(PLANING_MUSIC_PLAYER_BEGIN_KASERNE, 0);
 				else
-					sndPlaySound(PLANING_MUSIC_PLAYER_BEGIN_STD, 0);
+					g_clue->_sndMgr->sndPlaySound(PLANING_MUSIC_PLAYER_BEGIN_STD, 0);
 
 				if (g_clue->getFeatures() & GF_PROFIDISK) {
 					if (objId == Building_Postzug) {

@@ -7,21 +7,19 @@
  ****************************************************************************/
 #ifndef TC_BUFFER_H
 #define TC_BUFFER_H
-
 #include "clue/theclou.h"
 
 namespace Clue {
-
 class SndBuffer {
 public:
-	unsigned char* data;    /* data */
-	unsigned size;      /* size of data buffer */
+	uint8* _data;    /* data */
+	uint32 _size;      /* size of data buffer */
 
-	unsigned insertPos;     /* insert at (insertPos % size) */
-	unsigned removePos;     /* remove from (removePos % size) */
+	uint32 _insertPos;     /* insert at (_insertPos % _size) */
+	uint32 _removePos;     /* remove from (_removePos % _size) */
 
-	SndBuffer() { data = nullptr; size = insertPos = removePos = 0; }
-	void sndResetBuffer();
+	SndBuffer(uint32 size);
+	~SndBuffer();
 
 #if 0
 	unsigned sndLenBuffer();
@@ -29,9 +27,6 @@ public:
 	unsigned sndRemoveBuffer(void* dst, unsigned dstLen);
 #endif
 };
-
-SndBuffer *sndCreateBuffer(unsigned size);
-void sndFreeBuffer(SndBuffer *buffer);
 
 } // End of namespace Clue
 

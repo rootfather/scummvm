@@ -5,71 +5,59 @@
   publiclicensecontract.doc files which should be contained with this
   distribution.
  ****************************************************************************/
-#include "clue/memory/memory.h"
 #include "clue/sound/buffer.h"
+#include "clue/sound/newsound.h"
 
 namespace Clue {
-
-SndBuffer *sndCreateBuffer(unsigned size) {
-	SndBuffer *buffer = new SndBuffer;
-	uint8 *data = new uint8[size];
-
-	buffer->data = data;
-	buffer->size = size;
-	buffer->sndResetBuffer();
-
-	return buffer;
+SndBuffer::SndBuffer(uint32 size) : _size(size){
+	_insertPos = _removePos = 0;
+	_data = new uint8[size];
+	memset(_data, 0, size);
 }
 
-void SndBuffer::sndResetBuffer() {
-	insertPos = 0;
-	removePos = 0;
-}
-
-void sndFreeBuffer(SndBuffer* buffer) {
-	delete[] buffer->data;
-	delete buffer;
+SndBuffer::~SndBuffer() {
+	delete[] _data;
 }
 
 #if 0
 unsigned SndBuffer::sndLenBuffer() {
-	return insertPos - removePos;
+	return _insertPos - _removePos;
 }
 
-unsigned SndBuffer->sndInsertBuffer(const void *src, unsigned srcLen) {
-	const unsigned char *psrc = (const unsigned char *)src;
+unsigned SndBuffer::sndInsertBuffer(const void *src, unsigned srcLen) {
+	const uint8 *psrc = (const uint8 *)src;
 
-	srcLen = MIN(srcLen, size - sndLenBuffer());
+	srcLen = MIN(srcLen, _size - sndLenBuffer());
 
-	uint pos = insertPos % size;
-	uint len = MIN(srcLen, size - pos);
+	uint pos = _insertPos % _size;
+	uint len = MIN(srcLen, _size - pos);
 
 	/* insert to the end */
-	memcpy(data + pos, psrc, len);
+	memcpy(_data + pos, psrc, len);
 
 	/* insert to the start */
-	memcpy(data, psrc + len, srcLen - len);
+	memcpy(_data, psrc + len, srcLen - len);
 
-	insertPos += srcLen;
+	_insertPos += srcLen;
 
 	return srcLen;
 }
 
-unsigned buffer->sndRemoveBuffer(void *dst, uint dstLen) {
-	unsigned char *pdst = (unsigned char *)dst;
+unsigned SndBuffer::sndRemoveBuffer(void *dst, uint dstLen) {
+	uint8 *pdst = (uint8 *)dst;
 
 	dstLen = MIN(dstLen, sndLenBuffer());
 
-	uint pos = removePos % size;
-	uint len = MIN(dstLen, size - pos);
+	uint pos = _removePos % _size;
+	uint len = MIN(dstLen, _size - pos);
 
 	/* remove from the end */
-	memcpy(pdst, data + pos, len);
+	memcpy(pdst, _data + pos, len);
 
 	/* remove from the start */
-	memcpy(pdst + len, data, dstLen - len);
+	memcpy(pdst + len, _data, dstLen - len);
 
-	removePos += dstLen;
+	_removePos += dstLen;
 
 	return dstLen;
 }

@@ -234,7 +234,7 @@ void DynamicTalk(uint32 Person1ID, uint32 Person2ID, byte TalkMode) {
 
 void PlayFromCDROM() {
 	if (StartFrame != DLG_NO_SPEECH && EndFrame != DLG_NO_SPEECH) {
-		sndFading(16);
+		g_clue->_sndMgr->sndFading(16);
 		g_clue->_cdMgr->playSequence(2, StartFrame, EndFrame);
 	}
 }
@@ -268,7 +268,7 @@ byte Say(uint32 TextID, byte activ, uint16 person, const char *text) {
 
 	if (g_clue->getFeatures() & ADGF_CD) {
 		g_clue->_cdMgr->stop();
-		sndFading(0);
+		g_clue->_sndMgr->sndFading(0);
 
 		StartFrame = DLG_NO_SPEECH;
 		EndFrame = DLG_NO_SPEECH;

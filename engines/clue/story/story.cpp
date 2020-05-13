@@ -36,16 +36,16 @@ byte tcDoLastBurglarySpot(uint32 ul_Time, uint32 ul_BuildingId);
 static void tcSomebodyIsComing() {
 	for (uint8 i = 0; i < 3; i++) {
 		inpDelay(50);
-		sndPrepareFX("klopfen.voc");
-		sndPlayFX();
+		g_clue->_sndMgr->sndPrepareFX("klopfen.voc");
+		g_clue->_sndMgr->sndPlayFX();
 	}
 }
 
 static void tcSomebodyIsCalling() {
 	for (uint32 i = 0; i < g_clue->calcRandomNr(1, 4); i++) {
 		inpDelay(180);
-		sndPrepareFX("ring.voc");
-		sndPlayFX();
+		g_clue->_sndMgr->sndPrepareFX("ring.voc");
+		g_clue->_sndMgr->sndPlayFX();
 	}
 }
 
@@ -308,7 +308,7 @@ void tcDoneMeetBriggs() {
 		choice = Say(STORY_0_TXT, 0, MATT_PICTID, "HOLY_MATT");
 
 		if (choice == 0) {  /* holy */
-			sndPlaySound("end.bk", 0);
+			g_clue->_sndMgr->sndPlaySound("end.bk", 0);
 
 			Say(STORY_0_TXT, 0, 155, "THE_END_MONASTERY");  /* pict = holy matt ! */
 			Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "THE_EDGE");
@@ -394,7 +394,7 @@ void tcDonePrison() {
  */
 	_film->setDay(719792);        /* 13.01.1972? */
 
-	sndPlaySound("end.bk", 0);  /* dont change it! (-> story_9) */
+	g_clue->_sndMgr->sndPlaySound("end.bk", 0);  /* dont change it! (-> story_9) */
 	tcMattGoesTo(7);
 
 	gfxShow(169, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1);
@@ -444,7 +444,7 @@ bool tcIsDeadlock() {
 		if (!enough) {
 			Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "DEADLOCK");
 
-			sndPlaySound("end.bk", 0);
+			g_clue->_sndMgr->sndPlaySound("end.bk", 0);
 
 			tcMattGoesTo(60);
 			inpDelay(190);
@@ -511,7 +511,7 @@ void tcDone1stBurglary() {
 void tcDoneGludoAsSailor() {
 	knowsSet(Person_Matt_Stuvysunt, Person_John_Gludo);
 
-	sndPlaySound("gludo.bk", 0);
+	g_clue->_sndMgr->sndPlaySound("gludo.bk", 0);
 
 	Say(STORY_0_TXT, 0, (uint16) FACE_GLUDO_SAILOR, "SAILOR_GLUDO_0");
 	Say(STORY_0_TXT, 0, MATT_PICTID, "SAILOR_MATT_0");
@@ -520,7 +520,7 @@ void tcDoneGludoAsSailor() {
 	if (Say(STORY_0_TXT, 0, MATT_PICTID, "SAILOR_MATT_1")) {
 		Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "SAILOR_OLD_MATT_0");
 
-		sndPlaySound("street1.bk", 0);
+		g_clue->_sndMgr->sndPlaySound("street1.bk", 0);
 		_sceneArgs._returnValue = SCENE_HOLLAND_STR;
 	} else {
 		Say(STORY_0_TXT, 0, (uint16) FACE_GLUDO_SAILOR, "SAILOR_GLUDO_2");
@@ -633,12 +633,12 @@ void tcDone3rdBurglary() {
 
 	Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "READ_TIMES_0");
 
-	sndPlaySound("gludo.bk", 0);
+	g_clue->_sndMgr->sndPlaySound("gludo.bk", 0);
 
 	Say(STORY_0_TXT, 0, FACE_GLUDO_MAGIC, "READ_TIMES_GLUDO");
 	Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "READ_TIMES_1");
 
-	sndPlaySound("street1.bk", 0);
+	g_clue->_sndMgr->sndPlaySound("street1.bk", 0);
 
 	gfxShow(150, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1);
 
@@ -682,7 +682,7 @@ void tcDone4thBurglary() {
 
 	tcSomebodyIsComing();
 
-	sndPlaySound("gludo.bk", 0);
+	g_clue->_sndMgr->sndPlaySound("gludo.bk", 0);
 	Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "ARREST_OLD_MATT_0");
 	Say(STORY_0_TXT, 0, Gludo->PictID, "ARREST_GLUDO_0");
 	Say(STORY_0_TXT, 0, MATT_PICTID, "ARREST_MATT_0");
@@ -806,7 +806,7 @@ void tcDoneRaidInWalrus() {
 	EnvironmentNode *Env = (EnvironmentNode *) dbGetObject(Environment_TheClou);
 
 	knowsSet(Person_Matt_Stuvysunt, Person_Red_Stanson);
-	sndPlaySound("gludo.bk", 0);
+	g_clue->_sndMgr->sndPlaySound("gludo.bk", 0);
 
 	Say(STORY_0_TXT, 0, Red->PictID, "RAID_POLICE_0");
 	Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "RAID_OLD_MATT_0");
@@ -845,20 +845,20 @@ void tcDoneDartJager() {
 		if (choice == 0) {
 			Say(STORY_0_TXT, 0, Grull->PictID, "DART_GRULL_1");
 
-			sndPrepareFX("darth.voc");
-			sndPlayFX();
+			g_clue->_sndMgr->sndPrepareFX("darth.voc");
+			g_clue->_sndMgr->sndPlayFX();
 
 			Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "DART_JAEGER_0");
 
 			gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
 			gfxShow(221, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP, 0, -1, -1);
 
-			sndPrepareFX("darth.voc");
-			sndPlayFX();
+			g_clue->_sndMgr->sndPrepareFX("darth.voc");
+			g_clue->_sndMgr->sndPlayFX();
 
 			Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "DART_JAEGER_1");
 
-			sndPlaySound("end.bk", 0);
+			g_clue->_sndMgr->sndPlaySound("end.bk", 0);
 			tcMattGoesTo(60);
 			Say(STORY_0_TXT, 0, 155, "THE_END_MONASTERY");  /* pict = holy matt */
 
@@ -893,9 +893,9 @@ void tcDoneGludoBurnsOffice() {
 
 	Say(STORY_0_TXT, 0, Gludo->PictID, "5TH_GLUDO_2");
 
-	sndPrepareFX("brille.voc");
+	g_clue->_sndMgr->sndPrepareFX("brille.voc");
 	gfxShow(162, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);
-	sndPlayFX();
+	g_clue->_sndMgr->sndPlayFX();
 
 	Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "5TH_OLD_4");
 	Say(STORY_0_TXT, 0, Gludo->PictID, "5TH_GLUDO_3");
@@ -905,8 +905,8 @@ void tcDoneGludoBurnsOffice() {
 	Say(STORY_0_TXT, 0, Gludo->PictID, "5TH_GLUDO_4");
 	Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "5TH_OLD_6");
 
-	sndPrepareFX("streich.voc");
-	sndPlayFX();
+	g_clue->_sndMgr->sndPrepareFX("streich.voc");
+	g_clue->_sndMgr->sndPlayFX();
 
 	gfxShow(153, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1);
 
@@ -996,7 +996,7 @@ void tcBriggsAngry() {
 void tcSabienInWalrus() {
 	PersonNode *Sabien = (PersonNode *)dbGetObject(Person_Sabien_Pardo);
 
-	sndPlaySound("sabien.bk", 0);
+	g_clue->_sndMgr->sndPlaySound("sabien.bk", 0);
 	StopAnim();
 
 	Say(STORY_1_TXT, 0, Sabien->PictID, "ST_3_SABIEN_0");
@@ -1016,7 +1016,7 @@ void tcWalrusTombola() {
 	EnvironmentNode *Env = (EnvironmentNode *)dbGetObject(Environment_TheClou);
 
 	Env->Present = 1;
-	sndPlaySound("sabien.bk", 0);
+	g_clue->_sndMgr->sndPlaySound("sabien.bk", 0);
 
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_5_OLD_0");
 
@@ -1112,7 +1112,7 @@ void tcPresentInHotel() {
 
 void tcSabienDinner() {
 	tcAsTimeGoesBy(1210);
-	sndPlaySound("sabien.bk", 0);
+	g_clue->_sndMgr->sndPlaySound("sabien.bk", 0);
 
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_4_OLD_0");
 	tcMattGoesTo(62);
@@ -1155,8 +1155,8 @@ void tcDoneBirthday() {
 	StopAnim();
 	gfxShow(172, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);
 
-	sndPrepareFX("birthd2.voc");    /* applause */
-	sndPlayFX();
+	g_clue->_sndMgr->sndPrepareFX("birthd2.voc");    /* applause */
+	g_clue->_sndMgr->sndPlayFX();
 
 	knowsAll(Person_Matt_Stuvysunt, OLF_PRIVATE_LIST, Object_Person);
 	NewList<dbObjectNode> *persons = ObjectListPrivate;
@@ -1182,8 +1182,8 @@ void tcDoneBirthday() {
 		}
 	}
 
-	sndPrepareFX("birthd1.voc");    /* cork popping */
-	sndPlayFX();
+	g_clue->_sndMgr->sndPrepareFX("birthd1.voc");    /* cork popping */
+	g_clue->_sndMgr->sndPlayFX();
 
 	persons->removeList();
 
@@ -1196,7 +1196,7 @@ void tcDoneBirthday() {
 void tcWalkWithSabien() {
 	EnvironmentNode *Env = (EnvironmentNode *)dbGetObject(Environment_TheClou);
 
-	sndPlaySound("sabien.bk", 0);
+	g_clue->_sndMgr->sndPlaySound("sabien.bk", 0);
 
 	gfxShow(165, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1);
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_13_OLD_0");
@@ -1331,8 +1331,8 @@ void tcDoneTerror() {
 	gfxShow(176, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1);
 	inpDelay(150);
 
-	sndPrepareFX("explosio.voc");
-	sndPlayFX();
+	g_clue->_sndMgr->sndPrepareFX("explosio.voc");
+	g_clue->_sndMgr->sndPlayFX();
 
 	PlayAnim("Explo1", 1, GFX_DONT_SHOW_FIRST_PIC);
 	inpDelay(200);
@@ -1372,7 +1372,7 @@ void tcDoneConfessingSabien() {
 		gfxShow(163, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP, 0, -1, -1);  /* south 1 */
 		gfxShow(152, GFX_NO_REFRESH | GFX_OVERLAY, 3, -1, -1);  /* family */
 
-		sndPlaySound("sabien.bk", 0);
+		g_clue->_sndMgr->sndPlaySound("sabien.bk", 0);
 
 		Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_19_OLD_0");
 
@@ -1559,7 +1559,7 @@ void tcDoneSouthhampton() {
 				tcAsTimeGoesBy(_film->getMinute() + actionTime);
 				break;      /* fischen */
 			case 4:
-				sndPlaySound("hotel.bk", 0);
+				g_clue->_sndMgr->sndPlaySound("hotel.bk", 0);
 				tcInitTowerBurglary();  /* just to be sure */
 				plPlaner(Building_Tower_of_London);
 				refreshCurrScene();
@@ -1712,7 +1712,7 @@ void tcDoneMafia() {
 	Say(STORY_1_TXT, 0, MATT_PICTID, "ST_25_MATT_0");
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_25_OLD_2");
 
-	sndPlaySound("street1.bk", 0);
+	g_clue->_sndMgr->sndPlaySound("street1.bk", 0);
 
 	gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
 	tcAsTimeGoesBy(_film->getMinute() + 420);
@@ -1807,7 +1807,7 @@ void tcDoneKaserne() {
 
 	if (burglary) {
 		if (Search.KaserneOk) {
-			sndPlaySound("end.bk", 0);
+			g_clue->_sndMgr->sndPlaySound("end.bk", 0);
 
 			if (Env->MattIsInLove)
 				Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_27_OLD_0");

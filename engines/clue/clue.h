@@ -37,6 +37,7 @@ enum ClueGameFeatures {
 
 class TextMgr;
 class CDManager;
+class SndManager;
 
 class ClueEngine : public Engine {
 private:
@@ -66,6 +67,7 @@ public:
 
 	TextMgr* _txtMgr;
 	CDManager *_cdMgr;
+	SndManager *_sndMgr;
 
 private:
 	Common::RandomSource* rnd;

@@ -17,23 +17,6 @@ namespace Clue {
 #define SND_BUFFER_SIZE		65536
 #define SND_SAMPLES			1024
 
-struct FXBase {
-	uint16 us_AudioOk;
-
-	SndBuffer *pSfxBuffer;
-	SndBuffer *pMusicBuffer;
-};
-
-extern struct FXBase FXBase;
-
-extern void sndInitFX();
-extern void sndDoneFX();
-extern void sndPrepareFX(const char *Name);
-extern void sndPlayFX();
-
-extern void InitAudio();
-extern void RemoveAudio();
-
 } // End of namespace Clue
 
 #endif

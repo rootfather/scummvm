@@ -63,7 +63,7 @@ void Investigate(const char *location) {
 	}
 
 	if (!(_gamePlayMode & GP_MODE_MUSIC_OFF))
-		sndPlaySound("invest.bk", 0);
+		g_clue->_sndMgr->sndPlaySound("invest.bk", 0);
 
 	inpTurnESC(false);
 
