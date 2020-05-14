@@ -17,7 +17,7 @@
 #include "clue/data/dataappl.h"
 #include "clue/clue.h"
 #include "clue/present/interac.h"
-
+#include "clue/scenes/scenes.h"
 
 namespace Clue {
 

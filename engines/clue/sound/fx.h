@@ -8,8 +8,6 @@
 #ifndef TC_FX_H
 #define TC_FX_H
 
-#include "clue/sound/buffer.h"
-
 namespace Clue {
 
 #define SND_FREQUENCY		22050

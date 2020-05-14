@@ -7,7 +7,7 @@
  ****************************************************************************/
 #ifndef TC_BUFFER_H
 #define TC_BUFFER_H
-#include "clue/theclou.h"
+#include "clue/clue.h"
 
 namespace Clue {
 class SndBuffer {

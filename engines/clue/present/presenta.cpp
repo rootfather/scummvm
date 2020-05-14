@@ -15,6 +15,7 @@
 #include "clue/present/present.h"
 #include "clue/clue.h"
 #include "clue/data/dataappl.h"
+#include "clue/scenes/scenes.h"
 
 namespace Clue {
 

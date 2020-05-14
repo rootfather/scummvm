@@ -22,7 +22,6 @@
 #define MODULE_PRESENT
 
 #include "clue/gfx/gfx.h"
-#include "clue/scenes/scenes.h"
 
 namespace Clue {
 

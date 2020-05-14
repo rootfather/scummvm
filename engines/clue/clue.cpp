@@ -33,6 +33,7 @@
 #include "clue/present/interac.h"
 #include "clue/data/dataappl.h"
 #include "clue/sound/newsound.h"
+#include "clue/scenes/scenes.h"
 
 namespace Clue {
 

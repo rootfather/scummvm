@@ -16,6 +16,7 @@
 #include "clue/clue.h"
 #include "clue/sound/fx.h"
 #include "clue/sound/newsound.h"
+#include "clue/sound/buffer.h"
 
 namespace Clue {
 

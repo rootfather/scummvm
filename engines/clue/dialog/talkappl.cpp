@@ -20,6 +20,7 @@
 
 #include "clue/dialog/talkappl.h"
 #include "clue/present/interac.h"
+#include "clue/scenes/scenes.h"
 
 
 namespace Clue {

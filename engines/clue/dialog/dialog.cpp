@@ -23,7 +23,7 @@
 #include "clue/clue.h"
 #include "clue/cdrom/cdrom.h"
 #include "clue/present/interac.h"
-
+#include "clue/scenes/scenes.h"
 
 namespace Clue {
 

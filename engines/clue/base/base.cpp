@@ -26,6 +26,7 @@
 #include "clue/present/interac.h"
 #include "clue/data/dataappl.h"
 #include "clue/planing/player.h"
+#include "clue/scenes/scenes.h"
 #include "clue/sound/fx.h"
 
 
