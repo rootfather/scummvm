@@ -81,7 +81,7 @@ static void inpDoPseudoMultiTasking() {
 
 		g_clue->_sndMgr->sndDoFading(); // 2014-07-17 LucyG
 
-		animator();
+		g_clue->_animMgr->animator();
 	}
 }
 

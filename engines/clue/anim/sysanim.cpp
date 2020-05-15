@@ -23,116 +23,84 @@
 
 namespace Clue {
 
-#define PIC_MODE_POS         1
-#define PIC_P_SEC_POS        2
-#define PIC_1_ID_POS         3
-#define ANIM_COLL_ID_POS     4
-#define PIC_COUNT_POS        5
-#define PHASE_WIDTH_POS      6
-#define PHASE_HEIGHT_POS     7
-#define PHASE_OFFSET_POS     8
-#define X_DEST_OFFSET_POS    9
-#define Y_DEST_OFFSET_POS   10
-#define PLAY_MODE_POS       11
-
-/* Defines for play mode */
-#define PM_NORMAL            1
-#define PM_PING_PONG         2
-#define PM_SYNCHRON          4
-
-/* Defines for AnimPic */
-#define Y_OFFSET             0 /* 1 pixel between 2 rows/lines */
-
-struct AnimHandler {
-	char *RunningAnimID;       /* currently running animation */
-
-	uint16 destX;
-	uint16 destY;
-	uint16 width;
-	uint16 height;
-
-	uint16 offset;
-	uint16 frameCount;
-
-	uint16 pictsPerRow;
-	uint16 totalWidth;
-
-	uint16 NrOfAnims;          // Not Used
-	uint16 PictureRate;        /* playback rate of the animation */
-	uint16 Repeatation;        /* total number of repetitions */
-
-	uint16 RepeatationCount;   /* how many repetitions already passed */
-
-	uint16 AnimCollection;     /* single animation phases */
-
-	uint32 WaitCounter;
-
-	uint16 CurrPictNr;
-	int16 Direction;
-
-	uint8 PlayMode;
-
-	uint8 AnimatorState;
-};
-
-static struct AnimHandler Handler;
-char RunningAnimLine[TXT_KEY_LENGTH];
-
-#define ANIM_FRAME_MEM_RP   AnimRPInMem
-
-#define ANIM_STATE_SUSPENDED    (1<<0)
-
-void LoadAnim(const char *AnimID);
-
 /*
  * init & dones
  */
 
-void InitAnimHandler() {
-	Handler.RunningAnimID = RunningAnimLine;
-	Handler.RunningAnimID[0] = '\0';
+AnimManager::AnimManager(ClueEngine* vm) : _vm(vm) {
+	RunningAnimID = nullptr;
+
+	destX = destY = 0;
+	width = height = 0;
+
+	offset = 0;
+	frameCount = 0;
+
+	pictsPerRow = 0;
+	totalWidth = 0;
+
+	NrOfAnims = 0;
+	PictureRate = 0;
+	Repeatation = 0;
+	
+	RepeatationCount = 0;
+	AnimCollection = 0;
+
+	WaitCounter = 0;
+
+	CurrPictNr = 0;
+	Direction = 0;
+
+	PlayMode = 0;
+
+	AnimatorState = 0;
 }
 
-void CloseAnimHandler() {
+	
+void AnimManager::InitAnimHandler() {
+	RunningAnimID = RunningAnimLine;
+	RunningAnimID[0] = '\0';
+}
+
+void AnimManager::CloseAnimHandler() {
 	StopAnim();
 }
 
-void SuspendAnim() {
-	Handler.AnimatorState |= ANIM_STATE_SUSPENDED;
+void AnimManager::SuspendAnim() {
+	AnimatorState |= ANIM_STATE_SUSPENDED;
 }
 
-void ContinueAnim() {
-	Handler.AnimatorState &= (0xff - ANIM_STATE_SUSPENDED);
+void AnimManager::ContinueAnim() {
+	AnimatorState &= (0xff - ANIM_STATE_SUSPENDED);
 }
 
 /*
  * prepare...
  */
 
-static void PrepareAnim(const char *AnimID)
+void AnimManager::PrepareAnim(const char *AnimID) {
 /* initializes various values and afterwards copies anim phases into memory */
-{
 	Common::String pict_list = GetAnim(AnimID);
 
-	if ((uint32)g_clue->_txtMgr->countKey(pict_list) > PIC_1_ID_POS) {
-		CollectionNode* coll = gfxGetCollection(g_clue->_txtMgr->getKeyAsUint32(ANIM_COLL_ID_POS, pict_list));
-		Handler.frameCount = g_clue->_txtMgr->getKeyAsUint32(PIC_COUNT_POS, pict_list);
+	if ((uint32)_vm->_txtMgr->countKey(pict_list) > PIC_1_ID_POS) {
+		CollectionNode* coll = gfxGetCollection(_vm->_txtMgr->getKeyAsUint32(ANIM_COLL_ID_POS, pict_list));
+		frameCount = _vm->_txtMgr->getKeyAsUint32(PIC_COUNT_POS, pict_list);
 
-		Handler.width = (uint16)g_clue->_txtMgr->getKeyAsUint32(PHASE_WIDTH_POS, pict_list);
-		Handler.height = (uint16)g_clue->_txtMgr->getKeyAsUint32(PHASE_HEIGHT_POS, pict_list);
+		width = (uint16)_vm->_txtMgr->getKeyAsUint32(PHASE_WIDTH_POS, pict_list);
+		height = (uint16)_vm->_txtMgr->getKeyAsUint32(PHASE_HEIGHT_POS, pict_list);
 
-		Handler.offset = (uint16)g_clue->_txtMgr->getKeyAsUint32(PHASE_OFFSET_POS, pict_list);
-		Handler.destX = (uint16)g_clue->_txtMgr->getKeyAsUint32(X_DEST_OFFSET_POS, pict_list);
-		Handler.destY = (uint16)g_clue->_txtMgr->getKeyAsUint32(Y_DEST_OFFSET_POS, pict_list);
+		offset = (uint16)_vm->_txtMgr->getKeyAsUint32(PHASE_OFFSET_POS, pict_list);
+		destX = (uint16)_vm->_txtMgr->getKeyAsUint32(X_DEST_OFFSET_POS, pict_list);
+		destY = (uint16)_vm->_txtMgr->getKeyAsUint32(Y_DEST_OFFSET_POS, pict_list);
 
 		/* need to add an offset for total width! Example:
 		 * 3 images with Width = 80, Offset = 2 -> TotalWidth = 244
 		 * but 244 / 3 is only 2, even though there are 3 images in
-		     * this row!
+		 * this row!
 		 */
-		Handler.pictsPerRow = (coll->_totalWidth + Handler.offset) / (Handler.width + Handler.offset);
-		Handler.totalWidth = coll->_totalWidth;
-		Handler.AnimCollection = coll->_collId;
+		pictsPerRow = (coll->_totalWidth + offset) / (width + offset);
+		totalWidth = coll->_totalWidth;
+		AnimCollection = coll->_collId;
 
 		/* jetzt die Animphasen vorbereiten und ins Mem kopieren */
 		gfxCollToMem(coll->_collId, &ANIM_FRAME_MEM_RP);
@@ -144,7 +112,7 @@ static void PrepareAnim(const char *AnimID)
  * StopAnim
  */
 
-void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode) {
+void AnimManager::PlayAnim(const char *AnimID, uint16 how_often, uint32 mode) {
 	Common::String pict_list = GetAnim(AnimID);
 
 	if (pict_list.empty())
@@ -157,16 +125,16 @@ void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode) {
 		uint16 pict_id = 0;
 		if (!(mode & GFX_DONT_SHOW_FIRST_PIC)) {
 			if (!mode)
-				mode = g_clue->_txtMgr->getKeyAsUint32((uint16) PIC_MODE_POS, pict_list);
+				mode = _vm->_txtMgr->getKeyAsUint32((uint16) PIC_MODE_POS, pict_list);
 
-			pict_id = (uint16)g_clue->_txtMgr->getKeyAsUint32((uint16) PIC_1_ID_POS, pict_list);
+			pict_id = (uint16)_vm->_txtMgr->getKeyAsUint32((uint16) PIC_1_ID_POS, pict_list);
 		}
 
 		if (pict_id)
 			gfxShow(pict_id, mode, 2, -1, -1);
 
-		if (g_clue->_txtMgr->countKey(pict_list) > PIC_1_ID_POS) {
-			uint16 rate = (uint16)g_clue->_txtMgr->getKeyAsUint32((uint16)PIC_P_SEC_POS, pict_list);
+		if (_vm->_txtMgr->countKey(pict_list) > PIC_1_ID_POS) {
+			uint16 rate = (uint16)_vm->_txtMgr->getKeyAsUint32((uint16)PIC_P_SEC_POS, pict_list);
 
 			/* ZZZZZZXXXZZZZZ NOTE: UHHHHHHHHHHHHHHH? WTF???
 			   LOOK AT 'texts/animd.txt! WTF?'
@@ -179,41 +147,41 @@ void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode) {
 
 			Handler.PlayMode = (uint8) getKeyAsUint32((uint16)PLAY_MODE_POS, pict_list);
 			*/
-			Handler.PlayMode = PM_PING_PONG;
+			PlayMode = PM_PING_PONG;
 
-			Handler.PictureRate = rate;
-			Handler.Repeatation = how_often;
+			PictureRate = rate;
+			Repeatation = how_often;
 
-			Handler.CurrPictNr = 0;
-			Handler.Direction = 1;
-			Handler.RepeatationCount = 0;
+			CurrPictNr = 0;
+			Direction = 1;
+			RepeatationCount = 0;
 
-			Handler.WaitCounter = 1;
+			WaitCounter = 1;
 
 			/* DoAnim is ready to play and our anim is decrunched */
-			strcpy(Handler.RunningAnimID, AnimID);
+			strcpy(RunningAnimID, AnimID);
 
 			ContinueAnim(); /* in case anim has been suspended */
 		} else
-			Handler.RunningAnimID[0] = '\0';
+			RunningAnimID[0] = '\0';
 	}
 }
 
-void StopAnim() {
-	if (Handler.RunningAnimID) {    /* anim currently playing */
-		if (Handler.RunningAnimID[0] != '\0') {
-			Common::String pict_list = GetAnim(Handler.RunningAnimID);
+void AnimManager::StopAnim() {
+	if (RunningAnimID) {    /* anim currently playing */
+		if (RunningAnimID[0] != '\0') {
+			Common::String pict_list = GetAnim(RunningAnimID);
 
 			/* "unprepare" pictures for the sake of completeness */
-			PictureNode *pict = gfxGetPicture((uint16)g_clue->_txtMgr->getKeyAsUint32((uint16) PIC_1_ID_POS, pict_list));
+			PictureNode *pict = gfxGetPicture((uint16)_vm->_txtMgr->getKeyAsUint32((uint16) PIC_1_ID_POS, pict_list));
 
 			if (pict)
 				gfxUnPrepareColl(pict->_collId);
 
-			if (g_clue->_txtMgr->countKey(pict_list) > PIC_1_ID_POS)
-				gfxUnPrepareColl((uint16)g_clue->_txtMgr->getKeyAsUint32((uint16) ANIM_COLL_ID_POS, pict_list));
+			if (_vm->_txtMgr->countKey(pict_list) > PIC_1_ID_POS)
+				gfxUnPrepareColl((uint16)_vm->_txtMgr->getKeyAsUint32((uint16) ANIM_COLL_ID_POS, pict_list));
 
-			Handler.RunningAnimID[0] = '\0';
+			RunningAnimID[0] = '\0';
 		}
 	}
 }
@@ -223,8 +191,9 @@ void StopAnim() {
  * GetAnim
  */
 
-Common::String GetAnim(const char *AnimID) {
+Common::String AnimManager::GetAnim(const char *AnimID) {
 	char id[TXT_KEY_LENGTH];
+	Common::String test = Common::String(AnimID);
 
 	strcpy(id, AnimID);
 
@@ -233,58 +202,53 @@ Common::String GetAnim(const char *AnimID) {
 			id[i] = '_';
 	}
 
-	return g_clue->_txtMgr->getFirstLine(ANIM_TXT, id);
+	return _vm->_txtMgr->getFirstLine(ANIM_TXT, id);
 }
 
 /*
  * Animator
  */
 
-void animator() {
-	uint16 destX = Handler.destX;
-	uint16 destY = Handler.destY;
+void AnimManager::animator() {
+	uint16 destX_ = destX;
+	uint16 destY_ = destY;
 
-	if (!(Handler.AnimatorState & ANIM_STATE_SUSPENDED)) {
-		if (Handler.RunningAnimID && Handler.RunningAnimID[0] != '\0') {
-			if (Handler.RepeatationCount <= Handler.Repeatation) {
-				if ((--Handler.WaitCounter) == 0) {
-					Handler.WaitCounter =
-					    Handler.PictureRate + g_clue->calcRandomNr(0, 3);
+	if (!(AnimatorState & ANIM_STATE_SUSPENDED)) {
+		if (RunningAnimID && RunningAnimID[0] != '\0') {
+			if (RepeatationCount <= Repeatation) {
+				--WaitCounter;
+				if (WaitCounter == 0) {
+					WaitCounter = PictureRate + _vm->calcRandomNr(0, 3);
 
-					if (Handler.CurrPictNr == 0) {
-						Handler.RepeatationCount++;
-
-						Handler.Direction = 1;
+					if (CurrPictNr == 0) {
+						RepeatationCount++;
+						Direction = 1;
 					}
 
-					if (Handler.CurrPictNr == Handler.frameCount - 1) {
-						Handler.RepeatationCount++;
+					if (CurrPictNr == frameCount - 1) {
+						RepeatationCount++;
 
-						if (Handler.PlayMode & PM_NORMAL)
-							Handler.CurrPictNr = 0;
+						if (PlayMode & PM_NORMAL)
+							CurrPictNr = 0;
 						else
-							Handler.Direction = -1;
+							Direction = -1;
 					}
 
-					if (Handler.RepeatationCount <= Handler.Repeatation) {
-						uint16 sourceX = ((Handler.width + Handler.offset) * Handler.CurrPictNr) % (Handler.totalWidth);
+					if (RepeatationCount <= Repeatation) {
+						uint16 sourceX = ((width + offset) * CurrPictNr) % totalWidth;
 						uint16 sourceY = 0;
 
-						if (Handler.pictsPerRow != 0)
-							sourceY = (Handler.CurrPictNr / Handler.pictsPerRow) * (Handler.height + Y_OFFSET);
+						if (pictsPerRow != 0)
+							sourceY = (CurrPictNr / pictsPerRow) * (height + Y_OFFSET);
 
 						/* sicherstellen, daß Animframes immer vorhanden sind */
 
 						inpMousePtrOff();
-
-						gfxBlit(l_gc, &ANIM_FRAME_MEM_RP, sourceX, sourceY,
-						        destX, destY, Handler.width, Handler.height,
-						        false);
-
+						gfxBlit(l_gc, &ANIM_FRAME_MEM_RP, sourceX, sourceY, destX_, destY_, width, height, false);
 						inpMousePtrOn();
 					}
 
-					Handler.CurrPictNr = Handler.CurrPictNr + Handler.Direction;
+					CurrPictNr += Direction;
 				}
 			}
 		}

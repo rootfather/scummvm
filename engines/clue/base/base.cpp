@@ -48,7 +48,7 @@ void tcDone() {
 		g_clue->_sndMgr->sndDone();
 		g_clue->_sndMgr->removeAudio();
 		dbDone();
-		CloseAnimHandler();
+		g_clue->_animMgr->CloseAnimHandler();
 
 		delete g_clue->_txtMgr;
 		g_clue->_txtMgr = nullptr;
@@ -73,22 +73,45 @@ void tcDone() {
 void orbyte(uint8 *ptr, uint8 data, uint8 dmask) {
 	uint8 dmaskoff = ~dmask;
 
-	if (0x80 & data) *ptr++ |= dmask;
-	else *ptr++ &= dmaskoff;
-	if (0x40 & data) *ptr++ |= dmask;
-	else *ptr++ &= dmaskoff;
-	if (0x20 & data) *ptr++ |= dmask;
-	else *ptr++ &= dmaskoff;
-	if (0x10 & data) *ptr++ |= dmask;
-	else *ptr++ &= dmaskoff;
-	if (0x08 & data) *ptr++ |= dmask;
-	else *ptr++ &= dmaskoff;
-	if (0x04 & data) *ptr++ |= dmask;
-	else *ptr++ &= dmaskoff;
-	if (0x02 & data) *ptr++ |= dmask;
-	else *ptr++ &= dmaskoff;
-	if (0x01 & data) *ptr |= dmask;
-	else *ptr &= dmaskoff;
+	if (0x80 & data)
+		*ptr++ |= dmask;
+	else
+		*ptr++ &= dmaskoff;
+
+	if (0x40 & data)
+		*ptr++ |= dmask;
+	else
+		*ptr++ &= dmaskoff;
+
+	if (0x20 & data)
+		*ptr++ |= dmask;
+	else
+		*ptr++ &= dmaskoff;
+
+	if (0x10 & data)
+		*ptr++ |= dmask;
+	else
+		*ptr++ &= dmaskoff;
+
+	if (0x08 & data)
+		*ptr++ |= dmask;
+	else
+		*ptr++ &= dmaskoff;
+
+	if (0x04 & data)
+		*ptr++ |= dmask;
+	else
+		*ptr++ &= dmaskoff;
+
+	if (0x02 & data)
+		*ptr++ |= dmask;
+	else
+		*ptr++ &= dmaskoff;
+
+	if (0x01 & data)
+		*ptr |= dmask;
+	else
+		*ptr &= dmaskoff;
 }
 
 void ClueEngine::processIntroAnimation(uint8 *dp, uint8 *sp) {
@@ -400,7 +423,7 @@ bool ClueEngine::tcInit() {
 
 	_txtMgr->init();
 
-	InitAnimHandler();
+	_animMgr->InitAnimHandler();
 
 	dbInit();
 	plInit();

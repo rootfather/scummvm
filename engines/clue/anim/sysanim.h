@@ -28,22 +28,83 @@
 #ifndef MODULE_ANIM
 #define MODULE_ANIM
 
-#include "clue/text.h"
-
 namespace Clue {
 
-/* global functions */
-extern void InitAnimHandler();
-extern void CloseAnimHandler();
+#define PIC_MODE_POS         1
+#define PIC_P_SEC_POS        2
+#define PIC_1_ID_POS         3
+#define ANIM_COLL_ID_POS     4
+#define PIC_COUNT_POS        5
+#define PHASE_WIDTH_POS      6
+#define PHASE_HEIGHT_POS     7
+#define PHASE_OFFSET_POS     8
+#define X_DEST_OFFSET_POS    9
+#define Y_DEST_OFFSET_POS   10
+#define PLAY_MODE_POS       11
 
-extern void PlayAnim(const char *AnimID, uint16 how_often, uint32 mode);    /* -> docs from 16.08.92 ! */
-extern void StopAnim();
+	/* Defines for play mode */
+#define PM_NORMAL            1
+#define PM_PING_PONG         2
+#define PM_SYNCHRON          4
 
-extern Common::String GetAnim(const char *AnimID);
-extern void animator();
+#define Y_OFFSET             0 /* 1 pixel between 2 rows/lines */
 
-extern void SuspendAnim();
-extern void ContinueAnim();
+#define ANIM_FRAME_MEM_RP   AnimRPInMem
+#define ANIM_STATE_SUSPENDED    (1<<0)
+
+class AnimManager {
+private:
+	ClueEngine* _vm;
+
+	char* RunningAnimID;       /* currently running animation */
+
+	uint16 destX;
+	uint16 destY;
+	uint16 width;
+	uint16 height;
+
+	uint16 offset;
+	uint16 frameCount;
+
+	uint16 pictsPerRow;
+	uint16 totalWidth;
+
+	uint16 NrOfAnims;          // Not Used
+	uint16 PictureRate;        /* playback rate of the animation */
+	uint16 Repeatation;        /* total number of repetitions */
+
+	uint16 RepeatationCount;   /* how many repetitions already passed */
+
+	uint16 AnimCollection;     /* single animation phases */
+
+	uint32 WaitCounter;
+
+	uint16 CurrPictNr;
+	int16 Direction;
+
+	uint8 PlayMode;
+
+	uint8 AnimatorState;
+
+	void PrepareAnim(const char* AnimID);
+	char RunningAnimLine[TXT_KEY_LENGTH];
+	void LoadAnim(const char* AnimID);
+
+public:
+	AnimManager(ClueEngine *vm);
+
+	void InitAnimHandler();
+	void CloseAnimHandler();
+
+	void PlayAnim(const char* AnimID, uint16 how_often, uint32 mode);    /* -> docs from 16.08.92 ! */
+	void StopAnim();
+
+	Common::String GetAnim(const char* AnimID);
+	void animator();
+
+	void SuspendAnim();
+	void ContinueAnim();
+};
 
 } // End of namespace Clue
 

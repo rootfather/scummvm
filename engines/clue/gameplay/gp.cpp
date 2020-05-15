@@ -174,7 +174,7 @@ void refreshCurrScene() {
 	NewNode *node = _film->_locationNames->getNthNode(curLoc);
 
 	tcRefreshLocationInTitle(curLoc);
-	PlayAnim(node->_name.c_str(), 30000, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
+	g_clue->_animMgr->PlayAnim(node->_name.c_str(), 30000, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
 
 	RefreshMenu();
 }
@@ -335,7 +335,7 @@ uint32 playStory() {
 
 	_film->_storyIsRunning = GP_STORY_BEFORE;
 
-	StopAnim();
+	g_clue->_animMgr->StopAnim();
 
 	return curr->_eventNr;
 }

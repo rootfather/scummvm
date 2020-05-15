@@ -34,6 +34,7 @@
 #include "clue/data/dataappl.h"
 #include "clue/sound/newsound.h"
 #include "clue/scenes/scenes.h"
+#include "clue/anim/sysanim.h"
 
 namespace Clue {
 
@@ -56,6 +57,7 @@ ClueEngine::ClueEngine(OSystem *syst, const ADGameDescription *gameDesc) : Engin
 	_txtMgr = new TextMgr(this);
 	_cdMgr = new CDManager(this);
 	_sndMgr = new SndManager(this);
+	_animMgr = new AnimManager(this);
 }
 
 ClueEngine::~ClueEngine() {
@@ -63,6 +65,7 @@ ClueEngine::~ClueEngine() {
 	delete _txtMgr;
 	delete _cdMgr;
 	delete _sndMgr;
+	delete _animMgr;
 	delete rnd;
 }
 

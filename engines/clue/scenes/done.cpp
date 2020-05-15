@@ -145,7 +145,7 @@ void DoneInsideHouse() {
 	for (dbObjectNode *node = ObjectList->getListHead(); node->_succ; node = (dbObjectNode *)node->_succ)
 		lsDoneObjectDB(node->_nr);
 
-	StopAnim();
+	g_clue->_animMgr->StopAnim();
 	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, nullptr);
 
 	menu->removeList();
@@ -183,7 +183,7 @@ void DoneTools() {
 	livesInSet(London_London_1, Person_Mary_Bolton);
 
 	menu->removeList();
-	StopAnim();
+	g_clue->_animMgr->StopAnim();
 	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
 }
 
@@ -222,7 +222,7 @@ void DoneDealer() {
 	livesInSet(London_London_1, Person_Helen_Parker);
 
 	menu->removeList();
-	StopAnim();
+	g_clue->_animMgr->StopAnim();
 	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
 }
 
@@ -283,7 +283,7 @@ void DoneParking() {
 	bubble->removeList();
 	menu->removeList();
 
-	StopAnim();
+	g_clue->_animMgr->StopAnim();
 	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, nullptr);
 }
 
@@ -326,7 +326,7 @@ void DoneGarage() {
 	}
 
 	menu->removeList();
-	StopAnim();
+	g_clue->_animMgr->StopAnim();
 	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
 }
 

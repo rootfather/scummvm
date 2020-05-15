@@ -27,8 +27,7 @@
 
 namespace Clue {
 
-static uint32 tcShowPatrol(NewList<NewNode> *bubble_l, Common::String c_time, Common::String patr, byte first,
-                           BuildingNode *bui, uint32 raise) {
+static uint32 tcShowPatrol(NewList<NewNode> *bubble_l, Common::String c_time, Common::String patr, byte first, BuildingNode *bui, uint32 raise) {
 	uint32 choice = 0;
 	Common::String patrol = c_time + ' ' + patr;
 
@@ -120,24 +119,23 @@ void Investigate(const char *location) {
 			tcAddBuildStrike(bui, 1);
 	}
 
-	while ((minutes < MINUTES_PER_DAY) && (!(choice & INP_LBUTTONP))
-	        && (!(choice & INP_RBUTTONP)) && (!(choice & INP_ESC))) {
+	while (minutes < MINUTES_PER_DAY && !(choice & INP_LBUTTONP) && !(choice & INP_RBUTTONP) && !(choice & INP_ESC)) {
 		choice = 0;
 
 		/* Anzeigen jeder vollen Stunde */
-		if ((_film->getMinute() % 60) == 0)
+		if (_film->getMinute() % 60 == 0)
 			ShowTime(0);
 
 		Common::String c_time = buildTime(_film->getMinute());
 
 		/* je nach Bewachungsgrad Meldung : "Patrolie" einsetzen ! */
-		if ((_film->getMinute() % patrolCount) == 0)
+		if (_film->getMinute() % patrolCount == 0)
 			choice = tcShowPatrol(bubble_l, c_time, patr, first++, bui, raise);
 
 		/* Überprüfen ob zur aktuellen Zeit (time) etwas geschieht : */
 		if (!choice) {
 			if (strncmp(nextMsg->_name.c_str(), c_time.c_str(), 5) == 0) {
-				if ((_film->getMinute() % 60) != 0)
+				if (_film->getMinute() % 60 != 0)
 					ShowTime(0);
 
 				bubble_l->createNode(nextMsg->_name);
@@ -166,8 +164,7 @@ void Investigate(const char *location) {
 		minutes++;
 
 		if (!choice)
-			choice =
-			    inpWaitFor(INP_TIME | INP_LBUTTONP | INP_RBUTTONP | INP_ESC);
+			choice = inpWaitFor(INP_TIME | INP_LBUTTONP | INP_RBUTTONP | INP_ESC);
 	}
 
 	bubble_l->removeList();
@@ -201,14 +198,12 @@ void Investigate(const char *location) {
 	if (_gamePlayMode & GP_MODE_DEMO) {
 		uint8 palette[GFX_PALETTE_SIZE];
 
-		SuspendAnim();
+		g_clue->_animMgr->SuspendAnim();
 		gfxPrepareRefresh();
 
 		gfxGetPaletteFromReg(palette, 0, 256);
 
-		gfxShow(224,
-		        GFX_NO_REFRESH | GFX_FADE_OUT | GFX_BLEND_UP | GFX_ONE_STEP, 2,
-		        -1, -1);
+		gfxShow(224, GFX_NO_REFRESH | GFX_FADE_OUT | GFX_BLEND_UP | GFX_ONE_STEP, 2, -1, -1);
 
 		inpWaitFor(INP_LBUTTONP);
 
@@ -218,7 +213,7 @@ void Investigate(const char *location) {
 
 		gfxRefresh();
 
-		ContinueAnim();
+		g_clue->_animMgr->ContinueAnim();
 	}
 
 	inpTurnESC(true);

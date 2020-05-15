@@ -196,13 +196,13 @@ void tcColorCar(CarNode *car) {
 
 				SetCarColors(car->ColorIndex);
 				gfxPrepareRefresh();
-				PlayAnim("Umlackieren", 3000, GFX_DONT_SHOW_FIRST_PIC);
+				g_clue->_animMgr->PlayAnim("Umlackieren", 3000, GFX_DONT_SHOW_FIRST_PIC);
 
 				inpSetWaitTicks(200);
 
 				inpWaitFor(INP_LBUTTONP | INP_TIME);
 
-				StopAnim();
+				g_clue->_animMgr->StopAnim();
 				inpSetWaitTicks(1);
 
 				gfxRefresh();
@@ -276,7 +276,7 @@ void tcRepairCar(CarNode *car, const char *repairWhat) {
 	gfxShow((uint16) BIG_SHEET, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);
 	inpSetWaitTicks(3);
 
-	PlayAnim("Reperatur", 30000, GFX_DONT_SHOW_FIRST_PIC);
+	g_clue->_animMgr->PlayAnim("Reperatur", 30000, GFX_DONT_SHOW_FIRST_PIC);
 
 	byte ready = 0;
 	uint32 choice = 0;
@@ -320,14 +320,14 @@ void tcRepairCar(CarNode *car, const char *repairWhat) {
 
 		if (item) {
 			if ((*item) == 255) {
-				StopAnim();
+				g_clue->_animMgr->StopAnim();
 				gfxRefresh();
 				Say(BUSINESS_TXT, 0, marc->PictID, "REP_READY");
 				ready = 1;
 			}
 		} else {
 			if (tcGetCarTotalState(car) > 253) {
-				StopAnim();
+				g_clue->_animMgr->StopAnim();
 				gfxRefresh();
 				Say(BUSINESS_TXT, 0, marc->PictID, "REP_READY");
 				ready = 1;
@@ -336,7 +336,7 @@ void tcRepairCar(CarNode *car, const char *repairWhat) {
 	}
 
 	if (!ready) {
-		StopAnim();
+		g_clue->_animMgr->StopAnim();
 		gfxRefresh();
 	}
 

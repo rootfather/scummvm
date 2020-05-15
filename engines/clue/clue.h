@@ -30,8 +30,9 @@
 #include "common/system.h"
 
 namespace Clue {
-	
-enum ClueGameFeatures {
+	class AnimManager;
+
+	enum ClueGameFeatures {
 	GF_PROFIDISK = (1 << 0) // Expansion pack
 };
 
@@ -68,6 +69,8 @@ public:
 	TextMgr* _txtMgr;
 	CDManager *_cdMgr;
 	SndManager *_sndMgr;
+	AnimManager *_animMgr;
+
 
 private:
 	Common::RandomSource* rnd;
