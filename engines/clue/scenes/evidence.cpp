@@ -557,7 +557,7 @@ int32 tcEscapeByCar(uint32 escBits, int32 timeLeft) {
 	}
 
 	if (escapeSucc != FAHN_ESCAPED)
-		g_clue->_animMgr->StopAnim();
+		g_clue->_animMgr->stopAnim();
 
 	return ((int32) escapeSucc);
 }

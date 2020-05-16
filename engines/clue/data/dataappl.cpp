@@ -41,7 +41,7 @@ bool tcSpendMoney(uint32 money, bool breakAnim) {
 		enough = false;
 
 		if (breakAnim)
-			g_clue->_animMgr->StopAnim();
+			g_clue->_animMgr->stopAnim();
 
 		SetBubbleType(THINK_BUBBLE);
 		Say(BUSINESS_TXT, 0, MATT_PICTID, "NO MONEY");

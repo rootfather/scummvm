@@ -67,7 +67,7 @@ void tcMattGoesTo(uint32 locNr) {
 	ShowTime(0);
 
 	gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
-	g_clue->_animMgr->PlayAnim(node->_name.c_str(), (int16) 30000, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
+	g_clue->_animMgr->playAnim(node->_name.c_str(), (int16) 30000, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
 }
 
 void tcTheAlmighty(uint32 time) {
@@ -189,7 +189,7 @@ void stdInit() {
 	NewTCEventNode *node = _film->_locationNames->getNthNode(sc->_locationNr);
 
 	if (_refreshMode || !sameLocation)
-		g_clue->_animMgr->PlayAnim(node->_name.c_str(), (int16) 30000, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
+		g_clue->_animMgr->playAnim(node->_name.c_str(), (int16) 30000, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
 
 	ShowTime(0);        /* Zeit sollte nach der Anim gezeigt werden, sonst Probleme mit Diskversion */
 
@@ -364,7 +364,7 @@ uint32 StdHandle(uint32 choice) {
 
 						succ_eventnr = 0;
 					} else
-						g_clue->_animMgr->StopAnim();
+						g_clue->_animMgr->stopAnim();
 				}
 			}
 		}
@@ -398,7 +398,7 @@ uint32 StdHandle(uint32 choice) {
 		break;
 	case GP_CHOICE_PLAN:
 		if (!(_gamePlayMode & GP_MODE_DEMO)) {
-			g_clue->_animMgr->StopAnim();
+			g_clue->_animMgr->stopAnim();
 
 			_film->_storyIsRunning = GP_STORY_PLAN;
 
@@ -498,7 +498,7 @@ void stdDone() {
 			ErrorMsg(Internal_Error, ERROR_MODULE_GAMEPLAY, 1);
 	}
 
-	g_clue->_animMgr->StopAnim();
+	g_clue->_animMgr->stopAnim();
 
 	if (!_sceneArgs._overwritten)
 		gfxChangeColors(l_gc, 5, GFX_FADE_OUT, nullptr);

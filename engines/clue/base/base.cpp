@@ -48,7 +48,7 @@ void tcDone() {
 		g_clue->_sndMgr->sndDone();
 		g_clue->_sndMgr->removeAudio();
 		dbDone();
-		g_clue->_animMgr->CloseAnimHandler();
+		g_clue->_animMgr->closeAnimHandler();
 
 		delete g_clue->_txtMgr;
 		g_clue->_txtMgr = nullptr;
@@ -423,7 +423,7 @@ bool ClueEngine::tcInit() {
 
 	_txtMgr->init();
 
-	_animMgr->InitAnimHandler();
+	_animMgr->initAnimHandler();
 
 	dbInit();
 	plInit();

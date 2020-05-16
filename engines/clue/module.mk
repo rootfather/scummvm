@@ -3,8 +3,8 @@ MODULE := engines/clue
 MODULE_OBJS = \
 	clue.o \
 	detection.o \
+	anim.o \
 	text.o \
-	anim/sysanim.o \
 	base/base.o \
 	cdrom/cdrom.o \
 	data/dataappl.o \

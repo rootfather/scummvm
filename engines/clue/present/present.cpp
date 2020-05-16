@@ -91,7 +91,7 @@ void DrawPresent(NewList<PresentationInfoNode> *present, uint8 firstLine, _GC *g
 uint8 Present(uint32 nr, const char *presentationText, void (*initPresentation)(uint32, NewList<PresentationInfoNode> *, NewList<NewNode> *)) {
 	NewList<PresentationInfoNode> *presentationData = new NewList<PresentationInfoNode>;
 
-	g_clue->_animMgr->SuspendAnim();
+	g_clue->_animMgr->suspendAnim();
 
 	gfxPrepareRefresh();
 
@@ -182,7 +182,7 @@ uint8 Present(uint32 nr, const char *presentationText, void (*initPresentation)(
 
 	gfxRefresh();
 
-	g_clue->_animMgr->ContinueAnim();
+	g_clue->_animMgr->continueAnim();
 
 	if (exit == 1)
 		return GET_OUT;

@@ -340,7 +340,7 @@ void DrawBubble(NewList<NewNode> *bubble, uint8 firstLine, uint8 activ, _GC *gc,
 byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 waitTime) {
 	int32 max = bubble->getNrOfNodes();
 
-	g_clue->_animMgr->SuspendAnim();
+	g_clue->_animMgr->suspendAnim();
 	gfxPrepareRefresh();
 	gfxScreenFreeze();
 
@@ -512,7 +512,7 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 
 	gfxRefresh();
 
-	g_clue->_animMgr->ContinueAnim();
+	g_clue->_animMgr->continueAnim();
 
 	return activ;
 }

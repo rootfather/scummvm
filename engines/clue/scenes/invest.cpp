@@ -198,7 +198,7 @@ void Investigate(const char *location) {
 	if (_gamePlayMode & GP_MODE_DEMO) {
 		uint8 palette[GFX_PALETTE_SIZE];
 
-		g_clue->_animMgr->SuspendAnim();
+		g_clue->_animMgr->suspendAnim();
 		gfxPrepareRefresh();
 
 		gfxGetPaletteFromReg(palette, 0, 256);
@@ -213,7 +213,7 @@ void Investigate(const char *location) {
 
 		gfxRefresh();
 
-		g_clue->_animMgr->ContinueAnim();
+		g_clue->_animMgr->continueAnim();
 	}
 
 	inpTurnESC(true);

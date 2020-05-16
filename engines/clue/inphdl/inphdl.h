@@ -23,7 +23,7 @@
 #define INPHDL_MODULE
 
 #include "clue/gfx/gfx.h"
-#include "clue/anim/sysanim.h"
+#include "clue/anim.h"
 
 namespace Clue {
 

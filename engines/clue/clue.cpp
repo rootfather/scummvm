@@ -34,7 +34,7 @@
 #include "clue/data/dataappl.h"
 #include "clue/sound/newsound.h"
 #include "clue/scenes/scenes.h"
-#include "clue/anim/sysanim.h"
+#include "clue/anim.h"
 
 namespace Clue {
 

@@ -209,7 +209,7 @@ void tcDoneGludoMoney() {
 
 	env->MattHasIdentityCard = 1;
 
-	g_clue->_animMgr->StopAnim();
+	g_clue->_animMgr->stopAnim();
 	gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
 
 	_sceneArgs._returnValue = SCENE_WATLING;
@@ -296,7 +296,7 @@ void tcDoneMeetBriggs() {
 
 		tcAsTimeGoesBy(_film->getMinute() + 793);
 
-		g_clue->_animMgr->StopAnim();
+		g_clue->_animMgr->stopAnim();
 		gfxChangeColors(l_gc, 8, GFX_FADE_OUT, 0);
 
 		tcMattGoesTo(60);   /* Kloster */
@@ -326,7 +326,7 @@ void tcDoneMeetBriggs() {
 			_sceneArgs._returnValue = SCENE_HOLLAND_STR;
 		}
 
-		g_clue->_animMgr->StopAnim();
+		g_clue->_animMgr->stopAnim();
 		gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
 	}
 
@@ -398,13 +398,13 @@ void tcDonePrison() {
 
 	gfxShow(169, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1);
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "THE_END_PRISON");
-	g_clue->_animMgr->StopAnim();
+	g_clue->_animMgr->stopAnim();
 
 	tcMattGoesTo(60);
 	inpDelay(190);
 	Say(STORY_1_TXT, 0, 155, "THE_END_MONASTERY");  /* holy matt */
 
-	g_clue->_animMgr->StopAnim();
+	g_clue->_animMgr->stopAnim();
 	gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
 
 	_sceneArgs._returnValue = SCENE_NEW_GAME;
@@ -449,7 +449,7 @@ bool tcIsDeadlock() {
 			inpDelay(190);
 			Say(STORY_1_TXT, 0, 155, "THE_END_MONASTERY");  /* holy matt */
 
-			g_clue->_animMgr->StopAnim();
+			g_clue->_animMgr->stopAnim();
 			gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
 
 			deadlock = true;
@@ -523,7 +523,7 @@ void tcDoneGludoAsSailor() {
 		_sceneArgs._returnValue = SCENE_HOLLAND_STR;
 	} else {
 		Say(STORY_0_TXT, 0, (uint16) FACE_GLUDO_SAILOR, "SAILOR_GLUDO_2");
-		g_clue->_animMgr->StopAnim();
+		g_clue->_animMgr->stopAnim();
 
 		tcDonePrison();
 	}
@@ -715,7 +715,7 @@ void tcDone4thBurglary() {
 }
 
 void tcDoneMattIsArrested() {
-	g_clue->_animMgr->StopAnim();
+	g_clue->_animMgr->stopAnim();
 
 	gfxShow(169, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1); /* prison */
 
@@ -825,7 +825,7 @@ void tcDoneRaidInWalrus() {
 		_sceneArgs._returnValue = SCENE_POLICE;
 	}
 
-	g_clue->_animMgr->StopAnim();
+	g_clue->_animMgr->stopAnim();
 	gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
 }
 
@@ -834,7 +834,7 @@ void tcDoneDartJager() {
 	EnvironmentNode *Env = (EnvironmentNode *) dbGetObject(Environment_TheClou);
 
 	if (!Env->MattHasIdentityCard) {
-		g_clue->_animMgr->StopAnim();
+		g_clue->_animMgr->stopAnim();
 
 		gfxShow(169, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1); /* Knast */
 		knowsSet(Person_Matt_Stuvysunt, Person_Lucas_Grull);
@@ -861,7 +861,7 @@ void tcDoneDartJager() {
 			tcMattGoesTo(60);
 			Say(STORY_0_TXT, 0, 155, "THE_END_MONASTERY");  /* pict = holy matt */
 
-			g_clue->_animMgr->StopAnim();
+			g_clue->_animMgr->stopAnim();
 			gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
 
 			_sceneArgs._returnValue = SCENE_NEW_GAME;
@@ -880,7 +880,7 @@ void tcDoneDartJager() {
 void tcDoneGludoBurnsOffice() {
 	PersonNode *Gludo = (PersonNode *) dbGetObject(Person_John_Gludo);
 
-	g_clue->_animMgr->StopAnim();
+	g_clue->_animMgr->stopAnim();
 
 	Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "5TH_OLD_1");
 	Say(STORY_0_TXT, 0, MATT_PICTID, "5TH_MATT_0");
@@ -922,9 +922,9 @@ void tcDoneBeautifullMorning() {
 
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "MORNING_MATT_0");
 
-	g_clue->_animMgr->PlayAnim("Sleep", 30000, GFX_DONT_SHOW_FIRST_PIC);
+	g_clue->_animMgr->playAnim("Sleep", 30000, GFX_DONT_SHOW_FIRST_PIC);
 	tcAsTimeGoesBy(546);
-	g_clue->_animMgr->StopAnim();
+	g_clue->_animMgr->stopAnim();
 
 	gfxShow(173, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1); /* Hotel */
 
@@ -957,9 +957,9 @@ void tcDoneVisitingSabien() {
 void tcDoneADream() {
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST1_OLD_0");
 
-	g_clue->_animMgr->PlayAnim("Sleep", 30000, GFX_DONT_SHOW_FIRST_PIC);
+	g_clue->_animMgr->playAnim("Sleep", 30000, GFX_DONT_SHOW_FIRST_PIC);
 	tcAsTimeGoesBy(517);
-	g_clue->_animMgr->StopAnim();
+	g_clue->_animMgr->stopAnim();
 
 	gfxShow(173, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1); /* Hotel */
 
@@ -996,7 +996,7 @@ void tcSabienInWalrus() {
 	PersonNode *Sabien = (PersonNode *)dbGetObject(Person_Sabien_Pardo);
 
 	g_clue->_sndMgr->sndPlaySound("sabien.bk", 0);
-	g_clue->_animMgr->StopAnim();
+	g_clue->_animMgr->stopAnim();
 
 	Say(STORY_1_TXT, 0, Sabien->PictID, "ST_3_SABIEN_0");
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_3_OLD_0");
@@ -1031,9 +1031,9 @@ void tcRainyEvening() {
 	Say(STORY_1_TXT, 0, LETTER_PICTID, "ST_8_SABIEN_0");
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_8_OLD_0");
 
-	g_clue->_animMgr->PlayAnim("Sleep", 30000, GFX_DONT_SHOW_FIRST_PIC);
+	g_clue->_animMgr->playAnim("Sleep", 30000, GFX_DONT_SHOW_FIRST_PIC);
 	tcAsTimeGoesBy(424);
-	g_clue->_animMgr->StopAnim();
+	g_clue->_animMgr->stopAnim();
 
 	gfxShow(173, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1); /* Hotel */
 
@@ -1091,7 +1091,7 @@ void tcPoliceInfoTower() {
 
 		_sceneArgs._returnValue = SCENE_WATLING;
 
-		g_clue->_animMgr->StopAnim();
+		g_clue->_animMgr->stopAnim();
 		gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
 	} else
 		_sceneArgs._returnValue = SCENE_POLICE;
@@ -1151,7 +1151,7 @@ void tcDone7thBurglary() {
 }
 
 void tcDoneBirthday() {
-	g_clue->_animMgr->StopAnim();
+	g_clue->_animMgr->stopAnim();
 	gfxShow(172, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);
 
 	g_clue->_sndMgr->sndPrepareFX("birthd2.voc");    /* applause */
@@ -1333,15 +1333,15 @@ void tcDoneTerror() {
 	g_clue->_sndMgr->sndPrepareFX("explosio.voc");
 	g_clue->_sndMgr->sndPlayFX();
 
-	g_clue->_animMgr->PlayAnim("Explo1", 1, GFX_DONT_SHOW_FIRST_PIC);
+	g_clue->_animMgr->playAnim("Explo1", 1, GFX_DONT_SHOW_FIRST_PIC);
 	inpDelay(200);
 
-	g_clue->_animMgr->StopAnim();
+	g_clue->_animMgr->stopAnim();
 
-	g_clue->_animMgr->PlayAnim("Explo2", 50, GFX_DONT_SHOW_FIRST_PIC);
+	g_clue->_animMgr->playAnim("Explo2", 50, GFX_DONT_SHOW_FIRST_PIC);
 	inpDelay(260);
 
-	g_clue->_animMgr->StopAnim();
+	g_clue->_animMgr->stopAnim();
 
 	hasUnSet(Person_Matt_Stuvysunt, Car_Jaguar_XK_1950);
 
@@ -1362,7 +1362,7 @@ void tcDoneConfessingSabien() {
 
 	Env->WithOrWithoutYou = Say(STORY_1_TXT, 0, MATT_PICTID, "ST_18_MATT_0");
 
-	g_clue->_animMgr->StopAnim();
+	g_clue->_animMgr->stopAnim();
 
 	if (Env->WithOrWithoutYou) {    /* bleibt bei Sabien! */
 		gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
@@ -1403,7 +1403,7 @@ void tcDoneSouthhamptonWithoutSabien() {
 void tcDoneSouthhamptonSabienUnknown() {
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_20W_OLD_0");
 
-	g_clue->_animMgr->StopAnim();
+	g_clue->_animMgr->stopAnim();
 	gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
 
 	_sceneArgs._returnValue = SCENE_SOUTHHAMPTON;
@@ -1588,7 +1588,7 @@ void tcDoneSouthhampton() {
 		_sceneArgs._returnValue = SCENE_TOWER_OUT;
 	}
 
-	g_clue->_animMgr->StopAnim();
+	g_clue->_animMgr->stopAnim();
 	gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
 
 	menu->removeList();
@@ -1775,7 +1775,7 @@ void tcDoneKaserne() {
 		} else {
 			switch (activ) {
 			case 0:
-				g_clue->_animMgr->StopAnim();
+				g_clue->_animMgr->stopAnim();
 				gfxChangeColors(l_gc, 3, GFX_FADE_OUT, nullptr);
 				_film->setLocation(65);
 				_sceneArgs._options = 265; // TODO: Set the variable properly, using GP_CHOICE values
@@ -1786,12 +1786,12 @@ void tcDoneKaserne() {
 				Information();
 				break;
 			case 2:
-				g_clue->_animMgr->StopAnim();
+				g_clue->_animMgr->stopAnim();
 				plPlaner(Building_Starford_Kaserne);
 				tcMattGoesTo(66);   /* refresh! */
 				break;
 			case 3:
-				g_clue->_animMgr->StopAnim();
+				g_clue->_animMgr->stopAnim();
 				Search.KaserneOk = 0;
 				if (!(burglary = plPlayer(Building_Starford_Kaserne, 0, nullptr)))
 					tcMattGoesTo(66);   /* refresh! */
@@ -1802,7 +1802,7 @@ void tcDoneKaserne() {
 		}
 	}
 
-	g_clue->_animMgr->StopAnim();
+	g_clue->_animMgr->stopAnim();
 
 	if (burglary) {
 		if (Search.KaserneOk) {
