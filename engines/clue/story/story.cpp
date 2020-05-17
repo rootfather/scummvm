@@ -1536,7 +1536,7 @@ void tcDoneSouthhampton() {
 		inpTurnESC(true);
 
 		if (activ == (byte) -1) {
-			ShowTheClouRequester(No_Error);
+			ShowTheClouRequester();
 			_sceneArgs._returnValue =
 			    ((PlayerNode *) dbGetObject(Player_Player_1))->CurrScene;
 
@@ -1768,7 +1768,7 @@ void tcDoneKaserne() {
 
 		/* change possibilites in patchStory too! */
 		if (activ == (byte) -1) {
-			ShowTheClouRequester(No_Error);
+			ShowTheClouRequester();
 			successor = ((PlayerNode *) dbGetObject(Player_Player_1))->CurrScene;
 
 			activ = 1;

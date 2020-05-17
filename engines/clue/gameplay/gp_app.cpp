@@ -486,7 +486,7 @@ void stdDone() {
 			activ = Menu(menu, _sceneArgs._options, activ, nullptr, 0);
 
 			if (activ == (byte) -1) {
-				ShowTheClouRequester(No_Error);
+				ShowTheClouRequester();
 				_sceneArgs._returnValue = ((PlayerNode *) dbGetObject(Player_Player_1))->CurrScene;
 			} else if (activ != (byte)TXT_MENU_TIMEOUT) {
 				uint32 choice = (uint32) 1 << activ;

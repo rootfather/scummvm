@@ -34,79 +34,52 @@ void PrintStatus(Common::String text) {
 	gfxPrint(m_gc, text, 10, GFX_PRINT_SHADOW | GFX_PRINT_CENTER);
 }
 
-uint32 ShowTheClouRequester(int32 error_class) {
-	NewList<NewNode> *menu;
-	uint32 answer = 0;
-	byte choices;
+void ShowTheClouRequester() {
 	PlayerNode *player = (PlayerNode *)dbGetObject(Player_Player_1);
 
 	inpTurnESC(false);
 
 	ShowMenuBackground();
+	ShowMenuBackground();
 
-	switch (error_class) {
-	case No_Error:
+	NewList<NewNode>* menu = g_clue->_txtMgr->goKey(MENU_TXT, "ESCMenu_STD");
 
+	inpTurnFunctionKey(false);
+
+	byte choices;
+	if (_gamePlayMode & GP_MODE_DEMO)
+		choices = Menu(menu, 3, 0, nullptr, 0);
+	else
+		choices = Menu(menu, 15, 0, NULL, 0);
+
+	inpTurnFunctionKey(true);
+
+	switch (choices) {
+	case 0:     /* continue playing */
+		player->CurrScene = 0;
 		ShowMenuBackground();
-
-		menu = g_clue->_txtMgr->goKey(MENU_TXT, "ESCMenu_STD");
-
-		inpTurnFunctionKey(false);
-
-		if (_gamePlayMode & GP_MODE_DEMO)
-			choices = Menu(menu, 3, 0, nullptr, 0);
-		else
-			choices = Menu(menu, 15, 0, NULL, 0);
-
-		inpTurnFunctionKey(true);
-
-		switch (choices) {
-		case 0:     /* continue playing */
-			player->CurrScene = 0;
-			ShowMenuBackground();
-			tcRefreshLocationInTitle(_film->getLocation());
-			break;
-		case 1:
-			player->CurrScene = SCENE_THE_END;
-			ShowMenuBackground();
-			break;
-		case 2:
-			tcSaveTheClou();
-			player->CurrScene = 0;
-			ShowMenuBackground();
-			tcRefreshLocationInTitle(_film->getLocation());
-			break;
-		case 3:     /* load */
-			tcLoadTheClou();
-			ShowMenuBackground();
-			break;
-		default:
-			break;
-		}
-
-		menu->removeList();
-
+		tcRefreshLocationInTitle(_film->getLocation());
 		break;
-	case Internal_Error:
-		PrintStatus("Gravierender Fehler !");
-		inpWaitFor(INP_LBUTTONP);
+	case 1:
+		player->CurrScene = SCENE_THE_END;
 		ShowMenuBackground();
 		break;
-	case No_Mem:
-		PrintStatus("Speichermangel !! - No Memory !!");
-		inpWaitFor(INP_LBUTTONP);
+	case 2:
+		tcSaveTheClou();
+		player->CurrScene = 0;
+		ShowMenuBackground();
+		tcRefreshLocationInTitle(_film->getLocation());
+		break;
+	case 3:     /* load */
+		tcLoadTheClou();
 		ShowMenuBackground();
 		break;
-	case Disk_Defect:
-		PrintStatus("Disk Defekt !");
-		inpWaitFor(INP_LBUTTONP);
-		ShowMenuBackground();
+	default:
 		break;
 	}
 
+	menu->removeList();
 	inpTurnESC(true);
-
-	return answer;
 }
 
 } // End of namespace Clue

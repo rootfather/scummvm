@@ -109,7 +109,7 @@ namespace Clue {
  *
  */
 
-uint32 ShowTheClouRequester(int32 error_class); /* siehe Base.c */
+void ShowTheClouRequester(); /* siehe Base.c */
 
 /*
  * defines for Disk Module
