@@ -256,9 +256,6 @@ void tcDoneDanner() {
 void tcDoneMeetBriggs() {
 	PersonNode *Briggs = (PersonNode *) dbGetObject(Person_Herbert_Briggs);
 
-#ifdef DEEP_DEBUG
-	printf("tcDoneMeetBriggs!\n");
-#endif
 	knowsSet(Person_Matt_Stuvysunt, Person_Herbert_Briggs);
 
 	Say(STORY_0_TXT, 0, Briggs->PictID, "BRIGGS_BRIGGS_1");

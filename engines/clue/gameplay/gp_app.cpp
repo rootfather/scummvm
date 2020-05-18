@@ -508,7 +508,7 @@ void stdDone() {
 
 
 void InitTaxiLocations() {
-	RemRelation(Relation_taxi); /* alle Relationen löschen! */
+	RemRelation(Relation_taxi); /* delete all relations! */
 	AddRelation(Relation_taxi);
 
 	if (_gamePlayMode & GP_MODE_DISABLE_STORY) {
@@ -740,9 +740,7 @@ void tcCutName(char *Name, byte Sign, uint32 maxLength) {
 	char Source[TXT_KEY_LENGTH];
 	strcpy(Source, Name);
 
-	uint32 j = strlen(Source);
-	if (j > maxLength)
-		j = maxLength;
+	uint32 j = MIN(strlen(Source), maxLength);
 
 	for (int32 i = j - 1; i >= 0; i--) {
 		if (Source[i] == Sign)

@@ -269,16 +269,12 @@ uint32 playStory() {
 			first = false;
 		}
 
-		/* die neue Szene initialisieren ! ( Bühnenbild aufbauen ) */
-#ifdef DEEP_DEBUG
-		printf("----------------------------------------\n");
-		printf("SCENE_INIT %u\n", curr->EventNr);
-#endif
+		/* initialize the new scene! ( setup stage design ) */
 		if (curr->initFct)
 			curr->initFct();
 
-		/* gibt es irgendein Ereignis das jetzt geschehen kann, und */
-		/* den Standardablauf unterbricht ? */
+		/* Is there any event which can happen now */
+		/* and interrupt the standard flow ? */
 
 		/* if (_gamePlayMode & GP_DEMO)
 		   DemoDialog(); */
@@ -286,31 +282,17 @@ uint32 playStory() {
 		story_scene = nullptr;
 
 		if (interr_allowed && !(_gamePlayMode & GP_MODE_DISABLE_STORY)) {
-#ifdef DEEP_DEBUG
-			printf("STEP_A1\n");
-#endif
 			story_scene = GetStoryScene(curr);
 			if (story_scene)
 				interr_allowed = false;
 		}
-#ifdef DEEP_DEBUG
-		else {
-			printf("STEP_A2\n");
-		}
-#endif
 
 		if (!story_scene) {
 			_sceneArgs._overwritten = false;
 
-#ifdef DEEP_DEBUG
-			printf("STEP_B\n");
-#endif
 			if (curr->doneFct) {
 				_sceneArgs._options = (curr->_options & _film->getEnabledChoices());
 
-#ifdef DEEP_DEBUG
-				printf("SCENE_DONE\n");
-#endif
 				curr->doneFct();   /* Funktionalität */
 			} else
 				ErrorMsg(Internal_Error, ERROR_MODULE_GAMEPLAY, 3);

@@ -46,26 +46,19 @@ void ShowTheClouRequester() {
 
 	inpTurnFunctionKey(false);
 
-	byte choices;
-	if (_gamePlayMode & GP_MODE_DEMO)
-		choices = Menu(menu, 3, 0, nullptr, 0);
-	else
-		choices = Menu(menu, 15, 0, NULL, 0);
+	byte choices = Menu(menu, (_gamePlayMode & GP_MODE_DEMO) ? 3 : 15, 0, nullptr, 0);
 
 	inpTurnFunctionKey(true);
 
 	switch (choices) {
-	case 0:     /* continue playing */
-		player->CurrScene = 0;
-		ShowMenuBackground();
-		tcRefreshLocationInTitle(_film->getLocation());
-		break;
 	case 1:
 		player->CurrScene = SCENE_THE_END;
 		ShowMenuBackground();
 		break;
-	case 2:
+	case 2:     /* save, then...*/
 		tcSaveTheClou();
+	// No break on purpose
+	case 0:     /* continue playing */
 		player->CurrScene = 0;
 		ShowMenuBackground();
 		tcRefreshLocationInTitle(_film->getLocation());
