@@ -75,10 +75,7 @@ enum ErrorE {
 	No_Error        = 0,
 	Internal_Error,
 	No_Mem,
-	Disk_Defect,
-	Insert_Disk,
-	Lib_Error,
-	Last_Error
+	Disk_Defect
 };
 
 /* some debug types */
