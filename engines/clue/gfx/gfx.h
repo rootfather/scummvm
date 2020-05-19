@@ -129,14 +129,19 @@ public:
 	// No need for a specific destructor
 };
 
-struct Font {
-	Graphics::Surface *bmp;
+class Font {
+public:
+	Graphics::Surface *_bmp;
 
-	uint16 w;                   /* width of one character */
-	uint16 h;                   /* height of one character */
+	uint16 _width;                   /* width of one character */
+	uint16 _height;                  /* height of one character */
 
-	unsigned char first;
-	unsigned char last;
+	uint8 _firstChar;
+	uint8 _lastChar;
+
+	Font();
+	Font(const char *fileName, uint16 width, uint16 height, uint8 firstChar, uint8 lastChar, uint16 sw, uint16 sh);
+	~Font();
 };
 
 struct _GC {
@@ -174,8 +179,8 @@ extern MemRastPort BobRPInMem;
 
 extern MemRastPort LSRPInMem;
 
-extern struct Font *bubbleFont;
-extern struct Font *menuFont;
+extern Font *bubbleFont;
+extern Font *menuFont;
 
 extern void gfxInit();
 extern void gfxDone();
@@ -251,8 +256,7 @@ void gfxScreenUnFreeze();
 void gfxGetMouseXY(_GC *gc, uint16 *pMouseX, uint16 *pMouseY);
 
 void gfxSetRGBRange(uint8 *colors, uint32 start, uint32 num);
-void gfxInitGC(_GC *gc, uint16 x, uint16 y, uint16 w, uint16 h,
-uint8 colorStart, uint8 colorEnd, Font *font);
+void gfxInitGC(_GC *gc, uint16 x, uint16 y, uint16 w, uint16 h, uint8 colorStart, uint8 colorEnd, Font *font);
 void gfxSetCMAP(const uint8 *src);
 void gfxILBMToRAW(const uint8 *src, uint8 *dst, size_t size);
 

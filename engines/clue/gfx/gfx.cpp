@@ -33,12 +33,46 @@
 
 namespace Clue {
 
+Font::Font() {
+	_bmp = nullptr;
+
+	_width = _height = 0;
+
+	_firstChar = _lastChar = 0;
+}
+
+Font::Font(const char *fileName, uint16 width, uint16 height, uint8 firstChar, uint8 lastChar, uint16 sw, uint16 sh) {
+	_width = width;
+	_height = height;
+
+	_firstChar = firstChar;
+	_lastChar = lastChar;
+
+	char path[DSK_PATH_MAX];
+	dskBuildPathName(DISK_CHECK_FILE, PICTURE_DIRECTORY, fileName, path);
+
+	uint8 *lbm = (uint8 *)dskLoad(path);
+
+	_bmp = new Graphics::Surface();
+	_bmp->create(sw, sh, ScreenFormat);
+	uint32 size = sw * sh;
+
+	gfxILBMToRAW(lbm, (uint8 *)_bmp->getPixels(), size);
+
+	free(lbm);
+}
+
+Font::~Font() {
+	delete _bmp;
+}
+
 void gfxRealRefreshArea(uint16 x, uint16 y, uint16 w, uint16 h);
 
 /********************************************************************
  * inits & dons
  */
 
+	
 void gfxInit() {
 	ScreenFormat = Graphics::PixelFormat::createFormatCLUT8();
 	initGraphics(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -46,7 +80,7 @@ void gfxInit() {
 	Screen = new Graphics::Surface();
 	Screen->create(SCREEN_WIDTH, SCREEN_HEIGHT, ScreenFormat);
 
-	gfxSetGC(NULL);
+	gfxSetGC(nullptr);
 
 	/* diese RP müssen nur ein Bild maximaler Größe aufnehmen können */
 	/* in anderen Modulen wird vorausgesetzt, daß alle RastPorts gleich */
@@ -73,10 +107,8 @@ void gfxInit() {
 
 	gfxInitMemRastPort(&LSRPInMem, LS_MAX_AREA_WIDTH, LS_MAX_AREA_HEIGHT);
 
-	bubbleFont =
-	    gfxOpenFont(GFX_BUBBLE_FONT_NAME, 4, 8, 32, 255, SCREEN_WIDTH, 24);
-	menuFont =
-	    gfxOpenFont(GFX_MENU_FONT_NAME, 5, 9, 32, 255, SCREEN_WIDTH, 36);
+	bubbleFont = new Font(GFX_BUBBLE_FONT_NAME, 4, 8, 32, 255, SCREEN_WIDTH, 24);
+	menuFont = new Font(GFX_MENU_FONT_NAME, 5, 9, 32, 255, SCREEN_WIDTH, 36);
 
 	gfxInitGC(&LowerGC,
 	          0, 0, 320, 140,
@@ -113,8 +145,9 @@ void gfxDone() {
 		_collectionList = nullptr;
 	}
 
-	gfxCloseFont(bubbleFont);
-	gfxCloseFont(menuFont);
+	delete bubbleFont;
+	delete menuFont;
+	bubbleFont = menuFont = nullptr;
 
 	gfxDoneMemRastPort(&StdRP0InMem);
 	gfxDoneMemRastPort(&StdRP1InMem);
@@ -135,7 +168,7 @@ void gfxDone() {
 
 	if (Screen) {
 		Screen->free();
-		Screen = NULL;
+		Screen = nullptr;
 	}
 }
 
@@ -275,8 +308,7 @@ static Rectangle Clip(Rectangle A, Rectangle B) {
  * Rastports...
  */
 
-void gfxInitGC(_GC *gc, uint16 x, uint16 y, uint16 w, uint16 h,
-                      uint8 colorStart, uint8 End, Font *font) {
+void gfxInitGC(_GC *gc, uint16 x, uint16 y, uint16 w, uint16 h, uint8 colorStart, uint8 End, Font *font) {
 	Rectangle dstR;
 	dstR.x = 0;
 	dstR.y = 0;
@@ -313,49 +345,6 @@ void gfxInitGC(_GC *gc, uint16 x, uint16 y, uint16 w, uint16 h,
 }
 
 
-
-/*******************************************************************
- * FONTS
- * gfxOpenFont
- * gfxCloseFont
- */
-
-static Font *gfxOpenFont(const char *fileName, uint16 w, uint16 h,
-                         unsigned char first, unsigned char last,
-                         uint16 sw, uint16 sh) {
-	/* create font structure. */
-	Font *font = (Font *)TCAllocMem(sizeof(*font), true);
-
-	font->w     = w;
-	font->h     = h;
-
-	font->first = first;
-	font->last  = last;
-
-	char path[DSK_PATH_MAX];
-	dskBuildPathName(DISK_CHECK_FILE, PICTURE_DIRECTORY, fileName, path);
-
-	uint8 *lbm = (uint8 *)dskLoad(path);
-
-	Graphics::Surface *bmp = new Graphics::Surface();
-	bmp->create(sw, sh, ScreenFormat);
-	uint32 size = sw * sh;
-
-	gfxILBMToRAW(lbm, (uint8 *)bmp->getPixels(), size);
-
-	free(lbm);
-
-	font->bmp = bmp;
-	return font;
-}
-
-void gfxCloseFont(Font *font) {
-	if (font) {
-		font->bmp->free();
-
-		TCFreeMem(font, sizeof(*font));
-	}
-}
 
 /*******************************************************************
  * gfxMoveCursor (amiga function: Move)
@@ -476,7 +465,7 @@ void gfxSetFont(_GC *gc, Font *font) {
 
 /* Compute the length of a text in pixels */
 uint16 gfxTextWidth(_GC *gc, Common::String txt) {
-	size_t w = txt.size() * gc->font->w;
+	size_t w = txt.size() * gc->font->_width;
 
 	if (w > USHRT_MAX)
 		return 0;
@@ -639,9 +628,9 @@ void gfxPrintExact(_GC *gc, Common::String txt, uint16 x, uint16 y) {
 		return;
 
 	const Font *font = gc->font;
-	const uint16 w = font->w,
-	             h = font->h,
-	             base = font->first;
+	const uint16 w = font->_width,
+	             h = font->_height,
+	             base = font->_firstChar;
 	const uint16 chars_per_line = SCREEN_WIDTH / w;
 	const uint8 fg = gc->foreground;
 	uint len = txt.size();
@@ -668,7 +657,7 @@ void gfxPrintExact(_GC *gc, Common::String txt, uint16 x, uint16 y) {
 	dstR.x = x;
 	dstR.y = y;
 
-	Graphics::Surface *src = font->bmp;
+	Graphics::Surface *src = font->_bmp;
 	Graphics::Surface *dst = Screen;
 
 	for (size_t t = 0; t < len; t++) {
@@ -762,20 +751,18 @@ static _GC *gfxGetGC(int32 l_DestY) {
 	return gc;
 }
 
-void wfr()
+void wfr() {
 // fueür Bildschirmsync verwenden!!!
-{
 	g_system->delayMillis(10);
 	// TODO: Only refresh if screen changed
 	g_system->updateScreen();
 }
 
-void wfd()
+void wfd() {
 // sperrt im Gegensatz zu wfr die Interrupts nicht
 // wenn die Musik laeuft kann es daher vorkommen, dass
 // dieses wfd einmal aussetzt
 // !!! NICHT fueür Bildschirmsync verwenden!!
-{
 	wfr();
 }
 
@@ -1077,7 +1064,7 @@ void gfxInitMemRastPort(MemRastPort *rp, uint16 width, uint16 height) {
 
 void gfxDoneMemRastPort(MemRastPort *rp) {
 	TCFreeMem(rp->pixels, rp->w * rp->h);
-	rp->pixels = NULL;
+	rp->pixels = nullptr;
 }
 
 void gfxScratchFromMem(MemRastPort *src) {

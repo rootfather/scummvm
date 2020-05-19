@@ -109,15 +109,10 @@ _GC *l_gc;
 _GC *m_gc;
 _GC *u_gc;
 
-struct Font *bubbleFont;
-struct Font *menuFont;
+Font *bubbleFont;
+Font *menuFont;
 
 static void gfxInitCollList();
 static void gfxInitPictList();
-
-static Font *gfxOpenFont(const char *fileName, uint16 w, uint16 h,
-                         unsigned char first, unsigned char last,
-                         uint16 sw, uint16 sh);
-static void gfxCloseFont(Font *font);
 
 } // End of namespace Clue
