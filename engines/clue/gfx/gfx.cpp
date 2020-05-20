@@ -32,6 +32,14 @@
 #include "clue/planing/player.h"
 
 namespace Clue {
+PictureNode::PictureNode() {
+	_pictId = 0;
+	_collId = 0;
+	
+	_xOffset = _yOffset = 0;
+	_width = _height = 0;
+	_destX = _destY = 0;
+}
 
 Font::Font() {
 	_bmp = nullptr;

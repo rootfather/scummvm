@@ -125,7 +125,7 @@ public:
 	uint16 _destX;
 	uint16 _destY;
 
-	PictureNode() { /* TODO - Initialize members */ }
+	PictureNode();
 	// No need for a specific destructor
 };
 
