@@ -125,7 +125,7 @@ void AnimManager::playAnim(const char *AnimID, uint16 how_often, uint32 mode) {
 	Common::String pict_list = getAnim(AnimID);
 
 	if (pict_list.empty())
-		gfxClearArea(l_gc);
+		_lowerGc->gfxClearArea();
 	else {
 		stopAnim();
 
@@ -256,7 +256,7 @@ void AnimManager::animator() {
 			/* sicherstellen, daß Animframes immer vorhanden sind */
 
 			inpMousePtrOff();
-			gfxBlit(l_gc, &ANIM_FRAME_MEM_RP, sourceX, sourceY, destX, destY, _width, _height, false);
+			_lowerGc->gfxBlit(&ANIM_FRAME_MEM_RP, sourceX, sourceY, destX, destY, _width, _height, false);
 			inpMousePtrOn();
 		}
 

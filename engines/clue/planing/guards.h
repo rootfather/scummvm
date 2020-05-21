@@ -25,6 +25,9 @@
 
 namespace Clue {
 
+class System;
+class _GC;
+
 /* method definition */
 #define GUARDS_DO_SAVE     1
 #define GUARDS_DO_LOAD     2
@@ -34,16 +37,12 @@ namespace Clue {
 #define GUARD_EXTENSION    ".gua"
 #define GUARD_DIRECTORY    DATA_DIRECTORY
 
-
-class System;
-struct _GC;
-
 /* main method */
 void grdDo(Common::Stream *fh, System *sys, NewObjectList<dbObjectNode> *PersonsList, uint32 BurglarsNr, uint32 PersonsNr, byte grdAction);
 
 /* support */
 bool grdAddToList(uint32 bldId, NewObjectList<dbObjectNode>*l);
-bool grdDraw(struct _GC *gc, uint32 bldId, uint32 areaId);
+bool grdDraw(_GC *gc, uint32 bldId, uint32 areaId);
 
 /* con- & destructor */
 bool grdInit(Common::Stream **fh, int RW, uint32 bldId, uint32 areaId);

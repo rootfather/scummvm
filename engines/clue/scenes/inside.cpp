@@ -158,8 +158,8 @@ void tcInsideOfHouse(uint32 buildingID, uint32 areaID, byte perc) {
 			case 3:
 				isGuardedbyAll(buildingID, OLF_NORMAL, Object_Police);
 				if (!ObjectList->isEmpty()) {
-					gfxSetPens(l_gc, 4, GFX_SAME_PEN, GFX_SAME_PEN);
-					grdDraw(l_gc, buildingID, areaID);
+					_lowerGc->setPens(4, GFX_SAME_PEN, GFX_SAME_PEN);
+					grdDraw(_lowerGc, buildingID, areaID);
 				} else
 					Say(BUSINESS_TXT, 0, MATT_PICTID, "NO_GUARD");
 				break;

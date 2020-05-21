@@ -71,12 +71,12 @@ void Investigate(const char *location) {
 	inpSetWaitTicks(50);
 
 	gfxSetRect(0, 320);
-	gfxSetPens(l_gc, 249, GFX_SAME_PEN, 0);
+	_lowerGc->setPens(249, GFX_SAME_PEN, 0);
 
 	Common::String line = g_clue->_txtMgr->getFirstLine(INVESTIGATIONS_TXT, "Abbrechen");
 	Common::String patr = g_clue->_txtMgr->getFirstLine(INVESTIGATIONS_TXT, "Patrolie");
 
-	gfxPrint(m_gc, line, 24, GFX_PRINT_CENTER);
+	_menuGc->gfxPrint(line, 24, GFX_PRINT_CENTER);
 
 	/* Beobachtungstexte von Disk lesen */
 	NewList<NewNode> *origin = g_clue->_txtMgr->goKey(INVESTIGATIONS_TXT, location);
@@ -207,9 +207,9 @@ void Investigate(const char *location) {
 
 		inpWaitFor(INP_LBUTTONP);
 
-		gfxChangeColors(l_gc, 0, GFX_FADE_OUT, NULL);
-		gfxClearArea(l_gc);
-		gfxChangeColors(l_gc, 0, GFX_BLEND_UP, palette);
+		gfxChangeColors(_lowerGc, 0, GFX_FADE_OUT, NULL);
+		_lowerGc->gfxClearArea();
+		gfxChangeColors(_lowerGc, 0, GFX_BLEND_UP, palette);
 
 		gfxRefresh();
 

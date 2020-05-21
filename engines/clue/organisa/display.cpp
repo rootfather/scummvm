@@ -34,26 +34,26 @@ namespace Clue {
 static void RefreshDisplayConfig() {
 	gfxScreenFreeze();
 
-	gfxSetGC(l_gc);
+	gfxSetGC(_lowerGc);
 	gfxShow(ORG_PICT_ID, GFX_NO_REFRESH | GFX_BLEND_UP, 0, -1, -1);
 
-	gfxScreenThaw(l_gc, 0, 0, 320, 140);
+	_lowerGc->gfxScreenThaw(0, 0, 320, 140);
 
 	CurrentBackground = BGD_PLANUNG;
 	ShowMenuBackground();
 }
 
 void tcInitDisplayOrganisation() {
-	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
-	gfxClearArea(l_gc);
+	gfxChangeColors(_lowerGc, 5, GFX_FADE_OUT, 0);
+	_lowerGc->gfxClearArea();
 
 	RefreshDisplayConfig();
 }
 
 void tcDoneDisplayOrganisation() {
-	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
-	gfxClearArea(l_gc);
-	gfxSetPens(m_gc, GFX_SAME_PEN, GFX_SAME_PEN, 0);
+	gfxChangeColors(_lowerGc, 5, GFX_FADE_OUT, 0);
+	_lowerGc->gfxClearArea();
+	_menuGc->setPens(GFX_SAME_PEN, GFX_SAME_PEN, 0);
 }
 
 void tcDisplayOrganisation() {
@@ -62,22 +62,22 @@ void tcDisplayOrganisation() {
 	tcDisplayCommon();
 	tcDisplayPerson(ORG_DISP_ABILITIES);
 
-	gfxScreenThaw(l_gc, 0, 0, 320, 140);
+	_lowerGc->gfxScreenThaw(0, 0, 320, 140);
 }
 
 void tcDisplayCommon() {
 	NewList<NewNode> *texts = g_clue->_txtMgr->goKey(BUSINESS_TXT, "PLAN_COMMON_DATA");
 
-	gfxSetGC(l_gc);
+	gfxSetGC(_lowerGc);
 	gfxShow(ORG_PICT_ID, GFX_ONE_STEP | GFX_NO_REFRESH, 0, -1, -1);
 
 	/* Gebäude anzeigen  */
 
-	gfxSetFont(l_gc, menuFont);
-	gfxSetDrMd(l_gc, GFX_JAM_1);
+	_lowerGc->setFont(menuFont);
+	_lowerGc->setMode(GFX_JAM_1);
 	gfxSetRect(0, 320);
 
-	gfxSetPens(l_gc, 249, 254, GFX_SAME_PEN);
+	_lowerGc->setPens(249, 254, GFX_SAME_PEN);
 
 	Common::String line;
 	BuildingNode *building = nullptr;
@@ -85,12 +85,12 @@ void tcDisplayCommon() {
 		building = (BuildingNode *)dbGetObject(Organisation.BuildingID);
 
 		line = dbGetObjectName(Organisation.BuildingID);
-		gfxPrint(l_gc, line, 9, GFX_PRINT_CENTER | GFX_PRINT_SHADOW);
+		_lowerGc->gfxPrint(line, 9, GFX_PRINT_CENTER | GFX_PRINT_SHADOW);
 	}
 
 
-	gfxSetFont(l_gc, bubbleFont);
-	gfxSetPens(l_gc, 249, GFX_SAME_PEN, GFX_SAME_PEN);
+	_lowerGc->setFont(bubbleFont);
+	_lowerGc->setPens(249, GFX_SAME_PEN, GFX_SAME_PEN);
 
 	/*************************************************************
 	 *  Fluchtwagen anzeigen
@@ -106,7 +106,7 @@ void tcDisplayCommon() {
 	} else
 		line += " ? ";
 
-	gfxPrint(l_gc, line, 25, GFX_PRINT_LEFT);
+	_lowerGc->gfxPrint(line, 25, GFX_PRINT_LEFT);
 
 	/*************************************************************
 	 *  Zulassung anzeigen
@@ -121,7 +121,7 @@ void tcDisplayCommon() {
 	} else
 		line += " ? ";
 
-	gfxPrint(l_gc, line, 25, GFX_PRINT_CENTER);
+	_lowerGc->gfxPrint(line, 25, GFX_PRINT_CENTER);
 
 	/*************************************************************
 	 *  Fahrer anzeigen
@@ -136,7 +136,7 @@ void tcDisplayCommon() {
 	} else
 		line += " ? ";
 
-	gfxPrint(l_gc, line, 25, GFX_PRINT_RIGHT);
+	_lowerGc->gfxPrint(line, 25, GFX_PRINT_RIGHT);
 
 	/*************************************************************
 	 *  Fluchtweg
@@ -155,7 +155,7 @@ void tcDisplayCommon() {
 	} else
 		line += " ? ";
 
-	gfxPrint(l_gc, line, 35, GFX_PRINT_LEFT);
+	_lowerGc->gfxPrint(line, 35, GFX_PRINT_LEFT);
 
 	/*************************************************************
 	 *  Fluchtweg-länge
@@ -170,7 +170,7 @@ void tcDisplayCommon() {
 	} else
 		line += " ? ";
 
-	gfxPrint(l_gc, line, 35, GFX_PRINT_CENTER);
+	_lowerGc->gfxPrint(line, 35, GFX_PRINT_CENTER);
 
 	/*************************************************************
 	 *  mein Anteil
@@ -182,7 +182,7 @@ void tcDisplayCommon() {
 	name = Common::String::format(" %d%%", tcCalcMattsPart());
 	line += name;
 
-	gfxPrint(l_gc, line, 35, GFX_PRINT_RIGHT);
+	_lowerGc->gfxPrint(line, 35, GFX_PRINT_RIGHT);
 
 	texts->removeList();
 }
@@ -204,11 +204,11 @@ void tcDisplayPerson(uint32 displayMode) {
 			strcpy(line, node->_name.c_str());
 
 		gfxSetRect(ORG_DISP_GUY_WIDTH * i + 5, ORG_DISP_GUY_WIDTH - 5);
-		gfxSetPens(l_gc, 248, GFX_SAME_PEN, GFX_SAME_PEN);
-		gfxSetFont(l_gc, menuFont);
-		gfxSetDrMd(l_gc, GFX_JAM_1);
-		gfxPrint(l_gc, line, ORG_DISP_GUY_Y, GFX_PRINT_CENTER);
-		gfxSetFont(l_gc, bubbleFont);
+		_lowerGc->setPens(248, GFX_SAME_PEN, GFX_SAME_PEN);
+		_lowerGc->setFont(menuFont);
+		_lowerGc->setMode(GFX_JAM_1);
+		_lowerGc->gfxPrint(line, ORG_DISP_GUY_Y, GFX_PRINT_CENTER);
+		_lowerGc->setFont(bubbleFont);
 
 		if (displayMode & ORG_DISP_ABILITIES)
 			tcDisplayAbilities(objNr, i);
@@ -222,7 +222,7 @@ void tcDisplayAbilities(uint32 personNr, uint32 displayData) {
 
 	NewList<dbObjectNode>* abilities = ObjectListPrivate;
 
-	prSetBarPrefs(l_gc, ORG_DISP_GUY_WIDTH - 5, ORG_DISP_LINE + 1, 251, 250, 249);
+	prSetBarPrefs(_lowerGc, ORG_DISP_GUY_WIDTH - 5, ORG_DISP_LINE + 1, 251, 250, 249);
 
 	if (!abilities->isEmpty()) {
 		dbObjectNode *node;
@@ -240,8 +240,8 @@ void tcDisplayAbilities(uint32 personNr, uint32 displayData) {
 	} else {
 		Common::String line = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "PLAN_NO_CAPABILITY");
 		gfxSetRect(ORG_DISP_GUY_WIDTH + 5, ORG_DISP_GUY_WIDTH - 5);
-		gfxSetDrMd(l_gc, GFX_JAM_1);
-		gfxPrint(l_gc, line, ORG_DISP_ABILITIES_Y + ORG_DISP_LINE, GFX_PRINT_LEFT);
+		_lowerGc->setMode(GFX_JAM_1);
+		_lowerGc->gfxPrint(line, ORG_DISP_ABILITIES_Y + ORG_DISP_LINE, GFX_PRINT_LEFT);
 	}
 
 	abilities->removeList();

@@ -48,12 +48,11 @@ void gfxSetDarkness(uint8 value) {
 void gfxNCH4Refresh() {
 	gfxScreenFreeze();
 
-	gfxBlit(u_gc, &LSRPInMem, ScrX, ScrY, 0, 0,
-	        LS_MAX_AREA_WIDTH, LS_MAX_AREA_HEIGHT, false);
+	_upperGc->gfxBlit(&LSRPInMem, ScrX, ScrY, 0, 0, LS_MAX_AREA_WIDTH, LS_MAX_AREA_HEIGHT, false);
 
-	BobDisplayLists(u_gc);
+	BobDisplayLists(_upperGc);
 
-	gfxScreenThaw(u_gc, 0, 0, 320, 128);
+	_upperGc->gfxScreenThaw(0, 0, 320, 128);
 	/*printf("REFRESH!\n");*/
 }
 

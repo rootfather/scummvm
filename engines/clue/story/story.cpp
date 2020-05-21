@@ -160,7 +160,7 @@ void tcDoneHotelReception() {
 		}
 	}
 
-	gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
+	gfxChangeColors(_lowerGc, 3, GFX_FADE_OUT, 0);
 }
 
 /* ZIMMER _ MAMI (ST_31)
@@ -210,7 +210,7 @@ void tcDoneGludoMoney() {
 	env->MattHasIdentityCard = 1;
 
 	g_clue->_animMgr->stopAnim();
-	gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
+	gfxChangeColors(_lowerGc, 3, GFX_FADE_OUT, 0);
 
 	_sceneArgs._returnValue = SCENE_WATLING;
 }
@@ -294,7 +294,7 @@ void tcDoneMeetBriggs() {
 		tcAsTimeGoesBy(_film->getMinute() + 793);
 
 		g_clue->_animMgr->stopAnim();
-		gfxChangeColors(l_gc, 8, GFX_FADE_OUT, 0);
+		gfxChangeColors(_lowerGc, 8, GFX_FADE_OUT, 0);
 
 		tcMattGoesTo(60);   /* Kloster */
 
@@ -324,7 +324,7 @@ void tcDoneMeetBriggs() {
 		}
 
 		g_clue->_animMgr->stopAnim();
-		gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
+		gfxChangeColors(_lowerGc, 5, GFX_FADE_OUT, 0);
 	}
 
 	AddTaxiLocation(10);    /* trafik */
@@ -402,7 +402,7 @@ void tcDonePrison() {
 	Say(STORY_1_TXT, 0, 155, "THE_END_MONASTERY");  /* holy matt */
 
 	g_clue->_animMgr->stopAnim();
-	gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
+	gfxChangeColors(_lowerGc, 0, GFX_FADE_OUT, 0);
 
 	_sceneArgs._returnValue = SCENE_NEW_GAME;
 }
@@ -447,7 +447,7 @@ bool tcIsDeadlock() {
 			Say(STORY_1_TXT, 0, 155, "THE_END_MONASTERY");  /* holy matt */
 
 			g_clue->_animMgr->stopAnim();
-			gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
+			gfxChangeColors(_lowerGc, 0, GFX_FADE_OUT, 0);
 
 			deadlock = true;
 		}
@@ -705,7 +705,7 @@ void tcDone4thBurglary() {
 		livesInSet(London_London_1, Person_Sid_Palmer);
 	}
 
-	gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
+	gfxChangeColors(_lowerGc, 0, GFX_FADE_OUT, 0);
 
 	getScene(SCENE_FAHNDUNG)->_occurrence = 0;    /* So thqt burglary 2 doesn't happen */
 	_sceneArgs._returnValue = getLocScene(7)->_eventNr;    /* Police */
@@ -794,7 +794,7 @@ void tcDoneDealerIsAfraid() {
 	PersonNode *pers = (PersonNode *) dbGetObject(persID);
 	Say(STORY_0_TXT, 0, pers->PictID, "DEALER_IS_AFRAID");
 
-	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
+	gfxChangeColors(_lowerGc, 5, GFX_FADE_OUT, 0);
 }
 
 void tcDoneRaidInWalrus() {
@@ -823,7 +823,7 @@ void tcDoneRaidInWalrus() {
 	}
 
 	g_clue->_animMgr->stopAnim();
-	gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
+	gfxChangeColors(_lowerGc, 0, GFX_FADE_OUT, 0);
 }
 
 void tcDoneDartJager() {
@@ -846,7 +846,7 @@ void tcDoneDartJager() {
 
 			Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "DART_JAEGER_0");
 
-			gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
+			gfxChangeColors(_lowerGc, 0, GFX_FADE_OUT, 0);
 			gfxShow(221, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP, 0, -1, -1);
 
 			g_clue->_sndMgr->sndPrepareFX("darth.voc");
@@ -859,7 +859,7 @@ void tcDoneDartJager() {
 			Say(STORY_0_TXT, 0, 155, "THE_END_MONASTERY");  /* pict = holy matt */
 
 			g_clue->_animMgr->stopAnim();
-			gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
+			gfxChangeColors(_lowerGc, 3, GFX_FADE_OUT, 0);
 
 			_sceneArgs._returnValue = SCENE_NEW_GAME;
 		} else {
@@ -909,7 +909,7 @@ void tcDoneGludoBurnsOffice() {
 	Say(STORY_0_TXT, 0, Gludo->PictID, "5TH_GLUDO_5");
 	Say(STORY_0_TXT, 0, OLD_MATT_PICTID, "5TH_OLD_7");
 
-	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
+	gfxChangeColors(_lowerGc, 5, GFX_FADE_OUT, 0);
 
 	_sceneArgs._returnValue = SCENE_WATLING;
 }
@@ -947,7 +947,7 @@ void tcDoneVisitingSabien() {
 	Say(STORY_1_TXT, 0, Sabien->PictID, "GROVE_SABIEN_3");
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "GROVE_OLD_MATT_1");
 
-	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
+	gfxChangeColors(_lowerGc, 5, GFX_FADE_OUT, 0);
 	_sceneArgs._returnValue = SCENE_LISSON_GROVE;
 }
 
@@ -1089,7 +1089,7 @@ void tcPoliceInfoTower() {
 		_sceneArgs._returnValue = SCENE_WATLING;
 
 		g_clue->_animMgr->stopAnim();
-		gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
+		gfxChangeColors(_lowerGc, 3, GFX_FADE_OUT, 0);
 	} else
 		_sceneArgs._returnValue = SCENE_POLICE;
 }
@@ -1118,7 +1118,7 @@ void tcSabienDinner() {
 
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_4_OLD_2");
 
-	gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
+	gfxChangeColors(_lowerGc, 3, GFX_FADE_OUT, 0);
 	_sceneArgs._returnValue = SCENE_WALRUS;
 }
 
@@ -1216,7 +1216,7 @@ void tcDoneSabienCall() {
 void tcDoneMeetingAgain() {
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_10_OLD_0");
 
-	gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
+	gfxChangeColors(_lowerGc, 3, GFX_FADE_OUT, 0);
 
 	_sceneArgs._returnValue = SCENE_LISSON_GROVE;
 }
@@ -1343,7 +1343,7 @@ void tcDoneTerror() {
 	hasUnSet(Person_Matt_Stuvysunt, Car_Jaguar_XK_1950);
 
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_17_OLD_1");
-	gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
+	gfxChangeColors(_lowerGc, 0, GFX_FADE_OUT, 0);
 
 	_sceneArgs._returnValue = SCENE_CARS_VANS;
 }
@@ -1362,7 +1362,7 @@ void tcDoneConfessingSabien() {
 	g_clue->_animMgr->stopAnim();
 
 	if (Env->WithOrWithoutYou) {    /* bleibt bei Sabien! */
-		gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
+		gfxChangeColors(_lowerGc, 3, GFX_FADE_OUT, 0);
 		ShowMenuBackground();
 
 		gfxShow(163, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP, 0, -1, -1);  /* south 1 */
@@ -1376,14 +1376,14 @@ void tcDoneConfessingSabien() {
 		gfxShow(164, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);  /*  The End */
 
 		inpWaitFor(INP_LBUTTONP);
-		gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
+		gfxChangeColors(_lowerGc, 3, GFX_FADE_OUT, 0);
 
 		_sceneArgs._returnValue = SCENE_NEW_GAME;
 	} else {            /* bleibt nicht bei Sabien! */
 
 		addVTime(2713);     /* hier nicht ausblenden? */
 
-		gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
+		gfxChangeColors(_lowerGc, 3, GFX_FADE_OUT, 0);
 
 		_sceneArgs._returnValue = SCENE_SOUTHHAMPTON;
 
@@ -1401,7 +1401,7 @@ void tcDoneSouthhamptonSabienUnknown() {
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_20W_OLD_0");
 
 	g_clue->_animMgr->stopAnim();
-	gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
+	gfxChangeColors(_lowerGc, 0, GFX_FADE_OUT, 0);
 
 	_sceneArgs._returnValue = SCENE_SOUTHHAMPTON;
 }
@@ -1586,7 +1586,7 @@ void tcDoneSouthhampton() {
 	}
 
 	g_clue->_animMgr->stopAnim();
-	gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
+	gfxChangeColors(_lowerGc, 3, GFX_FADE_OUT, 0);
 
 	menu->removeList();
 }
@@ -1710,7 +1710,7 @@ void tcDoneMafia() {
 
 	g_clue->_sndMgr->sndPlaySound("street1.bk", 0);
 
-	gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
+	gfxChangeColors(_lowerGc, 3, GFX_FADE_OUT, 0);
 	tcAsTimeGoesBy(_film->getMinute() + 420);
 
 	tcMattGoesTo(25);       /* Villa */
@@ -1773,7 +1773,7 @@ void tcDoneKaserne() {
 			switch (activ) {
 			case 0:
 				g_clue->_animMgr->stopAnim();
-				gfxChangeColors(l_gc, 3, GFX_FADE_OUT, nullptr);
+				gfxChangeColors(_lowerGc, 3, GFX_FADE_OUT, nullptr);
 				_film->setLocation(65);
 				_sceneArgs._options = 265; // TODO: Set the variable properly, using GP_CHOICE values
 				DoneInsideHouse();
@@ -1822,7 +1822,7 @@ void tcDoneKaserne() {
 		successor = SCENE_NEW_GAME;
 	}
 
-	gfxChangeColors(l_gc, 3, GFX_FADE_OUT, 0);
+	gfxChangeColors(_lowerGc, 3, GFX_FADE_OUT, 0);
 	menu->removeList();
 
 	_sceneArgs._returnValue = successor;

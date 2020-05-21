@@ -368,9 +368,9 @@ void tcWait() {
 	inpSetWaitTicks(25);
 
 	gfxSetRect(0, 320);
-	gfxSetPens(m_gc, 249, 0, GFX_SAME_PEN);
+	_menuGc->setPens(249, 0, GFX_SAME_PEN);
 	Common::String line = g_clue->_txtMgr->getFirstLine(THECLOU_TXT, "WAIT");
-	gfxPrint(m_gc, line, 22, GFX_PRINT_CENTER);
+	_menuGc->gfxPrint(line, 22, GFX_PRINT_CENTER);
 
 	bool endLoop = false;
 	uint32 minutes = 0;

@@ -107,10 +107,8 @@ void BobDisplayLists(_GC *gc) {
 	for (uint16 i = 0; i < BOB_MAX; i++) {
 		struct Bob *bob = &list[i];
 
-		if ((bob->flags & BOB_VISIBLE)) {
-			gfxBlit(gc, &BobRPInMem, bob->xsrc, bob->ysrc,
-			        bob->xdst - ScrX, bob->ydst - ScrY, bob->w, bob->h, true);
-		}
+		if (bob->flags & BOB_VISIBLE)
+			gc->gfxBlit(&BobRPInMem, bob->xsrc, bob->ysrc, bob->xdst - ScrX, bob->ydst - ScrY, bob->w, bob->h, true);
 	}
 }
 

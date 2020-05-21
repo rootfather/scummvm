@@ -30,8 +30,8 @@ void plPrintInfo(const char *person) {
 	Common::String info = Common::String(&person[1]);
 
 	gfxSetRect(2, 320);
-	gfxSetPens(m_gc, 249, GFX_SAME_PEN, GFX_SAME_PEN);
-	gfxPrint(m_gc, info, 12, GFX_PRINT_CENTER);
+	_menuGc->setPens(249, GFX_SAME_PEN, GFX_SAME_PEN);
+	_menuGc->gfxPrint(info, 12, GFX_PRINT_CENTER);
 }
 
 void plMessage(const char *msg, byte flags) {
@@ -68,22 +68,22 @@ void plDisplayTimer(uint32 time, bool doSpotsImmediatly) {
 		        livGetXPos(Planing_Name[CurrentPerson]), livGetYPos(Planing_Name[CurrentPerson]), txtTimer.c_str(),
 		        (uint32)(time / 3600), (uint32)((time / 60) % 60), (uint32)(time % 60), txtSeconds.c_str());
 
-		gfxSetPens(m_gc, 0, 0, 0);
-		gfxRectFill(m_gc, 120, 0, 320, 10);
+		_menuGc->setPens(0, 0, 0);
+		_menuGc->rectFill(120, 0, 320, 10);
 
 		gfxSetRect(2, 320);
-		gfxSetPens(m_gc, 248, GFX_SAME_PEN, GFX_SAME_PEN);
-		gfxPrint(m_gc, info, 2, GFX_PRINT_RIGHT);
+		_menuGc->setPens(248, GFX_SAME_PEN, GFX_SAME_PEN);
+		_menuGc->gfxPrint(info, 2, GFX_PRINT_RIGHT);
 	} else {
 		Common::String info = Common::String::format("%s %.2d:%.2d:%.2d %s", txtTimer.c_str(), (uint32)(time / 3600),
 		        (uint32)((time / 60) % 60), (uint32)(time % 60), txtSeconds.c_str());
 
-		gfxSetPens(m_gc, 0, 0, 0);
-		gfxRectFill(m_gc, 220, 0, 320, 10);
+		_menuGc->setPens(0, 0, 0);
+		_menuGc->rectFill(220, 0, 320, 10);
 
 		gfxSetRect(2, 320);
-		gfxSetPens(m_gc, 248, GFX_SAME_PEN, GFX_SAME_PEN);
-		gfxPrint(m_gc, info, 2, GFX_PRINT_RIGHT);
+		_menuGc->setPens(248, GFX_SAME_PEN, GFX_SAME_PEN);
+		_menuGc->gfxPrint(info, 2, GFX_PRINT_RIGHT);
 	}
 
 	if (doSpotsImmediatly || (oldTimer != CurrentTimer(plSys))) {
@@ -95,12 +95,12 @@ void plDisplayTimer(uint32 time, bool doSpotsImmediatly) {
 void plDisplayInfo() {
 	Common::String info = dbGetObjectName(PersonsList->getNthNode(CurrentPerson)->_nr);
 
-	gfxSetPens(m_gc, 0, 0, 0);
-	gfxRectFill(m_gc, 0, 0, 120, 10);
+	_menuGc->setPens(0, 0, 0);
+	_menuGc->rectFill(0, 0, 120, 10);
 
 	gfxSetRect(2, 320);
-	gfxSetPens(m_gc, 248, GFX_SAME_PEN, GFX_SAME_PEN);
-	gfxPrint(m_gc, info, 2, GFX_PRINT_LEFT | GFX_PRINT_SHADOW);
+	_menuGc->setPens(248, GFX_SAME_PEN, GFX_SAME_PEN);
+	_menuGc->gfxPrint(info, 2, GFX_PRINT_LEFT | GFX_PRINT_SHADOW);
 }
 
 byte plSay(const char *msg, uint32 persId) {
@@ -127,11 +127,11 @@ byte plSay(const char *msg, uint32 persId) {
 void plDrawWait(uint32 sec) {
 	Common::String time = Common::String::format("%.2d:%.2d", (uint32)(sec / 60), (uint32)(sec % 60));
 
-	gfxSetDrMd(m_gc, GFX_JAM_2);
-	gfxSetPens(m_gc, 248, GFX_SAME_PEN, GFX_SAME_PEN);
+	_menuGc->setMode(GFX_JAM_2);
+	_menuGc->setPens(248, GFX_SAME_PEN, GFX_SAME_PEN);
 	gfxSetRect(0, 320);
-	gfxPrint(m_gc, time, 31, GFX_PRINT_CENTER);
-	gfxSetDrMd(m_gc, GFX_JAM_1);
+	_menuGc->gfxPrint(time, 31, GFX_PRINT_CENTER);
+	_menuGc->setMode(GFX_JAM_1);
 }
 
 void plRefresh(uint32 ItemId) {

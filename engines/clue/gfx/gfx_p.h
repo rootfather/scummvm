@@ -49,10 +49,10 @@ struct GfxBase {
 	byte uch_VideoMode;
 };
 
-_GC LowerGC;
-_GC MenuGC;
-_GC LSUpperGC;
-_GC LSMenuGC;
+_GC *LowerGC;
+_GC *MenuGC;
+_GC *LSUpperGC;
+_GC *LSMenuGC;
 
 /* wird verwendet für Double Buffering während der Vorbereitung */
 MemRastPort ScratchRP;
@@ -105,9 +105,9 @@ struct GfxBase GfxBase;
 NewList<CollectionNode> *_collectionList = nullptr;
 NewList<PictureNode> *_pictureList = nullptr;
 
-_GC *l_gc;
-_GC *m_gc;
-_GC *u_gc;
+_GC *_lowerGc;
+_GC *_menuGc;
+_GC *_upperGc;
 
 Font *bubbleFont;
 Font *menuFont;

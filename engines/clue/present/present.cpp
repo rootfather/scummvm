@@ -30,8 +30,8 @@ struct PresentControl PresentControl = {nullptr, 0, 0, 0, 0, 0 };
 
 void DrawPresent(NewList<PresentationInfoNode> *present, uint8 firstLine, _GC *gc, uint8 max) {
 	gfxScreenFreeze();
-	gfxSetPens(gc, 224, 224, 224);
-	gfxRectFill(gc, 88, 3, 320, 49);
+	gc->setPens(224, 224, 224);
+	gc->rectFill(88, 3, 320, 49);
 
 	if (firstLine) {
 		gfxSetGC(gc);
@@ -61,31 +61,31 @@ void DrawPresent(NewList<PresentationInfoNode> *present, uint8 firstLine, _GC *g
 			break;
 
 		case PRESENT_AS_BAR: {
-			gfxSetPens(gc, 250, 250, 251);
-			gfxRectFill(gc, 205, j, 315, j + 7);
-			gfxSetPens(gc, 251, 251, 251);
-			gfxRectFill(gc, 205, j, 205 + ((315 - 205) * p->_extendedNr) / p->_maxNr, j + 7);
+			gc->setPens(250, 250, 251);
+			gc->rectFill(205, j, 315, j + 7);
+			gc->setPens(251, 251, 251);
+			gc->rectFill(205, j, 205 + ((315 - 205) * p->_extendedNr) / p->_maxNr, j + 7);
 
-			gfxSetPens(gc, 249, 252, 253);
+			gc->setPens(249, 252, 253);
 
 			gfxSetRect(206, 315 - 205);
 			Common::String s = Common::String::format("%u %%", (p->_extendedNr * 100) / p->_maxNr);
 
-			gfxPrint(gc, s, j, GFX_PRINT_CENTER);
+			gc->gfxPrint(s, j, GFX_PRINT_CENTER);
 			}
 			break;
 		default:
 			break;
 		}
 
-		gfxSetPens(gc, 252, 224, GFX_SAME_PEN);
-		gfxPrintExact(gc, txt, 89, j + 1);
+		gc->setPens(252, 224, GFX_SAME_PEN);
+		gc->gfxPrintExact(txt, 89, j + 1);
 
-		gfxSetPens(gc, 254, 224, GFX_SAME_PEN);
-		gfxPrintExact(gc, txt, 88, j);
+		gc->setPens(254, 224, GFX_SAME_PEN);
+		gc->gfxPrintExact(txt, 88, j);
 	}
 
-	gfxScreenThaw(gc, 88, 3, 228, 46);
+	gc->gfxScreenThaw(88, 3, 228, 46);
 }
 
 uint8 Present(uint32 nr, const char *presentationText, void (*initPresentation)(uint32, NewList<PresentationInfoNode> *, NewList<NewNode> *)) {
@@ -122,11 +122,11 @@ uint8 Present(uint32 nr, const char *presentationText, void (*initPresentation)(
 
 	uint8 max = presentationData->getNrOfNodes();
 
-	gfxSetDrMd(u_gc, GFX_JAM_1);
-	gfxSetFont(u_gc, bubbleFont);
+	_upperGc->setMode(GFX_JAM_1);
+	_upperGc->setFont(bubbleFont);
 
 	uint8 firstVis = 0;
-	DrawPresent(presentationData, firstVis, u_gc, max);
+	DrawPresent(presentationData, firstVis, _upperGc, max);
 
 	uint8 exit = 0;
 	while (!exit) {
@@ -141,37 +141,37 @@ uint8 Present(uint32 nr, const char *presentationText, void (*initPresentation)(
 		if ((action & INP_MOUSE)) {
 			uint16 y;
 
-			gfxGetMouseXY(u_gc, NULL, &y);
+			_upperGc->gfxGetMouseXY(NULL, &y);
 
 			while (y < 9 && firstVis > 0) { /* Scroll up */
 				firstVis--;
-				DrawPresent(presentationData, firstVis, u_gc, max);
+				DrawPresent(presentationData, firstVis, _upperGc, max);
 
 				inpDelay(20);
 
-				gfxGetMouseXY(u_gc, NULL, &y);
+				_upperGc->gfxGetMouseXY(NULL, &y);
 			}
 
 			while (y > 48 && y <= 58 && firstVis < (max - 5)) { /* Scroll down */
 				firstVis++;
-				DrawPresent(presentationData, firstVis, u_gc, max);
+				DrawPresent(presentationData, firstVis, _upperGc, max);
 
 				inpDelay(20);
 
-				gfxGetMouseXY(u_gc, NULL, &y);
+				_upperGc->gfxGetMouseXY(NULL, &y);
 			}
 		} else {
 			if (action & INP_UP) {
 				if (firstVis > 0) {
 					firstVis--;
-					DrawPresent(presentationData, firstVis, u_gc, max);
+					DrawPresent(presentationData, firstVis, _upperGc, max);
 				}
 			}
 
 			if (action & INP_DOWN) {
 				if (max - NRBLINES > 0 && firstVis < max - NRBLINES) {
 					firstVis++;
-					DrawPresent(presentationData, firstVis, u_gc, max);
+					DrawPresent(presentationData, firstVis, _upperGc, max);
 				}
 			}
 		}
@@ -246,19 +246,19 @@ void prDrawTextBar(Common::String puch_Text, uint32 ul_Value, uint32 ul_Max, uin
 
 	if (gc) {
 		gfxSetRect(us_XPos, us_Width);
-		gfxSetPens(gc, PresentControl.uch_BCol, GFX_SAME_PEN, PresentControl.uch_FCol);
+		gc->setPens(PresentControl.uch_BCol, GFX_SAME_PEN, PresentControl.uch_FCol);
 
-		gfxRectFill(gc, us_XPos, us_YPos, us_XPos + us_Width - 1, us_YPos + us_Height - 1);
+		gc->rectFill(us_XPos, us_YPos, us_XPos + us_Width - 1, us_YPos + us_Height - 1);
 
 		us_Width = (uint16)((us_Width * ul_Value) / ul_Max);
 
-		gfxSetPens(gc, PresentControl.uch_FCol, GFX_SAME_PEN, GFX_SAME_PEN);
-		gfxRectFill(gc, us_XPos, us_YPos, us_XPos + us_Width - 1, us_YPos + us_Height - 1);
-		gfxSetPens(gc, PresentControl.uch_TCol, GFX_SAME_PEN, GFX_SAME_PEN);
+		gc->setPens(PresentControl.uch_FCol, GFX_SAME_PEN, GFX_SAME_PEN);
+		gc->rectFill(us_XPos, us_YPos, us_XPos + us_Width - 1, us_YPos + us_Height - 1);
+		gc->setPens(PresentControl.uch_TCol, GFX_SAME_PEN, GFX_SAME_PEN);
 
 		if (!puch_Text.empty()) {
-			gfxSetDrMd(gc, GFX_JAM_1);
-			gfxPrint(gc, puch_Text, us_YPos + 2, GFX_PRINT_CENTER);
+			gc->setMode(GFX_JAM_1);
+			gc->gfxPrint(puch_Text, us_YPos + 2, GFX_PRINT_CENTER);
 		}
 	}
 }

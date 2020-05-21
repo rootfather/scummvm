@@ -214,7 +214,7 @@ bool tcStartEvidence() {
 		tcPersonLearns(n->_nr);
 	}
 
-	prSetBarPrefs(m_gc, 300, 12, 1, 3, 0);
+	prSetBarPrefs(_menuGc, 300, 12, 1, 3, 0);
 
 	byte guyReady = 0;
 	Common::String line = g_clue->_txtMgr->getFirstLine(BUSINESS_TXT, "FAHNDUNG");
@@ -647,18 +647,18 @@ int32 tcCalcCarEscape(int32 timeLeft) {
 		ShowMenuBackground();
 		PrintStatus(line);
 
-		gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
+		gfxChangeColors(_lowerGc, 0, GFX_FADE_OUT, 0);
 		gfxShow(car->PictID, GFX_NO_REFRESH | GFX_ONE_STEP, 0, -1, -1);
 
 		gfxPrepareColl(GFX_COLL_PARKING);
 		uint8 palette[GFX_PALETTE_SIZE];
 		gfxGetPalette(GFX_COLL_PARKING, palette);
 
-		gfxChangeColors(l_gc, 0, GFX_BLEND_UP, palette);
+		gfxChangeColors(_lowerGc, 0, GFX_BLEND_UP, palette);
 		SetCarColors(car->ColorIndex);
 
-		gfxSetPens(l_gc, 20, GFX_SAME_PEN, 21);
-		gfxRectFill(l_gc, 60, 40, 60 + 199, 40 + 19);
+		_lowerGc->setPens(20, GFX_SAME_PEN, 21);
+		_lowerGc->rectFill(60, 40, 60 + 199, 40 + 19);
 
 		i = MAX(i, 60);
 		j = MAX(j, 5);
@@ -685,15 +685,14 @@ int32 tcCalcCarEscape(int32 timeLeft) {
 
 			if (x != xOldMatt) {
 				if (xOldMatt != -1) {
-					gfxSetPens(l_gc, 20, GFX_SAME_PEN, 20);
+					_lowerGc->setPens(20, GFX_SAME_PEN, 20);
 
 					if ((195 - x + 1) < (198 + 195 - xOldMatt))
-						gfxRectFill(l_gc, 60 + 195 - xOldMatt, 45,
-						            60 + 198 - xOldMatt, 55);
+						_lowerGc->rectFill(60 + 195 - xOldMatt, 45, 60 + 198 - xOldMatt, 55);
 				}
 
-				gfxSetPens(l_gc, 11, GFX_SAME_PEN, 11);
-				gfxRectFill(l_gc, 60 + 195 - x, 45, 60 + 198 - x, 55);
+				_lowerGc->setPens(11, GFX_SAME_PEN, 11);
+				_lowerGc->rectFill(60 + 195 - x, 45, 60 + 198 - x, 55);
 
 				xOldMatt = x;
 				paint = true;
@@ -704,13 +703,12 @@ int32 tcCalcCarEscape(int32 timeLeft) {
 
 				if (x != xOldPoli) {
 					if (xOldPoli != -1) {
-						gfxSetPens(l_gc, 20, GFX_SAME_PEN, 20);
-						gfxRectFill(l_gc, 60 + 195 - xOldPoli, 45,
-						            60 + 198 - xOldPoli, 55);
+						_lowerGc->setPens(20, GFX_SAME_PEN, 20);
+						_lowerGc->rectFill(60 + 195 - xOldPoli, 45, 60 + 198 - xOldPoli, 55);
 					}
 
-					gfxSetPens(l_gc, 23, GFX_SAME_PEN, 23);
-					gfxRectFill(l_gc, 60 + 195 - x, 45, 60 + 198 - x, 55);
+					_lowerGc->setPens(23, GFX_SAME_PEN, 23);
+					_lowerGc->rectFill(60 + 195 - x, 45, 60 + 198 - x, 55);
 
 					paint = true;
 				}

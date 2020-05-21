@@ -79,7 +79,7 @@ void lsBuildScrollWindow() {
 	uint8 palette[GFX_PALETTE_SIZE];
 
 	gfxSetColorRange(0, 255);
-	gfxChangeColors(u_gc, 0, GFX_FADE_OUT, 0);
+	gfxChangeColors(_upperGc, 0, GFX_FADE_OUT, 0);
 
 	/* Boden aufbauen */
 	for (i = 0; i < LS_FLOORS_PER_COLUMN; i++) {

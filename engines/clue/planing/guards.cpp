@@ -108,7 +108,7 @@ bool grdDraw(_GC *gc, uint32 bldId, uint32 areaId) {
 
 					xpos += 4;
 
-					gfxMoveCursor(gc, xpos, ypos);
+					gc->moveCursor(xpos, ypos);
 
 					/* drawing system */
 					for (ActionNode *action = h->Actions->getListHead(); action->_succ; action = (ActionNode *) action->_succ) {
@@ -134,7 +134,7 @@ bool grdDraw(_GC *gc, uint32 bldId, uint32 areaId) {
 								break;
 							}
 
-							gfxDraw(gc, xpos, ypos);
+							gc->draw(xpos, ypos);
 							break;
 
 						case ACTION_WAIT:

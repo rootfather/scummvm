@@ -26,12 +26,10 @@
 namespace Clue {
 
 void PrintStatus(Common::String text) {
-	gfxSetDrMd(m_gc, GFX_JAM_1);
+	_menuGc->setMode(GFX_JAM_1);
 	gfxSetRect(0, 320);
-
-	gfxSetPens(m_gc, 249, 254, GFX_SAME_PEN);
-
-	gfxPrint(m_gc, text, 10, GFX_PRINT_SHADOW | GFX_PRINT_CENTER);
+	_menuGc->setPens(249, 254, GFX_SAME_PEN);
+	_menuGc->gfxPrint(text, 10, GFX_PRINT_SHADOW | GFX_PRINT_CENTER);
 }
 
 void ShowTheClouRequester() {

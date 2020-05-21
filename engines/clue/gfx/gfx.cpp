@@ -74,6 +74,27 @@ Font::~Font() {
 	delete _bmp;
 }
 
+_GC::_GC() {
+	_clipRect.x = _clipRect.y = 0;
+	_clipRect.w = _clipRect.h = 0;
+
+	_gfxMode = GFX_JAM_1;
+
+	_foreground = _background = 0;
+	_outline = 0;
+
+	_colorStart = _colorEnd = 0;
+
+	_cursorX = _cursorY = 0;
+
+	_font = nullptr;
+}
+
+_GC::~_GC() {
+	delete _font;
+}
+
+	
 void gfxRealRefreshArea(uint16 x, uint16 y, uint16 w, uint16 h);
 
 /********************************************************************
@@ -118,23 +139,17 @@ void gfxInit() {
 	bubbleFont = new Font(GFX_BUBBLE_FONT_NAME, 4, 8, 32, 255, SCREEN_WIDTH, 24);
 	menuFont = new Font(GFX_MENU_FONT_NAME, 5, 9, 32, 255, SCREEN_WIDTH, 36);
 
-	gfxInitGC(&LowerGC,
-	          0, 0, 320, 140,
-	          0, 191,
-	          bubbleFont);
-	gfxInitGC(&MenuGC,
-	          0, 140, 320, 60,
-	          191, 255,
-	          menuFont);
+	LowerGC = new _GC;
+	LSUpperGC = new _GC;
+	MenuGC = new _GC;
+	LSMenuGC = new _GC;
+	// TODO: delete those objects when they are in a class
+	
+	LowerGC->init(0, 0, 320, 140, 0, 191, bubbleFont);
+	MenuGC->init(0, 140, 320, 60, 191, 255, menuFont);
 
-	gfxInitGC(&LSUpperGC,
-	          0, 0, 320, 128,
-	          0, 191,
-	          bubbleFont);
-	gfxInitGC(&LSMenuGC,
-	          0, 128, 320, 72,
-	          191, 255,
-	          menuFont);
+	LSUpperGC->init(0, 0, 320, 128, 0, 191, bubbleFont);
+	LSMenuGC->init(0, 128, 320, 72, 191, 255, menuFont);
 
 	gfxInitCollList();
 	gfxInitPictList();
@@ -189,15 +204,15 @@ void gfxSetVideoMode(byte uch_NewMode) {
 
 	switch (uch_NewMode) {
 	case GFX_VIDEO_MCGA:
-		l_gc = &LowerGC;
-		u_gc = &LowerGC;
-		m_gc = &MenuGC;
+		_lowerGc = LowerGC;
+		_upperGc = LowerGC;
+		_menuGc = MenuGC;
 		break;
 
 	case GFX_VIDEO_NCH4:
-		l_gc = &LowerGC;
-		u_gc = &LSUpperGC;
-		m_gc = &LSMenuGC;
+		_lowerGc = LowerGC;
+		_upperGc = LSUpperGC;
+		_menuGc = LSMenuGC;
 
 		gfxLSInit();
 		break;
@@ -207,7 +222,7 @@ void gfxSetVideoMode(byte uch_NewMode) {
 		return;
 	}
 
-	gfxClearArea(NULL);
+	gfxClearScreen();
 }
 
 /********************************************************************
@@ -316,7 +331,7 @@ static Rectangle Clip(Rectangle A, Rectangle B) {
  * Rastports...
  */
 
-void gfxInitGC(_GC *gc, uint16 x, uint16 y, uint16 w, uint16 h, uint8 colorStart, uint8 End, Font *font) {
+void _GC::init(uint16 x, uint16 y, uint16 w, uint16 h, uint8 colorStart, uint8 End, Font *font) {
 	Rectangle dstR;
 	dstR.x = 0;
 	dstR.y = 0;
@@ -333,26 +348,24 @@ void gfxInitGC(_GC *gc, uint16 x, uint16 y, uint16 w, uint16 h, uint8 colorStart
 	if (dstR.w <= 0 || dstR.h <= 0)
 		DebugMsg(ERR_ERROR, ERROR_MODULE_GFX, "gfxInitGC");
 
-	gc->clip.x      = dstR.x;
-	gc->clip.y      = dstR.y;
-	gc->clip.w      = dstR.w;
-	gc->clip.h      = dstR.h;
+	_clipRect.x = dstR.x;
+	_clipRect.y = dstR.y;
+	_clipRect.w = dstR.w;
+	_clipRect.h = dstR.h;
 
-	gc->mode        = GFX_JAM_1;
+	_gfxMode    = GFX_JAM_1;
 
-	gc->foreground  = colorStart + 1;
-	gc->background  = colorStart;
-	gc->outline     = colorStart + 1;
+	_foreground  = colorStart + 1;
+	_background  = colorStart;
+	_outline     = colorStart + 1;
 
-	gc->colorStart  = colorStart;
-	gc->End         = End;
+	_colorStart  = colorStart;
+	_colorEnd    = End;
 
-	gfxMoveCursor(gc, 0, 0);
+	moveCursor(0, 0);
 
-	gc->font        = font;
+	_font = font;
 }
-
-
 
 /*******************************************************************
  * gfxMoveCursor (amiga function: Move)
@@ -364,17 +377,17 @@ void gfxInitGC(_GC *gc, uint16 x, uint16 y, uint16 w, uint16 h, uint8 colorStart
  * gfxReadPixel  (amiga function: ReadPixel)
  */
 
-void gfxDraw(_GC *gc, uint16 x, uint16 y) {
+void _GC::draw(uint16 x, uint16 y) {
 	/* this function doesn't perform clipping properly... but that's ok! */
-	x += gc->clip.x;
-	y += gc->clip.y;
+	x += _clipRect.x;
+	y += _clipRect.y;
 
-	if (x < gc->clip.w && y < gc->clip.h) {
+	if (x < _clipRect.w && y < _clipRect.h) {
 		uint16 rx = x;
 		uint16 ry = y;
 
-		uint16 rx1 = gc->cursorX;
-		uint16 ry1 = gc->cursorY;
+		uint16 rx1 = _cursorX;
+		uint16 ry1 = _cursorY;
 
 		uint16 dx, sx;
 		if (rx < rx1) {
@@ -394,7 +407,7 @@ void gfxDraw(_GC *gc, uint16 x, uint16 y) {
 			dy = ry - ry1 + 1;
 		}
 
-		uint8 color = gc->foreground;
+		uint8 color = _foreground;
 		Graphics::Surface *dst = Screen;
 
 		uint16 dw = dst->w;
@@ -413,8 +426,8 @@ void gfxDraw(_GC *gc, uint16 x, uint16 y) {
 			/* the line is slanted. oops. */
 		}
 
-		gc->cursorX = x;
-		gc->cursorY = y;
+		_cursorX = x;
+		_cursorY = y;
 
 		if (rx == rx1)
 			gfxRefreshArea(sx, 1, sy, dy);
@@ -427,23 +440,23 @@ void gfxDraw(_GC *gc, uint16 x, uint16 y) {
 	}
 }
 
-void gfxMoveCursor(_GC *gc, uint16 x, uint16 y) {
-	gc->cursorX = gc->clip.x + MIN(x, uint16(gc->clip.w - 1));
-	gc->cursorY = gc->clip.y + MIN(y, uint16(gc->clip.h - 1));
+void _GC::moveCursor(uint16 x, uint16 y) {
+	_cursorX = _clipRect.x + MIN(x, uint16(_clipRect.w - 1));
+	_cursorY = _clipRect.y + MIN(y, uint16(_clipRect.h - 1));
 }
 
-void gfxSetPens(_GC *gc, uint8 foreground, uint8 background, uint8 outline) {
+void _GC::setPens(uint8 foreground, uint8 background, uint8 outline) {
 	if (foreground != GFX_SAME_PEN)
-		gc->foreground = foreground;
+		_foreground = foreground;
 
 	if (background != GFX_SAME_PEN)
-		gc->background = background;
+		_background = background;
 
 	if (outline != GFX_SAME_PEN)
-		gc->outline = outline;
+		_outline = outline;
 }
 
-void gfxRectFill(_GC *gc, uint16 sx, uint16 sy, uint16 ex, uint16 ey) {
+void _GC::rectFill(uint16 sx, uint16 sy, uint16 ex, uint16 ey) {
 /* minimum size: 3 * 3 pixels ! */
 	if (sx > ex)
 		SWAP(sx, ex);
@@ -452,28 +465,28 @@ void gfxRectFill(_GC *gc, uint16 sx, uint16 sy, uint16 ex, uint16 ey) {
 		SWAP(sy, ey);
 
 	Common::Rect dst;
-	dst.left = gc->clip.x + sx;
-	dst.top = gc->clip.y + sy;
-	dst.right = gc->clip.x + ex + 1;
-	dst.bottom = gc->clip.y + ey + 1;
+	dst.left = _clipRect.x + sx;
+	dst.top = _clipRect.y + sy;
+	dst.right = _clipRect.x + ex + 1;
+	dst.bottom = _clipRect.y + ey + 1;
 
-	Screen->fillRect(dst, gc->foreground);
-	Screen->frameRect(dst, gc->outline);
+	Screen->fillRect(dst, _foreground);
+	Screen->frameRect(dst, _outline);
 
 	gfxRefreshArea(dst.left, dst.top, dst.width(), dst.height());
 }
 
-void gfxSetDrMd(_GC *gc, GfxDrawModeE mode) {
-	gc->mode = mode;
+void _GC::setMode(GfxDrawModeE mode) {
+	_gfxMode = mode;
 }
 
-void gfxSetFont(_GC *gc, Font *font) {
-	gc->font = font;
+void _GC::setFont(Font *font) {
+	_font = font;
 }
 
 /* Compute the length of a text in pixels */
-uint16 gfxTextWidth(_GC *gc, Common::String txt) {
-	size_t w = txt.size() * gc->font->_width;
+uint16 _GC::gfxTextWidth(Common::String txt) {
+	size_t w = txt.size() * _font->_width;
 
 	if (w > USHRT_MAX)
 		return 0;
@@ -499,7 +512,7 @@ void gfxGetPalette(uint16 collId, uint8 *palette) {
 }
 
 static int32 gfxGetRealDestY(_GC *gc, int32 destY) {
-	destY -= gc->clip.y;
+	destY -= gc->_clipRect.y;
 
 	return destY;
 }
@@ -580,8 +593,7 @@ void gfxSetRect(uint16 us_X, uint16 us_Width) {
 	GlobalPrintRect.us_Width = us_Width;
 }
 
-static void ScreenBlitChar(_GC *gc, Graphics::Surface *src, Rect *src_rect,
-						Graphics::Surface *dst, Rect *dst_rect, uint8 color) {
+void _GC::ScreenBlitChar(Graphics::Surface *src, Rect *src_rect, Graphics::Surface *dst, Rect *dst_rect, uint8 color) {
 	/* clip. */
 	Rectangle srcR;
 	srcR.x = src_rect->x;
@@ -596,10 +608,10 @@ static void ScreenBlitChar(_GC *gc, Graphics::Surface *src, Rect *src_rect,
 	dstR.h = dst->h;
 
 	Rectangle dstR2;
-	dstR2.x = dst_rect->x + gc->clip.x;
-	dstR2.y = dst_rect->y + gc->clip.y;
-	dstR2.w = gc->clip.w;
-	dstR2.h = gc->clip.h;
+	dstR2.x = dst_rect->x + _clipRect.x;
+	dstR2.y = dst_rect->y + _clipRect.y;
+	dstR2.w = _clipRect.w;
+	dstR2.h = _clipRect.h;
 	dstR = Clip(dstR, dstR2);
 
 	if (dstR.w <= 0 || dstR.h <= 0)
@@ -631,31 +643,31 @@ static void ScreenBlitChar(_GC *gc, Graphics::Surface *src, Rect *src_rect,
 	}
 }
 
-void gfxPrintExact(_GC *gc, Common::String txt, uint16 x, uint16 y) {
+void _GC::gfxPrintExact(Common::String txt, uint16 x, uint16 y) {
 	if (txt.empty())
 		return;
 
-	const Font *font = gc->font;
+	const Font *font = _font;
 	const uint16 w = font->_width,
 	             h = font->_height,
 	             base = font->_firstChar;
 	const uint16 chars_per_line = SCREEN_WIDTH / w;
-	const uint8 fg = gc->foreground;
+	const uint8 fg = _foreground;
 	uint len = txt.size();
 
 	Common::Rect area;
-	area.left = gc->clip.x;
-	area.top = gc->clip.y;
-	area.setWidth(gc->clip.w);
-	area.setHeight(gc->clip.h);
+	area.left = _clipRect.x;
+	area.top = _clipRect.y;
+	area.setWidth(_clipRect.w);
+	area.setHeight(_clipRect.h);
 
 	area.left += x;
 	area.top += y;
 	area.setWidth(len * w);
 	area.setHeight(h);
 
-	if (gc->mode == GFX_JAM_2)
-		Screen->fillRect(area, gc->background);
+	if (_gfxMode == GFX_JAM_2)
+		Screen->fillRect(area, _background);
 
 	Rect srcR;
 	srcR.w = w;
@@ -675,7 +687,7 @@ void gfxPrintExact(_GC *gc, Common::String txt, uint16 x, uint16 y) {
 		srcR.y = (ch / chars_per_line) * h;
 		srcR.x = (ch % chars_per_line) * w;
 
-		ScreenBlitChar(gc, src, &srcR, dst, &dstR, fg);
+		ScreenBlitChar(src, &srcR, dst, &dstR, fg);
 
 		dstR.x += w;
 	}
@@ -683,12 +695,12 @@ void gfxPrintExact(_GC *gc, Common::String txt, uint16 x, uint16 y) {
 	gfxRefreshArea(area.left, area.top, area.width(), area.height());
 }
 
-void gfxPrint(_GC *gc, Common::String txt, uint16 y, uint32 mode) {
+void _GC::gfxPrint(Common::String txt, uint16 y, uint32 mode) {
 	if (txt.empty())
 		return;
 
 	uint16 x = GlobalPrintRect.us_X;
-	uint16 w = gfxTextWidth(gc, txt);
+	uint16 w = gfxTextWidth(txt);
 
 	if (mode & GFX_PRINT_RIGHT)
 		x += GlobalPrintRect.us_Width - w;
@@ -699,15 +711,15 @@ void gfxPrint(_GC *gc, Common::String txt, uint16 y, uint32 mode) {
 	}
 
 	if (mode & GFX_PRINT_SHADOW) {
-		uint8 tmp = gc->foreground;
-		gc->foreground = gc->background;
+		uint8 tmp = _foreground;
+		_foreground = _background;
 
-		gfxPrintExact(gc, txt, x + 1, y + 1);
+		gfxPrintExact(txt, x + 1, y + 1);
 
-		gc->foreground = tmp;
+		_foreground = tmp;
 	}
 
-	gfxPrintExact(gc, txt, x, y);
+	gfxPrintExact(txt, x, y);
 }
 /*******************************************************************
  * refresh...
@@ -733,25 +745,25 @@ static _GC *gfxGetGC(int32 l_DestY) {
 
 	switch (GfxBase.uch_VideoMode) {
 	case GFX_VIDEO_NCH4:
-		gc = u_gc;
+		gc = _upperGc;
 
 		if (l_DestY >= 60) {
-			gc = l_gc;
+			gc = _lowerGc;
 
-			if (l_DestY >= gc->clip.y + gc->clip.h)
-				gc = m_gc;
+			if (l_DestY >= gc->_clipRect.y + gc->_clipRect.h)
+				gc = _menuGc;
 		}
 		break;
 
 	default:
 	case GFX_VIDEO_MCGA:
-		gc = u_gc;
+		gc = _upperGc;
 
-		if (l_DestY >= gc->clip.y + gc->clip.h) {
-			gc = l_gc;
+		if (l_DestY >= gc->_clipRect.y + gc->_clipRect.h) {
+			gc = _lowerGc;
 
-			if (l_DestY >= gc->clip.y + gc->clip.h)
-				gc = m_gc;
+			if (l_DestY >= gc->_clipRect.y + gc->_clipRect.h)
+				gc = _menuGc;
 		}
 		break;
 	}
@@ -774,20 +786,27 @@ void wfd() {
 	wfr();
 }
 
-void gfxClearArea(_GC *gc) {
+void _GC::gfxClearArea() {
 	Common::Rect area;
 
-	if (gc) {
-		area.left = gc->clip.x;
-		area.top = gc->clip.y;
-		area.setWidth(gc->clip.w);
-		area.setHeight(gc->clip.h);
-	} else {
-		area.left = 0;
-		area.top = 0;
-		area.setWidth(SCREEN_WIDTH);
-		area.setHeight(SCREEN_HEIGHT);
-	}
+	area.left = _clipRect.x;
+	area.top = _clipRect.y;
+	area.setWidth(_clipRect.w);
+	area.setHeight(_clipRect.h);
+
+	Screen->fillRect(area, 0);
+
+	gfxRefreshArea(area.left, area.top, area.width(), area.height());
+}
+
+void gfxClearScreen() {
+	Common::Rect area;
+
+	area.left = 0;
+	area.top = 0;
+	area.setWidth(SCREEN_WIDTH);
+	area.setHeight(SCREEN_HEIGHT);
+
 	Screen->fillRect(area, 0);
 
 	gfxRefreshArea(area.left, area.top, area.width(), area.height());
@@ -819,8 +838,8 @@ void gfxGetPaletteFromReg(uint8 *palette, uint32 start, uint32 num) {
 void gfxChangeColors(_GC *gc, uint32 delay, uint32 mode, uint8 *palette) {
 	uint16 st, en;
 	if (gc) {
-		st = gc->colorStart;
-		en = gc->End;
+		st = gc->_colorStart;
+		en = gc->_colorEnd;
 	} else {
 		st = GlobalColorRange.uch_Start;
 		en = GlobalColorRange.uch_End;
@@ -919,33 +938,32 @@ void gfxShow(uint16 us_PictId, uint32 ul_Mode, int32 l_Delay, int32 l_XPos, int3
 		gfxPrepareRefresh();
 
 	if (ul_Mode & GFX_CLEAR_FIRST)
-		gfxClearArea(gc);
+		gc->gfxClearArea();
 
 	if (ul_Mode & GFX_FADE_OUT) {
 		gfxSetColorRange(coll->_colorRangeStart, coll->_colorRangeEnd);
-		gfxChangeColors(NULL, l_Delay, GFX_FADE_OUT, NULL);
+		gfxChangeColors(nullptr, l_Delay, GFX_FADE_OUT, NULL);
 	}
 
 	if (!l_Delay && (ul_Mode & GFX_BLEND_UP)) {
 		gfxSetColorRange(coll->_colorRangeStart, coll->_colorRangeEnd);
-		gfxChangeColors(NULL, l_Delay, GFX_BLEND_UP, ScratchRP.palette);
+		gfxChangeColors(nullptr, l_Delay, GFX_BLEND_UP, ScratchRP.palette);
 	}
 
 	gfxScreenFreeze();
 	if (ul_Mode & GFX_OVERLAY)
-		gfxBlit(gc, &ScratchRP, pict->_xOffset, pict->_yOffset,
-		        destX, destY, pict->_width, pict->_height, true);
+		gc->gfxBlit(&ScratchRP, pict->_xOffset, pict->_yOffset, destX, destY, pict->_width, pict->_height, true);
+
 	if (ul_Mode & GFX_ONE_STEP)
-		gfxBlit(gc, &ScratchRP, pict->_xOffset, pict->_yOffset,
-		        destX, destY, pict->_width, pict->_height, false);
+		gc->gfxBlit(&ScratchRP, pict->_xOffset, pict->_yOffset, destX, destY, pict->_width, pict->_height, false);
 
 	if (l_Delay && (ul_Mode & GFX_BLEND_UP)) {
 		gfxSetColorRange(coll->_colorRangeStart, coll->_colorRangeEnd);
-		gfxChangeColors(NULL, l_Delay, GFX_BLEND_UP, ScratchRP.palette);
+		gfxChangeColors(nullptr, l_Delay, GFX_BLEND_UP, ScratchRP.palette);
 	}
-	gfxScreenThaw(gc, destX, destY, pict->_width, pict->_height);
+	gc->gfxScreenThaw(destX, destY, pict->_width, pict->_height);
 
-	gfxSetGC(NULL);
+	gfxSetGC(nullptr);
 }
 
 /*******************************************************************
@@ -1090,8 +1108,7 @@ void gfxScratchToMem(MemRastPort *dst) {
 }
 
 
-void gfxBlit(_GC *gc, MemRastPort *src, uint16 sx, uint16 sy, uint16 dx, uint16 dy,
-             uint16 w, uint16 h, bool has_mask) {
+void _GC::gfxBlit(MemRastPort *src, uint16 sx, uint16 sy, uint16 dx, uint16 dy, uint16 w, uint16 h, bool has_mask) {
 	/* clip. */
 	Rectangle srcR;
 	srcR.x = 0;
@@ -1110,14 +1127,14 @@ void gfxBlit(_GC *gc, MemRastPort *src, uint16 sx, uint16 sy, uint16 dx, uint16 
 		return;
 
 	Rectangle dstR;
-	dstR.x = gc->clip.x;
-	dstR.y = gc->clip.y;
-	dstR.w = gc->clip.w;
-	dstR.h = gc->clip.h;
+	dstR.x = _clipRect.x;
+	dstR.y = _clipRect.y;
+	dstR.w = _clipRect.w;
+	dstR.h = _clipRect.h;
 
 	Rectangle dstR2;
-	dstR2.x = gc->clip.x + dx;
-	dstR2.y = gc->clip.y + dy;
+	dstR2.x = _clipRect.x + dx;
+	dstR2.y = _clipRect.y + dy;
 	dstR2.w = w;
 	dstR2.h = h;
 	dstR = Clip(dstR, dstR2);
@@ -1210,19 +1227,19 @@ void gfxScreenFreeze() {
 	screen_freeze_count++;
 }
 
-void gfxScreenThaw(_GC *gc, uint16 x, uint16 y, uint16 w, uint16 h) {
+void _GC::gfxScreenThaw(uint16 x, uint16 y, uint16 w, uint16 h) {
 	if (screen_freeze_count > 0) {
 		screen_freeze_count--;
 
 		Rectangle dstR;
-		dstR.x = gc->clip.x;
-		dstR.y = gc->clip.y;
-		dstR.w = gc->clip.w;
-		dstR.h = gc->clip.h;
+		dstR.x = _clipRect.x;
+		dstR.y = _clipRect.y;
+		dstR.w = _clipRect.w;
+		dstR.h = _clipRect.h;
 
 		Rectangle dstR2;
-		dstR2.x = gc->clip.x + x;
-		dstR2.y = gc->clip.y + y;
+		dstR2.x = _clipRect.x + x;
+		dstR2.y = _clipRect.y + y;
 		dstR2.w = w;
 		dstR2.h = h;
 		dstR = Clip(dstR, dstR2);
@@ -1326,22 +1343,22 @@ void MemBlit(MemRastPort *src, Rect *src_rect,
 	}
 }
 
-void gfxGetMouseXY(_GC *gc, uint16 *pMouseX, uint16 *pMouseY) {
+void _GC::gfxGetMouseXY(uint16 *pMouseX, uint16 *pMouseY) {
 	Common::Point mouse = g_clue->getEventManager()->getMousePos();
 
 	if (pMouseX) {
-		if (mouse.x < gc->clip.x)
+		if (mouse.x < _clipRect.x)
 			mouse.x = 0;
 		else
-			mouse.x -= gc->clip.x;
+			mouse.x -= _clipRect.x;
 		*pMouseX = mouse.x;
 	}
 
 	if (pMouseY) {
-		if (mouse.y < gc->clip.y)
+		if (mouse.y < _clipRect.y)
 			mouse.y = 0;
 		else
-			mouse.y -= gc->clip.y;
+			mouse.y -= _clipRect.y;
 		*pMouseY = mouse.y;
 	}
 }

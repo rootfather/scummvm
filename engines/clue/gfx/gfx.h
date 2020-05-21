@@ -144,27 +144,47 @@ public:
 	~Font();
 };
 
-struct _GC {
-	Rect clip;
+class _GC {
+public:
+	Rect _clipRect;
 
-	GfxDrawModeE mode;
+	GfxDrawModeE _gfxMode;
 
-	uint8 foreground;              /* entspricht dem Farbregister */
-	uint8 background;              /* ebenfalls absolut und nicht relativ zum */
-	uint8 outline;                 /* Registerstart */
+	uint8 _foreground;              /* entspricht dem Farbregister */
+	uint8 _background;              /* ebenfalls absolut und nicht relativ zum */
+	uint8 _outline;                 /* Registerstart */
 
-	uint8 colorStart;
-	uint8 End;
+	uint8 _colorStart;
+	uint8 _colorEnd;
 
-	uint16 cursorX;
-	uint16 cursorY;
+	uint16 _cursorX;
+	uint16 _cursorY;
 
-	Font *font;
+	Font *_font;
+
+	_GC();
+	~_GC();
+
+	void init(uint16 x, uint16 y, uint16 w, uint16 h, uint8 colorStart, uint8 End, Font* font);
+	void moveCursor(uint16 x, uint16 y);
+	void draw(uint16 x, uint16 y);
+	void setPens(uint8 foreground, uint8 background, uint8 outline);
+	void rectFill(uint16 sx, uint16 sy, uint16 ex, uint16 ey);
+	void setMode(GfxDrawModeE mode);
+	void setFont(Font* font);
+	void gfxPrint(Common::String txt, uint16 y, uint32 mode);
+	uint16 gfxTextWidth(Common::String txt);
+	void gfxPrintExact(Common::String txt, uint16 x, uint16 y);
+	void ScreenBlitChar(Graphics::Surface* src, Rect* src_rect, Graphics::Surface* dst, Rect* dst_rect, uint8 color);
+	void gfxClearArea();
+	void gfxGetMouseXY(uint16* pMouseX, uint16* pMouseY);
+	void gfxBlit(MemRastPort* src, uint16 sx, uint16 sy, uint16 dx, uint16 dy, uint16 w, uint16 h, bool has_mask);
+	void gfxScreenThaw(uint16 x, uint16 y, uint16 w, uint16 h);
 };
 
-extern _GC *l_gc;
-extern _GC *u_gc;
-extern _GC *m_gc;
+extern _GC *_lowerGc;
+extern _GC *_upperGc;
+extern _GC *_menuGc;
 
 extern MemRastPort ScratchRP;
 
@@ -190,32 +210,17 @@ extern void gfxSetVideoMode(byte uch_NewMode);
 extern void wfd();
 extern void wfr();
 
-void gfxSetRGB(_GC *gc, uint8 color, uint8 r, uint8 g, uint8 b);
-
-void gfxMoveCursor(_GC *gc, uint16 x, uint16 y);
-void gfxSetPens(_GC *gc, uint8 foreground, uint8 background, uint8 outline);
-void gfxRectFill(_GC *gc, uint16 sx, uint16 sy, uint16 ex, uint16 ey);
-void gfxDraw(_GC *gc, uint16 x, uint16 y);
-void gfxSetDrMd(_GC *rp, GfxDrawModeE mode);
-void gfxSetFont(_GC *gc, Font *font);
+void gfxSetRGB(_GC* gc, uint8 color, uint8 r, uint8 g, uint8 b); // CHECKME: the first parameter isn't use. Why?
 
 extern void gfxPrepareRefresh();
 extern void gfxRefresh();
 
-extern void gfxClearArea(_GC *gc);
 extern void gfxSetRect(uint16 us_X, uint16 us_Width);
-
-extern uint16 gfxTextWidth(_GC *gc, Common::String txt);
-
-extern void gfxPrint(_GC *gc, Common::String txt, uint16 y, uint32 mode);
-
-extern void gfxPrintExact(_GC *gc, Common::String txt, uint16 x, uint16 y);
 
 extern void gfxSetColorRange(byte uch_ColorStart, byte uch_ColorEnd);
 
 extern void gfxChangeColors(_GC *gc, uint32 delay, uint32 mode, uint8 *palette);
-extern void gfxShow(uint16 us_PictId, uint32 ul_Mode, int32 l_Delay, int32 l_XPos,
-                    int32 l_YPos);
+extern void gfxShow(uint16 us_PictId, uint32 ul_Mode, int32 l_Delay, int32 l_XPos, int32 l_YPos);
 
 extern void gfxSetGC(_GC *gc);
 
@@ -241,24 +246,19 @@ enum ROpE {
 	GFX_ROP_SET       = 3
 };
 
-void gfxBlit(_GC *gc, MemRastPort *src, uint16 sx, uint16 sy, uint16 dx, uint16 dy,
-             uint16 w, uint16 h, bool has_mask);
-
 void MemBlit(MemRastPort *src, Rect *src_rect,
              MemRastPort *dst, Rect *dst_rect, ROpE op);
 
 void gfxRefreshArea(uint16 x, uint16 y, uint16 w, uint16 h);
 
 void gfxScreenFreeze();
-void gfxScreenThaw(_GC *gc, uint16 x, uint16 y, uint16 w, uint16 h);
 void gfxScreenUnFreeze();
 
-void gfxGetMouseXY(_GC *gc, uint16 *pMouseX, uint16 *pMouseY);
-
 void gfxSetRGBRange(uint8 *colors, uint32 start, uint32 num);
-void gfxInitGC(_GC *gc, uint16 x, uint16 y, uint16 w, uint16 h, uint8 colorStart, uint8 colorEnd, Font *font);
 void gfxSetCMAP(const uint8 *src);
 void gfxILBMToRAW(const uint8 *src, uint8 *dst, size_t size);
+
+void gfxClearScreen();
 
 #if 0
 extern int32 gfxGetILBMSize(struct Collection *coll);

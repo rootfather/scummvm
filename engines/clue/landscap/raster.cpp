@@ -128,9 +128,8 @@ void lsFadeRasterObject(uint32 areaID, LSObjectNode *lso, byte status) {
 	else
 		col = 10;
 
-	gfxSetPens(l_gc, col, col, col);
-
-	gfxRectFill(l_gc, xStart, yStart, xEnd, yEnd);
+	_lowerGc->setPens(col, col, col);
+	_lowerGc->rectFill(xStart, yStart, xEnd, yEnd);
 }
 
 void lsShowAllConnections(uint32 areaID, dbObjectNode *node, byte perc) {
@@ -180,7 +179,7 @@ void lsShowAllConnections(uint32 areaID, dbObjectNode *node, byte perc) {
 		srcY = (srcY * rasterSize) / LS_RASTER_Y_SIZE;
 
 		for (dbObjectNode *n = ObjectList->getListHead(); n->_succ; n = (dbObjectNode *)n->_succ) {
-			gfxSetPens(l_gc, col, GFX_SAME_PEN, GFX_SAME_PEN);
+			_lowerGc->setPens(col, GFX_SAME_PEN, GFX_SAME_PEN);
 
 			LSObjectNode *lso2 = (LSObjectNode *)n;
 
@@ -193,12 +192,12 @@ void lsShowAllConnections(uint32 areaID, dbObjectNode *node, byte perc) {
 			destX = (destX * rasterSize) / LS_RASTER_X_SIZE;
 			destY = (destY * rasterSize) / LS_RASTER_Y_SIZE;
 
-			gfxMoveCursor(l_gc, srcX, srcY);
-			gfxDraw(l_gc, destX, srcY);
-			gfxDraw(l_gc, destX, destY);
+			_lowerGc->moveCursor(srcX, srcY);
+			_lowerGc->draw(destX, srcY);
+			_lowerGc->draw(destX, destY);
 
-			gfxSetPens(l_gc, 0, 0, col);
-			gfxRectFill(l_gc, destX - 1, destY - 1, destX + 2, destY + 2);
+			_lowerGc->setPens(0, 0, col);
+			_lowerGc->rectFill(destX - 1, destY - 1, destX + 2, destY + 2);
 		}
 	}
 }

@@ -40,21 +40,21 @@ void SetCarColors(byte index) {
 		{{15, 15, 6}, {13, 13, 3}, {11, 11, 1}, {9, 9, 0}}
 	};
 
-	gfxSetRGB(l_gc, 8, (uint32) Col[index][0][0] << 4,
+	gfxSetRGB(_lowerGc, 8, (uint32) Col[index][0][0] << 4,
 	          (uint32) Col[index][0][1] << 4, (uint32) Col[index][0][2] << 4);
-	gfxSetRGB(l_gc, 9, (uint32) Col[index][1][0] << 4,
+	gfxSetRGB(_lowerGc, 9, (uint32) Col[index][1][0] << 4,
 	          (uint32) Col[index][1][1] << 4, (uint32) Col[index][1][2] << 4);
-	gfxSetRGB(l_gc, 10, (uint32) Col[index][2][0] << 4,
+	gfxSetRGB(_lowerGc, 10, (uint32) Col[index][2][0] << 4,
 	          (uint32) Col[index][2][1] << 4, (uint32) Col[index][2][2] << 4);
-	gfxSetRGB(l_gc, 11, (uint32) Col[index][3][0] << 4,
+	gfxSetRGB(_lowerGc, 11, (uint32) Col[index][3][0] << 4,
 	          (uint32) Col[index][3][1] << 4, (uint32) Col[index][3][2] << 4);
-	gfxSetRGB(l_gc, 40, (uint32) Col[index][0][0] << 3,
+	gfxSetRGB(_lowerGc, 40, (uint32) Col[index][0][0] << 3,
 	          (uint32) Col[index][0][1] << 3, (uint32) Col[index][0][2] << 3);
-	gfxSetRGB(l_gc, 41, (uint32) Col[index][1][0] << 3,
+	gfxSetRGB(_lowerGc, 41, (uint32) Col[index][1][0] << 3,
 	          (uint32) Col[index][1][1] << 3, (uint32) Col[index][1][2] << 3);
-	gfxSetRGB(l_gc, 42, (uint32) Col[index][2][0] << 3,
+	gfxSetRGB(_lowerGc, 42, (uint32) Col[index][2][0] << 3,
 	          (uint32) Col[index][2][1] << 3, (uint32) Col[index][2][2] << 3);
-	gfxSetRGB(l_gc, 43, (uint32) Col[index][3][0] << 3,
+	gfxSetRGB(_lowerGc, 43, (uint32) Col[index][3][0] << 3,
 	          (uint32) Col[index][3][1] << 3, (uint32) Col[index][3][2] << 3);
 }
 
@@ -297,7 +297,7 @@ void tcRepairCar(CarNode *car, const char *repairWhat) {
 		AddPresentLine(presentationData, PRESENT_AS_NUMBER, totalCosts, 0, list, line++);
 		AddPresentLine(presentationData, PRESENT_AS_NUMBER, (uint32) tcGetPlayerMoney, 0, list, line++);
 
-		DrawPresent(presentationData, 0, u_gc, (byte)presentationData->getNrOfNodes());
+		DrawPresent(presentationData, 0, _upperGc, (byte)presentationData->getNrOfNodes());
 
 		presentationData->removeNode(nullptr);
 

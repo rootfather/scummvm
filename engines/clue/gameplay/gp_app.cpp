@@ -66,7 +66,7 @@ void tcMattGoesTo(uint32 locNr) {
 	tcRefreshLocationInTitle(locNr);
 	ShowTime(0);
 
-	gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
+	gfxChangeColors(_lowerGc, 0, GFX_FADE_OUT, 0);
 	g_clue->_animMgr->playAnim(node->_name.c_str(), (int16) 30000, GFX_NO_REFRESH | GFX_ONE_STEP | GFX_BLEND_UP);
 }
 
@@ -167,7 +167,7 @@ uint32 tcBurglary(uint32 buildingID) {
 }
 
 void tcRefreshLocationInTitle(uint32 locNr) {
-	gfxSetPens(m_gc, 3, GFX_SAME_PEN, GFX_SAME_PEN);
+	_menuGc->setPens(3, GFX_SAME_PEN, GFX_SAME_PEN);
 
 	Common::String date = buildDate(_film->getDay());
 	NewTCEventNode *node = _film->_locationNames->getNthNode(locNr);
@@ -327,12 +327,12 @@ void ShowTime(uint32 delay) {
 
 	gfxShow(25, GFX_NO_REFRESH | GFX_OVERLAY, delay, -1, -1);
 
-	gfxSetFont(u_gc, bubbleFont);
-	gfxSetPens(u_gc, 254, 252, GFX_SAME_PEN);
+	_upperGc->setFont(bubbleFont);
+	_upperGc->setPens(254, 252, GFX_SAME_PEN);
 	gfxSetRect(280, 32);
-	gfxSetDrMd(u_gc, GFX_JAM_1);
+	_upperGc->setMode(GFX_JAM_1);
 
-	gfxPrint(u_gc, time, 5, GFX_PRINT_CENTER | GFX_PRINT_SHADOW);
+	_upperGc->gfxPrint(time, 5, GFX_PRINT_CENTER | GFX_PRINT_SHADOW);
 }
 
 uint32 StdHandle(uint32 choice) {
@@ -418,7 +418,7 @@ uint32 StdHandle(uint32 choice) {
 				} else {
 					uint32 building;
 
-					gfxChangeColors(l_gc, 0, GFX_FADE_OUT, 0);
+					gfxChangeColors(_lowerGc, 0, GFX_FADE_OUT, 0);
 
 					if (_gamePlayMode & GP_MODE_NO_MUSIC_IN_PLANING)
 						g_clue->_sndMgr->sndStopSound(0);
@@ -501,7 +501,7 @@ void stdDone() {
 	g_clue->_animMgr->stopAnim();
 
 	if (!_sceneArgs._overwritten)
-		gfxChangeColors(l_gc, 5, GFX_FADE_OUT, nullptr);
+		gfxChangeColors(_lowerGc, 5, GFX_FADE_OUT, nullptr);
 
 	menu->removeList();
 }
@@ -769,7 +769,7 @@ void ShowMenuBackground() {
 	if (CurrentBackground != BGD_CLEAR) /* MOD */
 		gfxShow(CurrentBackground, GFX_ONE_STEP | GFX_NO_REFRESH, 0, -1, -1);
 	else
-		gfxClearArea(m_gc);
+		_menuGc->gfxClearArea();
 }
 
 } // End of namespace Clue

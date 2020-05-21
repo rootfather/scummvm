@@ -166,7 +166,7 @@ void plPrepareGfx(uint32 objId, byte landscapMode, byte prepareMode) {
 
 void plUnprepareGfx() {
 	gfxShow(CurrentBackground, GFX_NO_REFRESH | GFX_FADE_OUT, 5, -1, -1);
-	gfxClearArea(u_gc);
+	_upperGc->gfxClearArea();
 
 	for (int i = BurglarsNr; i < PersonsNr; i++)
 		Planing_GuardRoomList[i - BurglarsNr]->removeList();

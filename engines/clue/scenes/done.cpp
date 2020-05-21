@@ -65,7 +65,7 @@ void DoneTaxi() {
 
 	locs->removeList();
 
-	gfxChangeColors(l_gc, 2, GFX_FADE_OUT, 0);
+	gfxChangeColors(_lowerGc, 2, GFX_FADE_OUT, 0);
 }
 
 void DoneInsideHouse() {
@@ -146,7 +146,7 @@ void DoneInsideHouse() {
 		lsDoneObjectDB(node->_nr);
 
 	g_clue->_animMgr->stopAnim();
-	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, nullptr);
+	gfxChangeColors(_lowerGc, 5, GFX_FADE_OUT, nullptr);
 
 	menu->removeList();
 }
@@ -184,7 +184,7 @@ void DoneTools() {
 
 	menu->removeList();
 	g_clue->_animMgr->stopAnim();
-	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
+	gfxChangeColors(_lowerGc, 5, GFX_FADE_OUT, 0);
 }
 
 void DoneDealer() {
@@ -223,7 +223,7 @@ void DoneDealer() {
 
 	menu->removeList();
 	g_clue->_animMgr->stopAnim();
-	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
+	gfxChangeColors(_lowerGc, 5, GFX_FADE_OUT, 0);
 }
 
 void DoneParking() {
@@ -284,7 +284,7 @@ void DoneParking() {
 	menu->removeList();
 
 	g_clue->_animMgr->stopAnim();
-	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, nullptr);
+	gfxChangeColors(_lowerGc, 5, GFX_FADE_OUT, nullptr);
 }
 
 void DoneGarage() {
@@ -327,7 +327,7 @@ void DoneGarage() {
 
 	menu->removeList();
 	g_clue->_animMgr->stopAnim();
-	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, 0);
+	gfxChangeColors(_lowerGc, 5, GFX_FADE_OUT, 0);
 }
 
 void tcInitFahndung() {
@@ -356,7 +356,7 @@ void tcDoneFahndung() {
 	if (tcIsDeadlock())
 		_sceneArgs._returnValue = SCENE_NEW_GAME;
 
-	gfxChangeColors(l_gc, 5, GFX_FADE_OUT, nullptr);
+	gfxChangeColors(_lowerGc, 5, GFX_FADE_OUT, nullptr);
 }
 
 /*

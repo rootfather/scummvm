@@ -212,7 +212,7 @@ uint32 tcOrganisation() {
 				    tcChooseDestBuilding(Organisation.BuildingID);
 
 			if (tcCheckOrganisation()) {
-				gfxClearArea(l_gc);
+				_lowerGc->gfxClearArea();
 
 				tcDoneDisplayOrganisation();
 

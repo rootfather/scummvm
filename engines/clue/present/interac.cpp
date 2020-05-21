@@ -74,9 +74,9 @@ bool ChoiceOkHack(byte choice, byte exit, NewList<NewNode> *l) {
 
 static void DrawMenu(NewList<NewNode>* menu, byte nr, int32 mode) {
 	if (mode == ACTIV_POSS)
-		gfxSetPens(m_gc, 249, GFX_SAME_PEN, GFX_SAME_PEN);
+		_menuGc->setPens(249, GFX_SAME_PEN, GFX_SAME_PEN);
 	else
-		gfxSetPens(m_gc, 248, GFX_SAME_PEN, GFX_SAME_PEN);
+		_menuGc->setPens(248, GFX_SAME_PEN, GFX_SAME_PEN);
 
 	Common::String m1 = "";
 	Common::String m2 = "";
@@ -93,14 +93,14 @@ static void DrawMenu(NewList<NewNode>* menu, byte nr, int32 mode) {
 		else
 			m2 = "";
 
-		lastx = MAX(gfxTextWidth(m_gc, m1), gfxTextWidth(m_gc, m2));
+		lastx = MAX(_menuGc->gfxTextWidth(m1), _menuGc->gfxTextWidth(m2));
 		x += lastx;
 	}
 
 	if (nr == i - 2)
-		gfxPrintExact(m_gc, m1, x + 8 * nr - lastx, TXT_1ST_MENU_LINE_Y);
+		_menuGc->gfxPrintExact(m1, x + 8 * nr - lastx, TXT_1ST_MENU_LINE_Y);
 	else if (!m2.empty())
-		gfxPrintExact(m_gc, m2, x + 8 * (nr - 1) - lastx, TXT_2ND_MENU_LINE_Y);
+		_menuGc->gfxPrintExact(m2, x + 8 * (nr - 1) - lastx, TXT_2ND_MENU_LINE_Y);
 }
 
 static char SearchActiv(int16 delta, byte activ, uint32 possibility, byte max) {
@@ -117,7 +117,7 @@ static char SearchActiv(int16 delta, byte activ, uint32 possibility, byte max) {
 static char SearchMouseActiv(uint32 possibility, byte max) {
 	/* MOD : 14.12.93 hg */
 	uint16 x, y;
-	gfxGetMouseXY(m_gc, &x, &y);
+	_menuGc->gfxGetMouseXY(&x, &y);
 
 	if (y > TXT_1ST_MENU_LINE_Y - 10 && y < TXT_2ND_MENU_LINE_Y + 10) {
 		max -= 1;
@@ -166,11 +166,11 @@ byte Menu(NewList<NewNode> *menu, uint32 possibility, byte activ, void (*func)(b
 			if (max % 2 == 0) {
 				MenuCoords[max / 2] = x - 8;
 
-				uint16 l1 = gfxTextWidth(m_gc, n->_name);
+				uint16 l1 = _menuGc->gfxTextWidth(n->_name);
 				uint16 l2 = 0;
 
 				if (n->_succ->_succ)
-					l2 = gfxTextWidth(m_gc, n->_succ->_name);
+					l2 = _menuGc->gfxTextWidth(n->_succ->_name);
 
 				x += MAX(l1, l2) + 16;
 			}
@@ -298,8 +298,8 @@ byte Menu(NewList<NewNode> *menu, uint32 possibility, byte activ, void (*func)(b
 
 void DrawBubble(NewList<NewNode> *bubble, uint8 firstLine, uint8 activ, _GC *gc, uint32 max) {
 	gfxScreenFreeze();
-	gfxSetPens(gc, 224, 224, 224);
-	gfxRectFill(gc, X_OFFSET, 3, X_OFFSET + INT_BUBBLE_WIDTH, 49);
+	gc->setPens(224, 224, 224);
+	gc->rectFill(X_OFFSET, 3, X_OFFSET + INT_BUBBLE_WIDTH, 49);
 
 	if (firstLine) {
 		gfxSetGC(gc);
@@ -318,23 +318,23 @@ void DrawBubble(NewList<NewNode> *bubble, uint8 firstLine, uint8 activ, _GC *gc,
 			break;
 
 		if (*line != '*') {
-			gfxSetPens(gc, BG_TXT_COLOR, GFX_SAME_PEN, GFX_SAME_PEN);
-			gfxPrintExact(gc, line, X_OFFSET, j + 1);
+			gc->setPens(BG_TXT_COLOR, GFX_SAME_PEN, GFX_SAME_PEN);
+			gc->gfxPrintExact(line, X_OFFSET, j + 1);
 
-			gfxSetPens(gc, VG_TXT_COLOR, GFX_SAME_PEN, GFX_SAME_PEN);
-			gfxPrintExact(gc, line, X_OFFSET, j);
+			gc->setPens(VG_TXT_COLOR, GFX_SAME_PEN, GFX_SAME_PEN);
+			gc->gfxPrintExact(line, X_OFFSET, j);
 		} else {
-			line = line + 1;
+			++line;
 
-			gfxSetPens(gc, (activ == i) ? BG_ACTIVE_COLOR : BG_INACTIVE_COLOR, GFX_SAME_PEN, GFX_SAME_PEN);
-			gfxPrintExact(gc, line, X_OFFSET + 1, j + 1);
-			gfxSetPens(gc, (activ == i) ? VG_ACTIVE_COLOR : VG_INACTIVE_COLOR, GFX_SAME_PEN, GFX_SAME_PEN);
+			gc->setPens((activ == i) ? BG_ACTIVE_COLOR : BG_INACTIVE_COLOR, GFX_SAME_PEN, GFX_SAME_PEN);
+			gc->gfxPrintExact(line, X_OFFSET + 1, j + 1);
 
-			gfxPrintExact(gc, line, X_OFFSET, j);
+			gc->setPens((activ == i) ? VG_ACTIVE_COLOR : VG_INACTIVE_COLOR, GFX_SAME_PEN, GFX_SAME_PEN);
+			gc->gfxPrintExact(line, X_OFFSET, j);
 		}
 	}
 
-	gfxScreenThaw(gc, X_OFFSET, 3, INT_BUBBLE_WIDTH, 46);
+	gc->gfxScreenThaw(X_OFFSET, 3, INT_BUBBLE_WIDTH, 46);
 }
 
 byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 waitTime) {
@@ -367,11 +367,11 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 			gfxShow(10, GFX_NO_REFRESH | GFX_OVERLAY, 0, -1, -1);
 	}
 
-	gfxSetDrMd(u_gc, GFX_JAM_1);
-	gfxSetFont(u_gc, bubbleFont);
-	DrawBubble(bubble, firstVis, activ, u_gc, max);
+	_upperGc->setMode(GFX_JAM_1);
+	_upperGc->setFont(bubbleFont);
+	DrawBubble(bubble, firstVis, activ, _upperGc, max);
 
-	gfxScreenThaw(u_gc, 0, 0, 320, 67);
+	_upperGc->gfxScreenThaw(0, 0, 320, 67);
 
 	if (g_clue->getFeatures() & ADGF_CD)
 		PlayFromCDROM();
@@ -408,7 +408,7 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 				if (action & INP_MOUSE) {
 					uint16 x, y;
 
-					gfxGetMouseXY(u_gc, &x, &y);
+					_upperGc->gfxGetMouseXY(&x, &y);
 
 					if (x >= X_OFFSET && x <= X_OFFSET + INT_BUBBLE_WIDTH) {
 						if (y < 4 && firstVis > 0) {    /* Scroll up */
@@ -416,14 +416,14 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 								firstVis -= 1;
 								activ = firstVis;
 
-								DrawBubble(bubble, firstVis, activ, u_gc, max);
+								DrawBubble(bubble, firstVis, activ, _upperGc, max);
 
 								if (func)
 									func(activ);
 
 								inpDelay(20);
 
-								gfxGetMouseXY(u_gc, nullptr, &y);
+								_upperGc->gfxGetMouseXY(nullptr, &y);
 							}
 						} else if (y > 48 && y <= 58 && firstVis < max - 5) {   /* Scroll down */
 							while (y > 48 && y <= 58 && firstVis < max - 5) {
@@ -431,14 +431,14 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 								
 								activ = MIN(firstVis + 4, max - 1);
 
-								DrawBubble(bubble, firstVis, activ, u_gc, max);
+								DrawBubble(bubble, firstVis, activ, _upperGc, max);
 
 								if (func)
 									func(activ);
 
 								inpDelay(20);
 
-								gfxGetMouseXY(u_gc, nullptr, &y);
+								_upperGc->gfxGetMouseXY(nullptr, &y);
 							}
 						} else if (y >= 4 && y <= 48) {
 							byte newactiv = firstVis + (y - 4) / 9;
@@ -446,7 +446,7 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 							if (newactiv != activ) {
 								activ = CLIP(newactiv, firstVis, MIN<byte>(firstVis + 4, (byte) (max - 1)));
 
-								DrawBubble(bubble, firstVis, activ, u_gc, max);
+								DrawBubble(bubble, firstVis, activ, _upperGc, max);
 
 								if (func)
 									func(activ);
@@ -469,7 +469,7 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 							if (activ < firstVis)
 								firstVis = activ;
 
-							DrawBubble(bubble, firstVis, activ, u_gc, max);
+							DrawBubble(bubble, firstVis, activ, _upperGc, max);
 
 							if (func)
 								func(activ);
@@ -491,7 +491,7 @@ byte Bubble(NewList<NewNode> *bubble, byte activ, void (*func)(byte), uint32 wai
 							if (activ > (firstVis + NRBLINES - 1))
 								firstVis = activ - NRBLINES + 1;
 
-							DrawBubble(bubble, firstVis, activ, u_gc, max);
+							DrawBubble(bubble, firstVis, activ, _upperGc, max);
 
 							if (func)
 								func(activ);
