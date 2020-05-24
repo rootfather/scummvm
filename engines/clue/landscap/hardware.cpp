@@ -194,22 +194,21 @@ void lsFastRefresh(LSObjectNode *lso) {
 }
 
 static MemRastPort *lsPrepareFromMemBySize(byte uch_Size) {
-	MemRastPort *rp = NULL;
+	MemRastPort *rp = nullptr;
 
 	switch (uch_Size) {
 	case 16:
-		rp = &LS_COLL16_MEM_RP;
+		rp = LS_COLL16_MEM_RP;
 		break;
 	case 32:
-		rp = &LS_COLL32_MEM_RP;
+		rp = LS_COLL32_MEM_RP;
 		break;
 	case 48:
-		rp = &LS_COLL48_MEM_RP;
+		rp = LS_COLL48_MEM_RP;
 		break;
 	}
 
 	assert(rp);
-
 	return rp;
 }
 
@@ -293,7 +292,7 @@ bool lsShowOneObject(LSObjectNode *lso, int16 destx, int16 desty, uint32 ul_Mode
 }
 
 void lsBlitFloor(uint16 floorIndex, uint16 destx, uint16 desty) {
-	MemRastPort *rp = &LS_FLOOR_MEM_RP;
+	MemRastPort *rp = LS_FLOOR_MEM_RP;
 	uint16 srcX = ((ls->p_CurrFloor[floorIndex].uch_FloorType) & 0xf) * LS_FLOOR_X_SIZE;
 
 	gfxLSPut(rp, srcX, 0, destx, desty, LS_FLOOR_X_SIZE, LS_FLOOR_Y_SIZE);

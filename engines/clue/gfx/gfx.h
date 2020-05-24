@@ -62,7 +62,8 @@ enum GfxDrawModeE {
 #define GFX_VIDEO_NCH4                  2
 #define GFX_VIDEO_TEXT                  3
 
-struct MemRastPort {
+class MemRastPort {
+public:
 	uint16 w;
 	uint16 h;
 
@@ -70,6 +71,12 @@ struct MemRastPort {
 	uint8 *pixels;
 
 	uint16 collId;                 /* Collection, die sich gerade hier befindet! */
+
+	MemRastPort() { pixels = nullptr; }
+	
+	void gfxInitMemRastPort(uint16 width, uint16 height);
+	void gfxDoneMemRastPort();
+	void gfxScratchToMem();
 };
 
 #define SCREEN_WIDTH    320
@@ -77,10 +84,8 @@ struct MemRastPort {
 #define SCREEN_SIZE     (SCREEN_WIDTH * SCREEN_HEIGHT)
 
 void gfxInitMemRastPort(MemRastPort *rp, uint16 width, uint16 height);
-void gfxDoneMemRastPort(MemRastPort *rp);
 
 void gfxScratchFromMem(MemRastPort *src);
-void gfxScratchToMem(MemRastPort *dst);
 
 void gfxCollToMem(uint16 collId, MemRastPort *rp);
 
@@ -186,18 +191,15 @@ extern _GC *_lowerGc;
 extern _GC *_upperGc;
 extern _GC *_menuGc;
 
-extern MemRastPort ScratchRP;
-
-extern MemRastPort StdRP0InMem;
-extern MemRastPort StdRP1InMem;
-extern MemRastPort AnimRPInMem;
-extern MemRastPort AddRPInMem;
-extern MemRastPort LSFloorRPInMem;
-extern MemRastPort LSObjectRPInMem;
-
-extern MemRastPort BobRPInMem;
-
-extern MemRastPort LSRPInMem;
+extern MemRastPort *ScratchRP;
+extern MemRastPort *StdRP0InMem;
+extern MemRastPort *StdRP1InMem;
+extern MemRastPort *AnimRPInMem;
+extern MemRastPort *AddRPInMem;
+extern MemRastPort *LSFloorRPInMem;
+extern MemRastPort *LSObjectRPInMem;
+extern MemRastPort *BobRPInMem;
+extern MemRastPort *LSRPInMem;
 
 extern Font *bubbleFont;
 extern Font *menuFont;

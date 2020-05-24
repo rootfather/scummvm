@@ -250,9 +250,11 @@ void ClueEngine::showIntro() {
 	XMSHandle = (uint8 *)malloc(818 * 1024);
 
 	/******************************** Init Gfx ********************************/
-	MemRastPort A, B;
-	gfxInitMemRastPort(&A, SCREEN_WIDTH, SCREEN_HEIGHT);
-	gfxInitMemRastPort(&B, SCREEN_WIDTH, SCREEN_HEIGHT);
+	MemRastPort* A = new MemRastPort;
+	MemRastPort *B = new MemRastPort;
+
+	A->gfxInitMemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
+	B->gfxInitMemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	_GC *ScreenGC = new _GC;
 	ScreenGC->init(0, 0, 320, 200, 0, 255, nullptr);
@@ -304,9 +306,9 @@ void ClueEngine::showIntro() {
 
 			/* copy from file to A & B */
 			gfxSetCMAP(cp);
-			gfxILBMToRAW(cp, ScratchRP.pixels, SCREEN_SIZE);
-			gfxScratchToMem(&A);
-			gfxScratchToMem(&B);
+			gfxILBMToRAW(cp, ScratchRP->pixels, SCREEN_SIZE);
+			A->gfxScratchToMem();
+			B->gfxScratchToMem();
 
 			bool endi = false;
 			bool showA;
@@ -315,14 +317,13 @@ void ClueEngine::showIntro() {
 
 				gfxScreenFreeze();
 
-				if (showA) {
-					ScreenGC->gfxBlit(&A, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, false);
-				} else {
-					ScreenGC->gfxBlit(&B, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, false);
-				}
+				if (showA)
+					ScreenGC->gfxBlit(A, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, false);
+				else
+					ScreenGC->gfxBlit(B, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, false);
 
 				if (t == 0) {
-					gfxChangeColors(nullptr, 4, GFX_BLEND_UP, ScratchRP.palette);
+					gfxChangeColors(nullptr, 4, GFX_BLEND_UP, ScratchRP->palette);
 				}
 
 				ScreenGC->gfxScreenThaw(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -335,9 +336,9 @@ void ClueEngine::showIntro() {
 				}
 
 				if (showA) {
-					processIntroAnimation(B.pixels, cp);
+					processIntroAnimation(B->pixels, cp);
 				} else {
-					processIntroAnimation(A.pixels, cp);
+					processIntroAnimation(A->pixels, cp);
 				}
 
 				for (int s = 0; s < MAX_INTRO_ANIM; s++) {
@@ -384,8 +385,12 @@ endit2:
 		_sndMgr->sndFading(0);
 	}
 
-	gfxDoneMemRastPort(&A);
-	gfxDoneMemRastPort(&B);
+	A->gfxDoneMemRastPort();
+	B->gfxDoneMemRastPort();
+
+	delete A;
+	delete B;
+	A = B = nullptr;
 
 	free(XMSHandle);
 	delete ScreenGC;
@@ -427,8 +432,8 @@ bool ClueEngine::tcInit() {
 	dbInit();
 	plInit();
 
-	gfxCollToMem(128, &StdRP0InMem);    /* cache Menu in StdRP0InMem */
-	gfxCollToMem(129, &StdRP1InMem);    /* cache Bubbles in StdRP1InMem */
+	gfxCollToMem(128, StdRP0InMem);    /* cache Menu in StdRP0InMem */
+	gfxCollToMem(129, StdRP1InMem);    /* cache Bubbles in StdRP1InMem */
 
 	CurrentBackground = BGD_LONDON;
 	return true;

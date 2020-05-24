@@ -18,7 +18,7 @@ int ScrX, ScrY;
 static uint8 ScrDark;
 
 void gfxSetDarkness(uint8 value) {
-	uint8 *dp = LSRPInMem.pixels;
+	uint8 *dp = LSRPInMem->pixels;
 
 	if (value == LS_BRIGHTNESS) {
 		int h = LS_MAX_AREA_WIDTH;
@@ -48,7 +48,7 @@ void gfxSetDarkness(uint8 value) {
 void gfxNCH4Refresh() {
 	gfxScreenFreeze();
 
-	_upperGc->gfxBlit(&LSRPInMem, ScrX, ScrY, 0, 0, LS_MAX_AREA_WIDTH, LS_MAX_AREA_HEIGHT, false);
+	_upperGc->gfxBlit(LSRPInMem, ScrX, ScrY, 0, 0, LS_MAX_AREA_WIDTH, LS_MAX_AREA_HEIGHT, false);
 
 	BobDisplayLists(_upperGc);
 
@@ -93,7 +93,7 @@ void gfxLSPut(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, uint1
 	dstR.w = w;
 	dstR.h = h;
 
-	MemBlit(sp, &srcR, &LSRPInMem, &dstR, GFX_ROP_BLIT);
+	MemBlit(sp, &srcR, LSRPInMem, &dstR, GFX_ROP_BLIT);
 }
 
 void gfxLSPutMsk(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, uint16 w, uint16 h) {
@@ -109,7 +109,7 @@ void gfxLSPutMsk(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, ui
 	dstR.w = w;
 	dstR.h = h;
 
-	MemBlit(sp, &srcR, &LSRPInMem, &dstR, GFX_ROP_MASK_BLIT);
+	MemBlit(sp, &srcR, LSRPInMem, &dstR, GFX_ROP_MASK_BLIT);
 }
 
 void gfxLSPutClr(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, uint16 w, uint16 h) {
@@ -125,7 +125,7 @@ void gfxLSPutClr(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, ui
 	dstR.w = w;
 	dstR.h = h;
 
-	MemBlit(sp, &srcR, &LSRPInMem, &dstR, GFX_ROP_CLR);
+	MemBlit(sp, &srcR, LSRPInMem, &dstR, GFX_ROP_CLR);
 }
 
 void gfxLSPutSet(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, uint16 w, uint16 h) {
@@ -141,7 +141,7 @@ void gfxLSPutSet(MemRastPort *sp, uint16 sx, uint16 sy, uint16 dx, uint16 dy, ui
 	dstR.w = w;
 	dstR.h = h;
 
-	MemBlit(sp, &srcR, &LSRPInMem, &dstR, GFX_ROP_SET);
+	MemBlit(sp, &srcR, LSRPInMem, &dstR, GFX_ROP_SET);
 }
 
 void gfxLSRectFill(uint16 sx, uint16 sy, uint16 ex, uint16 ey, uint8 color) {
@@ -157,7 +157,7 @@ void gfxLSRectFill(uint16 sx, uint16 sy, uint16 ex, uint16 ey, uint8 color) {
 	uint16 w = ex - sx + 1;
 	uint16 h = ey - sy + 1;
 
-	uint8 *dp = LSRPInMem.pixels;
+	uint8 *dp = LSRPInMem->pixels;
 	dp += sy * LS_MAX_AREA_WIDTH + sx;
 
 	do {
@@ -170,7 +170,7 @@ uint8 gfxLSReadPixel(uint16 x, uint16 y) {
 	x = MIN(x, uint16(LS_MAX_AREA_WIDTH - 1));
 	y = MIN(y, uint16(LS_MAX_AREA_HEIGHT - 1));
 
-	return LSRPInMem.pixels[y * LS_MAX_AREA_WIDTH + x];
+	return LSRPInMem->pixels[y * LS_MAX_AREA_WIDTH + x];
 }
 
 } // End of namespace Clue

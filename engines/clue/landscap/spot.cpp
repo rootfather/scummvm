@@ -37,7 +37,7 @@ void lsLoadSpotBitMap(MemRastPort *rp);
 class SpotControl {
 public:
 	NewList<SpotNode> *p_spots;
-	MemRastPort RP;
+	MemRastPort *RP;
 };
 
 static SpotControl *sc = nullptr;
@@ -48,17 +48,18 @@ void lsInitSpots() {
 
 	sc = new SpotControl;
 	sc->p_spots = new NewList<SpotNode>;
+	sc->RP = new MemRastPort;
+	sc->RP->gfxInitMemRastPort(LS_SPOT_BITMAP_WIDTH, LS_SPOT_BITMAP_HEIGHT);
 
-	gfxInitMemRastPort(&sc->RP, LS_SPOT_BITMAP_WIDTH, LS_SPOT_BITMAP_HEIGHT);
-
-	lsLoadSpotBitMap(&sc->RP);
+	lsLoadSpotBitMap(sc->RP);
 }
 
 void lsDoneSpots() {
 	if (sc) {
 		lsFreeAllSpots();
 		sc->p_spots->removeList();
-		gfxDoneMemRastPort(&sc->RP);
+		sc->RP->gfxDoneMemRastPort();
+		delete sc->RP;
 		delete sc;
 		sc = nullptr;
 	}
@@ -275,7 +276,7 @@ void lsLoadSpotBitMap(MemRastPort *rp) {
 
 	/* now copy to the right buffer */
 	uint8* dp = rp->pixels;
-	uint8* sp = ScratchRP.pixels;
+	uint8* sp = ScratchRP->pixels;
 
 	for (uint16 j = 0; j < rp->h; j++) {
 		for (uint16 i = 0; i < rp->w; i++) {
@@ -357,9 +358,9 @@ void lsBlitSpot(uint16 us_Size, uint16 us_XPos, uint16 us_YPos, bool visible) {
 	}
 
 	if (visible)
-		gfxLSPutSet(&sc->RP, sourceX, 0, us_XPos, us_YPos, us_Size, us_Size);
+		gfxLSPutSet(sc->RP, sourceX, 0, us_XPos, us_YPos, us_Size, us_Size);
 	else
-		gfxLSPutClr(&sc->RP, sourceX, 0, us_XPos, us_YPos, us_Size, us_Size);
+		gfxLSPutClr(sc->RP, sourceX, 0, us_XPos, us_YPos, us_Size, us_Size);
 }
 
 #if 0

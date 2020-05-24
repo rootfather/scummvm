@@ -114,11 +114,11 @@ void lsInitActivArea(uint32 areaID, uint16 x, uint16 y, char *livingName) {
 
 	lsSetCurrFloorSquares(areaID);
 
-	gfxCollToMem(area->us_Coll16ID, &LS_COLL16_MEM_RP);
-	gfxCollToMem(area->us_Coll32ID, &LS_COLL32_MEM_RP);
-	gfxCollToMem(area->us_Coll48ID, &LS_COLL48_MEM_RP);
+	gfxCollToMem(area->us_Coll16ID, LS_COLL16_MEM_RP);
+	gfxCollToMem(area->us_Coll32ID, LS_COLL32_MEM_RP);
+	gfxCollToMem(area->us_Coll48ID, LS_COLL48_MEM_RP);
 
-	gfxCollToMem(area->us_FloorCollID, &LS_FLOOR_MEM_RP);
+	gfxCollToMem(area->us_FloorCollID, LS_FLOOR_MEM_RP);
 
 	lsBuildScrollWindow();
 	lsRefreshAllLootBags();

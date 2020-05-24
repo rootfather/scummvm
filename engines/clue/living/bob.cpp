@@ -36,7 +36,7 @@ void BobInitLists() {
 	static bool init;
 
 	if (!init) {
-		gfxCollToMem(137, &BobRPInMem);
+		gfxCollToMem(137, BobRPInMem);
 		init = true;
 	}
 }
@@ -108,7 +108,7 @@ void BobDisplayLists(_GC *gc) {
 		struct Bob *bob = &list[i];
 
 		if (bob->flags & BOB_VISIBLE)
-			gc->gfxBlit(&BobRPInMem, bob->xsrc, bob->ysrc, bob->xdst - ScrX, bob->ydst - ScrY, bob->w, bob->h, true);
+			gc->gfxBlit(BobRPInMem, bob->xsrc, bob->ysrc, bob->xdst - ScrX, bob->ydst - ScrY, bob->w, bob->h, true);
 	}
 }
 

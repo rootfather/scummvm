@@ -518,7 +518,7 @@ void lsInitDoorRefresh(uint32 ObjId) {
 	dstR.w = width;
 	dstR.h = height;
 
-	MemBlit(&LSRPInMem, &srcR, &LS_DOOR_REFRESH_MEM_RP, &dstR, GFX_ROP_BLIT);
+	MemBlit(LSRPInMem, &srcR, LS_DOOR_REFRESH_MEM_RP, &dstR, GFX_ROP_BLIT);
 
 	drn = ls->p_DoorRefreshList->createNode(nullptr);
 	drn->lso = lso;
@@ -546,7 +546,7 @@ void lsDoDoorRefresh(LSObjectNode *lso) {
 	uint16 width = lso->uch_Size;
 	uint16 height = lso->uch_Size;
 
-	gfxLSPut(&LS_DOOR_REFRESH_MEM_RP, drn->us_XOffset, drn->us_YOffset, lso->us_DestX, lso->us_DestY, width, height);
+	gfxLSPut(LS_DOOR_REFRESH_MEM_RP, drn->us_XOffset, drn->us_YOffset, lso->us_DestX, lso->us_DestY, width, height);
 }
 
 } // End of namespace Clue

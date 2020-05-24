@@ -55,41 +55,41 @@ _GC *LSUpperGC;
 _GC *LSMenuGC;
 
 /* wird verwendet für Double Buffering während der Vorbereitung */
-MemRastPort ScratchRP;
+MemRastPort *ScratchRP;
 /* Da man von Mem nur ganze Blöcke kopieren kann (ohne Modulo)    */
 /* müssen einige Grafiken, bevor sie ins Video RAM kopiert werden */
 /* hier an dieser Stelle gepuffert werden. */
 /* ist als extern definfiert, da Animmodul darauf zugreifen muß */
 
 
-MemRastPort StdRP0InMem;
+MemRastPort *StdRP0InMem;
 /* wird benutzt für Objekte, die immer im Speicher sind */
-MemRastPort StdRP1InMem;
+MemRastPort *StdRP1InMem;
 /* wird benutzt für Objekte, die immer im Speicher sind */
-MemRastPort RefreshRPInMem;
+MemRastPort *RefreshRPInMem;
 /* Bild, das im Moment gerade gezeigt wird (für Refresh) */
-MemRastPort AnimRPInMem;
+MemRastPort *AnimRPInMem;
 /* beinhaltet die Animphasen des gerade aktuellen Bildes */
 /* um Inkonsistenzen zu vermeiden, wird jedesmal, bevor eine */
 /* Animphase gezeigt wird, das gesamte Bild in den PrepareRp */
 /* kopiert, der benötigte Ausschnitt wird dann von dort */
 /* ins Video-RAM kopiert */
 /* ist als extern definfiert, da Animmodul darauf zugreifen muß */
-MemRastPort AddRPInMem;
+MemRastPort *AddRPInMem;
 /* in diesem Rastport befinden sich diverse zusätzliche Grafiken */
 /* die in das Bild hinzugefügt werden (Gesichter, Werkzeuge)     */
 /* je nach Situation...                                                       */
 /* dieser RP wird je nach Situation ausgewechselt                     */
-MemRastPort LSFloorRPInMem;
+MemRastPort *LSFloorRPInMem;
 /* in diesem RastPort befindet sich während der Planungs-Einbruchs */
 /* phasen das Bild der Böden */
-MemRastPort LSObjectRPInMem;
+MemRastPort *LSObjectRPInMem;
 /* in diesem RastPort befinden sich einige Objekte während der Planung */
 
 
-MemRastPort BobRPInMem;
+MemRastPort *BobRPInMem;
 
-MemRastPort LSRPInMem;
+MemRastPort *LSRPInMem;
 
 Graphics::PixelFormat ScreenFormat;
 Graphics::Surface *GfxBoardBase;

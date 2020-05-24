@@ -118,23 +118,30 @@ void gfxInit() {
 
 	/* Ausnahme (nachträglich) : der RefreshRP ist nur 320 * 140 Pixel groß!! */
 
-	gfxInitMemRastPort(&StdRP0InMem, SCREEN_WIDTH, SCREEN_HEIGHT); /* CMAP muß auch Platz haben ! */
-	gfxInitMemRastPort(&StdRP1InMem, SCREEN_WIDTH, SCREEN_HEIGHT);
+	StdRP0InMem = new MemRastPort;
+	StdRP1InMem = new MemRastPort;
+	AnimRPInMem = new MemRastPort;
+	AddRPInMem = new MemRastPort;
+	LSObjectRPInMem = new MemRastPort;
+	LSFloorRPInMem = new MemRastPort;
 
-	gfxInitMemRastPort(&AnimRPInMem, SCREEN_WIDTH, SCREEN_HEIGHT);
-	gfxInitMemRastPort(&AddRPInMem, SCREEN_WIDTH, SCREEN_HEIGHT);
-	gfxInitMemRastPort(&LSObjectRPInMem, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-	gfxInitMemRastPort(&LSFloorRPInMem, SCREEN_WIDTH, 32);
+	StdRP0InMem->gfxInitMemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT); /* CMAP muß auch Platz haben ! */
+	StdRP1InMem->gfxInitMemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
+	AnimRPInMem->gfxInitMemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
+	AddRPInMem->gfxInitMemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
+	LSObjectRPInMem->gfxInitMemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
+	LSFloorRPInMem->gfxInitMemRastPort(SCREEN_WIDTH, 32);
 
 	/* der RefreshRP muß den ganzen Bildschirm aufnehmen können */
-	gfxInitMemRastPort(&RefreshRPInMem, SCREEN_WIDTH, SCREEN_HEIGHT);
+	RefreshRPInMem = new MemRastPort;
+	ScratchRP = new MemRastPort;
+	BobRPInMem = new MemRastPort;
+	LSRPInMem = new MemRastPort;
 
-	gfxInitMemRastPort(&ScratchRP, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-	gfxInitMemRastPort(&BobRPInMem, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-	gfxInitMemRastPort(&LSRPInMem, LS_MAX_AREA_WIDTH, LS_MAX_AREA_HEIGHT);
+	RefreshRPInMem->gfxInitMemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
+	ScratchRP->gfxInitMemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
+	BobRPInMem->gfxInitMemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
+	LSRPInMem->gfxInitMemRastPort(LS_MAX_AREA_WIDTH, LS_MAX_AREA_HEIGHT);
 
 	bubbleFont = new Font(GFX_BUBBLE_FONT_NAME, 4, 8, 32, 255, SCREEN_WIDTH, 24);
 	menuFont = new Font(GFX_MENU_FONT_NAME, 5, 9, 32, 255, SCREEN_WIDTH, 36);
@@ -172,22 +179,32 @@ void gfxDone() {
 	delete menuFont;
 	bubbleFont = menuFont = nullptr;
 
-	gfxDoneMemRastPort(&StdRP0InMem);
-	gfxDoneMemRastPort(&StdRP1InMem);
+	StdRP0InMem->gfxDoneMemRastPort();
+	StdRP1InMem->gfxDoneMemRastPort();
+	AnimRPInMem->gfxDoneMemRastPort();
+	AddRPInMem->gfxDoneMemRastPort();
+	LSObjectRPInMem->gfxDoneMemRastPort();
+	LSFloorRPInMem->gfxDoneMemRastPort();
 
-	gfxDoneMemRastPort(&AnimRPInMem);
-	gfxDoneMemRastPort(&AddRPInMem);
-	gfxDoneMemRastPort(&LSObjectRPInMem);
+	RefreshRPInMem->gfxDoneMemRastPort();
+	ScratchRP->gfxDoneMemRastPort();
+	BobRPInMem->gfxDoneMemRastPort();
+	LSRPInMem->gfxDoneMemRastPort();
 
-	gfxDoneMemRastPort(&LSFloorRPInMem);
+	delete StdRP0InMem;
+	delete StdRP1InMem;
+	delete AnimRPInMem;
+	delete AddRPInMem;
+	delete LSObjectRPInMem;
+	delete LSFloorRPInMem;
 
-	gfxDoneMemRastPort(&RefreshRPInMem);
+	delete RefreshRPInMem;
+	delete ScratchRP;
+	delete BobRPInMem;
+	delete LSRPInMem;
 
-	gfxDoneMemRastPort(&ScratchRP);
-
-	gfxDoneMemRastPort(&BobRPInMem);
-
-	gfxDoneMemRastPort(&LSRPInMem);
+	StdRP0InMem = StdRP1InMem = AnimRPInMem = AddRPInMem = LSObjectRPInMem = LSFloorRPInMem = nullptr;
+	RefreshRPInMem = ScratchRP = BobRPInMem = LSRPInMem = nullptr;
 
 	if (Screen) {
 		Screen->free();
@@ -508,7 +525,7 @@ PictureNode *gfxGetPicture(uint16 us_PictId) {
 
 /* the collection must have been prepared (PrepareColl) beforehand */
 void gfxGetPalette(uint16 collId, uint8 *palette) {
-	memcpy(palette, ScratchRP.palette, GFX_PALETTE_SIZE);
+	memcpy(palette, ScratchRP->palette, GFX_PALETTE_SIZE);
 }
 
 static int32 gfxGetRealDestY(_GC *gc, int32 destY) {
@@ -554,7 +571,7 @@ void gfxLoadILBM(const char *fileName) {
 	uint8 *lbm = (uint8 *)dskLoad(fileName);
 
 	gfxSetCMAP(lbm);
-	gfxILBMToRAW(lbm, ScratchRP.pixels, SCREEN_SIZE);
+	gfxILBMToRAW(lbm, ScratchRP->pixels, SCREEN_SIZE);
 	free(lbm);
 }
 
@@ -574,7 +591,7 @@ void gfxCollToMem(uint16 collId, MemRastPort *rp) {
 	}
 
 	gfxPrepareColl(collId);
-	gfxScratchToMem(rp);
+	rp->gfxScratchToMem();
 
 	/* enter the MemRastPort in the new collection */
 	CollectionNode *coll = gfxGetCollection(collId);
@@ -727,12 +744,12 @@ void _GC::gfxPrint(Common::String txt, uint16 y, uint32 mode) {
 
 /* kopiert aktuelles Bild in den RefreshRP */
 void gfxPrepareRefresh() {
-	memcpy(RefreshRPInMem.pixels, Screen->getPixels(), SCREEN_SIZE);
+	memcpy(RefreshRPInMem->pixels, Screen->getPixels(), SCREEN_SIZE);
 }
 
 /* kopiert aktuellen Inhalt des RefreshRP in den Bildschirmspeicher */
 void gfxRefresh() {
-	memcpy(Screen->getPixels(), RefreshRPInMem.pixels, SCREEN_SIZE);
+	memcpy(Screen->getPixels(), RefreshRPInMem->pixels, SCREEN_SIZE);
 
 	gfxRefreshArea(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
@@ -947,19 +964,19 @@ void gfxShow(uint16 us_PictId, uint32 ul_Mode, int32 l_Delay, int32 l_XPos, int3
 
 	if (!l_Delay && (ul_Mode & GFX_BLEND_UP)) {
 		gfxSetColorRange(coll->_colorRangeStart, coll->_colorRangeEnd);
-		gfxChangeColors(nullptr, l_Delay, GFX_BLEND_UP, ScratchRP.palette);
+		gfxChangeColors(nullptr, l_Delay, GFX_BLEND_UP, ScratchRP->palette);
 	}
 
 	gfxScreenFreeze();
 	if (ul_Mode & GFX_OVERLAY)
-		gc->gfxBlit(&ScratchRP, pict->_xOffset, pict->_yOffset, destX, destY, pict->_width, pict->_height, true);
+		gc->gfxBlit(ScratchRP, pict->_xOffset, pict->_yOffset, destX, destY, pict->_width, pict->_height, true);
 
 	if (ul_Mode & GFX_ONE_STEP)
-		gc->gfxBlit(&ScratchRP, pict->_xOffset, pict->_yOffset, destX, destY, pict->_width, pict->_height, false);
+		gc->gfxBlit(ScratchRP, pict->_xOffset, pict->_yOffset, destX, destY, pict->_width, pict->_height, false);
 
 	if (l_Delay && (ul_Mode & GFX_BLEND_UP)) {
 		gfxSetColorRange(coll->_colorRangeStart, coll->_colorRangeEnd);
-		gfxChangeColors(nullptr, l_Delay, GFX_BLEND_UP, ScratchRP.palette);
+		gfxChangeColors(nullptr, l_Delay, GFX_BLEND_UP, ScratchRP->palette);
 	}
 	gc->gfxScreenThaw(destX, destY, pict->_width, pict->_height);
 
@@ -977,7 +994,7 @@ void gfxSetCMAP(const uint8 *src) {
 	src += 4;           /* skip CMAP chunk */
 	src += 4;           /* skip size of CMAP chunk */
 
-	memcpy(ScratchRP.palette, src, GFX_PALETTE_SIZE);
+	memcpy(ScratchRP->palette, src, GFX_PALETTE_SIZE);
 }
 
 static void MakeMCGA(uint16 b, uint8 *pic, uint16 PlSt, int16 c) {
@@ -1078,33 +1095,31 @@ void gfxILBMToRAW(const uint8 *src, uint8 *dst, size_t size) {
 	}
 }
 
-void gfxInitMemRastPort(MemRastPort *rp, uint16 width, uint16 height) {
-	rp->w = width;
-	rp->h = height;
+void MemRastPort::gfxInitMemRastPort(uint16 width, uint16 height) {
+	w = width;
+	h = height;
 
-	memset(rp->palette, 0, GFX_PALETTE_SIZE);
+	memset(palette, 0, GFX_PALETTE_SIZE);
 
-	rp->pixels = (uint8 *)TCAllocMem(width * height, true);
-	rp->collId = GFX_NO_COLL_IN_MEM;
+	pixels = new uint8[width * height];
+	collId = GFX_NO_COLL_IN_MEM;
 }
 
-void gfxDoneMemRastPort(MemRastPort *rp) {
-	TCFreeMem(rp->pixels, rp->w * rp->h);
-	rp->pixels = nullptr;
+void MemRastPort::gfxDoneMemRastPort() {
+	delete[] pixels;
+	pixels = nullptr;
 }
 
 void gfxScratchFromMem(MemRastPort *src) {
 	if (src) {
-		memcpy(ScratchRP.palette, src->palette, GFX_PALETTE_SIZE);
-		memcpy(ScratchRP.pixels, src->pixels, src->w * src->h);
+		memcpy(ScratchRP->palette, src->palette, GFX_PALETTE_SIZE);
+		memcpy(ScratchRP->pixels, src->pixels, src->w * src->h);
 	}
 }
 
-void gfxScratchToMem(MemRastPort *dst) {
-	if (dst) {
-		memcpy(dst->palette, ScratchRP.palette, GFX_PALETTE_SIZE);
-		memcpy(dst->pixels, ScratchRP.pixels, dst->w * dst->h);
-	}
+void MemRastPort::gfxScratchToMem() {
+	memcpy(palette, ScratchRP->palette, GFX_PALETTE_SIZE);
+	memcpy(pixels, ScratchRP->pixels, w * h);
 }
 
 

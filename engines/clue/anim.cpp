@@ -112,7 +112,7 @@ void AnimManager::prepareAnim(const char *AnimID) {
 		_animCollection = coll->_collId;
 
 		/* jetzt die Animphasen vorbereiten und ins Mem kopieren */
-		gfxCollToMem(coll->_collId, &ANIM_FRAME_MEM_RP);
+		gfxCollToMem(coll->_collId, ANIM_FRAME_MEM_RP);
 	}
 }
 
@@ -256,7 +256,7 @@ void AnimManager::animator() {
 			/* sicherstellen, daß Animframes immer vorhanden sind */
 
 			inpMousePtrOff();
-			_lowerGc->gfxBlit(&ANIM_FRAME_MEM_RP, sourceX, sourceY, destX, destY, _width, _height, false);
+			_lowerGc->gfxBlit(ANIM_FRAME_MEM_RP, sourceX, sourceY, destX, destY, _width, _height, false);
 			inpMousePtrOn();
 		}
 
