@@ -18,7 +18,7 @@ int ScrX, ScrY;
 static uint8 ScrDark;
 
 void gfxSetDarkness(uint8 value) {
-	uint8 *dp = LSRPInMem->pixels;
+	uint8 *dp = LSRPInMem->_pixels;
 
 	if (value == LS_BRIGHTNESS) {
 		int h = LS_MAX_AREA_WIDTH;
@@ -157,7 +157,7 @@ void gfxLSRectFill(uint16 sx, uint16 sy, uint16 ex, uint16 ey, uint8 color) {
 	uint16 w = ex - sx + 1;
 	uint16 h = ey - sy + 1;
 
-	uint8 *dp = LSRPInMem->pixels;
+	uint8 *dp = LSRPInMem->_pixels;
 	dp += sy * LS_MAX_AREA_WIDTH + sx;
 
 	do {
@@ -170,7 +170,7 @@ uint8 gfxLSReadPixel(uint16 x, uint16 y) {
 	x = MIN(x, uint16(LS_MAX_AREA_WIDTH - 1));
 	y = MIN(y, uint16(LS_MAX_AREA_HEIGHT - 1));
 
-	return LSRPInMem->pixels[y * LS_MAX_AREA_WIDTH + x];
+	return LSRPInMem->_pixels[y * LS_MAX_AREA_WIDTH + x];
 }
 
 } // End of namespace Clue

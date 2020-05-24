@@ -306,7 +306,7 @@ void ClueEngine::showIntro() {
 
 			/* copy from file to A & B */
 			gfxSetCMAP(cp);
-			gfxILBMToRAW(cp, ScratchRP->pixels, SCREEN_SIZE);
+			gfxILBMToRAW(cp, ScratchRP->_pixels, SCREEN_SIZE);
 			A->gfxScratchToMem();
 			B->gfxScratchToMem();
 
@@ -323,7 +323,7 @@ void ClueEngine::showIntro() {
 					ScreenGC->gfxBlit(B, 0, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, false);
 
 				if (t == 0) {
-					gfxChangeColors(nullptr, 4, GFX_BLEND_UP, ScratchRP->palette);
+					gfxChangeColors(nullptr, 4, GFX_BLEND_UP, ScratchRP->_palette);
 				}
 
 				ScreenGC->gfxScreenThaw(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -336,9 +336,9 @@ void ClueEngine::showIntro() {
 				}
 
 				if (showA) {
-					processIntroAnimation(B->pixels, cp);
+					processIntroAnimation(B->_pixels, cp);
 				} else {
-					processIntroAnimation(A->pixels, cp);
+					processIntroAnimation(A->_pixels, cp);
 				}
 
 				for (int s = 0; s < MAX_INTRO_ANIM; s++) {

@@ -525,7 +525,7 @@ PictureNode *gfxGetPicture(uint16 us_PictId) {
 
 /* the collection must have been prepared (PrepareColl) beforehand */
 void gfxGetPalette(uint16 collId, uint8 *palette) {
-	memcpy(palette, ScratchRP->palette, GFX_PALETTE_SIZE);
+	memcpy(palette, ScratchRP->_palette, GFX_PALETTE_SIZE);
 }
 
 static int32 gfxGetRealDestY(_GC *gc, int32 destY) {
@@ -547,7 +547,7 @@ void gfxPrepareColl(uint16 collId) {
 	}
 
 	if (coll->_prepared) {
-		gfxScratchFromMem(coll->_prepared);
+		coll->_prepared->gfxScratchFromMem();
 	} else {
 		char pathname[DSK_PATH_MAX];
 
@@ -571,7 +571,7 @@ void gfxLoadILBM(const char *fileName) {
 	uint8 *lbm = (uint8 *)dskLoad(fileName);
 
 	gfxSetCMAP(lbm);
-	gfxILBMToRAW(lbm, ScratchRP->pixels, SCREEN_SIZE);
+	gfxILBMToRAW(lbm, ScratchRP->_pixels, SCREEN_SIZE);
 	free(lbm);
 }
 
@@ -584,8 +584,8 @@ void gfxCollToMem(uint16 collId, MemRastPort *rp) {
 	 * wenn sich in diesem MemRastPort ein anderes Bild befindet so wird dieses
 	 * nun aus dem MemRastPort "entfernt"
 	 */
-	if (rp->collId != GFX_NO_COLL_IN_MEM && collId != rp->collId) {
-		CollectionNode *oldColl = gfxGetCollection(rp->collId);
+	if (rp->_collId != GFX_NO_COLL_IN_MEM && collId != rp->_collId) {
+		CollectionNode *oldColl = gfxGetCollection(rp->_collId);
 		if (oldColl)
 			oldColl->_prepared = nullptr;
 	}
@@ -598,7 +598,7 @@ void gfxCollToMem(uint16 collId, MemRastPort *rp) {
 	if (coll)
 		coll->_prepared = rp;
 
-	rp->collId = collId;
+	rp->_collId = collId;
 }
 
 /*******************************************************************
@@ -744,12 +744,12 @@ void _GC::gfxPrint(Common::String txt, uint16 y, uint32 mode) {
 
 /* kopiert aktuelles Bild in den RefreshRP */
 void gfxPrepareRefresh() {
-	memcpy(RefreshRPInMem->pixels, Screen->getPixels(), SCREEN_SIZE);
+	memcpy(RefreshRPInMem->_pixels, Screen->getPixels(), SCREEN_SIZE);
 }
 
 /* kopiert aktuellen Inhalt des RefreshRP in den Bildschirmspeicher */
 void gfxRefresh() {
-	memcpy(Screen->getPixels(), RefreshRPInMem->pixels, SCREEN_SIZE);
+	memcpy(Screen->getPixels(), RefreshRPInMem->_pixels, SCREEN_SIZE);
 
 	gfxRefreshArea(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
@@ -964,7 +964,7 @@ void gfxShow(uint16 us_PictId, uint32 ul_Mode, int32 l_Delay, int32 l_XPos, int3
 
 	if (!l_Delay && (ul_Mode & GFX_BLEND_UP)) {
 		gfxSetColorRange(coll->_colorRangeStart, coll->_colorRangeEnd);
-		gfxChangeColors(nullptr, l_Delay, GFX_BLEND_UP, ScratchRP->palette);
+		gfxChangeColors(nullptr, l_Delay, GFX_BLEND_UP, ScratchRP->_palette);
 	}
 
 	gfxScreenFreeze();
@@ -976,7 +976,7 @@ void gfxShow(uint16 us_PictId, uint32 ul_Mode, int32 l_Delay, int32 l_XPos, int3
 
 	if (l_Delay && (ul_Mode & GFX_BLEND_UP)) {
 		gfxSetColorRange(coll->_colorRangeStart, coll->_colorRangeEnd);
-		gfxChangeColors(nullptr, l_Delay, GFX_BLEND_UP, ScratchRP->palette);
+		gfxChangeColors(nullptr, l_Delay, GFX_BLEND_UP, ScratchRP->_palette);
 	}
 	gc->gfxScreenThaw(destX, destY, pict->_width, pict->_height);
 
@@ -994,7 +994,7 @@ void gfxSetCMAP(const uint8 *src) {
 	src += 4;           /* skip CMAP chunk */
 	src += 4;           /* skip size of CMAP chunk */
 
-	memcpy(ScratchRP->palette, src, GFX_PALETTE_SIZE);
+	memcpy(ScratchRP->_palette, src, GFX_PALETTE_SIZE);
 }
 
 static void MakeMCGA(uint16 b, uint8 *pic, uint16 PlSt, int16 c) {
@@ -1096,30 +1096,28 @@ void gfxILBMToRAW(const uint8 *src, uint8 *dst, size_t size) {
 }
 
 void MemRastPort::gfxInitMemRastPort(uint16 width, uint16 height) {
-	w = width;
-	h = height;
+	_width = width;
+	_height = height;
 
-	memset(palette, 0, GFX_PALETTE_SIZE);
+	memset(_palette, 0, GFX_PALETTE_SIZE);
 
-	pixels = new uint8[width * height];
-	collId = GFX_NO_COLL_IN_MEM;
+	_pixels = new uint8[width * height];
+	_collId = GFX_NO_COLL_IN_MEM;
 }
 
 void MemRastPort::gfxDoneMemRastPort() {
-	delete[] pixels;
-	pixels = nullptr;
+	delete[] _pixels;
+	_pixels = nullptr;
 }
 
-void gfxScratchFromMem(MemRastPort *src) {
-	if (src) {
-		memcpy(ScratchRP->palette, src->palette, GFX_PALETTE_SIZE);
-		memcpy(ScratchRP->pixels, src->pixels, src->w * src->h);
-	}
+void MemRastPort::gfxScratchFromMem() {
+	memcpy(ScratchRP->_palette, _palette, GFX_PALETTE_SIZE);
+	memcpy(ScratchRP->_pixels, _pixels, _width * _height);
 }
 
 void MemRastPort::gfxScratchToMem() {
-	memcpy(palette, ScratchRP->palette, GFX_PALETTE_SIZE);
-	memcpy(pixels, ScratchRP->pixels, w * h);
+	memcpy(_palette, ScratchRP->_palette, GFX_PALETTE_SIZE);
+	memcpy(_pixels, ScratchRP->_pixels, _width * _height);
 }
 
 
@@ -1128,8 +1126,8 @@ void _GC::gfxBlit(MemRastPort *src, uint16 sx, uint16 sy, uint16 dx, uint16 dy, 
 	Rectangle srcR;
 	srcR.x = 0;
 	srcR.y = 0;
-	srcR.w = src->w;
-	srcR.h = src->h;
+	srcR.w = src->_width;
+	srcR.h = src->_height;
 
 	Rectangle srcR2;
 	srcR2.x = sx;
@@ -1167,10 +1165,10 @@ void _GC::gfxBlit(MemRastPort *src, uint16 sx, uint16 sy, uint16 dx, uint16 dy, 
 	Graphics::Surface *dst = Screen;
 
 	uint8 *dp = (uint8 *)dst->getPixels();
-	uint8 *sp = src->pixels;
+	uint8 *sp = src->_pixels;
 
 	dp += dstR.y * SCREEN_WIDTH + dstR.x;
-	sp += srcR.y * src->w + srcR.x;
+	sp += srcR.y * src->_width + srcR.x;
 
 	w = areaR.w;
 	h = areaR.h;
@@ -1183,13 +1181,13 @@ void _GC::gfxBlit(MemRastPort *src, uint16 sx, uint16 sy, uint16 dx, uint16 dy, 
 				}
 			}
 			dp += SCREEN_WIDTH;
-			sp += src->w;
+			sp += src->_width;
 		}
 	} else {
 		for (uint16 y = 0; y < h; y++) {
 			memcpy(dp, sp, w);
 			dp += SCREEN_WIDTH;
-			sp += src->w;
+			sp += src->_width;
 		}
 	}
 
@@ -1270,8 +1268,8 @@ void MemBlit(MemRastPort *src, Rect *src_rect,
 	Rectangle srcR;
 	srcR.x = 0;
 	srcR.y = 0;
-	srcR.w = src->w;
-	srcR.h = src->h;
+	srcR.w = src->_width;
+	srcR.h = src->_height;
 
 	Rectangle srcR2;
 	srcR2.x = src_rect->x;
@@ -1286,8 +1284,8 @@ void MemBlit(MemRastPort *src, Rect *src_rect,
 	Rectangle dstR;
 	dstR.x = 0;
 	dstR.y = 0;
-	dstR.w = dst->w;
-	dstR.h = dst->h;
+	dstR.w = dst->_width;
+	dstR.h = dst->_height;
 
 	Rectangle dstR2;
 	dstR2.x = dst_rect->x;
@@ -1306,11 +1304,11 @@ void MemBlit(MemRastPort *src, Rect *src_rect,
 	areaR.h = MIN(dstR.h, srcR.h);
 
 	/* blit. */
-	uint16 sw = src->w;
-	uint16 dw = dst->w;
+	uint16 sw = src->_width;
+	uint16 dw = dst->_width;
 
-	uint8 *dp = dst->pixels;
-	uint8 *sp = src->pixels;
+	uint8 *dp = dst->_pixels;
+	uint8 *sp = src->_pixels;
 
 	dp += dstR.y * dw + dstR.x;
 	sp += srcR.y * sw + srcR.x;

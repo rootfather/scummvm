@@ -32,8 +32,6 @@ namespace Clue {
 
 #define LS_SPOT_FILENAME            ("Spot")
 
-void lsLoadSpotBitMap(MemRastPort *rp);
-
 class SpotControl {
 public:
 	NewList<SpotNode> *p_spots;
@@ -48,10 +46,10 @@ void lsInitSpots() {
 
 	sc = new SpotControl;
 	sc->p_spots = new NewList<SpotNode>;
+
 	sc->RP = new MemRastPort;
 	sc->RP->gfxInitMemRastPort(LS_SPOT_BITMAP_WIDTH, LS_SPOT_BITMAP_HEIGHT);
-
-	lsLoadSpotBitMap(sc->RP);
+	sc->RP->lsLoadSpotBitMap();
 }
 
 void lsDoneSpots() {
@@ -265,7 +263,7 @@ void lsAddSpotPosition(SpotNode *spot, uint16 us_XPos, uint16 us_YPos) {
 	spot->us_PosCount++;
 }
 
-void lsLoadSpotBitMap(MemRastPort *rp) {
+void MemRastPort::lsLoadSpotBitMap() {
 	char path[DSK_PATH_MAX];
 
 	/* create file name */
@@ -275,11 +273,11 @@ void lsLoadSpotBitMap(MemRastPort *rp) {
 	gfxLoadILBM(path);
 
 	/* now copy to the right buffer */
-	uint8* dp = rp->pixels;
-	uint8* sp = ScratchRP->pixels;
+	uint8* dp = _pixels;
+	uint8* sp = ScratchRP->_pixels;
 
-	for (uint16 j = 0; j < rp->h; j++) {
-		for (uint16 i = 0; i < rp->w; i++) {
+	for (uint16 j = 0; j < _height; j++) {
+		for (uint16 i = 0; i < _width; i++) {
 			if (*sp == 63)
 				*sp = 64;
 
@@ -289,7 +287,7 @@ void lsLoadSpotBitMap(MemRastPort *rp) {
 			*dp++ = *sp++;
 		}
 
-		sp += SCREEN_WIDTH - rp->w; /* modulo */
+		sp += SCREEN_WIDTH - _width; /* modulo */
 	}
 }
 

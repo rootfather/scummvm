@@ -64,28 +64,26 @@ enum GfxDrawModeE {
 
 class MemRastPort {
 public:
-	uint16 w;
-	uint16 h;
+	uint16 _width;
+	uint16 _height;
 
-	uint8  palette [GFX_PALETTE_SIZE];
-	uint8 *pixels;
+	uint8  _palette [GFX_PALETTE_SIZE];
+	uint8 *_pixels;
 
-	uint16 collId;                 /* Collection, die sich gerade hier befindet! */
+	uint16 _collId;                 /* Collection, die sich gerade hier befindet! */
 
-	MemRastPort() { pixels = nullptr; }
+	MemRastPort() { _pixels = nullptr; }
 	
 	void gfxInitMemRastPort(uint16 width, uint16 height);
 	void gfxDoneMemRastPort();
 	void gfxScratchToMem();
+	void gfxScratchFromMem();
+	void lsLoadSpotBitMap();
 };
 
 #define SCREEN_WIDTH    320
 #define SCREEN_HEIGHT   200
 #define SCREEN_SIZE     (SCREEN_WIDTH * SCREEN_HEIGHT)
-
-void gfxInitMemRastPort(MemRastPort *rp, uint16 width, uint16 height);
-
-void gfxScratchFromMem(MemRastPort *src);
 
 void gfxCollToMem(uint16 collId, MemRastPort *rp);
 
