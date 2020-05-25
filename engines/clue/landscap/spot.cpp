@@ -47,8 +47,7 @@ void lsInitSpots() {
 	sc = new SpotControl;
 	sc->p_spots = new NewList<SpotNode>;
 
-	sc->RP = new MemRastPort;
-	sc->RP->gfxInitMemRastPort(LS_SPOT_BITMAP_WIDTH, LS_SPOT_BITMAP_HEIGHT);
+	sc->RP = new MemRastPort(LS_SPOT_BITMAP_WIDTH, LS_SPOT_BITMAP_HEIGHT);
 	sc->RP->lsLoadSpotBitMap();
 }
 
@@ -56,7 +55,6 @@ void lsDoneSpots() {
 	if (sc) {
 		lsFreeAllSpots();
 		sc->p_spots->removeList();
-		sc->RP->gfxDoneMemRastPort();
 		delete sc->RP;
 		delete sc;
 		sc = nullptr;

@@ -117,31 +117,18 @@ void gfxInit() {
 	/* StdBuffer = 61 * 1024 = 62464, Mem: 62400 */
 
 	/* Ausnahme (nachträglich) : der RefreshRP ist nur 320 * 140 Pixel groß!! */
-
-	StdRP0InMem = new MemRastPort;
-	StdRP1InMem = new MemRastPort;
-	AnimRPInMem = new MemRastPort;
-	AddRPInMem = new MemRastPort;
-	LSObjectRPInMem = new MemRastPort;
-	LSFloorRPInMem = new MemRastPort;
-
-	StdRP0InMem->gfxInitMemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT); /* CMAP muß auch Platz haben ! */
-	StdRP1InMem->gfxInitMemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
-	AnimRPInMem->gfxInitMemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
-	AddRPInMem->gfxInitMemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
-	LSObjectRPInMem->gfxInitMemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
-	LSFloorRPInMem->gfxInitMemRastPort(SCREEN_WIDTH, 32);
+	StdRP0InMem = new MemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT); /* CMAP muß auch Platz haben ! */
+	StdRP1InMem = new MemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
+	AnimRPInMem = new MemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
+	AddRPInMem = new MemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
+	LSObjectRPInMem = new MemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
+	LSFloorRPInMem = new MemRastPort(SCREEN_WIDTH, 32);
 
 	/* der RefreshRP muß den ganzen Bildschirm aufnehmen können */
-	RefreshRPInMem = new MemRastPort;
-	ScratchRP = new MemRastPort;
-	BobRPInMem = new MemRastPort;
-	LSRPInMem = new MemRastPort;
-
-	RefreshRPInMem->gfxInitMemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
-	ScratchRP->gfxInitMemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
-	BobRPInMem->gfxInitMemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
-	LSRPInMem->gfxInitMemRastPort(LS_MAX_AREA_WIDTH, LS_MAX_AREA_HEIGHT);
+	RefreshRPInMem = new MemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
+	ScratchRP = new MemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
+	BobRPInMem = new MemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
+	LSRPInMem = new MemRastPort(LS_MAX_AREA_WIDTH, LS_MAX_AREA_HEIGHT);
 
 	bubbleFont = new Font(GFX_BUBBLE_FONT_NAME, 4, 8, 32, 255, SCREEN_WIDTH, 24);
 	menuFont = new Font(GFX_MENU_FONT_NAME, 5, 9, 32, 255, SCREEN_WIDTH, 36);
@@ -178,18 +165,6 @@ void gfxDone() {
 	delete bubbleFont;
 	delete menuFont;
 	bubbleFont = menuFont = nullptr;
-
-	StdRP0InMem->gfxDoneMemRastPort();
-	StdRP1InMem->gfxDoneMemRastPort();
-	AnimRPInMem->gfxDoneMemRastPort();
-	AddRPInMem->gfxDoneMemRastPort();
-	LSObjectRPInMem->gfxDoneMemRastPort();
-	LSFloorRPInMem->gfxDoneMemRastPort();
-
-	RefreshRPInMem->gfxDoneMemRastPort();
-	ScratchRP->gfxDoneMemRastPort();
-	BobRPInMem->gfxDoneMemRastPort();
-	LSRPInMem->gfxDoneMemRastPort();
 
 	delete StdRP0InMem;
 	delete StdRP1InMem;
@@ -1095,19 +1070,20 @@ void gfxILBMToRAW(const uint8 *src, uint8 *dst, size_t size) {
 	}
 }
 
-void MemRastPort::gfxInitMemRastPort(uint16 width, uint16 height) {
+MemRastPort::MemRastPort(uint16 width, uint16 height) {
 	_width = width;
 	_height = height;
 
 	memset(_palette, 0, GFX_PALETTE_SIZE);
 
 	_pixels = new uint8[width * height];
+	memset(_pixels, 0, width * height);
+
 	_collId = GFX_NO_COLL_IN_MEM;
 }
 
-void MemRastPort::gfxDoneMemRastPort() {
+MemRastPort::~MemRastPort() {
 	delete[] _pixels;
-	_pixels = nullptr;
 }
 
 void MemRastPort::gfxScratchFromMem() {

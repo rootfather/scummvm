@@ -73,9 +73,9 @@ public:
 	uint16 _collId;                 /* Collection, die sich gerade hier befindet! */
 
 	MemRastPort() { _pixels = nullptr; }
+	MemRastPort(uint16 width, uint16 height);
+	~MemRastPort();
 	
-	void gfxInitMemRastPort(uint16 width, uint16 height);
-	void gfxDoneMemRastPort();
 	void gfxScratchToMem();
 	void gfxScratchFromMem();
 	void lsLoadSpotBitMap();

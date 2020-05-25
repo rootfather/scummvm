@@ -249,12 +249,8 @@ void ClueEngine::showIntro() {
 
 	XMSHandle = (uint8 *)malloc(818 * 1024);
 
-	/******************************** Init Gfx ********************************/
-	MemRastPort* A = new MemRastPort;
-	MemRastPort *B = new MemRastPort;
-
-	A->gfxInitMemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
-	B->gfxInitMemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
+	MemRastPort* A = new MemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
+	MemRastPort* B = new MemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	_GC *ScreenGC = new _GC;
 	ScreenGC->init(0, 0, 320, 200, 0, 255, nullptr);
@@ -384,9 +380,6 @@ endit2:
 		_cdMgr->stop();
 		_sndMgr->sndFading(0);
 	}
-
-	A->gfxDoneMemRastPort();
-	B->gfxDoneMemRastPort();
 
 	delete A;
 	delete B;
