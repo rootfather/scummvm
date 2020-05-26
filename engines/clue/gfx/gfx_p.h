@@ -39,14 +39,14 @@ struct PrintRect {
 };
 
 struct ColorRange {
-	byte uch_Start;
-	byte uch_End;
+	byte _startCol;
+	byte _endCol;
 };
 
 struct GfxBase {
 	_GC *gc;
 
-	byte uch_VideoMode;
+	byte _videoMode;
 };
 
 _GC *LowerGC;

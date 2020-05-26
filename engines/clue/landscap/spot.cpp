@@ -48,7 +48,7 @@ void lsInitSpots() {
 	sc->p_spots = new NewList<SpotNode>;
 
 	sc->RP = new MemRastPort(LS_SPOT_BITMAP_WIDTH, LS_SPOT_BITMAP_HEIGHT);
-	sc->RP->lsLoadSpotBitMap();
+	sc->RP->loadSpotBitMap();
 }
 
 void lsDoneSpots() {
@@ -261,7 +261,7 @@ void lsAddSpotPosition(SpotNode *spot, uint16 us_XPos, uint16 us_YPos) {
 	spot->us_PosCount++;
 }
 
-void MemRastPort::lsLoadSpotBitMap() {
+void MemRastPort::loadSpotBitMap() {
 	char path[DSK_PATH_MAX];
 
 	/* create file name */

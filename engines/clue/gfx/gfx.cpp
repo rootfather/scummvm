@@ -41,14 +41,6 @@ PictureNode::PictureNode() {
 	_destX = _destY = 0;
 }
 
-Font::Font() {
-	_bmp = nullptr;
-
-	_width = _height = 0;
-
-	_firstChar = _lastChar = 0;
-}
-
 Font::Font(const char *fileName, uint16 width, uint16 height, uint8 firstChar, uint8 lastChar, uint16 sw, uint16 sh) {
 	_width = width;
 	_height = height;
@@ -72,22 +64,6 @@ Font::Font(const char *fileName, uint16 width, uint16 height, uint8 firstChar, u
 
 Font::~Font() {
 	delete _bmp;
-}
-
-_GC::_GC() {
-	_clipRect.x = _clipRect.y = 0;
-	_clipRect.w = _clipRect.h = 0;
-
-	_gfxMode = GFX_JAM_1;
-
-	_foreground = _background = 0;
-	_outline = 0;
-
-	_colorStart = _colorEnd = 0;
-
-	_cursorX = _cursorY = 0;
-
-	_font = nullptr;
 }
 
 _GC::~_GC() {
@@ -133,17 +109,10 @@ void gfxInit() {
 	bubbleFont = new Font(GFX_BUBBLE_FONT_NAME, 4, 8, 32, 255, SCREEN_WIDTH, 24);
 	menuFont = new Font(GFX_MENU_FONT_NAME, 5, 9, 32, 255, SCREEN_WIDTH, 36);
 
-	LowerGC = new _GC;
-	LSUpperGC = new _GC;
-	MenuGC = new _GC;
-	LSMenuGC = new _GC;
-	// TODO: delete those objects when they are in a class
-	
-	LowerGC->init(0, 0, 320, 140, 0, 191, bubbleFont);
-	MenuGC->init(0, 140, 320, 60, 191, 255, menuFont);
-
-	LSUpperGC->init(0, 0, 320, 128, 0, 191, bubbleFont);
-	LSMenuGC->init(0, 128, 320, 72, 191, 255, menuFont);
+	LowerGC = new _GC(0, 0, 320, 140, 0, 191, bubbleFont);
+	MenuGC = new _GC(0, 140, 320, 60, 191, 255, menuFont);
+	LSUpperGC = new _GC(0, 0, 320, 128, 0, 191, bubbleFont);
+	LSMenuGC = new _GC(0, 128, 320, 72, 191, 255, menuFont);
 
 	gfxInitCollList();
 	gfxInitPictList();
@@ -191,10 +160,10 @@ void gfxSetGC(_GC *gc) {
 	GfxBase.gc = gc;
 }
 
-void gfxSetVideoMode(byte uch_NewMode) {
-	GfxBase.uch_VideoMode = uch_NewMode;
+void gfxSetVideoMode(byte _newMode) {
+	GfxBase._videoMode = _newMode;
 
-	switch (uch_NewMode) {
+	switch (_newMode) {
 	case GFX_VIDEO_MCGA:
 		_lowerGc = LowerGC;
 		_upperGc = LowerGC;
@@ -323,7 +292,7 @@ static Rectangle Clip(Rectangle A, Rectangle B) {
  * Rastports...
  */
 
-void _GC::init(uint16 x, uint16 y, uint16 w, uint16 h, uint8 colorStart, uint8 End, Font *font) {
+_GC::_GC(uint16 x, uint16 y, uint16 w, uint16 h, uint8 colorStart, uint8 End, Font *font) {
 	Rectangle dstR;
 	dstR.x = 0;
 	dstR.y = 0;
@@ -735,7 +704,7 @@ void gfxRefresh() {
 static _GC *gfxGetGC(int32 l_DestY) {
 	_GC *gc = nullptr;
 
-	switch (GfxBase.uch_VideoMode) {
+	switch (GfxBase._videoMode) {
 	case GFX_VIDEO_NCH4:
 		gc = _upperGc;
 
@@ -813,8 +782,8 @@ void gfxSetRGB(_GC *gc, uint8 color, uint8 r, uint8 g, uint8 b) {
 }
 
 void gfxSetColorRange(byte uch_ColorStart, byte uch_End) {
-	GlobalColorRange.uch_Start = uch_ColorStart;
-	GlobalColorRange.uch_End = uch_End;
+	GlobalColorRange._startCol = uch_ColorStart;
+	GlobalColorRange._endCol = uch_End;
 }
 
 void gfxSetRGBRange(uint8 *colors, uint32 start, uint32 num) {
@@ -833,8 +802,8 @@ void gfxChangeColors(_GC *gc, uint32 delay, uint32 mode, uint8 *palette) {
 		st = gc->_colorStart;
 		en = gc->_colorEnd;
 	} else {
-		st = GlobalColorRange.uch_Start;
-		en = GlobalColorRange.uch_End;
+		st = GlobalColorRange._startCol;
+		en = GlobalColorRange._endCol;
 	}
 	gfxRealRefreshArea(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 	delay = MAX(delay, 1u); /* delay must not be zero! */

@@ -78,7 +78,7 @@ public:
 	
 	void gfxScratchToMem();
 	void gfxScratchFromMem();
-	void lsLoadSpotBitMap();
+	void loadSpotBitMap();
 };
 
 #define SCREEN_WIDTH    320
@@ -142,7 +142,6 @@ public:
 	uint8 _firstChar;
 	uint8 _lastChar;
 
-	Font();
 	Font(const char *fileName, uint16 width, uint16 height, uint8 firstChar, uint8 lastChar, uint16 sw, uint16 sh);
 	~Font();
 };
@@ -165,10 +164,9 @@ public:
 
 	Font *_font;
 
-	_GC();
+	_GC(uint16 x, uint16 y, uint16 w, uint16 h, uint8 colorStart, uint8 End, Font* font);
 	~_GC();
 
-	void init(uint16 x, uint16 y, uint16 w, uint16 h, uint8 colorStart, uint8 End, Font* font);
 	void moveCursor(uint16 x, uint16 y);
 	void draw(uint16 x, uint16 y);
 	void setPens(uint8 foreground, uint8 background, uint8 outline);
@@ -205,7 +203,7 @@ extern Font *menuFont;
 extern void gfxInit();
 extern void gfxDone();
 
-extern void gfxSetVideoMode(byte uch_NewMode);
+extern void gfxSetVideoMode(byte _newMode);
 
 extern void wfd();
 extern void wfr();

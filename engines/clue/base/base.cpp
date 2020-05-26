@@ -252,8 +252,7 @@ void ClueEngine::showIntro() {
 	MemRastPort* A = new MemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
 	MemRastPort* B = new MemRastPort(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-	_GC *ScreenGC = new _GC;
-	ScreenGC->init(0, 0, 320, 200, 0, 255, nullptr);
+	_GC *ScreenGC = new _GC(0, 0, 320, 200, 0, 255, nullptr);
 	gfxSetColorRange(0, 255);
 
 	uint8 colorTABLE[GFX_PALETTE_SIZE];
@@ -383,7 +382,6 @@ endit2:
 
 	delete A;
 	delete B;
-	A = B = nullptr;
 
 	free(XMSHandle);
 	delete ScreenGC;
