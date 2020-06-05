@@ -42,7 +42,6 @@ extern void InitTaxiLocations();
 extern void LinkScenes();
 
 extern void tcGetLastName(const char *Name, char *dest, uint32 maxLength);
-extern void tcCutName(char *Name, byte Sign, uint32 maxLength);
 extern Common::String tcCutName(Common::String Name, byte Sign, uint32 maxLength);
 
 extern bool tcLoadTheClou();

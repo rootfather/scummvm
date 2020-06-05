@@ -736,31 +736,17 @@ void tcGetLastName(const char *Name, char *dest, uint32 maxLength) {
 	strcpy(dest, lastName);
 }
 
-void tcCutName(char *Name, byte Sign, uint32 maxLength) {
+Common::String tcCutName(Common::String Name, byte Sign, uint32 maxLength) {
+	const char* srcStr = Name.c_str();
 	Common::String wrkStr;
 
-	for (uint32 i = 0; i < maxLength && Name[i]; ++i) {
-		if (Name[i] == Sign)
+	for (uint32 i = 0; i < maxLength && srcStr[i]; ++i) {
+		if (srcStr[i] == Sign)
 			break;
-		wrkStr += Name[i];
+		wrkStr += srcStr[i];
 	}
 
-	strcpy(Name, wrkStr.c_str());
-}
-
-Common::String tcCutName(Common::String Name, byte Sign, uint32 maxLength) {
-	char Source[TXT_KEY_LENGTH];
-	strcpy(Source, Name.c_str());
-
-	uint32 j = MIN(Name.size(), maxLength);
-
-	for (int32 i = j - 1; i >= 0; i--) {
-		if (Source[i] == Sign)
-			Source[i] = '\0';
-	}
-
-	Common::String retVal = Common::String(Source);
-	return retVal;
+	return wrkStr;
 }
 
 void ShowMenuBackground() {

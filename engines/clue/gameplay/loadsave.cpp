@@ -50,17 +50,13 @@ void tcSaveTheClou() {
 	/* Name erstellen */
 
 	if (activ != GET_OUT) {
-		char location[TXT_KEY_LENGTH];
-		strcpy(location, getCurrLocName().c_str());
 		Common::String date = buildDate(_film->getDay());
+		Common::String location = tcCutName(getCurrLocName(), (byte) ' ', 15);
 
-		tcCutName(location, (byte) ' ', 15);
-
-		strcat(location, ", ");
-		strcat(location, date.c_str());
-
+		location += ", ";
+		location += date.c_str();
 		date = Common::String::format("(%d)", activ + 1);
-		strcat(location, date.c_str());
+		location += date;
 
 		/* Games.list abspeichern */
 
