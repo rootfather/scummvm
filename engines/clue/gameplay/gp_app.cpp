@@ -737,17 +737,15 @@ void tcGetLastName(const char *Name, char *dest, uint32 maxLength) {
 }
 
 void tcCutName(char *Name, byte Sign, uint32 maxLength) {
-	char Source[TXT_KEY_LENGTH];
-	strcpy(Source, Name);
+	Common::String wrkStr;
 
-	uint32 j = MIN(strlen(Source), maxLength);
-
-	for (int32 i = j - 1; i >= 0; i--) {
-		if (Source[i] == Sign)
-			Source[i] = '\0';
+	for (uint32 i = 0; i < maxLength && Name[i]; ++i) {
+		if (Name[i] == Sign)
+			break;
+		wrkStr += Name[i];
 	}
 
-	strcpy(Name, Source);
+	strcpy(Name, wrkStr.c_str());
 }
 
 Common::String tcCutName(Common::String Name, byte Sign, uint32 maxLength) {
