@@ -35,11 +35,11 @@ namespace Clue {
 
 class NewAnimTemplate : public NewNode {
 public:
-	uint16 us_Width;
-	uint16 us_Height;
-	uint16 us_FrameOffsetNr;
+	uint16 _width;
+	uint16 _height;
+	uint16 _frameOffsetNr;
 
-	NewAnimTemplate() { us_Width = us_Height = us_FrameOffsetNr = 0; }
+	NewAnimTemplate() { _width = _height = _frameOffsetNr = 0; }
 	~NewAnimTemplate() {}
 
 	void livRemTemplate() { /* dummy function */ };
@@ -50,30 +50,30 @@ public:
 	/* komplette Daten einer Instanz   *//* eines Lebewesens                */
 	// Node Link;
 
-	uint32 ul_LivesInAreaId;    /* Area -> LandScap */
-	uint16 us_LivingNr;
+	uint32 _livesInAreaId;    /* Area -> LandScap */
+	uint16 _livingNr;
 
-	NewAnimTemplate *p_OriginTemplate;
+	NewAnimTemplate *_originTemplate;
 
-	byte uch_XSize;
-	byte uch_YSize;
+	byte _xSize;
+	byte _ySize;
 
-	int16 s_XSpeed;
-	int16 s_YSpeed;
+	int16 _xSpeed;
+	int16 _ySpeed;
 
-	uint16 us_XPos;     /* absolut */
-	uint16 us_YPos;
+	uint16 _xPos;     /* absolut */
+	uint16 _yPos;
 
-	byte uch_ViewDirection; /* 0 .. left, right, up, down */
+	byte _viewDirection; /* 0 .. left, right, up, down */
 
-	byte uch_Action;
-	byte uch_OldAction;
+	byte _action;
+	byte _oldAction;
 
-	char ch_CurrFrameNr;
+	char _currFrameNr;
 
-	byte uch_Status;        /* enabled or disabled */
+	byte _status;        /* enabled or disabled */
 
-	NewLiving() { p_OriginTemplate = nullptr; } // TODO : initialize the other members properly and move the constructor to the CPP file
+	NewLiving() { _originTemplate = nullptr; } // TODO : initialize the other members properly and move the constructor to the CPP file
 	~NewLiving() {}
 
 	void livAnimate(byte action, int16 xSpeed, int16 ySpeed);
@@ -85,29 +85,30 @@ public:
 	bool livIsVisible();
 };
 
-struct SpriteControl {
-	NewList<NewLiving> *p_Livings;
-	NewList<NewAnimTemplate> *p_Template;
+class SpriteControl {
+public:
+	NewList<NewLiving> *_livings;
+	NewList<NewAnimTemplate> *_template;
 
-	uint32 ul_SprPlayMode;
-	uint32 ul_ActivAreaId;
+	uint32 _sprPlayMode;
+	uint32 _activAreaId;
 
-	uint16 us_VisLScapeX;
-	uint16 us_VisLScapeY;
-	uint16 us_VisLScapeWidth;
-	uint16 us_VisLScapeHeight;
+	uint16 _visLScapeX;
+	uint16 _visLScapeY;
+	uint16 _visLScapeWidth;
+	uint16 _visLScapeHeight;
 
-	uint16 us_TotalLScapeWidth;
-	uint16 us_TotalLScapeHeight;
+	uint16 _totalLScapeWidth;
+	uint16 _totalLScapeHeight;
 
-	byte uch_FirstFrame;
-	byte uch_LastFrame;
-	byte uch_FrameCount;    /* Anzahl der Frames pro Anim */
+	byte _firstFrame;
+	byte _lastFrame;
+	byte _frameCount;    /* Anzahl der Frames pro Anim */
 
-	char ch_PlayDirection;
+	char _playDirection;
 };
 
-static struct SpriteControl *sc = nullptr;
+static SpriteControl *sc = nullptr;
 
 static void livLoadTemplates();
 static void livLoadLivings();
