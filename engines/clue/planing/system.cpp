@@ -230,32 +230,32 @@ void SaveHandler(Common::Stream *fh, System *sys, uint32 id) {
 			break;
 
 		case ACTION_USE:
-			dskSetLine_U16(fh, ((ActionUseNode *)a)->ToolId);
-			dskSetLine_U16(fh, ((ActionUseNode *)a)->ItemId);
+			dskSetLine_U32(fh, ((ActionUseNode *)a)->ToolId);
+			dskSetLine_U32(fh, ((ActionUseNode *)a)->ItemId);
 			break;
 		case ACTION_TAKE:
-			dskSetLine_U16(fh, ((ActionTakeNode *)a)->LootId);
-			dskSetLine_U16(fh, ((ActionTakeNode *)a)->ItemId);
+			dskSetLine_U32(fh, ((ActionTakeNode *)a)->LootId);
+			dskSetLine_U32(fh, ((ActionTakeNode *)a)->ItemId);
 			break;
 		case ACTION_DROP:
-			dskSetLine_U16(fh, ((ActionDropNode *)a)->LootId);
-			dskSetLine_U16(fh, ((ActionDropNode *)a)->ItemId);
+			dskSetLine_U32(fh, ((ActionDropNode *)a)->LootId);
+			dskSetLine_U32(fh, ((ActionDropNode *)a)->ItemId);
 			break;
 
 		case ACTION_OPEN:
-			dskSetLine_U16(fh, ((ActionOpenNode *)a)->ItemId);
+			dskSetLine_U32(fh, ((ActionOpenNode *)a)->ItemId);
 			break;
 		case ACTION_CLOSE:
-			dskSetLine_U16(fh, ((ActionCloseNode *)a)->ItemId);
+			dskSetLine_U32(fh, ((ActionCloseNode *)a)->ItemId);
 			break;
 		case ACTION_CONTROL:
-			dskSetLine_U16(fh, ((ActionControlNode *)a)->ItemId);
+			dskSetLine_U32(fh, ((ActionControlNode *)a)->ItemId);
 			break;
 		case ACTION_SIGNAL:
-			dskSetLine_U16(fh, ((ActionSignalNode *)a)->ReceiverId);
+			dskSetLine_U32(fh, ((ActionSignalNode *)a)->ReceiverId);
 			break;
 		case ACTION_WAIT_SIGNAL:
-			dskSetLine_U16(fh, ((ActionWaitSignalNode *)a)->SenderId);
+			dskSetLine_U32(fh, ((ActionWaitSignalNode *)a)->SenderId);
 			break;
 		}
 	}
