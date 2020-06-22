@@ -263,7 +263,7 @@ void SaveHandler(Common::Stream *fh, System *sys, uint32 id) {
 
 bool LoadHandler(Common::Stream *fh, System *sys, uint32 id) {
 	if (fh && sys && (FindHandler(sys, id))) {
-		//rewind(fh);
+		dskSeek(fh, 0);
 
 		char buffer[64];
 		while (dskGetLine(buffer, sizeof(buffer), fh)) {

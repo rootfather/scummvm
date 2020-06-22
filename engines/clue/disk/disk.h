@@ -72,6 +72,7 @@ extern void dskSetLine_U32(Common::Stream *fp, uint32 x);
 bool dskEOF(Common::Stream *fp);
 int32 dskTell(Common::Stream *fp);
 void dskPeek(Common::Stream *fp);
+void dskSeek(Common::Stream* fp, int32 offset);
 
 } // End of namespace Clue
 

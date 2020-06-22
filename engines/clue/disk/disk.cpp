@@ -312,4 +312,9 @@ void dskPeek(Common::Stream *fp) {
 	}
 }
 
+void dskSeek(Common::Stream* fp, int32 offset) {
+	Common::SeekableReadStream* stream = dynamic_cast<Common::SeekableReadStream*>(fp);
+	stream->seek(offset);
+}
+
 } // End of namespace Clue
