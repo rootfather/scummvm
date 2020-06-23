@@ -67,10 +67,10 @@ struct Search {         /* wegen Arrays nicht in objects */
 	int16 CallValue;        /* "Wert" der Funkspr., int16!!! */
 	uint16 CallCount;       /* Anzahl d. FUnkspr. */
 
-	uint16 WarningCount;        /* Anzahl der Warnungen */
+	uint16 WarningCount;        /* Number of warnings */
 	byte SpotTouchCount[4];
 
-	byte KaserneOk;     /* ob die Kaserne geschafft wurde! */
+	byte BarracksOk;     /* Whether the barracks were done! */
 };
 
 extern int32 tcCalcCarEscape(int32 timeLeft);

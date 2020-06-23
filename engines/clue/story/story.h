@@ -45,7 +45,7 @@ namespace Clue {
 
 #define SCENE_TOWER_OUT       15204352
 #define SCENE_AT_SABIEN       45088768
-#define SCENE_FREIFAHRT       21233664
+#define SCENE_FREE_TRAVEL     21233664
 #define SCENE_ARRIVAL         22282240
 #define SCENE_STATION         21495808
 #define SCENE_HOTEL_REC       18612224
@@ -137,8 +137,8 @@ namespace Clue {
 #define SCENE_BANKO_INSIDE    14417920
 #define SCENE_TOWER_INSIDE    14942208
 
-#define SCENE_KASERNE_INSIDE  47185920
-#define SCENE_KASERNE_OUTSIDE 47448064
+#define SCENE_BARRACKS_INSIDE  47185920
+#define SCENE_BARRACKS_OUTSIDE 47448064
 
 #define SCENE_PROFI_21        52428800
 #define SCENE_PROFI_22        51380224
@@ -161,7 +161,7 @@ namespace Clue {
 #define FACE_GLUDO_SAILOR     126
 #define FACE_GLUDO_MAGIC      124
 
-byte tcKarateOpa(uint32 ul_ActionTime, uint32 ul_BuildingId);
+byte tcKarateGrandpa(uint32 ul_ActionTime, uint32 ul_BuildingId);
 
 void tcTheAlmighty(uint32 time);
 void tcMattGoesTo(uint32 locNr);
@@ -224,7 +224,7 @@ void tcDoneMeetingAgain();
 void tcInitTowerBurglary();
 void tcDoneCredits();
 void tcDoneMafia();
-void tcDoneKaserne();
+void tcDoneBarracks();
 void tcInitPrison();
 
 int32 tcIsLastBurglaryOk();

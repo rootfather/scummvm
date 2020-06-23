@@ -48,7 +48,7 @@ static void tcSomebodyIsCalling() {
 	}
 }
 
-byte tcKarateOpa(uint32 ul_ActionTime, uint32 ul_BuildingId) {
+byte tcKarateGrandpa(uint32 ul_ActionTime, uint32 ul_BuildingId) {
 	livSetAllInvisible();
 	lsSetViewPort(0, 0);    /* links, oben */
 
@@ -1567,7 +1567,7 @@ void tcDoneSouthhampton() {
 				break;
 			case 6:
 				if (tcDoTowerBurglary())
-					_sceneArgs._returnValue = SCENE_KASERNE_OUTSIDE;
+					_sceneArgs._returnValue = SCENE_BARRACKS_OUTSIDE;
 				else
 					refreshCurrScene();
 				break;
@@ -1722,7 +1722,7 @@ void tcDoneMafia() {
 	Say(STORY_1_TXT, 0, OLD_MATT_PICTID, "ST_26_OLD_1");
 }
 
-void tcDoneKaserne() {
+void tcDoneBarracks() {
 	EnvironmentNode *Env = (EnvironmentNode *)dbGetObject(Environment_TheClou);
 	CarNode *car = (CarNode *)dbGetObject(Car_Cadillac_Club_1952);
 	NewList<NewNode> *menu = g_clue->_txtMgr->goKey(MENU_TXT, "KaserneMenu");
@@ -1737,9 +1737,9 @@ void tcDoneKaserne() {
 	joinSet(Person_Matt_Stuvysunt, Person_Ken_Addison);
 	knowsSet(Person_Matt_Stuvysunt, Person_Ken_Addison);
 
-	((BuildingNode *) dbGetObject(Building_Starford_Kaserne))->Exactlyness = 255;
+	((BuildingNode *) dbGetObject(Building_Starford_Barracks))->Exactlyness = 255;
 
-	hasSet(Person_Matt_Stuvysunt, Building_Starford_Kaserne);
+	hasSet(Person_Matt_Stuvysunt, Building_Starford_Barracks);
 
 	/* Auto */
 	car->State = 255;
@@ -1784,13 +1784,13 @@ void tcDoneKaserne() {
 				break;
 			case 2:
 				g_clue->_animMgr->stopAnim();
-				plPlaner(Building_Starford_Kaserne);
+				plPlaner(Building_Starford_Barracks);
 				tcMattGoesTo(66);   /* refresh! */
 				break;
 			case 3:
 				g_clue->_animMgr->stopAnim();
-				Search.KaserneOk = 0;
-				if (!(burglary = plPlayer(Building_Starford_Kaserne, 0, nullptr)))
+				Search.BarracksOk = 0;
+				if (!(burglary = plPlayer(Building_Starford_Barracks, 0, nullptr)))
 					tcMattGoesTo(66);   /* refresh! */
 				break;
 			default:
@@ -1802,7 +1802,7 @@ void tcDoneKaserne() {
 	g_clue->_animMgr->stopAnim();
 
 	if (burglary) {
-		if (Search.KaserneOk) {
+		if (Search.BarracksOk) {
 			g_clue->_sndMgr->sndPlaySound("end.bk", 0);
 
 			if (Env->MattIsInLove)
@@ -1829,11 +1829,11 @@ void tcDoneKaserne() {
 }
 
 int32 tcIsLastBurglaryOk() {
-	BuildingNode *kaserne = (BuildingNode *)dbGetObject(Building_Starford_Kaserne);
-	int16 carXPos0 = kaserne->CarXPos - 40;
-	int16 carYPos0 = kaserne->CarYPos - 40;
-	int16 carXPos1 = kaserne->CarXPos + 40;
-	int16 carYPos1 = kaserne->CarYPos + 40;
+	BuildingNode *barracks = (BuildingNode *)dbGetObject(Building_Starford_Barracks);
+	int16 carXPos0 = barracks->CarXPos - 40;
+	int16 carYPos0 = barracks->CarYPos - 40;
+	int16 carXPos1 = barracks->CarXPos + 40;
+	int16 carYPos1 = barracks->CarYPos + 40;
 	LSObjectNode *left = (LSObjectNode *)dbGetObject(tcLAST_BURGLARY_LEFT_CTRL_OBJ);
 	LSObjectNode *right = (LSObjectNode *)dbGetObject(tcLAST_BURGLARY_RIGHT_CTRL_OBJ);
 
@@ -1841,7 +1841,7 @@ int32 tcIsLastBurglaryOk() {
 	/* 1.. OFF!    */
 
 	bool madeIt = true;
-	if ((left->ul_Status & (1 << Const_tcON_OFF)))
+	if (left->ul_Status & (1 << Const_tcON_OFF))
 		madeIt = false;
 
 	if (!(right->ul_Status & (1 << Const_tcON_OFF)))

@@ -197,14 +197,14 @@ void patchStory() {
 	getScene(SCENE_ARRESTED_MATT)->_cond->_location = 7;  /* Arrest, Police!          */
 
 	// TODO : set _options properly using the defined values
-	getScene(SCENE_KASERNE_OUTSIDE)->_options = 15;
-	getScene(SCENE_KASERNE_INSIDE)->_options = 265;
+	getScene(SCENE_BARRACKS_OUTSIDE)->_options = 15;
+	getScene(SCENE_BARRACKS_INSIDE)->_options = 265;
 
-	getScene(SCENE_KASERNE_OUTSIDE)->_locationNr = 66;
-	getScene(SCENE_KASERNE_INSIDE)->_locationNr = 65;
+	getScene(SCENE_BARRACKS_OUTSIDE)->_locationNr = 66;
+	getScene(SCENE_BARRACKS_INSIDE)->_locationNr = 65;
 
-	getScene(SCENE_KASERNE_OUTSIDE)->_duration = 17;
-	getScene(SCENE_KASERNE_INSIDE)->_duration = 57;
+	getScene(SCENE_BARRACKS_OUTSIDE)->_duration = 17;
+	getScene(SCENE_BARRACKS_INSIDE)->_duration = 57;
 
 	getScene(SCENE_STATION)->_options |= GP_CHOICE_WAIT;
 
@@ -215,11 +215,11 @@ void patchStory() {
 	/* für die Kaserne hier einen Successor eingetragen! */
 	getLocScene(65)->_nextEvents = new NewList<NewTCEventNode>;
 	NewTCEventNode *node = getLocScene(65)->_nextEvents->createNode(nullptr);
-	node->_eventNr = SCENE_KASERNE_OUTSIDE;  /* wurscht... */
+	node->_eventNr = SCENE_BARRACKS_OUTSIDE;  /* wurscht... */
 
 	getLocScene(66)->_nextEvents = new NewList<NewTCEventNode>;
 	node = getLocScene(66)->_nextEvents->createNode(nullptr);
-	node->_eventNr = SCENE_KASERNE_INSIDE;   /* wurscht... */
+	node->_eventNr = SCENE_BARRACKS_INSIDE;   /* wurscht... */
 
 	_film->_startScene = SCENE_STATION;
 }

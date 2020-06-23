@@ -947,7 +947,7 @@ static void plActionUse() {
 									}
 								} else if (((LSObjectNode *) dbGetObject(choice1))->Type == Item_Window) {
 
-									if (g_clue->getFeatures() & GF_PROFIDISK && Planing_BldId == Building_Postzug)
+									if (g_clue->getFeatures() & GF_PROFIDISK && Planing_BldId == Building_Mail_Train)
 										plSay("PLANING_TRAIN", CurrentPerson);
 									else if (CHECK_STATE(lsGetObjectState(choice1), Const_tcOPEN_CLOSE_BIT)) {
 										if (has(Person_Matt_Stuvysunt, Tool_Rope_ladder)) {
@@ -1034,7 +1034,7 @@ static void plAction() {
 			if ((_gamePlayMode & GP_MODE_GUARD_DESIGN) ? (PersonsNr > 1) : (BurglarsNr > 1))
 				bitset += BIT(PLANING_ACTION_RADIO);
 
-			if (!(Planing_BldId == Building_Starford_Kaserne) || (_gamePlayMode & GP_MODE_GUARD_DESIGN))
+			if (!(Planing_BldId == Building_Starford_Barracks) || (_gamePlayMode & GP_MODE_GUARD_DESIGN))
 				bitset += BIT(PLANING_PERSON_CHANGE);
 		} else {
 			bitset = BIT(PLANING_PERSON_WALK) + BIT(PLANING_ACTION_USE) +
@@ -1360,7 +1360,7 @@ void plPlaner(uint32 objId) {
 	AnimCounter = 0;
 	PlanChanged = false;
 
-	if ((Planing_BldId == Building_Starford_Kaserne) && !(_gamePlayMode & GP_MODE_LEVEL_DESIGN)) {
+	if ((Planing_BldId == Building_Starford_Barracks) && !(_gamePlayMode & GP_MODE_LEVEL_DESIGN)) {
 		/* in the case of the Starford Barracks the plan must be loaded */
 		plLoad(Planing_BldId);
 

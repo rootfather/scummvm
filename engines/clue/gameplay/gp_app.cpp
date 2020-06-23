@@ -119,18 +119,18 @@ uint32 tcBurglary(uint32 buildingID) {
 	int32 ret;
 	BuildingNode *b = (BuildingNode *)dbGetObject(buildingID);
 
-	if (buildingID == Building_Seniorenheim)
-		ret = plPlayer(buildingID, 200, tcKarateOpa);
+	if (buildingID == Building_Retirement_Home)
+		ret = plPlayer(buildingID, 200, tcKarateGrandpa);
 	else
-		ret = plPlayer(buildingID, 0, NULL);
+		ret = plPlayer(buildingID, 0, nullptr);
 
-	SetMenuTimeOutFunc(NULL);   /* sicher ist sicher... */
+	SetMenuTimeOutFunc(nullptr);   /* Better safe than sorry... */
 
-	if (ret) {          /* nur wenn Einbruch stattgefunden hat! */
-		/* bei Grab nicht das Grab sondern "Highgate" aus der Taxiliste */
-		/* entfernen */
+	if (ret) {
+		/* Only if a burglary occurred! */
+		/* If Karl Marx grave is concerned, remove "Highgate" instead from the taxi list */
 
-		if (buildingID != Building_Grab_von_Karl_Marx)
+		if (buildingID != Building_Karl_Marx_Grave)
 			RemTaxiLocation(b->LocationNr);
 		else
 			RemTaxiLocation(((BuildingNode *)dbGetObject(Location_Highgate_Out))->LocationNr);
@@ -147,19 +147,19 @@ uint32 tcBurglary(uint32 buildingID) {
 
 		tcPlaySound();
 
-		return 0;       /* Plan hat nicht funktioniert! */
+		return 0;       /* Plan didn't work! */
 	case FAHN_ESCAPED:
 		g_clue->_sndMgr->sndPlaySound("ok.bk", 0);
 
 		inpDelay(300);
 
-		return SCENE_FAHNDUNG;  /*Plan hat funktioniert & Flucht gelungen */
+		return SCENE_FAHNDUNG;  /*Plan worked & escape succeeded */
 	case FAHN_NOT_ESCAPED:
 		g_clue->_sndMgr->sndPlaySound("failed.bk", 0);
 
 		inpDelay(300);
 
-		return SCENE_PRISON;    /* Plan hat funktioniert & Flucht nicht gelungen */
+		return SCENE_PRISON;    /* Plan worked & escape failed */
 	default:
 		assert(0);
 		return 0;
@@ -564,10 +564,10 @@ void LinkScenes() {
 	getLocScene(53)->doneFct = DoneDealer;
 	getLocScene(52)->doneFct = DoneDealer;
 
-	getScene(SCENE_KASERNE_OUTSIDE)->setFunctions(stdInit, tcDoneKaserne);
+	getScene(SCENE_BARRACKS_OUTSIDE)->setFunctions(stdInit, tcDoneBarracks);
 	getScene(SCENE_HOTEL_ROOM)->setFunctions(stdInit, DoneHotelRoom);
 	getScene(SCENE_CREDITS)->setFunctions(nullptr, tcDoneCredits);
-	getScene(SCENE_FREIFAHRT)->setFunctions(nullptr, tcDoneFreeTicket);
+	getScene(SCENE_FREE_TRAVEL)->setFunctions(nullptr, tcDoneFreeTicket);
 	getScene(SCENE_ARRIVAL)->setFunctions(nullptr, tcDoneArrival);
 	getScene(SCENE_HOTEL_1ST_TIME)->setFunctions(nullptr, tcDoneHotelReception);
 	getScene(SCENE_DANNER)->setFunctions(nullptr, tcDoneDanner);
@@ -646,7 +646,7 @@ void LinkScenes() {
 	getScene(SCENE_VICTO_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
 	getScene(SCENE_BANKO_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
 	getScene(SCENE_TOWER_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
-	getScene(SCENE_KASERNE_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
+	getScene(SCENE_BARRACKS_INSIDE)->setFunctions(stdInit, DoneInsideHouse);
 
 	if (g_clue->getFeatures() & GF_PROFIDISK) {
 		getScene(SCENE_PROFI_21_INSIDE)->setFunctions(stdInit, DoneInsideHouse);

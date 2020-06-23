@@ -365,11 +365,11 @@ uint32 getKey(KeyConflictE key);
 /* std */
 #define Building_Kiosk                      509000
 #define Building_Tante_Emma_Laden           509001
-#define Building_Juwelier                   509002
+#define Building_Jeweler                    509002
 #define Building_Old_Curiosity_Shop         509003
 #define Building_Pink_Villa                 509004
-#define Building_Seniorenheim               509005
-#define Building_Grab_von_Karl_Marx         509006
+#define Building_Retirement_Home            509005
+#define Building_Karl_Marx_Grave            509006
 #define Building_Villa                      509007
 #define Building_Kenwood_House              509008
 #define Building_Ham_House                  509009
@@ -379,17 +379,17 @@ uint32 getKey(KeyConflictE key);
 #define Building_British_Museum             509013
 #define Building_Natural_Museum             509014
 #define Building_National_Galery            509015
-#define Building_Victoria_und_Albert_Museum 509016
+#define Building_Victoria_and_Albert_Museum 509016
 #define Building_Bank_of_England            509017
 #define Building_Tower_of_London            509018
-#define Building_Starford_Kaserne           509019
+#define Building_Starford_Barracks          509019
 
 /* profidisk extra */
 #define Building_Baker_Street               509101
 #define Building_Madame_Tussaud             509102
 #define Building_Westminster_Abbey          509103
 #define Building_Downing_Street_10          509104
-#define Building_Postzug                    509105
+#define Building_Mail_Train                 509105
 #define Building_Tate_Gallery               509106
 #define Building_Buckingham_Palace          509107
 #define Building_Bulstrode_Chemestry_Ltd    509108

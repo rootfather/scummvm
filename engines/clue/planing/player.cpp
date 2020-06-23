@@ -58,7 +58,7 @@ namespace Clue {
 #define PLANING_DERI_GUARD_ESCAPED      (PD.realTime / g_clue->calcRandomNr(4, 8))
 
 /* sound system */
-#define PLANING_MUSIC_PLAYER_BEGIN_KASERNE   "final.bk"
+#define PLANING_MUSIC_PLAYER_BEGIN_BARRACKS  "final.bk"
 #define PLANING_MUSIC_PLAYER_BEGIN_STD       "bruch1.bk"
 #define PLANING_MUSIC_PLAYER_END_STD         "bruch2.bk"
 
@@ -273,7 +273,7 @@ static void plPlayerAction() {
 
 	plDisplayTimer(PD.realTime, false);
 
-	if (PD.sndState && (PD.timer > (PD.maxTimer * 20) / 100) && (PD.bldId != Building_Starford_Kaserne)) {
+	if (PD.sndState && (PD.timer > (PD.maxTimer * 20) / 100) && (PD.bldId != Building_Starford_Barracks)) {
 		g_clue->_sndMgr->sndPlaySound(PLANING_MUSIC_PLAYER_END_STD, 0);
 		PD.sndState = 0;
 	}
@@ -296,7 +296,7 @@ static void plPlayerAction() {
 	if (PD.bldId == Building_Tower_of_London)
 		patroCounter = 9;
 
-	if (PD.bldId == Building_Starford_Kaserne)
+	if (PD.bldId == Building_Starford_Barracks)
 		patroCounter = 30;
 
 	if (!(PD.timer % patroCounter)) {
@@ -348,7 +348,7 @@ static void plPlayerAction() {
 #endif
 
 #ifndef PLAN_IS_PERFECT
-	if ((PD.bldId != Building_Starford_Kaserne) && !(PD.timer % 15)) {
+	if ((PD.bldId != Building_Starford_Barracks) && !(PD.timer % 15)) {
 		if ((PD.mood = plGetMood(PD.realTime)) < PLANING_MOOD_MIN) {
 			plSay("PLAYER_FLUCHT", 0);
 			inpSetWaitTicks(INP_AS_FAST_AS_POSSIBLE);
@@ -431,7 +431,7 @@ static void plPlayerAction() {
 					for (byte j = 0; j < BurglarsNr; j++) {
 						if (tcGuardDetectsGuy(Planing_GuardRoomList[i - BurglarsNr], xpos, ypos,
 						         dir, Planing_Name[i], Planing_Name[j])) {
-							if ((PD.bldId == Building_Starford_Kaserne) && j)
+							if ((PD.bldId == Building_Starford_Barracks) && j)
 								break;
 
 							plSay("PLAYER_GUARD_ALARM_1", i);
@@ -447,7 +447,7 @@ static void plPlayerAction() {
 				}
 #ifndef PLAN_IS_PERFECT
 				if (!(PD.timer % 3) && (i < BurglarsNr) && (livWhereIs(Planing_Name[i]) == lsGetActivAreaID())) {
-					if (PD.bldId != Building_Starford_Kaserne) {
+					if (PD.bldId != Building_Starford_Barracks) {
 						if (!(Search.EscapeBits & FAHN_ALARM_MICRO) && tcAlarmByMicro(livGetXPos(Planing_Name[i]), livGetYPos(Planing_Name[i]), PD.currLoudness[i])) {
 							Search.DeriTime += PLANING_DERI_ALARM;
 							Search.EscapeBits |= FAHN_ALARM | FAHN_ALARM_MICRO;
@@ -1111,13 +1111,13 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 				Search.WarningCount = 0;
 				Search.EscapeBits = 0;
 
-				if (PD.bldId == Building_Starford_Kaserne)
-					g_clue->_sndMgr->sndPlaySound(PLANING_MUSIC_PLAYER_BEGIN_KASERNE, 0);
+				if (PD.bldId == Building_Starford_Barracks)
+					g_clue->_sndMgr->sndPlaySound(PLANING_MUSIC_PLAYER_BEGIN_BARRACKS, 0);
 				else
 					g_clue->_sndMgr->sndPlaySound(PLANING_MUSIC_PLAYER_BEGIN_STD, 0);
 
 				if (g_clue->getFeatures() & GF_PROFIDISK) {
-					if (objId == Building_Postzug) {
+					if (objId == Building_Mail_Train) {
 						EnvironmentNode *env = (EnvironmentNode *) dbGetObject(Environment_TheClou);
 
 						env->PostzugDone = 1;
@@ -1327,8 +1327,8 @@ int32 plPlayer(uint32 objId, uint32 actionTime, byte(*actionFunc)(uint32, uint32
 			plMessage("NO_PLAN", PLANING_MSG_REFRESH | PLANING_MSG_WAIT);
 	}
 
-	if (Search.BuildingId == Building_Starford_Kaserne)
-		Search.KaserneOk = tcIsLastBurglaryOk();
+	if (Search.BuildingId == Building_Starford_Barracks)
+		Search.BarracksOk = tcIsLastBurglaryOk();
 
 	plUnprepareRel();
 	plUnprepareGfx();

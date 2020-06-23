@@ -237,7 +237,7 @@ void plLoad(uint32 objId) {
 	Common::Stream *fh = NULL;
 	byte ret;
 
-	if (objId == Building_Starford_Kaserne)
+	if (objId == Building_Starford_Barracks)
 		while ((ret = plOpen(objId, PLANING_OPEN_READ_PLAN, &fh)) != PLANING_OPEN_OK);
 	else
 		ret = plOpen(objId, PLANING_OPEN_READ_PLAN, &fh);

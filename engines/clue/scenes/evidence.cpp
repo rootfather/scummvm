@@ -507,7 +507,7 @@ int32 tcEscapeByCar(uint32 escBits, int32 timeLeft) {
 	/* Flucht per Auto! */
 	if (escapeSucc == FAHN_ESCAPED) {
 		if ((Search.BuildingId != Building_Tower_of_London) &&
-		        (Search.BuildingId != Building_Starford_Kaserne))
+		        (Search.BuildingId != Building_Starford_Barracks))
 			escapeSucc = tcCalcCarEscape(timeLeft);
 	} else
 		tcMattGoesTo(7);    /* Polizei */
@@ -571,7 +571,7 @@ int32 tcCalcCarEscape(int32 timeLeft) {
 	BuildingNode *build = (BuildingNode *)dbGetObject(Organisation.BuildingID);
 	int32 result = FAHN_ESCAPED;
 
-	if ((Organisation.BuildingID != Building_Tower_of_London) && (Organisation.BuildingID != Building_Starford_Kaserne)) {
+	if ((Organisation.BuildingID != Building_Tower_of_London) && (Organisation.BuildingID != Building_Starford_Barracks)) {
 		int32 wayType = build->EscapeRoute;
 		int32 length = build->EscapeRouteLength;
 

@@ -613,16 +613,16 @@ void ClueEngine::setFullEnviroment() {
 	((BuildingNode *) dbGetObject(Building_Kiosk))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Tante_Emma_Laden);
 	((BuildingNode *) dbGetObject(Building_Tante_Emma_Laden))->Exactlyness = 255;
-	hasSet(Person_Matt_Stuvysunt, Building_Juwelier);
-	((BuildingNode *) dbGetObject(Building_Juwelier))->Exactlyness = 255;
+	hasSet(Person_Matt_Stuvysunt, Building_Jeweler);
+	((BuildingNode *) dbGetObject(Building_Jeweler))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Old_Curiosity_Shop);
 	((BuildingNode *) dbGetObject(Building_Old_Curiosity_Shop))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Pink_Villa);
 	((BuildingNode*) dbGetObject(Building_Pink_Villa))->Exactlyness = 255;
-	hasSet(Person_Matt_Stuvysunt, Building_Seniorenheim);
-	((BuildingNode *) dbGetObject(Building_Seniorenheim))->Exactlyness = 255;
-	hasSet(Person_Matt_Stuvysunt, Building_Grab_von_Karl_Marx);
-	((BuildingNode *) dbGetObject(Building_Grab_von_Karl_Marx))->Exactlyness = 255;
+	hasSet(Person_Matt_Stuvysunt, Building_Retirement_Home);
+	((BuildingNode *) dbGetObject(Building_Retirement_Home))->Exactlyness = 255;
+	hasSet(Person_Matt_Stuvysunt, Building_Karl_Marx_Grave);
+	((BuildingNode *) dbGetObject(Building_Karl_Marx_Grave))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Villa);
 	((BuildingNode *) dbGetObject(Building_Villa))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Kenwood_House);
@@ -641,14 +641,14 @@ void ClueEngine::setFullEnviroment() {
 	((BuildingNode *) dbGetObject(Building_Natural_Museum))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_National_Galery);
 	((BuildingNode *) dbGetObject(Building_National_Galery))->Exactlyness = 255;
-	hasSet(Person_Matt_Stuvysunt, Building_Victoria_und_Albert_Museum);
-	((BuildingNode *) dbGetObject(Building_Victoria_und_Albert_Museum))->Exactlyness = 255;
+	hasSet(Person_Matt_Stuvysunt, Building_Victoria_and_Albert_Museum);
+	((BuildingNode *) dbGetObject(Building_Victoria_and_Albert_Museum))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Bank_of_England);
 	((BuildingNode *) dbGetObject(Building_Bank_of_England))->Exactlyness = 255;
 	hasSet(Person_Matt_Stuvysunt, Building_Tower_of_London);
 	((BuildingNode *) dbGetObject(Building_Tower_of_London))->Exactlyness = 255;
-	hasSet(Person_Matt_Stuvysunt, Building_Starford_Kaserne);
-	((BuildingNode *) dbGetObject(Building_Starford_Kaserne))->Exactlyness = 255;
+	hasSet(Person_Matt_Stuvysunt, Building_Starford_Barracks);
+	((BuildingNode *) dbGetObject(Building_Starford_Barracks))->Exactlyness = 255;
 
 	if (getFeatures() & GF_PROFIDISK) {
 		hasSet(Person_Matt_Stuvysunt, Car_Rover_75_1949);
@@ -679,8 +679,8 @@ void ClueEngine::setFullEnviroment() {
 		((BuildingNode *) dbGetObject(Building_Westminster_Abbey))->Exactlyness = 255;
 		hasSet(Person_Matt_Stuvysunt, Building_Downing_Street_10);
 		((BuildingNode *) dbGetObject(Building_Downing_Street_10))->Exactlyness = 255;
-		hasSet(Person_Matt_Stuvysunt, Building_Postzug);
-		((BuildingNode *) dbGetObject(Building_Postzug))->Exactlyness = 255;
+		hasSet(Person_Matt_Stuvysunt, Building_Mail_Train);
+		((BuildingNode *) dbGetObject(Building_Mail_Train))->Exactlyness = 255;
 		hasSet(Person_Matt_Stuvysunt, Building_Tate_Gallery);
 		((BuildingNode *) dbGetObject(Building_Tate_Gallery))->Exactlyness = 255;
 		hasSet(Person_Matt_Stuvysunt, Building_Buckingham_Palace);
