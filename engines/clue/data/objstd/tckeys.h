@@ -51,106 +51,35 @@ typedef enum {
 /* implemented in data/database.c */
 uint32 getKey(KeyConflictE key);
 
-#define _K(x)                               getKey(_ ## x)
+#define Environment_TheClou                 getKey(_Environment_TheClou)
+#define Player_Player_1                     getKey(_Player_Player_1)
+#define London_London_1                     getKey(_London_London_1)
+#define London_Jail                         getKey(_London_Jail)
+#define London_Escape                       getKey(_London_Escape)
+#define Evidence_Evidence_1                 getKey(_Evidence_Evidence_1)
+#define CompleteLoot_LastLoot               getKey(_CompleteLoot_LastLoot)
+#define Person_Old_Matt                     getKey(_Person_Old_Matt)
 
+#define Location_Holland_Street             getKey(_Location_Holland_Street)
+#define Location_Fat_Mans_Pub               getKey(_Location_Fat_Mans_Pub)
+#define Location_Cars_Vans_Office           getKey(_Location_Cars_Vans_Office)
+#define Location_Tools_Shop                 getKey(_Location_Tools_Shop)
+#define Location_Police_Station             getKey(_Location_Policestation)
+#define Location_Highgate_Out               getKey(_Location_Highgate_Out)
+#define Location_Hotel                      getKey(_Location_Hotel)
+#define Location_Walrus                     getKey(_Location_Walrus)
+#define Location_Parker                     getKey(_Location_Parker)
+#define Location_Maloya                     getKey(_Location_Maloya)
+#define Location_Pooly                      getKey(_Location_Pooly)
+#define Location_Nirvana                    getKey(_Location_Nirvana)
 
-/*
-// std
-#define Environment_TheClou                   20
-#define Player_Player_1                       21
-#define London_London_1                       22
-#define London_Jail                           23
-#define London_Escape                         24
-#define Evidence_Evidence_1                   25
-#define CompleteLoot_LastLoot                 27
-#define Person_Old_Matt                       28
-
-#define Location_Holland_Street               77
-#define Location_Fat_Mans_Pub                 81
-#define Location_Cars_Vans_Office             82
-#define Location_Tools_Shop                   83
-#define Location_Policestation                84
-#define Location_Highgate_Out                 98
-#define Location_Hotel                       124
-#define Location_Walrus                      125
-#define Location_Parker                      128
-#define Location_Maloya                      129
-#define Location_Pooly                       130
-#define Location_Nirvana                     133
-
-#define Ability_Autos                        140
-#define Ability_Schloesser                   141
-#define Ability_Sprengstoff                  142
-#define Ability_Safes                        143
-#define Ability_Elektronik                   144
-#define Ability_Aufpassen                    145
-#define Ability_Kampf                        146
-
-
-// profidisk
-#define Environment_TheClou                   28
-#define Player_Player_1                       29
-#define London_London_1                       30
-#define London_Jail                           31
-#define London_Escape                         32
-#define Evidence_Evidence_1                   33
-#define CompleteLoot_LastLoot                 35
-#define Person_Old_Matt                       36
-
-#define Location_Holland_Street               95
-#define Location_Fat_Mans_Pub                 99
-#define Location_Cars_Vans_Office            100
-#define Location_Tools_Shop                  101
-#define Location_Policestation               102
-#define Location_Highgate_Out                116
-#define Location_Hotel                       142
-#define Location_Walrus                      143
-#define Location_Parker                      146
-#define Location_Maloya                      147
-#define Location_Pooly                       148
-#define Location_Nirvana                     151
-
-#define Ability_Autos                        173
-#define Ability_Schloesser                   174
-#define Ability_Sprengstoff                  175
-#define Ability_Safes                        176
-#define Ability_Elektronik                   177
-#define Ability_Aufpassen                    178
-#define Ability_Kampf                        179
-*/
-
-#define Environment_TheClou                 _K(Environment_TheClou)
-#define Player_Player_1                     _K(Player_Player_1)
-#define London_London_1                     _K(London_London_1)
-#define London_Jail                         _K(London_Jail)
-#define London_Escape                       _K(London_Escape)
-#define Evidence_Evidence_1                 _K(Evidence_Evidence_1)
-#define CompleteLoot_LastLoot               _K(CompleteLoot_LastLoot)
-#define Person_Old_Matt                     _K(Person_Old_Matt)
-
-#define Location_Holland_Street             _K(Location_Holland_Street)
-#define Location_Fat_Mans_Pub               _K(Location_Fat_Mans_Pub)
-#define Location_Cars_Vans_Office           _K(Location_Cars_Vans_Office)
-#define Location_Tools_Shop                 _K(Location_Tools_Shop)
-#define Location_Policestation              _K(Location_Policestation)
-#define Location_Highgate_Out               _K(Location_Highgate_Out)
-#define Location_Hotel                      _K(Location_Hotel)
-#define Location_Walrus                     _K(Location_Walrus)
-#define Location_Parker                     _K(Location_Parker)
-#define Location_Maloya                     _K(Location_Maloya)
-#define Location_Pooly                      _K(Location_Pooly)
-#define Location_Nirvana                    _K(Location_Nirvana)
-
-#define Ability_Autos                       _K(Ability_Autos)
-#define Ability_Locks                       _K(Ability_Locks)
-#define Ability_Explosive                   _K(Ability_Explosive)
-#define Ability_Safes                       _K(Ability_Safes)
-#define Ability_Electronic                  _K(Ability_Electronic)
-#define Ability_Surveillance                _K(Ability_Surveillance)
-#define Ability_Fight                       _K(Ability_Fight)
-
-
-
+#define Ability_Autos                       getKey(_Ability_Autos)
+#define Ability_Locks                       getKey(_Ability_Locks)
+#define Ability_Explosive                   getKey(_Ability_Explosive)
+#define Ability_Safes                       getKey(_Ability_Safes)
+#define Ability_Electronic                  getKey(_Ability_Electronic)
+#define Ability_Surveillance                getKey(_Ability_Surveillance)
+#define Ability_Fight                       getKey(_Ability_Fight)
 
 /*
  * Data header file created with dc
