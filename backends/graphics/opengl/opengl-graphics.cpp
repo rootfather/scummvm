@@ -993,7 +993,8 @@ void OpenGLGraphicsManager::notifyContextCreate(const Graphics::PixelFormat &def
 	if (g_context.shadersSupported) {
 		ShaderMan.notifyCreate();
 		//_pipeline = new ShaderPipeline(ShaderMan.query(ShaderManager::kDefault)); FIXME
-		_pipeline = new LibRetroPipeline("shaders/glsl/crt/crt-hyllian-glow.glslp");
+		//_pipeline = new LibRetroPipeline("shaders/glsl/crt/crt-hyllian-glow.glslp");
+		_pipeline = new LibRetroPipeline("shaders/glsl/crt/crt-geom.glslp");
 	}
 #endif
 
