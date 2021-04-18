@@ -343,7 +343,7 @@ bool OpenGLSdlGraphicsManager::loadVideoMode(uint requestedWidth, uint requested
 		// Set the basic window size based on the desktop resolution
 		Common::Rect desktopRes = _window->getDesktopResolution();
 		requestedWidth  = desktopRes.width()  * 0.3f;
-		requestedHeight = desktopRes.height() * 0.3f;
+		requestedHeight = desktopRes.height() * 0.4f;
 
 		// Apply scaler
 		requestedWidth  *= _graphicsScale;
