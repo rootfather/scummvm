@@ -103,6 +103,9 @@ void GLTexture::setSize(uint width, uint height) {
 	const uint oldWidth  = _width;
 	const uint oldHeight = _height;
 
+	_logicalWidth  = width;
+	_logicalHeight = height;
+
 	if (!g_context.NPOTSupported) {
 		_width  = Common::nextHigher2(width);
 		_height = Common::nextHigher2(height);
@@ -110,9 +113,6 @@ void GLTexture::setSize(uint width, uint height) {
 		_width  = width;
 		_height = height;
 	}
-
-	_logicalWidth  = width;
-	_logicalHeight = height;
 
 	// If a size is specified, allocate memory for it.
 	if (width != 0 && height != 0) {

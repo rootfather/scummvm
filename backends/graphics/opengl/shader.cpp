@@ -104,6 +104,10 @@ void ShaderUniformFloat::set(GLint location) const {
 	GL_CALL(glUniform1f(location, _value));
 }
 
+void ShaderUniformVec2::set(GLint location) const {
+	GL_CALL(glUniform2fv(location, 1, _vec2));
+}
+
 void ShaderUniformMatrix44::set(GLint location) const {
 	GL_CALL(glUniformMatrix4fv(location, 1, GL_FALSE, _matrix));
 }

@@ -75,6 +75,22 @@ private:
 };
 
 /**
+ * Vec2 value for a shader uniform.
+ */
+class ShaderUniformVec2 : public ShaderUniformValue {
+public:
+	ShaderUniformVec2(GLfloat v1, GLfloat v2) {
+		_vec2[0] = v1;
+		_vec2[1] = v2;
+	}
+
+	virtual void set(GLint location) const override;
+
+private:
+	GLfloat _vec2[2];
+};
+
+/**
  * 4x4 Matrix value for a shader uniform.
  */
 class ShaderUniformMatrix44 : public ShaderUniformValue {
@@ -163,6 +179,11 @@ public:
 	bool setUniform1I(const Common::String &name, GLint value) {
 		return setUniform(name, new ShaderUniformInteger(value));
 	}
+
+	bool setUniform2F(const Common::String &name, GLfloat v0, GLfloat v1) {
+		return setUniform(name, new ShaderUniformVec2(v0, v1));
+	}
+
 protected:
 	/**
 	 * Vertex shader sources.

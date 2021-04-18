@@ -110,6 +110,7 @@ GL_FUNC_2_DEF(void, glEnableVertexAttribArray, glEnableVertexAttribArrayARB, (GL
 GL_FUNC_2_DEF(void, glDisableVertexAttribArray, glDisableVertexAttribArrayARB, (GLuint index));
 GL_FUNC_2_DEF(void, glUniform1i, glUniform1iARB, (GLint location, GLint v0));
 GL_FUNC_2_DEF(void, glUniform1f, glUniform1fARB, (GLint location, GLfloat v0));
+GL_FUNC_2_DEF(void, glUniform2fv, glUniform2fvARB, (GLint location, GLsizei count, const GLfloat *value));
 GL_FUNC_2_DEF(void, glUniformMatrix4fv, glUniformMatrix4fvARB, (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value));
 GL_FUNC_2_DEF(void, glVertexAttrib4f, glVertexAttrib4fARB, (GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w));
 GL_FUNC_2_DEF(void, glVertexAttribPointer, glVertexAttribPointerARB, (GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void *pointer));
@@ -138,6 +139,7 @@ GL_FUNC_2_DEF(void, glDeleteFramebuffers, glDeleteFramebuffersEXT, (GLsizei n, c
 GL_FUNC_2_DEF(void, glGenFramebuffers, glGenFramebuffersEXT, (GLsizei n, GLuint *renderbuffers));
 GL_FUNC_2_DEF(void, glFramebufferTexture2D, glFramebufferTexture2DEXT, (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level));
 GL_FUNC_2_DEF(GLenum, glCheckFramebufferStatus, glCheckFramebufferStatusEXT, (GLenum target));
+GL_FUNC_2_DEF(void, glGenerateMipmap, glGenerateMipmapEXT, (GLenum target));
 
 GL_FUNC_2_DEF(void, glActiveTexture, glActiveTextureARB, (GLenum texture));
 #endif
