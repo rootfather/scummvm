@@ -301,7 +301,7 @@ void OpenGLSdlGraphicsManager::notifyResize(const int width, const int height) {
 	handleResize(currentWidth, currentHeight);
 
 	// Remember window size in windowed mode
-	if(!_wantsFullScreen) {
+	if (!_wantsFullScreen) {
 		ConfMan.setInt("last_window_width", currentWidth, Common::ConfigManager::kApplicationDomain);
 		ConfMan.setInt("last_window_height", currentHeight, Common::ConfigManager::kApplicationDomain);
 	}
