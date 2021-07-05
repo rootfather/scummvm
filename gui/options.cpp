@@ -87,6 +87,8 @@ enum {
 	kChoosePluginsDirCmd	= 'chpl',
 	kPluginsPathClearCmd	= 'clpl',
 	kChooseThemeCmd			= 'chtf',
+	kChooseShaderDirCmd     = 'chsh',
+	kShaderPathClearCmd     = 'chsc',
 	kUpdatesCheckCmd		= 'updc',
 	kKbdMouseSpeedChanged	= 'kmsc',
 	kJoystickDeadzoneChanged= 'jodc',
@@ -1850,6 +1852,8 @@ GlobalOptionsDialog::GlobalOptionsDialog(LauncherDialog *launcher)
 	_themePathClearButton = nullptr;
 	_extraPath = nullptr;
 	_extraPathClearButton = nullptr;
+	_shaderPath = nullptr;
+	_shaderPathClearButton = nullptr;
 #ifdef DYNAMIC_MODULES
 	_pluginsPath = nullptr;
 	_pluginsPathClearButton = nullptr;
@@ -2105,6 +2109,7 @@ void GlobalOptionsDialog::build() {
 	Common::String savePath(ConfMan.get("savepath", _domain));
 	Common::String themePath(ConfMan.get("themepath", _domain));
 	Common::String extraPath(ConfMan.get("extrapath", _domain));
+	Common::String shaderPath(ConfMan.get("shaderpath", _domain));
 
 	if (savePath.empty() || !ConfMan.hasKey("savepath", _domain)) {
 		_savePath->setLabel(_("Default"));
@@ -2122,6 +2127,12 @@ void GlobalOptionsDialog::build() {
 		_extraPath->setLabel(_c("None", "path"));
 	} else {
 		_extraPath->setLabel(extraPath);
+	}
+
+	if (shaderPath.empty() || !ConfMan.hasKey("shaderpath", _domain)) {
+		_shaderPath->setLabel(_c("None", "path"));
+	} else {
+		_shaderPath->setLabel(shaderPath);
 	}
 
 #ifdef DYNAMIC_MODULES
@@ -2212,6 +2223,14 @@ void GlobalOptionsDialog::addPathsControls(GuiObject *boss, const Common::String
 	_extraPath = new StaticTextWidget(boss, prefix + "ExtraPath", _c("None", "path"), _("Specifies path to additional data used by all games or ScummVM"));
 
 	_extraPathClearButton = addClearButton(boss, prefix + "ExtraPathClearButton", kExtraPathClearCmd);
+
+	if (!lowres)
+		new ButtonWidget(boss, prefix + "ShaderButton", _("Shader Path:"), _("Specifies path to the shaders used for scaling ScummVM"), kChooseShaderDirCmd);
+	else
+		new ButtonWidget(boss, prefix + "ShaderButton", _c("Shader Path:", "lowres"), _("Specifies path to the shaders used for scaling ScummVM"), kChooseShaderDirCmd);
+	_shaderPath = new StaticTextWidget(boss, prefix + "ShaderPath", _c("None", "path"), _("Specifies path to the shaders used for scaling ScummVM"));
+
+	_shaderPathClearButton = addClearButton(boss, prefix + "ShaderPathClearButton", kShaderPathClearCmd);
 
 #ifdef DYNAMIC_MODULES
 	if (!lowres)
@@ -2492,6 +2511,12 @@ void GlobalOptionsDialog::apply() {
 	else
 		ConfMan.removeKey("extrapath", _domain);
 
+	Common::U32String shaderPath(_shaderPath->getLabel());
+	if (!shaderPath.empty() && (shaderPath != _c("None", "path")))
+		ConfMan.set("shaderpath", shaderPath.encode(), _domain);
+	else
+		ConfMan.removeKey("shaderpath", _domain);
+
 #ifdef DYNAMIC_MODULES
 	Common::U32String pluginsPath(_pluginsPath->getLabel());
 	if (!pluginsPath.empty() && (pluginsPath != _c("None", "path")))
@@ -2721,6 +2746,15 @@ void GlobalOptionsDialog::handleCommand(CommandSender *sender, uint32 cmd, uint3
 		}
 		break;
 	}
+	case kChooseShaderDirCmd: {
+		BrowserDialog browser(_("Select directory for scaling shaders"), true);
+		if (browser.runModal() > 0) {
+			Common::FSNode dir(browser.getResult());
+			_shaderPath->setLabel(dir.getPath());
+			g_gui.scheduleTopDialogRedraw();
+		}
+		break;
+	}
 #ifdef DYNAMIC_MODULES
 	case kChoosePluginsDirCmd: {
 		BrowserDialog browser(_("Select directory for plugins"), true);
@@ -2759,6 +2793,8 @@ void GlobalOptionsDialog::handleCommand(CommandSender *sender, uint32 cmd, uint3
 	case kSavePathClearCmd:
 		_savePath->setLabel(_("Default"));
 		break;
+	case kShaderPathClearCmd:
+		_shaderPath->setLabel(_("Default"));
 #ifdef DYNAMIC_MODULES
 	case kPluginsPathClearCmd:
 		_pluginsPath->setLabel(_c("None", "path"));
@@ -3032,6 +3068,11 @@ void GlobalOptionsDialog::reflowLayout() {
 		_extraPathClearButton->setNext(nullptr);
 		delete _extraPathClearButton;
 		_extraPathClearButton = addClearButton(_tabWidget, "GlobalOptions_Paths.ExtraPathClearButton", kExtraPathClearCmd);
+
+		_tabWidget->removeWidget(_shaderPathClearButton);
+		_shaderPathClearButton->setNext(nullptr);
+		delete _shaderPathClearButton;
+		_shaderPathClearButton = addClearButton(_tabWidget, "GlobalOptions_Paths.ShaderPathClearButton", kShaderPathClearCmd);
 	}
 
 	_tabWidget->setActiveTab(activeTab);

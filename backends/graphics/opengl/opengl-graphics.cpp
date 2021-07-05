@@ -996,7 +996,7 @@ void OpenGLGraphicsManager::notifyContextCreate(const Graphics::PixelFormat &def
 
 		// Load selected shader preset from config file
 		if (ConfMan.hasKey("shader_scaler", Common::ConfigManager::kApplicationDomain)) {
-			Common::FSNode shaderPreset("./shaders/presets/" + ConfMan.get("shader_scaler", Common::ConfigManager::kApplicationDomain));
+			Common::FSNode shaderPreset(ConfMan.get("shader_scaler", Common::ConfigManager::kApplicationDomain));
 			if (shaderPreset.isReadable()) {
 				_pipeline = new LibRetroPipeline(ConfMan.get("shader_scaler", Common::ConfigManager::kApplicationDomain));
 			} else {
